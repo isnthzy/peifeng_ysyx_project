@@ -32,6 +32,6 @@ clean:
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	verilator -cc --exe --build -j -0 -Wall
+	verilator -cc --exe --build -j -0 -Wall $1 $2
 
 -include ../Makefile
