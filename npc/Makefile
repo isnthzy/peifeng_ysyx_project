@@ -1,5 +1,6 @@
 BUILD_DIR = ./build
-
+CPP_FILES := $(wildcard *.cpp)
+V_FILES :=$(wildcard *.v)
 export PATH := $(PATH):$(abspath ./utils)
 
 test:
@@ -32,6 +33,6 @@ clean:
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	verilator -cc --exe --build -j -0 -Wall $1 $2
+	verilator -cc --exe --build -j -0 -Wall $(CPP_FILES) $(V_FILES)
 
 -include ../Makefile
