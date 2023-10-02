@@ -1,3 +1,4 @@
+TOPNAME=top
 include $(NVBOARD_HOME)/scripts/nvboard.mk
 BUILD_DIR = ./build
 export PATH := $(PATH):$(abspath ./utils)
