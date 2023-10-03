@@ -15,33 +15,31 @@ import utest._
   * sbt 'testOnly gcd.GcdDecoupledTester'
   * }}}
   */
-object GCDSpec extends ChiselUtestTester {
-  val tests = Tests {
-    test("GCD") {
-      testCircuit(new DecoupledGcd(16)) {
-        dut =>
-          dut.input.initSource()
-          dut.input.setSourceClock(dut.clock)
-          dut.output.initSink()
-          dut.output.setSinkClock(dut.clock)
-          val testValues = for {x <- 0 to 10; y <- 0 to 10} yield (x, y)
-          val inputSeq = testValues.map { case (x, y) => (new GcdInputBundle(16)).Lit(_.value1 -> x.U, _.value2 -> y.U) }
-          val resultSeq = testValues.map { case (x, y) =>
-            (new GcdOutputBundle(16)).Lit(_.value1 -> x.U, _.value2 -> y.U, _.gcd -> BigInt(x).gcd(BigInt(y)).U)
-          }
-          fork {
-            // push inputs into the calculator, stall for 11 cycles one third of the way
-            val (seq1, seq2) = inputSeq.splitAt(resultSeq.length / 3)
-            dut.input.enqueueSeq(seq1)
-            dut.clock.step(11)
-            dut.input.enqueueSeq(seq2)
-          }.fork {
-            // retrieve computations from the calculator, stall for 10 cycles one half of the way
-            val (seq1, seq2) = resultSeq.splitAt(resultSeq.length / 2)
-            dut.output.expectDequeueSeq(seq1)
-            dut.clock.step(10)
-            dut.output.expectDequeueSeq(seq2)
-          }.join()
+
+class MyModuleTest extends FlatSpec with ChiselScalatestTester {
+  behavior of "MyModule"
+
+  it should "correctly select input bits" in {
+    test(new MyModule) { dut =>
+      // 输入测试向量
+      val testInputs = Seq(
+        (0.U(4.W), 0.U(2.W), 0.U(1.W)),  // 输入0，选择0，期望输出0
+        (0.U(4.W), 1.U(2.W), 0.U(1.W)),  // 输入0，选择1，期望输出0
+        (0.U(4.W), 2.U(2.W), 0.U(1.W)),  // 输入0，选择2，期望输出0
+        (0.U(4.W), 3.U(2.W), 0.U(1.W)),  // 输入0，选择3，期望输出0
+        (7.U(4.W), 0.U(2.W), 1.U(1.W)),  // 输入7，选择0，期望输出1
+        (7.U(4.W), 1.U(2.W), 1.U(1.W)),  // 输入7，选择1，期望输出1
+        (7.U(4.W), 2.U(2.W), 0.U(1.W)),  // 输入7，选择2，期望输出0
+        (7.U(4.W), 3.U(2.W), 0.U(1.W))   // 输入7，选择3，期望输出0
+      )
+
+      // 逐个输入测试向量进行测试
+      for ((in, sel, expectedOut) <- testInputs) {
+        dut.io.in.poke(in)
+        dut.io.sel.poke(sel)
+        dut.clock.step()
+
+        dut.io.out.expect(expectedOut)
       }
     }
   }
