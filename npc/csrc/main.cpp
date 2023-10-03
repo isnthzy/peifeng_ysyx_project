@@ -25,10 +25,10 @@ int main(int argc,char** argv) {
   contextp->commandArgs(argc,argv);
   Vtop* top=new Vtop{contextp};
 
-  VerilatedVcdC* tfp=new VerilatedVcdC;
-  contextp->traceEverOn(true);
-  top->trace(tfp,0);
-  tfp->open("wave.vcd");
+  // VerilatedVcdC* tfp=new VerilatedVcdC;
+  // contextp->traceEverOn(true);
+  // top->trace(tfp,0);
+  // tfp->open("wave.vcd");
 
   nvboard_bind_all_pins(&dut);
   nvboard_init();
