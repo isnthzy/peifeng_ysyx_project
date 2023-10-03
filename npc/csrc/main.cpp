@@ -34,8 +34,7 @@ int main(int argc,char** argv) {
   nvboard_init();
 
   reset(10);
-  int i=100;
-  while(i--) {
+  while(1) {
     nvboard_update();
     single_cycle();
   }
