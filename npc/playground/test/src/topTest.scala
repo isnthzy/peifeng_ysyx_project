@@ -1,26 +1,14 @@
 import chisel3._
 import chiseltest._
 import chisel3.experimental.BundleLiterals._
+import org.scalatest._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-import utest._
-
-/**
-  * This is a trivial example of how to run this Specification
-  * From within sbt use:
-  * {{{
-  * testOnly gcd.GcdDecoupledTester
-  * }}}
-  * From a terminal shell use:
-  * {{{
-  * sbt 'testOnly gcd.GcdDecoupledTester'
-  * }}}
-  */
-
-class MyModuleTest extends FlatSpec with ChiselScalatestTester {
-  behavior of "MyModule"
-
-  it should "correctly select input bits" in {
-    test(new MyModule) { dut =>
+class topTest extends AnyFlatSpec with ChiselScalatestTester {
+  behavior of "top"
+  it should "get right results" in {
+    test(new top) { dut =>
       // 输入测试向量
       val testInputs = Seq(
         (0.U(4.W), 0.U(2.W), 0.U(1.W)),  // 输入0，选择0，期望输出0
@@ -41,6 +29,7 @@ class MyModuleTest extends FlatSpec with ChiselScalatestTester {
 
         dut.io.out.expect(expectedOut)
       }
+      println("SUCCESS")
     }
   }
 }
