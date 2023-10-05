@@ -48,7 +48,7 @@ run:
 
 
 test:
-	mill -i __.test
+	sbt test
 
 verilog:
 	$(call git_commit, "generate verilog")
