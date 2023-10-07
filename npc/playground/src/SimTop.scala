@@ -8,7 +8,7 @@ class SimTop extends Module {
     val out = Output(UInt(1.W))
   })
 
-  io.out := MuxLookup(io.sel, 0.U, Seq(
+  io.out := MuxLookup(io.sel, 0.U)(Seq(
     0.U -> io.in(0),
     1.U -> io.in(1),
     2.U -> io.in(2),
