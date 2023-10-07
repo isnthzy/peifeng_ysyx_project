@@ -8,10 +8,10 @@ test:
 verilog:
 	$(call git_commit, "generate verilog")
 	mkdir -p $(BUILD_DIR)
-	mill -i __.test.runMain Elaborate -td $(BUILD_DIR)
+	mill -i __.test.runMain top.TopMain -td $(BUILD_DIR)
 
 help:
-	mill -i __.test.runMain Elaborate --help
+	mill -i __.test.runMain top.TopMain --help
 
 compile:
 	mill -i __.compile
