@@ -1,16 +1,16 @@
-TOPNAME=top
+TOPNAME=SimTop
 include $(NVBOARD_HOME)/scripts/nvboard.mk
 BUILD_DIR = ./build
 export PATH := $(PATH):$(abspath ./utils)
 
-NXDC_FILES = constr/top.nxdc
+NXDC_FILES = constr/SimTop.nxdc
 INC_PATH ?=
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
 				-O3 --x-assign fast --x-initial fast --noassert
 
-OBJ_DIR = $(BUILD_DIR)/obj_dir
+OBJ_DIR = $(BUILD_DIR)/obj_dirtop
 BIN = $(BUILD_DIR)/$(TOPNAME)
 
 default: $(BIN)
@@ -43,8 +43,8 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 
 all: default
 
-run: 
-	mill -i __.run
+# run: 
+# 	mill -i __.run
 
 
 test:
