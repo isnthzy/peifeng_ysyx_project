@@ -52,8 +52,15 @@ test:
 
 verilog:
 	$(call git_commit, "generate verilog")
-	mkdir -p $(BUILD_DIR)
-	mill -i __.test.runMain TopMain -td $(BUILD_DIR)
+	rm -r ./vsrc/*
+	mkdir -p ./vsrc
+	mill -i __.test.runMain TopMain -td ./vsrc
+
+# verilog:
+# 	$(call git_commit, "generate verilog")
+# 	mkdir -p $(BUILD_DIR)
+# 	mill -i __.test.runMain TopMain -td $(BUILD_DIR)
+
 
 help:
 	mill -i __.test.runMain TopMain --help
