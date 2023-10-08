@@ -28,9 +28,9 @@ module bcd7seg(	// <stdin>:46:3
   assign seg_out = _GEN[seg_in];	// <stdin>:46:3, playground/src/SimTop.scala:47:36
 endmodule
 
-module SimTop(	// <stdin>:71:3
-  input        clock,	// <stdin>:72:11
-               reset,	// <stdin>:73:11
+module SimTop(	// <stdin>:67:3
+  input        clock,	// <stdin>:68:11
+               reset,	// <stdin>:69:11
   input  [7:0] io_in,	// playground/src/SimTop.scala:5:14
   input        io_en,	// playground/src/SimTop.scala:5:14
   output [2:0] io_led_out,	// playground/src/SimTop.scala:5:14
@@ -48,7 +48,7 @@ module SimTop(	// <stdin>:71:3
     .seg_in  (_encode_encode_out),	// playground/src/SimTop.scala:12:22
     .seg_out (io_hex_out)
   );
-  assign io_led_out = _encode_encode_out;	// <stdin>:71:3, playground/src/SimTop.scala:12:22
-  assign io_led4 = io_in == 8'h0;	// <stdin>:71:3, playground/src/SimTop.scala:16:24
+  assign io_led_out = _encode_encode_out;	// <stdin>:67:3, playground/src/SimTop.scala:12:22
+  assign io_led4 = io_in == 8'h0;	// <stdin>:67:3, playground/src/SimTop.scala:16:24
 endmodule
 
