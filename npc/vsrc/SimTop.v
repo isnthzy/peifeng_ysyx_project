@@ -24,7 +24,7 @@ module bcd7seg(	// <stdin>:46:3
   output [6:0] seg_out	// playground/src/SimTop.scala:43:15
 );
 
-  wire [7:0][6:0] _GEN = {7'h78, 7'h2, 7'h12, 7'h19, 7'h30, 7'h24, 7'h79, 7'h0};	// playground/src/SimTop.scala:47:36
+  wire [7:0][6:0] _GEN = {7'h78, 7'h2, 7'h12, 7'h19, 7'h30, 7'h24, 7'h79, 7'h40};	// playground/src/SimTop.scala:47:36
   assign seg_out = _GEN[seg_in];	// <stdin>:46:3, playground/src/SimTop.scala:47:36
 endmodule
 
