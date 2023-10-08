@@ -6,11 +6,13 @@ class SimTop extends Module {
     val in = Input(UInt(8.W))
     val en = Input(Bool())
     val out = Output(UInt(3.W))
+    val a = Output(Bool())
   })
   val encode = Module(new encode82())
   val seg = Module(new bcd7seg())
   encode.encode.in := io.in
   encode.encode.en := io.en
+  io.a := Mux(io.in === 0.U, true.B, false.B)
 
   seg.seg.in := encode.encode.out
   io.out := seg.seg.out
