@@ -3,15 +3,18 @@ import chisel3.util._
 
 class SimTop extends Module {
   val io = IO(new Bundle {
-    val in = Input(UInt(4.W))
-    val sel = Input(UInt(2.W))
-    val out = Output(UInt(1.W))
+    val in = Input(UInt(8.W))
+    val en = Input(Bool())
+    val out = Output(UInt(3.W))
   })
-
-  io.out := MuxLookup(io.sel, 0.U)(Seq(
-    0.U -> io.in(0),
-    1.U -> io.in(1),
-    2.U -> io.in(2),
-    3.U -> io.in(3)
-  ))
+  when(io.en){
+    io.out:=0.U
+    for(i<-0 until 8){
+      when(io.in(i)===1.U){
+        io.out:=i.U(3.W)
+      }
+    }
+  }otherwise{
+    io.out:=0.U
+  }
 }
