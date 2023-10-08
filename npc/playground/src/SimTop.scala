@@ -45,7 +45,7 @@ class bcd7seg extends Module{
     val out= Output(UInt(7.W))
   })
   seg.out := MuxLookup(seg.in, 0.U)(Seq(
-    0.U -> "b0000000".U, 1.U -> "b1111001".U, 
+    0.U -> "b1000000".U, 1.U -> "b1111001".U, 
     2.U -> "b0100100".U, 3.U -> "b0110000".U,
     4.U -> "b0011001".U, 5.U -> "b0010010".U,
     6.U -> "b0000010".U, 7.U -> "b1111000".U, 
