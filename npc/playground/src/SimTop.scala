@@ -13,6 +13,10 @@ class SimTop extends Module {
   val clkcount= RegInit(0.asUInt(8.W))
   val clk1scount= RegInit(0.asUInt(2.W))
   clkcount := clkcount + 1.U
+  when(io.Zero===true.B){
+    clkcount := 0.U
+    clk1scount :=0.U
+  }
   when(clkcount==="h24999999".U){
       clkcount := 0.U
       clk1scount := clk1scount+1.U
