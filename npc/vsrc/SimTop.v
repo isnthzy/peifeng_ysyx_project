@@ -10,9 +10,8 @@ module SimTop(	// <stdin>:3:3
                io_out_c	// playground/src/SimTop.scala:5:14
 );
 
-  wire [4:0]      sum = {1'h0, io_a} + {1'h0, io_b};	// playground/src/SimTop.scala:13:16, :30:18
-  wire [3:0]      _tmp_T_1 = ~io_b + 4'h1;	// playground/src/SimTop.scala:17:{25,31}
-  wire [4:0]      sub = {io_a[3], io_a} + {_tmp_T_1[3], _tmp_T_1};	// playground/src/SimTop.scala:17:31, :18:23
+  wire [4:0]      sum = {1'h0, io_a} + {1'h0, io_b};	// playground/src/SimTop.scala:13:16, :20:45
+  wire [3:0]      sub = io_a + ~io_b + 4'h1;	// playground/src/SimTop.scala:17:{15,29}, :18:25
   wire            _io_out_c_T_2 = io_op == 3'h1;	// playground/src/SimTop.scala:33:34
   wire [7:0][3:0] _GEN =
     {{{3'h0, io_a == io_b}},
@@ -21,14 +20,14 @@ module SimTop(	// <stdin>:3:3
      {io_a | io_b},
      {io_a & io_b},
      {~io_a},
-     {sub[3:0]},
-     {sum[3:0]}};	// playground/src/SimTop.scala:13:16, :14:35, :18:23, :19:35, :22:15, :24:19, :26:19, :28:19, :30:23, :32:23, :33:34
+     {{1'h0, sub[2:0]}},
+     {sum[3:0]}};	// playground/src/SimTop.scala:13:16, :14:35, :18:25, :19:38, :20:45, :22:15, :24:19, :26:19, :28:19, :30:23, :32:23, :33:34
   wire            _io_out_c_T = io_op == 3'h0;	// playground/src/SimTop.scala:33:34, :39:33
   assign io_out = _GEN[io_op];	// <stdin>:3:3, playground/src/SimTop.scala:33:34
   assign io_of =
     _io_out_c_T_2
-      ? io_a[3] & io_b[3] & sub[3] != io_a[3]
-      : _io_out_c_T & io_a[3] & io_b[3] & sum[3] != io_a[3];	// <stdin>:3:3, playground/src/SimTop.scala:13:16, :14:35, :15:{26,35,48,51}, :18:23, :19:35, :20:{39,48,51}, :33:34, :39:33
-  assign io_out_c = _io_out_c_T_2 ? sub[4] : _io_out_c_T & sum[4];	// <stdin>:3:3, playground/src/SimTop.scala:13:16, :14:28, :18:23, :19:28, :33:34, :39:33, :42:36
+      ? io_a[3] & io_b[3] & ~(sub[3]) | ~(io_a[3]) & ~(io_b[3]) & sub[3]
+      : _io_out_c_T & io_a[3] & io_b[3] & sum[3] != io_a[3];	// <stdin>:3:3, playground/src/SimTop.scala:13:16, :14:35, :15:{26,35,48,51}, :18:25, :19:30, :20:{42,45,55,59,71,80}, :33:34, :39:33
+  assign io_out_c = _io_out_c_T_2 ? sub[3] : _io_out_c_T & sum[4];	// <stdin>:3:3, playground/src/SimTop.scala:13:16, :14:28, :18:25, :19:30, :33:34, :39:33, :42:36
 endmodule
 
