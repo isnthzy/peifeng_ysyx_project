@@ -3,43 +3,40 @@ import chisel3.util._
 
 class SimTop extends Module {
   val io = IO(new Bundle {
-    val op = Input(UInt(3.W))
-    val a  = Input(UInt(4.W))
-    val b  = Input(UInt(4.W))
-    val out = Output(UInt(4.W))
-    val of = Output(Bool())
-    val out_c = Output(UInt(1.W))
+    val clkIn =Input(Clock())
+    val TimeOut = Input(Bool())
+    val Begin = Input(Bool())
+    val Zero = Input(Bool())
+    val Hex1 =Output(UInt(7.W))
+    val Hex2 =Output(UInt(7.W))
   })
-  val sum =io.a+&io.b
-  val (out_add,op_add)=(sum(4),sum(3,0))
-  val overflow_add =(io.a(3)&&io.b(3))&&(op_add(3)=/=io.a(3))
-  
-  val tmp = ((~io.b).asSInt + 1.S).asUInt
-  val sub = io.a.asSInt +& tmp.asSInt
-  val (out_sub,op_sub) = (sub(3), sub(2, 0))
-  val overflow_sub = (io.a(3) && io.b(3) && !out_sub) || (!io.a(3) && !io.b(3) && out_sub)
-  
-  val op_neg= ~io.a
+  val clkcount= RegInit(0.asUInt(8.W))
+  val clk1scount= RegInit(0.asUInt(2.W))
+  clkcount := clkcount + 1.U
+  when(clkcount==="h24999999".U){
+      clkcount := 0.U
+      clk1scount := clk1scount+1.U
+  }
+  when(clk1scount==="h99".U){
+    clk1scount :=0.U
+  }
+  val seg1 = Module(new bcd7seg())
+  val seg2 = Module(new bcd7seg())
+  seg1.seg.in := clk1scount(0)
+  seg2.seg.in := clk1scount(1)
+  io.Hex1 := seg1.seg.out
+  io.Hex2 := seg2.seg.out
+}
 
-  val op_and= io.a&io.b
-  
-  val op_or = io.a|io.b
-  
-  val op_xor= io.a^io.b
-  
-  val op_tha= Mux(io.a<io.b, 1.U, 0.U)
-  
-  val op_eq = Mux(io.a===io.b,1.U,0.U)
-  io.out := MuxLookup(io.op, 0.U)(Seq(
-    0.U -> op_add, 1.U -> op_sub, 
-    2.U -> op_neg, 3.U -> op_and,
-    4.U -> op_or , 5.U -> op_xor,
-    6.U -> op_tha, 7.U -> op_eq
-  ))
-  io.of := MuxLookup(io.op, 0.U)(Seq(
-    0.U -> overflow_add, 1.U -> overflow_sub,
-  ))
-  io.out_c := MuxLookup(io.op, 0.U)(Seq(
-    0.U -> out_add, 1.U -> out_sub 
+class bcd7seg extends Module{
+  val seg = IO(new Bundle {
+    val in = Input(UInt(1.W))
+    val out= Output(UInt(7.W))
+  })
+  seg.out := MuxLookup(seg.in, 0.U)(Seq(
+    0.U -> "b1000000".U, 1.U -> "b1111001".U, 
+    2.U -> "b0100100".U, 3.U -> "b0110000".U,
+    4.U -> "b0011001".U, 5.U -> "b0010010".U,
+    6.U -> "b0000010".U, 7.U -> "b1111000".U, 
   ))
 }
