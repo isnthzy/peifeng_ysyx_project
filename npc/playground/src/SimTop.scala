@@ -10,14 +10,13 @@ class SimTop extends Module {
     val of = Output(Bool())
     val out_c = Output(UInt(1.W))
   })
-  
-  val op_add =io.a+io.b
-  val add_c =op_add(4)
+  val sum =io.a+&io.b
+  val (out_add,op_add)=(sum(4),sum(3,0))
   val overflow_add =(io.a(3)&&io.b(3))&&(op_add(3)=/=io.a(3))
   
   val tmp = (("b1111".U)^io.b)+1.U
-  val op_sub =io.a+tmp
-  val sub_c =op_add(4)
+  val sub =io.a+&tmp
+  val (out_sub,op_sub)=(sub(4),sub(3,0))
   val overflow_sub =(io.a(3)&&io.b(3))&&(op_sub(3)=/=io.a(3))
   
   val op_neg= ~io.a
@@ -38,9 +37,9 @@ class SimTop extends Module {
     6.U -> op_tha, 7.U -> op_eq
   ))
   io.of := MuxLookup(io.op, 0.U)(Seq(
-    0.U -> overflow_add, 1.U -> overflow_sub, 
+    0.U -> overflow_add, 1.U -> overflow_sub,
   ))
   io.out_c := MuxLookup(io.op, 0.U)(Seq(
-    0.U -> add_c, 1.U -> sub_c, 
+    0.U -> out_add, 1.U -> out_sub 
   ))
 }
