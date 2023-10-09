@@ -52,7 +52,7 @@ test:
 
 verilog:
 	$(call git_commit, "generate verilog")
-	rm -r ./vsrc/*
+	rm -rf ./vsrc/*
 	mkdir -p ./vsrc
 	mill -i __.test.runMain TopMain -td ./vsrc
 
