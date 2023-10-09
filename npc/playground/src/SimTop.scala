@@ -14,10 +14,10 @@ class SimTop extends Module {
   val (out_add,op_add)=(sum(4),sum(3,0))
   val overflow_add =(io.a(3)&&io.b(3))&&(op_add(3)=/=io.a(3))
   
-  val tmp = (("b1111".U)^io.b)+1.U
-  val sub =io.a.asSInt+&tmp.asSInt
-  val (out_sub,op_sub)=(sub(4),sub(3,0))
-  val overflow_sub =(io.a(3)&&io.b(3))&&(op_sub(3)=/=io.a(3))
+  val tmp = ((~io.b).asSInt + 1.S).asUInt
+  val sub = io.a.asSInt +& tmp.asSInt
+  val (out_sub,op_sub) = (sub(3), sub(2, 0))
+  val overflow_sub = (io.a(3) && io.b(3) && !out_sub) || (!io.a(3) && !io.b(3) && out_sub)
   
   val op_neg= ~io.a
 
