@@ -3,8 +3,7 @@ import chisel3.util._
 
 class SimTop extends Module {
   val io = IO(new Bundle {
-    val TimeOut = Input(Bool())
-    val Begin = Input(Bool())
+    val TimeOut = Input(Bool()) //为1暂停,为0开始
     val Zero = Input(Bool())
     val Hex1 =Output(UInt(7.W))
     val Hex2 =Output(UInt(7.W))
@@ -14,25 +13,27 @@ class SimTop extends Module {
   val clkcount= RegInit(0.asUInt(log2Ceil(counterMax50hz).W))
   val clk1scount= RegInit(0.asUInt(log2Ceil(counterMax1s).W))
   val clk10scount= RegInit(0.asUInt(log2Ceil(10).W))
-  clkcount := clkcount + 1.U
-  when(io.Zero===true.B){
-    clkcount := 0.U
-    clk1scount :=0.U
-    clk10scount :=0.U
-  }
-  when(clkcount===counterMax50hz.U){
-    clkcount := 0.U
-    clk1scount := clk1scount+1.U
-  }
-  when(clk1scount===counterMax1s.U){
-    clk1scount :=0.U
-  }
-  when(clk1scount===10.U){
-    clk1scount :=0.U
-    clk10scount :=clk10scount+1.U
-  }
-  when(clk10scount===10.U){
-    clk10scount :=0.U
+  when(io.TimeOut===false.B){
+    clkcount := clkcount + 1.U
+    when(io.Zero===true.B){
+      clkcount := 0.U
+      clk1scount :=0.U
+      clk10scount :=0.U
+    }
+    when(clkcount===counterMax50hz.U){
+      clkcount := 0.U
+      clk1scount := clk1scount+1.U
+    }
+    when(clk1scount===counterMax1s.U){
+      clk1scount :=0.U
+    }
+    when(clk1scount===10.U){
+      clk1scount :=0.U
+      clk10scount :=clk10scount+1.U
+    }
+    when(clk10scount===10.U){
+      clk10scount :=0.U
+    }
   }
   val seg1 = Module(new bcd7seg())
   val seg2 = Module(new bcd7seg())
