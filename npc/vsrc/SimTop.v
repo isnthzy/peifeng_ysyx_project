@@ -89,7 +89,7 @@ module SimTop(	// <stdin>:77:3
     if (reset)	// <stdin>:78:11
       reg_0 <= 8'h40;	// playground/src/SimTop.scala:11:19
     else if (io_in)	// playground/src/SimTop.scala:5:14
-      reg_0 <= {reg_0[0] + reg_0[2] + reg_0[3] + reg_0[4], reg_0[6:0]};	// playground/src/SimTop.scala:11:19, :12:{14,21,28,31,35}, :14:{15,22}
+      reg_0 <= {reg_0[0] + reg_0[2] + reg_0[3] + reg_0[4], reg_0[7:1]};	// playground/src/SimTop.scala:11:19, :12:{14,21,28,31,35}, :14:{15,22}
   end // always @(posedge)
   `ifdef ENABLE_INITIAL_REG_	// <stdin>:77:3
     `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:77:3
