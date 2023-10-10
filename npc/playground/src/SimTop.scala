@@ -3,7 +3,6 @@ import chisel3.util._
 
 class SimTop extends Module {
   val io = IO(new Bundle {
-    val clkIn =Input(Clock())
     val TimeOut = Input(Bool())
     val Begin = Input(Bool())
     val Zero = Input(Bool())
@@ -17,11 +16,11 @@ class SimTop extends Module {
     clkcount := 0.U
     clk1scount :=0.U
   }
-  when(clkcount==="h24999999".U){
+  when(clkcount==="d24999999".U){
       clkcount := 0.U
       clk1scount := clk1scount+1.U
   }
-  when(clk1scount==="h99".U){
+  when(clk1scount==="d99".U){
     clk1scount :=0.U
   }
   val seg1 = Module(new bcd7seg())
