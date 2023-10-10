@@ -35,8 +35,8 @@ class SimTop extends Module {
   }
   val seg1 = Module(new bcd7seg())
   val seg2 = Module(new bcd7seg())
-  seg1.seg.in := clk1scount(4)
-  seg2.seg.in := clk10scount(4)
+  seg1.seg.in := clk1scount(3,0)
+  seg2.seg.in := clk10scount(3,0)
   io.Hex1 := seg1.seg.out
   io.Hex2 := seg2.seg.out
 }
