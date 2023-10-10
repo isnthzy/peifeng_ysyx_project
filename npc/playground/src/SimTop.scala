@@ -27,15 +27,15 @@ class SimTop extends Module {
   }
   val seg1 = Module(new bcd7seg())
   val seg2 = Module(new bcd7seg())
-  seg1.seg.in := clk1scount(0)
-  seg2.seg.in := clk1scount(1)
+  seg1.seg.in := clk1scount(3)
+  seg2.seg.in := clk1scount(3)
   io.Hex1 := seg1.seg.out
   io.Hex2 := seg2.seg.out
 }
 
 class bcd7seg extends Module{
   val seg = IO(new Bundle {
-    val in = Input(UInt(1.W))
+    val in = Input(UInt(3.W))
     val out= Output(UInt(7.W))
   })
   seg.out := MuxLookup(seg.in, 0.U)(Seq(
