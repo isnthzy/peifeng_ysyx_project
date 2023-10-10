@@ -6,6 +6,7 @@ class SimTop extends Module {
     val in = Input(Bool()) //为1暂停,为0开始
     val seg1 =Output(UInt(7.W))
     val seg2 =Output(UInt(7.W))
+    val ld =Output(UInt(7.W))
   })  
   val reg =RegInit("b01000000".U(8.W))
   val x8 =reg(0)+reg(2)+reg(3)+reg(4)
@@ -18,6 +19,7 @@ class SimTop extends Module {
   bcd7seg2.seg.in := reg(7,4)
   io.seg1 := bcd7seg1.seg.out
   io.seg2 := bcd7seg2.seg.out
+  io.ld := reg 
 }
 
 class bcd7seg extends Module{
