@@ -56,12 +56,12 @@ module bcd7seg(	// <stdin>:3:3, :40:3
 );
 
   wire [15:0][6:0] _GEN =
-    {7'h7,
-     7'h3,
-     7'h21,
+    {7'hE,
      7'h6,
-     7'h42,
-     7'h31,
+     7'h21,
+     7'h46,
+     7'h3,
+     7'h8,
      7'h10,
      7'h0,
      7'h78,
@@ -81,7 +81,7 @@ module SimTop(	// <stdin>:77:3
                io_in,	// playground/src/SimTop.scala:5:14
   output [6:0] io_seg1,	// playground/src/SimTop.scala:5:14
                io_seg2,	// playground/src/SimTop.scala:5:14
-               io_ld	// playground/src/SimTop.scala:5:14
+  output [7:0] io_ld	// playground/src/SimTop.scala:5:14
 );
 
   reg [7:0] reg_0;	// playground/src/SimTop.scala:11:19
@@ -117,6 +117,6 @@ module SimTop(	// <stdin>:77:3
     .seg_in  (reg_0[7:4]),	// playground/src/SimTop.scala:11:19, :19:25
     .seg_out (io_seg2)
   );
-  assign io_ld = reg_0[6:0];	// <stdin>:77:3, playground/src/SimTop.scala:11:19, :22:9
+  assign io_ld = reg_0;	// <stdin>:77:3, playground/src/SimTop.scala:11:19
 endmodule
 
