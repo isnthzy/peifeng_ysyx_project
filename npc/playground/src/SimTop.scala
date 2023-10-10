@@ -43,7 +43,7 @@ class SimTop extends Module {
 
 class bcd7seg extends Module{
   val seg = IO(new Bundle {
-    val in = Input(UInt(3.W))
+    val in = Input(UInt(4.W))
     val out= Output(UInt(7.W))
   })
   seg.out := MuxLookup(seg.in, 0.U)(Seq(
