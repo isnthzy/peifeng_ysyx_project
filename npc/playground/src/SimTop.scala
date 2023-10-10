@@ -28,6 +28,7 @@ class SimTop extends Module {
     clk1scount :=0.U
   }
   when(clk1scount===10.U){
+    clk1scount :=0.U
     clk10scount :=clk10scount+1.U
   }
   when(clk10scount===10.U){
