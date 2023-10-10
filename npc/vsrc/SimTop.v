@@ -51,8 +51,8 @@
 `endif // not def SYNTHESIS
 
 module bcd7seg(	// <stdin>:3:3, :30:3
-  input  [3:0] seg_in,	// playground/src/SimTop.scala:46:15
-  output [6:0] seg_out	// playground/src/SimTop.scala:46:15
+  input  [3:0] seg_in,	// playground/src/SimTop.scala:47:15
+  output [6:0] seg_out	// playground/src/SimTop.scala:47:15
 );
 
   assign seg_out =
@@ -72,49 +72,50 @@ module bcd7seg(	// <stdin>:3:3, :30:3
                               ? 7'h30
                               : seg_in == 4'h2
                                   ? 7'h24
-                                  : seg_in == 4'h1 ? 7'h79 : {seg_in == 4'h0, 6'h0};	// <stdin>:3:3, :30:3, playground/src/SimTop.scala:50:36
+                                  : seg_in == 4'h1 ? 7'h79 : {seg_in == 4'h0, 6'h0};	// <stdin>:3:3, :30:3, playground/src/SimTop.scala:51:36
 endmodule
 
 module SimTop(	// <stdin>:57:3
   input        clock,	// <stdin>:58:11
                reset,	// <stdin>:59:11
                io_TimeOut,	// playground/src/SimTop.scala:5:14
-               io_Begin,	// playground/src/SimTop.scala:5:14
                io_Zero,	// playground/src/SimTop.scala:5:14
   output [6:0] io_Hex1,	// playground/src/SimTop.scala:5:14
                io_Hex2	// playground/src/SimTop.scala:5:14
 );
 
-  reg [24:0] clkcount;	// playground/src/SimTop.scala:14:24
-  reg [6:0]  clk1scount;	// playground/src/SimTop.scala:15:26
-  reg [3:0]  clk10scount;	// playground/src/SimTop.scala:16:27
+  reg [24:0] clkcount;	// playground/src/SimTop.scala:13:24
+  reg [6:0]  clk1scount;	// playground/src/SimTop.scala:14:26
+  reg [3:0]  clk10scount;	// playground/src/SimTop.scala:15:27
   always @(posedge clock) begin	// <stdin>:58:11
     if (reset) begin	// <stdin>:58:11
-      clkcount <= 25'h0;	// playground/src/SimTop.scala:14:24
-      clk1scount <= 7'h0;	// playground/src/SimTop.scala:15:26
-      clk10scount <= 4'h0;	// playground/src/SimTop.scala:16:27
+      clkcount <= 25'h0;	// playground/src/SimTop.scala:13:24
+      clk1scount <= 7'h0;	// playground/src/SimTop.scala:14:26
+      clk10scount <= 4'h0;	// playground/src/SimTop.scala:15:27
     end
-    else begin	// <stdin>:58:11
-      automatic logic _GEN;	// playground/src/SimTop.scala:23:16
-      automatic logic _GEN_0;	// playground/src/SimTop.scala:30:18
-      _GEN = clkcount == 25'h17D783F;	// playground/src/SimTop.scala:14:24, :23:16
-      _GEN_0 = clk1scount == 7'hA;	// playground/src/SimTop.scala:15:26, :30:18
-      if (_GEN | io_Zero)	// playground/src/SimTop.scala:17:12, :18:25, :19:14, :23:{16,36}, :24:14
-        clkcount <= 25'h0;	// playground/src/SimTop.scala:14:24
-      else	// playground/src/SimTop.scala:17:12, :18:25, :19:14, :23:36, :24:14
-        clkcount <= clkcount + 25'h1;	// playground/src/SimTop.scala:14:24, :17:24
-      if (_GEN_0 | clk1scount == 7'h64)	// playground/src/SimTop.scala:15:26, :23:36, :27:{18,36}, :28:16, :30:{18,26}, :31:16
-        clk1scount <= 7'h0;	// playground/src/SimTop.scala:15:26
-      else if (_GEN)	// playground/src/SimTop.scala:23:16
-        clk1scount <= clk1scount + 7'h1;	// playground/src/SimTop.scala:15:26, :25:29
+    else if (io_TimeOut) begin	// playground/src/SimTop.scala:5:14
+    end
+    else begin	// playground/src/SimTop.scala:5:14
+      automatic logic _GEN;	// playground/src/SimTop.scala:23:18
+      automatic logic _GEN_0;	// playground/src/SimTop.scala:30:20
+      _GEN = clkcount == 25'h17D783F;	// playground/src/SimTop.scala:13:24, :23:18
+      _GEN_0 = clk1scount == 7'hA;	// playground/src/SimTop.scala:14:26, :30:20
+      if (_GEN | io_Zero)	// playground/src/SimTop.scala:17:14, :18:27, :19:16, :23:{18,38}, :24:16
+        clkcount <= 25'h0;	// playground/src/SimTop.scala:13:24
+      else	// playground/src/SimTop.scala:17:14, :18:27, :19:16, :23:38, :24:16
+        clkcount <= clkcount + 25'h1;	// playground/src/SimTop.scala:13:24, :17:26
+      if (_GEN_0 | clk1scount == 7'h64)	// playground/src/SimTop.scala:14:26, :23:38, :27:{20,38}, :28:18, :30:{20,28}, :31:18
+        clk1scount <= 7'h0;	// playground/src/SimTop.scala:14:26
+      else if (_GEN)	// playground/src/SimTop.scala:23:18
+        clk1scount <= clk1scount + 7'h1;	// playground/src/SimTop.scala:14:26, :25:31
       else if (io_Zero)	// playground/src/SimTop.scala:5:14
-        clk1scount <= 7'h0;	// playground/src/SimTop.scala:15:26
-      if (clk10scount == 4'hA)	// playground/src/SimTop.scala:16:27, :30:18, :34:19
-        clk10scount <= 4'h0;	// playground/src/SimTop.scala:16:27
-      else if (_GEN_0)	// playground/src/SimTop.scala:30:18
-        clk10scount <= clk10scount + 4'h1;	// playground/src/SimTop.scala:16:27, :32:30
+        clk1scount <= 7'h0;	// playground/src/SimTop.scala:14:26
+      if (clk10scount == 4'hA)	// playground/src/SimTop.scala:15:27, :30:20, :34:21
+        clk10scount <= 4'h0;	// playground/src/SimTop.scala:15:27
+      else if (_GEN_0)	// playground/src/SimTop.scala:30:20
+        clk10scount <= clk10scount + 4'h1;	// playground/src/SimTop.scala:15:27, :32:32
       else if (io_Zero)	// playground/src/SimTop.scala:5:14
-        clk10scount <= 4'h0;	// playground/src/SimTop.scala:16:27
+        clk10scount <= 4'h0;	// playground/src/SimTop.scala:15:27
     end
   end // always @(posedge)
   `ifdef ENABLE_INITIAL_REG_	// <stdin>:57:3
@@ -130,21 +131,21 @@ module SimTop(	// <stdin>:57:3
         for (logic [1:0] i = 2'h0; i < 2'h2; i += 2'h1) begin
           _RANDOM[i[0]] = `RANDOM;	// <stdin>:57:3
         end	// <stdin>:57:3
-        clkcount = _RANDOM[1'h0][24:0];	// <stdin>:57:3, playground/src/SimTop.scala:14:24
-        clk1scount = _RANDOM[1'h0][31:25];	// <stdin>:57:3, playground/src/SimTop.scala:14:24, :15:26
-        clk10scount = _RANDOM[1'h1][3:0];	// <stdin>:57:3, playground/src/SimTop.scala:16:27
+        clkcount = _RANDOM[1'h0][24:0];	// <stdin>:57:3, playground/src/SimTop.scala:13:24
+        clk1scount = _RANDOM[1'h0][31:25];	// <stdin>:57:3, playground/src/SimTop.scala:13:24, :14:26
+        clk10scount = _RANDOM[1'h1][3:0];	// <stdin>:57:3, playground/src/SimTop.scala:15:27
       `endif // RANDOMIZE_REG_INIT
     end // initial
     `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:57:3
       `FIRRTL_AFTER_INITIAL	// <stdin>:57:3
     `endif // FIRRTL_AFTER_INITIAL
   `endif // ENABLE_INITIAL_REG_
-  bcd7seg seg1 (	// playground/src/SimTop.scala:37:20
-    .seg_in  (clk1scount[3:0]),	// playground/src/SimTop.scala:15:26, :39:28
+  bcd7seg seg1 (	// playground/src/SimTop.scala:38:20
+    .seg_in  (clk1scount[3:0]),	// playground/src/SimTop.scala:14:26, :40:28
     .seg_out (io_Hex1)
   );
-  bcd7seg seg2 (	// playground/src/SimTop.scala:38:20
-    .seg_in  (clk10scount),	// playground/src/SimTop.scala:16:27
+  bcd7seg seg2 (	// playground/src/SimTop.scala:39:20
+    .seg_in  (clk10scount),	// playground/src/SimTop.scala:15:27
     .seg_out (io_Hex2)
   );
 endmodule
