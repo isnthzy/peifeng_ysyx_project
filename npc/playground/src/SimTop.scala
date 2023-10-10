@@ -8,19 +8,21 @@ class SimTop extends Module {
     val Zero = Input(Bool())
     val Hex1 =Output(UInt(7.W))
     val Hex2 =Output(UInt(7.W))
-  })
-  val clkcount= RegInit(0.asUInt(8.W))
-  val clk1scount= RegInit(0.asUInt(2.W))
+  })  
+  val counterMax50hz=24999999
+  val counterMax1s=100
+  val clkcount= RegInit(0.asUInt(log2Ceil(counterMax50hz).W))
+  val clk1scount= RegInit(0.asUInt(log2Ceil(counterMax1s).W))
   clkcount := clkcount + 1.U
   when(io.Zero===true.B){
     clkcount := 0.U
     clk1scount :=0.U
   }
-  when(clkcount==="d24999999".U){
+  when(clkcount===counterMax50hz.U){
       clkcount := 0.U
       clk1scount := clk1scount+1.U
   }
-  when(clk1scount==="d99".U){
+  when(clk1scount===counterMax1s.U){
     clk1scount :=0.U
   }
   val seg1 = Module(new bcd7seg())
