@@ -11,7 +11,7 @@ class SimTop extends Module {
   val reg =RegInit("b01000000".U(8.W))
   val x8 =reg(0)+reg(2)+reg(3)+reg(4)
   when(io.in===true.B){
-    reg := Cat(x8,reg(6,0))
+    reg := Cat(x8,reg(7,1))
   }
   val bcd7seg1 = Module(new bcd7seg())
   val bcd7seg2 = Module(new bcd7seg())
