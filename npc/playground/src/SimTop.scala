@@ -74,11 +74,13 @@ class PS2Keyboard extends Module {
   val sampling = ps2_clk_sync(2) & ~ps2_clk_sync(1)
   keyboard.num := numReg
 
-  when(sampling===true.B) {
+  when(sampling === true.B) {
     when(count === 10.U) {
       when((buffer(0) === 0.U) && keyboard.ps2_data && (~buffer(9, 1).orR)) { // start bit, stop bit, odd parity
-        keyboard.out := buffer(8,1)
-        numReg := numReg+1.U
+        keyboard.out := buffer(8, 1)
+
+        val incrementedNum = numReg + 1.U // 递增numReg的值
+        numReg := incrementedNum // 更新numReg的值
       }
       count := 0.U // for next
     }.otherwise {
