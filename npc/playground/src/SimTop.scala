@@ -80,8 +80,8 @@ class PS2Keyboard extends Module {
       // }
       
     }.otherwise {
-      count := count + 1.U
-      buffer(count) := keyboard.ps2_data // store ps2_data
+      // count := count + 1.U
+      // buffer(count) := keyboard.ps2_data // store ps2_data
       
     }
   }
