@@ -75,7 +75,7 @@ class PS2Keyboard extends Module {
   val sampling = ps2_clk_sync(2) & ~ps2_clk_sync(1)
   keyboard.Anum := num
 
-  when(sampling) {
+  when(sampling===true.B) {
     when(count === 10.U) {
       when((buffer(0) === 0.U) && keyboard.ps2_data && (~buffer(9, 1).orR)) { // start bit, stop bit, odd parity
         keyboard.out := buffer(8,1)
