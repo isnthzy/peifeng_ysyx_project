@@ -57,8 +57,6 @@ class bcd7seg extends Module{
   ))
 }
 
-import chisel3._
-import chisel3.util._
 
 class PS2Keyboard extends Module {
   val keyboard = IO(new Bundle {
