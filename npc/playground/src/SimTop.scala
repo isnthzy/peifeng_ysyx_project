@@ -57,28 +57,26 @@ class bcd7seg extends Module{
   ))
 }
 
+import chisel3._
+import chisel3.util._
+
 class PS2Keyboard extends Module {
   val keyboard = IO(new Bundle {
     val ps2_clk = Input(Bool())
     val ps2_data = Input(Bool())
-    val out = Output(UInt(8.W))
-    val num = Output(UInt(8.W))
   })
 
   val buffer = RegInit(0.U(10.W))
   val count = RegInit(0.U(4.W))
   val ps2_clk_sync = RegInit(0.U(3.W))
-  val numReg = RegInit(0.U(8.W))
+
   ps2_clk_sync := Cat(ps2_clk_sync(1, 0), keyboard.ps2_clk)
 
   val sampling = ps2_clk_sync(2) & ~ps2_clk_sync(1)
-  keyboard.num := numReg
-
-  when(sampling===true.B) {
+  when(sampling) {
     when(count === 10.U) {
       when((buffer(0) === 0.U) && keyboard.ps2_data && (~buffer(9, 1).orR)) { // start bit, stop bit, odd parity
-        keyboard.out := buffer(8,1)
-        numReg := numReg+1.U
+        //x
       }
       count := 0.U // for next
     }.otherwise {
@@ -86,4 +84,5 @@ class PS2Keyboard extends Module {
       count := count + 1.U
     }
   }
+
 }
