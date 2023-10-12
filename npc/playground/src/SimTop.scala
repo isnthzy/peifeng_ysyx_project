@@ -64,6 +64,8 @@ class PS2Keyboard extends Module {
   val keyboard = IO(new Bundle {
     val ps2_clk = Input(Bool())
     val ps2_data = Input(Bool())
+    val out = Output(UInt(8.W))
+    val num = Output(UInt(8.W))
   })
 
   val buffer = RegInit(0.U(10.W))
