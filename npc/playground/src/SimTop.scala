@@ -7,8 +7,6 @@ class SimTop extends Module {
     val ps2_data = Input(Bool())
     val seg1 = Output(UInt(7.W))
     val seg2 = Output(UInt(7.W))
-    val seg3 = Output(UInt(7.W))
-    val seg4 = Output(UInt(7.W))
     val seg5 = Output(UInt(7.W))
     val seg6 = Output(UInt(7.W))
   })  
