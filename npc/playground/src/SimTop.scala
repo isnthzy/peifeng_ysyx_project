@@ -24,8 +24,8 @@ class SimTop extends Module {
 
   bcd7seg1.seg.in := PS2Key.keyboard.out(3,0)
   bcd7seg2.seg.in := PS2Key.keyboard.out(7,4)
-  bcd7seg1.seg.in := PS2Key.keyboard.Anum(3,0)
-  bcd7seg2.seg.in := PS2Key.keyboard.Anum(7,4)
+  bcd7seg1.seg.in := PS2Key.keyboard.num(3,0)
+  bcd7seg2.seg.in := PS2Key.keyboard.num(7,4)
   io.seg1 := bcd7seg1.seg.out
   io.seg2 := bcd7seg2.seg.out
   io.seg5 := bcd7seg1.seg.out
@@ -62,25 +62,23 @@ class PS2Keyboard extends Module {
     val ps2_clk = Input(Bool())
     val ps2_data = Input(Bool())
     val out = Output(UInt(8.W))
-    val Anum = Output(UInt(8.W))
+    val num = Output(UInt(8.W))
   })
 
   val buffer = RegInit(0.U(10.W))
   val count = RegInit(0.U(4.W))
   val ps2_clk_sync = RegInit(0.U(3.W))
-  val num = RegInit(0.U(8.W))
-  val outReg = RegInit(0.U(8.W))
-  keyboard.out := outReg
+  val numReg = RegInit(0.U(8.W))
   ps2_clk_sync := Cat(ps2_clk_sync(1, 0), keyboard.ps2_clk)
 
   val sampling = ps2_clk_sync(2) & ~ps2_clk_sync(1)
-  keyboard.Anum := num
+  keyboard.num := numReg
 
   when(sampling===true.B) {
     when(count === 10.U) {
       when((buffer(0) === 0.U) && keyboard.ps2_data && (~buffer(9, 1).orR)) { // start bit, stop bit, odd parity
-        outReg := buffer(8,1)
-        num := num+1.U
+        keyboard.out := buffer(8,1)
+        numReg := numReg+1.U
       }
       count := 0.U // for next
     }.otherwise {
