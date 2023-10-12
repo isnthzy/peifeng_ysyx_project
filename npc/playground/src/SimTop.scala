@@ -59,39 +59,30 @@ class bcd7seg extends Module{
 
 
 class PS2Keyboard extends Module {
-
   val keyboard = IO(new Bundle {
-    val ps2_clk = Input(Bool()) 
+    val ps2_clk = Input(Bool())
     val ps2_data = Input(Bool())
     val out = Output(UInt(8.W))
-    val num = Output(UInt(8.W)) 
+    val num = Output(UInt(8.W))
   })
 
-  val buffer = RegInit(0.U(10.W))
-  val count = RegInit(0.U(4.W)) 
-  val ps2_clk_sync = RegInit(0.U(3.W))
+  // val buffer = RegInit(0.U(10.W))
+  // val count = RegInit(0.U(4.W))
+  // val ps2_clk_sync = RegInit(0.U(3.W))
 
-  ps2_clk_sync := Cat(ps2_clk_sync(1, 0), keyboard.ps2_clk)
+  // ps2_clk_sync := Cat(ps2_clk_sync(1, 0), keyboard.ps2_clk)
 
-  val sampling = ps2_clk_sync(2) & ~ps2_clk_sync(1)
-
-  val next_count = Wire(UInt(4.W))
-  
-  when(sampling) {
-    when(count === 10.U) {
-      next_count := 0.U
-    }
-    .otherwise {
-      next_count := count + 1.U
-    }
-  }
-
-  when(sampling) {
-    buffer(count) := keyboard.ps2_data
-  }
-
-  count := next_count
-
-  // rest of the code
+  // val sampling = ps2_clk_sync(2) & ~ps2_clk_sync(1)
+  // when(sampling) {
+  //   when(count === 10.U) {
+  //     when((buffer(0) === 0.U) && keyboard.ps2_data && (~buffer(9, 1).orR)) { // start bit, stop bit, odd parity
+  //       //x
+  //     }
+  //     // count := 0.U // for next
+  //   }.otherwise {
+  //     // buffer(count) := keyboard.ps2_data // store ps2_data
+  //     // // count := count + 1.U
+  //   }
+  // }
 
 }
