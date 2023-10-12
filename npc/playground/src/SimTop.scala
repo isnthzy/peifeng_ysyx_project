@@ -70,13 +70,15 @@ class PS2Keyboard extends Module {
   val sampling = ps2_clk_sync(2) & ~ps2_clk_sync(1)
   when(sampling) {
     when(count === 10.U) {
+      count := 0.U 
       when((buffer(0) === 0.U) && keyboard.ps2_data && (~buffer(9, 1).orR)) { // start bit, stop bit, odd parity
 
       }
-      count := 0.U // for next
+      
     }.otherwise {
-      buffer(count) := keyboard.ps2_data // store ps2_data
       count := count + 1.U
+      buffer(count) := keyboard.ps2_data // store ps2_data
+      
     }
   }
 
