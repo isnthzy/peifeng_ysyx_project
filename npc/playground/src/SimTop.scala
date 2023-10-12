@@ -37,7 +37,7 @@ class KeycodeToAscii extends Module {
     val keycode = Input(UInt(8.W))
     val ascii = Output(UInt(8.W))
   })
-  #没思路
+  // 没思路
 }
 
 class bcd7seg extends Module{
@@ -73,7 +73,7 @@ class PS2Keyboard extends Module {
   ps2_clk_sync := Cat(ps2_clk_sync(1, 0), keyboard.ps2_clk)
 
   val sampling = ps2_clk_sync(2) & ~ps2_clk_sync(1)
-  io.Anum := num
+  keyboard.Anum := num
 
   when(sampling) {
     when(count === 10.U) {
