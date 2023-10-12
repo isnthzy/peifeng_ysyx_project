@@ -3,41 +3,44 @@ import chisel3.util._
 
 class SimTop extends Module {
   val io = IO(new Bundle {
-    val ps2_clk = Input(Bool())
-    val ps2_data = Input(Bool())
-    val seg1 = Output(UInt(7.W))
-    val seg2 = Output(UInt(7.W))
-    val seg3 = Output(UInt(7.W))
-    val seg4 = Output(UInt(7.W))
-    val seg5 = Output(UInt(7.W))
-    val seg6 = Output(UInt(7.W))
+    val TimeOut = Input(Bool()) //为1暂停,为0开始
+    val Zero = Input(Bool())
+    val Hex1 =Output(UInt(7.W))
+    val Hex2 =Output(UInt(7.W))
   })  
-  val PS2Key   = Module(new PS2Keyboard())
-  val bcd7seg1 = Module(new bcd7seg())
-  val bcd7seg2 = Module(new bcd7seg())
-  val bcd7seg3 = Module(new bcd7seg())
-  val bcd7seg4 = Module(new bcd7seg())
-  val bcd7seg5 = Module(new bcd7seg())
-  val bcd7seg6 = Module(new bcd7seg())
-  PS2Key.keyboard.ps2_clk := io.ps2_clk
-  PS2Key.keyboard.ps2_data := io.ps2_data
-
-  bcd7seg1.seg.in := PS2Key.keyboard.out(3,0)
-  bcd7seg2.seg.in := PS2Key.keyboard.out(7,4)
-  bcd7seg1.seg.in := PS2Key.keyboard.num(3,0)
-  bcd7seg2.seg.in := PS2Key.keyboard.num(7,4)
-  io.seg1 := bcd7seg1.seg.out
-  io.seg2 := bcd7seg2.seg.out
-  io.seg5 := bcd7seg1.seg.out
-  io.seg6 := bcd7seg2.seg.out
-}
-
-class KeycodeToAscii extends Module {
-  val io = IO(new Bundle {
-    val keycode = Input(UInt(8.W))
-    val ascii = Output(UInt(8.W))
-  })
-  // 没思路
+  val counterMax50hz=24999999
+  val counterMax1s=100
+  val clkcount= RegInit(0.asUInt(log2Ceil(counterMax50hz).W))
+  val clk1scount= RegInit(0.asUInt(log2Ceil(counterMax1s).W))
+  val clk10scount= RegInit(0.asUInt(log2Ceil(10).W))
+  when(io.TimeOut===false.B){
+    clkcount := clkcount + 1.U
+    when(io.Zero===true.B){
+      clkcount := 0.U
+      clk1scount :=0.U
+      clk10scount :=0.U
+    }
+    when(clkcount===counterMax50hz.U){
+      clkcount := 0.U
+      clk1scount := clk1scount+1.U
+    }
+    when(clk1scount===counterMax1s.U){
+      clk1scount :=0.U
+    }
+    when(clk1scount===10.U){
+      clk1scount :=0.U
+      clk10scount :=clk10scount+1.U
+    }
+    when(clk10scount===10.U){
+      clk10scount :=0.U
+    }
+  }
+  val seg1 = Module(new bcd7seg())
+  val seg2 = Module(new bcd7seg())
+  seg1.seg.in := clk1scount(3,0)
+  seg2.seg.in := clk10scount(3,0)
+  io.Hex1 := seg1.seg.out
+  io.Hex2 := seg2.seg.out
 }
 
 class bcd7seg extends Module{
@@ -50,39 +53,6 @@ class bcd7seg extends Module{
     2.U -> "b0100100".U, 3.U -> "b0110000".U,
     4.U -> "b0011001".U, 5.U -> "b0010010".U,
     6.U -> "b0000010".U, 7.U -> "b1111000".U, 
-    8.U -> "b0000000".U, 9.U -> "b0010000".U,
-    10.U -> "b0001000".U, 11.U -> "b0000011".U,
-    12.U -> "b1000110".U, 13.U -> "b0100001".U,
-    14.U -> "b0000110".U, 15.U -> "b0001110".U
+    8.U -> "b0000000".U, 9.U -> "b0010000".U
   ))
-}
-
-
-class PS2Keyboard extends Module {
-  val keyboard = IO(new Bundle {
-    val ps2_clk = Input(Bool())
-    val ps2_data = Input(Bool())
-    val out = Output(UInt(8.W))
-    val num = Output(UInt(8.W))
-  })
-
-  val buffer = RegInit(0.U(10.W))
-  val count = RegInit(0.U(4.W))
-  val ps2_clk_sync = RegInit(0.U(3.W))
-
-  ps2_clk_sync := Cat(ps2_clk_sync(1, 0), keyboard.ps2_clk)
-
-  val sampling = ps2_clk_sync(2) & ~ps2_clk_sync(1)
-  when(sampling) {
-    when(count === 10.U) {
-      when((buffer(0) === 0.U) && keyboard.ps2_data && (~buffer(9, 1).orR)) { // start bit, stop bit, odd parity
-        //x
-      }
-      count := 0.U // for next
-    }.otherwise {
-      buffer(count) := keyboard.ps2_data // store ps2_data
-      count := count + 1.U
-    }
-  }
-
 }
