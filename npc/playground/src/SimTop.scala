@@ -15,8 +15,6 @@ class SimTop extends Module {
   val PS2Key   = Module(new PS2Keyboard())
   val bcd7seg1 = Module(new bcd7seg())
   val bcd7seg2 = Module(new bcd7seg())
-  val bcd7seg3 = Module(new bcd7seg())
-  val bcd7seg4 = Module(new bcd7seg())
   val bcd7seg5 = Module(new bcd7seg())
   val bcd7seg6 = Module(new bcd7seg())
   PS2Key.keyboard.ps2_clk := io.ps2_clk
@@ -24,8 +22,8 @@ class SimTop extends Module {
 
   bcd7seg1.seg.in := PS2Key.keyboard.out(3,0)
   bcd7seg2.seg.in := PS2Key.keyboard.out(7,4)
-  bcd7seg1.seg.in := PS2Key.keyboard.num(3,0)
-  bcd7seg2.seg.in := PS2Key.keyboard.num(7,4)
+  bcd7seg5.seg.in := PS2Key.keyboard.num(3,0)
+  bcd7seg6.seg.in := PS2Key.keyboard.num(7,4)
   io.seg1 := bcd7seg1.seg.out
   io.seg2 := bcd7seg2.seg.out
   io.seg5 := bcd7seg1.seg.out
