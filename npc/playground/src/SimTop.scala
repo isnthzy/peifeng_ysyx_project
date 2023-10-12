@@ -66,22 +66,18 @@ class PS2Keyboard extends Module {
   val buffer = RegInit(0.U(10.W))
   val count = RegInit(0.U(4.W))
   val ps2_clk_sync = RegInit(0.U(3.W))
-
   ps2_clk_sync := Cat(ps2_clk_sync(1, 0), keyboard.ps2_clk)
-
   val sampling = ps2_clk_sync(2) & ~ps2_clk_sync(1)
-  keyboard.out := 0.U
-  keyboard.num := 0.U
-  // when(sampling) {
-  //   when(count === 10.U) {
-  //     when((buffer(0) === 0.U) && keyboard.ps2_data && (~buffer(9, 1).orR)) { // start bit, stop bit, odd parity
-  //       //x
-  //     }
-  //     count := 0.U // for next
-  //   }.otherwise {
-  //     buffer(count) := keyboard.ps2_data // store ps2_data
-  //     count := count + 1.U
-  //   }
-  // }
+  when(sampling) {
+    when(count === 10.U) {
+      when((buffer(0) === 0.U) && keyboard.ps2_data && (~buffer(9, 1).orR)) { // start bit, stop bit, odd parity
+
+      }
+      count := 0.U // for next
+    }.otherwise {
+      buffer(count) := keyboard.ps2_data // store ps2_data
+      count := count + 1.U
+    }
+  }
 
 }
