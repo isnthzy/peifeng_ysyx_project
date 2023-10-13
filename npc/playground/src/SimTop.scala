@@ -63,7 +63,7 @@ class PS2Keyboard extends Module {
     val num = Output(UInt(8.W))
   })
 
-  val buffer = RegInit(VecInit(Seq.fill(10)(0.U(1.W))).asUInt())
+  val buffer = RegInit(VecInit(Seq.fill(10)(0.U(1.W))))
   val count = RegInit(0.U(4.W))
   val ps2_clk_sync = RegInit(0.U(3.W))
   ps2_clk_sync := Cat(ps2_clk_sync(1, 0), keyboard.ps2_clk)
@@ -72,7 +72,7 @@ class PS2Keyboard extends Module {
 
   when(sampling) {
     when(count === 10.U) {
-      when((buffer(0) === 0.U) && keyboard.ps2_data && (~buffer(9, 1).orR)) { // start bit, stop bit, odd parity
+      when((buffer(0) === 0.U) && keyboard.ps2_data ) { // start bit, stop bit, odd parity
 
       }
       count := 0.U 
