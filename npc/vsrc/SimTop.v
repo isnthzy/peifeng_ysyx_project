@@ -68,9 +68,9 @@ module PS2Keyboard(	// <stdin>:3:3
   reg       buffer_7;	// playground/src/SimTop.scala:66:23
   reg       buffer_8;	// playground/src/SimTop.scala:66:23
   reg       buffer_9;	// playground/src/SimTop.scala:66:23
-  reg [3:0] count;	// playground/src/SimTop.scala:68:22
-  reg [2:0] ps2_clk_sync;	// playground/src/SimTop.scala:69:29
-  reg [8:0] Part;	// playground/src/SimTop.scala:71:21
+  reg [3:0] count;	// playground/src/SimTop.scala:69:22
+  reg [2:0] ps2_clk_sync;	// playground/src/SimTop.scala:70:29
+  reg [8:0] Part;	// playground/src/SimTop.scala:72:21
   always @(posedge clock) begin	// <stdin>:4:11
     if (reset) begin	// <stdin>:4:11
       buffer_0 <= 1'h0;	// <stdin>:3:3, playground/src/SimTop.scala:66:23
@@ -83,65 +83,65 @@ module PS2Keyboard(	// <stdin>:3:3
       buffer_7 <= 1'h0;	// <stdin>:3:3, playground/src/SimTop.scala:66:23
       buffer_8 <= 1'h0;	// <stdin>:3:3, playground/src/SimTop.scala:66:23
       buffer_9 <= 1'h0;	// <stdin>:3:3, playground/src/SimTop.scala:66:23
-      count <= 4'h0;	// playground/src/SimTop.scala:68:22
-      ps2_clk_sync <= 3'h0;	// playground/src/SimTop.scala:69:29
-      Part <= 9'h0;	// playground/src/SimTop.scala:71:21
+      count <= 4'h0;	// playground/src/SimTop.scala:69:22
+      ps2_clk_sync <= 3'h0;	// playground/src/SimTop.scala:70:29
+      Part <= 9'h0;	// playground/src/SimTop.scala:72:21
     end
     else begin	// <stdin>:4:11
-      automatic logic sampling;	// playground/src/SimTop.scala:76:34
-      automatic logic _GEN;	// playground/src/SimTop.scala:78:16
-      sampling = ps2_clk_sync[2] & ~(ps2_clk_sync[1]);	// playground/src/SimTop.scala:69:29, :76:{30,34,36,49}
-      _GEN = count == 4'hA;	// playground/src/SimTop.scala:68:22, :78:16
-      if (~sampling | _GEN | (|count)) begin	// playground/src/SimTop.scala:66:23, :68:22, :76:34, :77:18, :78:{16,26}, :84:21
+      automatic logic sampling;	// playground/src/SimTop.scala:77:34
+      automatic logic _GEN;	// playground/src/SimTop.scala:79:16
+      sampling = ps2_clk_sync[2] & ~(ps2_clk_sync[1]);	// playground/src/SimTop.scala:70:29, :77:{30,34,36,49}
+      _GEN = count == 4'hA;	// playground/src/SimTop.scala:69:22, :79:16
+      if (~sampling | _GEN | (|count)) begin	// playground/src/SimTop.scala:66:23, :69:22, :77:34, :78:18, :79:{16,26}, :85:21
       end
-      else	// playground/src/SimTop.scala:66:23, :77:18, :78:26
+      else	// playground/src/SimTop.scala:66:23, :78:18, :79:26
         buffer_0 <= keyboard_ps2_data;	// playground/src/SimTop.scala:66:23
-      if (~sampling | _GEN | count != 4'h1) begin	// playground/src/SimTop.scala:66:23, :68:22, :76:34, :77:18, :78:{16,26}, :84:21
+      if (~sampling | _GEN | count != 4'h1) begin	// playground/src/SimTop.scala:66:23, :69:22, :77:34, :78:18, :79:{16,26}, :85:21
       end
-      else	// playground/src/SimTop.scala:66:23, :77:18, :78:26
+      else	// playground/src/SimTop.scala:66:23, :78:18, :79:26
         buffer_1 <= keyboard_ps2_data;	// playground/src/SimTop.scala:66:23
-      if (~sampling | _GEN | count != 4'h2) begin	// playground/src/SimTop.scala:66:23, :68:22, :76:34, :77:18, :78:{16,26}, :84:21
+      if (~sampling | _GEN | count != 4'h2) begin	// playground/src/SimTop.scala:66:23, :69:22, :77:34, :78:18, :79:{16,26}, :85:21
       end
-      else	// playground/src/SimTop.scala:66:23, :77:18, :78:26
+      else	// playground/src/SimTop.scala:66:23, :78:18, :79:26
         buffer_2 <= keyboard_ps2_data;	// playground/src/SimTop.scala:66:23
-      if (~sampling | _GEN | count != 4'h3) begin	// playground/src/SimTop.scala:66:23, :68:22, :76:34, :77:18, :78:{16,26}, :84:21
+      if (~sampling | _GEN | count != 4'h3) begin	// playground/src/SimTop.scala:66:23, :69:22, :77:34, :78:18, :79:{16,26}, :85:21
       end
-      else	// playground/src/SimTop.scala:66:23, :77:18, :78:26
+      else	// playground/src/SimTop.scala:66:23, :78:18, :79:26
         buffer_3 <= keyboard_ps2_data;	// playground/src/SimTop.scala:66:23
-      if (~sampling | _GEN | count != 4'h4) begin	// playground/src/SimTop.scala:66:23, :68:22, :76:34, :77:18, :78:{16,26}, :84:21
+      if (~sampling | _GEN | count != 4'h4) begin	// playground/src/SimTop.scala:66:23, :69:22, :77:34, :78:18, :79:{16,26}, :85:21
       end
-      else	// playground/src/SimTop.scala:66:23, :77:18, :78:26
+      else	// playground/src/SimTop.scala:66:23, :78:18, :79:26
         buffer_4 <= keyboard_ps2_data;	// playground/src/SimTop.scala:66:23
-      if (~sampling | _GEN | count != 4'h5) begin	// playground/src/SimTop.scala:66:23, :68:22, :76:34, :77:18, :78:{16,26}, :84:21
+      if (~sampling | _GEN | count != 4'h5) begin	// playground/src/SimTop.scala:66:23, :69:22, :77:34, :78:18, :79:{16,26}, :85:21
       end
-      else	// playground/src/SimTop.scala:66:23, :77:18, :78:26
+      else	// playground/src/SimTop.scala:66:23, :78:18, :79:26
         buffer_5 <= keyboard_ps2_data;	// playground/src/SimTop.scala:66:23
-      if (~sampling | _GEN | count != 4'h6) begin	// playground/src/SimTop.scala:66:23, :68:22, :76:34, :77:18, :78:{16,26}, :84:21
+      if (~sampling | _GEN | count != 4'h6) begin	// playground/src/SimTop.scala:66:23, :69:22, :77:34, :78:18, :79:{16,26}, :85:21
       end
-      else	// playground/src/SimTop.scala:66:23, :77:18, :78:26
+      else	// playground/src/SimTop.scala:66:23, :78:18, :79:26
         buffer_6 <= keyboard_ps2_data;	// playground/src/SimTop.scala:66:23
-      if (~sampling | _GEN | count != 4'h7) begin	// playground/src/SimTop.scala:66:23, :68:22, :76:34, :77:18, :78:{16,26}, :84:21
+      if (~sampling | _GEN | count != 4'h7) begin	// playground/src/SimTop.scala:66:23, :69:22, :77:34, :78:18, :79:{16,26}, :85:21
       end
-      else	// playground/src/SimTop.scala:66:23, :77:18, :78:26
+      else	// playground/src/SimTop.scala:66:23, :78:18, :79:26
         buffer_7 <= keyboard_ps2_data;	// playground/src/SimTop.scala:66:23
-      if (~sampling | _GEN | count != 4'h8) begin	// playground/src/SimTop.scala:66:23, :68:22, :76:34, :77:18, :78:{16,26}, :84:21
+      if (~sampling | _GEN | count != 4'h8) begin	// playground/src/SimTop.scala:66:23, :69:22, :77:34, :78:18, :79:{16,26}, :85:21
       end
-      else	// playground/src/SimTop.scala:66:23, :77:18, :78:26
+      else	// playground/src/SimTop.scala:66:23, :78:18, :79:26
         buffer_8 <= keyboard_ps2_data;	// playground/src/SimTop.scala:66:23
-      if (~sampling | _GEN | count != 4'h9) begin	// playground/src/SimTop.scala:66:23, :68:22, :76:34, :77:18, :78:{16,26}, :84:21
+      if (~sampling | _GEN | count != 4'h9) begin	// playground/src/SimTop.scala:66:23, :69:22, :77:34, :78:18, :79:{16,26}, :85:21
       end
-      else	// playground/src/SimTop.scala:66:23, :77:18, :78:26
+      else	// playground/src/SimTop.scala:66:23, :78:18, :79:26
         buffer_9 <= keyboard_ps2_data;	// playground/src/SimTop.scala:66:23
-      if (sampling) begin	// playground/src/SimTop.scala:76:34
-        if (_GEN)	// playground/src/SimTop.scala:78:16
-          count <= 4'h0;	// playground/src/SimTop.scala:68:22
-        else	// playground/src/SimTop.scala:78:16
-          count <= count + 4'h1;	// playground/src/SimTop.scala:68:22, :84:21, :85:22
+      if (sampling) begin	// playground/src/SimTop.scala:77:34
+        if (_GEN)	// playground/src/SimTop.scala:79:16
+          count <= 4'h0;	// playground/src/SimTop.scala:69:22
+        else	// playground/src/SimTop.scala:79:16
+          count <= count + 4'h1;	// playground/src/SimTop.scala:69:22, :85:21, :86:22
       end
-      ps2_clk_sync <= {ps2_clk_sync[1:0], keyboard_ps2_clk};	// playground/src/SimTop.scala:69:29, :74:{22,35}
+      ps2_clk_sync <= {ps2_clk_sync[1:0], keyboard_ps2_clk};	// playground/src/SimTop.scala:70:29, :75:{22,35}
       if (sampling & _GEN & ~buffer_0 & keyboard_ps2_data
           & (buffer_1 ^ buffer_2 ^ buffer_3 ^ buffer_4 ^ buffer_5 ^ buffer_6 ^ buffer_7
-             ^ buffer_8 ^ buffer_9))	// playground/src/SimTop.scala:66:23, :67:48, :71:21, :76:34, :77:18, :78:{16,26}, :79:{23,68}, :80:14
+             ^ buffer_8 ^ buffer_9))	// playground/src/SimTop.scala:66:23, :67:48, :72:21, :77:34, :78:18, :79:{16,26}, :80:{23,68}, :81:14
         Part <=
           {buffer_9,
            buffer_8,
@@ -151,7 +151,7 @@ module PS2Keyboard(	// <stdin>:3:3
            buffer_4,
            buffer_3,
            buffer_2,
-           buffer_1};	// playground/src/SimTop.scala:66:23, :71:21, :80:20
+           buffer_1};	// playground/src/SimTop.scala:66:23, :72:21, :81:28
     end
   end // always @(posedge)
   `ifdef ENABLE_INITIAL_REG_	// <stdin>:3:3
@@ -177,19 +177,19 @@ module PS2Keyboard(	// <stdin>:3:3
         buffer_7 = _RANDOM[1'h0][7];	// <stdin>:3:3, playground/src/SimTop.scala:66:23
         buffer_8 = _RANDOM[1'h0][8];	// <stdin>:3:3, playground/src/SimTop.scala:66:23
         buffer_9 = _RANDOM[1'h0][9];	// <stdin>:3:3, playground/src/SimTop.scala:66:23
-        count = _RANDOM[1'h0][13:10];	// <stdin>:3:3, playground/src/SimTop.scala:66:23, :68:22
-        ps2_clk_sync = _RANDOM[1'h0][16:14];	// <stdin>:3:3, playground/src/SimTop.scala:66:23, :69:29
-        Part = {_RANDOM[1'h0][31:25], _RANDOM[1'h1][1:0]};	// <stdin>:3:3, playground/src/SimTop.scala:66:23, :71:21
+        count = _RANDOM[1'h0][13:10];	// <stdin>:3:3, playground/src/SimTop.scala:66:23, :69:22
+        ps2_clk_sync = _RANDOM[1'h0][16:14];	// <stdin>:3:3, playground/src/SimTop.scala:66:23, :70:29
+        Part = {_RANDOM[1'h0][31:25], _RANDOM[1'h1][1:0]};	// <stdin>:3:3, playground/src/SimTop.scala:66:23, :72:21
       `endif // RANDOMIZE_REG_INIT
     end // initial
     `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:3:3
       `FIRRTL_AFTER_INITIAL	// <stdin>:3:3
     `endif // FIRRTL_AFTER_INITIAL
   `endif // ENABLE_INITIAL_REG_
-  assign keyboard_out = Part[7:0];	// <stdin>:3:3, playground/src/SimTop.scala:71:21, :72:16
+  assign keyboard_out = Part[7:0];	// <stdin>:3:3, playground/src/SimTop.scala:72:21, :73:16
 endmodule
 
-module bcd7seg(	// <stdin>:71:3, :108:3, :145:3, :182:3
+module bcd7seg(	// <stdin>:73:3, :110:3, :147:3, :184:3
   input  [3:0] seg_in,	// playground/src/SimTop.scala:41:15
   output [6:0] seg_out	// playground/src/SimTop.scala:41:15
 );
@@ -211,12 +211,12 @@ module bcd7seg(	// <stdin>:71:3, :108:3, :145:3, :182:3
      7'h24,
      7'h79,
      7'h40};	// playground/src/SimTop.scala:45:36
-  assign seg_out = _GEN[seg_in];	// <stdin>:71:3, :108:3, :145:3, :182:3, playground/src/SimTop.scala:45:36
+  assign seg_out = _GEN[seg_in];	// <stdin>:73:3, :110:3, :147:3, :184:3, playground/src/SimTop.scala:45:36
 endmodule
 
-module SimTop(	// <stdin>:219:3
-  input        clock,	// <stdin>:220:11
-               reset,	// <stdin>:221:11
+module SimTop(	// <stdin>:221:3
+  input        clock,	// <stdin>:222:11
+               reset,	// <stdin>:223:11
                io_ps2_clk,	// playground/src/SimTop.scala:6:14
                io_ps2_data,	// playground/src/SimTop.scala:6:14
   output [6:0] io_seg1,	// playground/src/SimTop.scala:6:14
@@ -243,9 +243,9 @@ module SimTop(	// <stdin>:219:3
     .seg_in  (_PS2Key_keyboard_out[7:4]),	// playground/src/SimTop.scala:14:24, :23:41
     .seg_out (_bcd7seg2_seg_out)
   );
-  assign io_seg1 = _bcd7seg1_seg_out;	// <stdin>:219:3, playground/src/SimTop.scala:15:24
-  assign io_seg2 = _bcd7seg2_seg_out;	// <stdin>:219:3, playground/src/SimTop.scala:16:24
-  assign io_seg5 = _bcd7seg1_seg_out;	// <stdin>:219:3, playground/src/SimTop.scala:15:24
-  assign io_seg6 = _bcd7seg2_seg_out;	// <stdin>:219:3, playground/src/SimTop.scala:16:24
+  assign io_seg1 = _bcd7seg1_seg_out;	// <stdin>:221:3, playground/src/SimTop.scala:15:24
+  assign io_seg2 = _bcd7seg2_seg_out;	// <stdin>:221:3, playground/src/SimTop.scala:16:24
+  assign io_seg5 = _bcd7seg1_seg_out;	// <stdin>:221:3, playground/src/SimTop.scala:15:24
+  assign io_seg6 = _bcd7seg2_seg_out;	// <stdin>:221:3, playground/src/SimTop.scala:16:24
 endmodule
 
