@@ -82,6 +82,6 @@ class SimTop extends Module {
       count := count + 1.U
     }
   }
-  keyboard.out := 0.U
-  keyboard.num := 0.U
+  keyboard.out := count
+  keyboard.num := count
 }
