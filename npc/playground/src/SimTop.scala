@@ -63,7 +63,7 @@ class PS2Keyboard extends Module {
     val num = Output(UInt(8.W))
   })
 
-  val buffer = RegInit(0.U(10.W))
+  val buffer = RegInit(0.U(10.W)).asBools
   val count = RegInit(0.U(4.W))
   val ps2_clk_sync = RegInit(0.U(3.W))
   ps2_clk_sync := Cat(ps2_clk_sync(1, 0), keyboard.ps2_clk)
@@ -81,6 +81,4 @@ class PS2Keyboard extends Module {
       count := count + 1.U
     }
   }
-  keyboard.out := 0.U
-  keyboard.num := 0.U
 }
