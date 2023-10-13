@@ -68,6 +68,7 @@ class PS2Keyboard extends Module {
   val count = RegInit(0.U(4.W))
   val ps2_clk_sync = RegInit(0.U(3.W))
   val num_b = RegInit(0.U(8.W))
+  // val Part = RegInit(0.U(9.W))
   keyboard.num := num_b
   ps2_clk_sync := Cat(ps2_clk_sync(1, 0), keyboard.ps2_clk)
 
@@ -75,8 +76,7 @@ class PS2Keyboard extends Module {
   when(sampling) {
     when(count === 10.U) {
       when((buffer(0) === 0.U) && keyboard.ps2_data && buffer_orR) { // start bit, stop bit, odd parity
-        keyboard.out := buffer(9,1).asUInt()
-        num_b := num_b+1.U
+        keyboard.out := Cat(buffer(9), buffer(8), buffer(7), buffer(6), buffer(5), buffer(4), buffer(3), buffer(2), buffer(1))
       }
       count := 0.U // for next
     }.otherwise {
