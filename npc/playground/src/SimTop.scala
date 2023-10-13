@@ -82,4 +82,6 @@ class PS2Keyboard extends Module {
       count := count + 1.U
     }
   }
+  keyboard.out := 0.U
+  keyboard.num := 0.U
 }
