@@ -59,12 +59,19 @@ static int cmd_si(char *args) {
   int step=1;
   if(arg!=NULL){
     step=arg[0]-'0';
-  }
+  } 
   cpu_exec(step);
   return 0;
 }
 
 static int cmd_info(char *args) {
+  char *arg = strtok(NULL, " ");
+  char subcmd = arg[0];
+  if(subcmd=='r'){
+    void isa_reg_display();
+  }else if(subcmd=='w'){
+
+  }
   return 0;
 }
 
