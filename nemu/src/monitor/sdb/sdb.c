@@ -49,8 +49,7 @@ static int cmd_c(char *args) {
 
 
 static int cmd_q(char *args) {
-  return NEMU_QUIT;
-  //修复直接输入q报错
+  return -1;
 }
 
 static int cmd_help(char *args);
