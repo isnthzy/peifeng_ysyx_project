@@ -94,7 +94,7 @@ static struct {
   { "help", "Display information about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
-  { "si [N]", " \"si [N]\" Lets the program pause after executing N instructions in a single step.\
+  { "si", " \"si [N]\" Lets the program pause after executing N instructions in a single step.\
 When N is not given, the default is 1", cmd_si },
   { "info", "info r:Printing Register Status \n \
   info w:Print watchpoint information",cmd_info },
