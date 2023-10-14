@@ -90,7 +90,7 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
   { "si [N]", "Lets the program pause after executing N instructions in a single step.\
 When N is not given, the default is 1", cmd_si },
-  { "info SUBCMD", "info r:Printing Register Status \n info w:Print watchpoint information",cmd_info },
+  { "info SUBCMD", "info r:Printing Register Status \\ninfo w:Print watchpoint information",cmd_info },
   { "x N EXPR", "Find the value of the expression EXPR, use the result as the starting memory \
 address,\n and output N consecutive 4-byte outputs in hexadecimal." ,cmd_x},
   { "p EXPR", "Find the value of the expression EXPR" , cmd_p},
