@@ -50,6 +50,7 @@ static int cmd_c(char *args) {
 
 static int cmd_q(char *args) {
   nemu_state.state = NEMU_QUIT;
+  //pa1 rtfsc优美的退出
   return -1;
 }
 
