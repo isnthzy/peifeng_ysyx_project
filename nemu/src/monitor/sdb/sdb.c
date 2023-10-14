@@ -59,7 +59,7 @@ static int cmd_si(char *args) {
   int step=1;
   if(arg!=NULL){
     step=arg[0]-'0';
-  }
+  } 
   cpu_exec(step);
   return 0;
 }
