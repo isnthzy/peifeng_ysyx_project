@@ -68,7 +68,7 @@ static int cmd_info(char *args) {
   char *arg = strtok(NULL, " ");
   char subcmd = arg[0];
   if(subcmd=='r'){
-    void isa_reg_display();
+    isa_reg_display();
   }else if(subcmd=='w'){
 
   }
