@@ -54,6 +54,30 @@ static int cmd_q(char *args) {
   return -1;
 }
 
+static int cmd_si(char *args) {
+  return 0;
+}
+
+static int cmd_info(char *args) {
+  return 0;
+}
+
+static int cmd_x(char *args) {
+  return 0;
+}
+
+static int cmd_p(char *args) {
+  return 0;
+}
+
+static int cmd_w(char *args) {
+  return 0;
+}
+
+static int cmd_d(char *args) {
+  return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -64,7 +88,15 @@ static struct {
   { "help", "Display information about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
-
+  { "si [N]", "Lets the program pause after executing N instructions in a single step.\
+When N is not given, the default is 1", cmd_si },
+  { "info SUBCMD", "info r:Printing Register Status \n \
+  info w:Print watchpoint information",cmd_info },
+  { "x N EXPR", "Find the value of the expression EXPR, use the result as the starting memory \
+address,\n and output N consecutive 4-byte outputs in hexadecimal." ,cmd_x},
+  { "p EXPR", "Find the value of the expression EXPR" , cmd_p},
+  { "w EXPR", "Suspends program execution when the value of expression EXPR changes." ,cmd_w},
+  { "d N", "Delete the monitoring point with serial number N" ,cmd_d},
   /* TODO: Add more commands */
 
 };
