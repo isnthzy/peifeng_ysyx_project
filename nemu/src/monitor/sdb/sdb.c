@@ -65,6 +65,13 @@ static int cmd_si(char *args) {
 }
 
 static int cmd_info(char *args) {
+  char *arg = strtok(NULL, " ");
+  char subcmd = arg[0];
+  if(subcmd=='r'){
+    isa_reg_display();
+  }else if(subcmd=='w'){
+
+  }
   return 0;
 }
 
