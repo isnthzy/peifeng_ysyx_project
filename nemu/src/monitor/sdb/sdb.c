@@ -85,12 +85,16 @@ static int cmd_x(char *args) {
   //错误原因因为它没有正确地解析表达式字符串中的数值，而是将表达式字符串的首个字符的 ASCII 值作为 addr 的值。
   vaddr_t addr;
   sscanf(EXPR,"%x", &addr);
-  int i;
-  printf("addr       mem\n");
+  int i,j;
+  printf("addr        mem\n");
   for(i=0;i<s1;i++){
-    printf("0x%08x ",addr);
+    printf("0x%08x: ",addr);
     vaddr_t data = vaddr_read(addr,4);
     printf("%08x\n",data); //查阅得多数riscv为小段序,后续应改为小端显示内存
+    for(j=0;j<4;j++){
+      printf("0x%02x ",data&0xff);
+      data=data<<8;
+    }
     addr+=4;
   }
   return 0;
