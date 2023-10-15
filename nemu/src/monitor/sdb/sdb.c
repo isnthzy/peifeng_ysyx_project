@@ -95,6 +95,7 @@ static int cmd_x(char *args) {
       printf("0x%02x ",data&0xff);
       data=data<<8;
     }
+    printf("\n");
     addr+=4;
   }
   return 0;
