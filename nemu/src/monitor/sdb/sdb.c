@@ -14,6 +14,8 @@
 ***************************************************************************************/
 
 #include <isa.h>
+#include <stdlib.h>
+#include <memory/vaddr.h>
 #include <cpu/cpu.h>
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -58,7 +60,7 @@ static int cmd_si(char *args) {
   char *arg = strtok(NULL, " ");
   int step=1;
   if(arg!=NULL){
-    step=arg[0]-'0';
+    step=arg[0]-'0'; //注意这里只能处理各位数
   } 
   cpu_exec(step);
   return 0;
@@ -76,6 +78,26 @@ static int cmd_info(char *args) {
 }
 
 static int cmd_x(char *args) {
+  char *arg = strtok(NULL, " ");
+  int s1 = atoi(arg);
+  char *EXPR  = strtok(NULL, " ");
+  // vaddr_t addr = (uint32_t)*EXPR; (错误)
+  //错误原因因为它没有正确地解析表达式字符串中的数值，而是将表达式字符串的首个字符的 ASCII 值作为 addr 的值。
+  vaddr_t addr;
+  sscanf(EXPR,"%x", &addr);
+  int i,j;
+  printf("addr        mem\n");
+  for(i=0;i<s1;i++){
+    printf("0x%08x: ",addr);
+    vaddr_t data = vaddr_read(addr,4);
+    // printf("%08x\n",data); //查阅得多数riscv为小段序,后续应改为小端显示内存
+    for(j=0;j<4;j++){
+      printf("0x%02x ",data&0xff);
+      data=data>>8;
+    }
+    printf("\n");
+    addr+=4;
+  }
   return 0;
 }
 
