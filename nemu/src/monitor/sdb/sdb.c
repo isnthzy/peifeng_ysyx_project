@@ -83,17 +83,14 @@ static int cmd_x(char *args) {
   char *EXPR  = strtok(NULL, " ");
   // vaddr_t addr = (uint32_t)*EXPR; (错误)
   //错误原因因为它没有正确地解析表达式字符串中的数值，而是将表达式字符串的首个字符的 ASCII 值作为 addr 的值。
-  char *p;
-  vaddr_t addr =  strtol(EXPR,&p,16);
+  vaddr_t addr;
+  sscanf(EXPR,"%x", &addr);
   int i;
   for(i=0;i<s1;i++){
-    paddr_t data = vaddr_read(addr + i * 4,4);
-    printf("0x%08x  " , addr+i*4 );
-    for(int j =0 ; j < 4 ; j++){
-        printf("0x%02x " , data & 0xff);
-        data = data >> 8 ;
-    }
-    printf("\n");
+    printf("0x%08x ",addr);
+    vaddr_t data = vaddr_read(addr,4);
+    printf("%08x\n",data);
+    addr+=4;
   }
   return 0;
 }
