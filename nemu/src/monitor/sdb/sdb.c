@@ -81,9 +81,11 @@ static int cmd_x(char *args) {
   int s1 = atoi(arg);
   char *EXPR  = strtok(NULL, " ");
   vaddr_t addr = (uint32_t)*EXPR;
+  char *str;
+  vaddr_t add =  strtol( EXPR,&str,16 );
   printf("%d",s1);
   printf("%d",addr);
-    
+  printf("%d",add);
   return 0;
 }
 
