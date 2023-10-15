@@ -86,10 +86,11 @@ static int cmd_x(char *args) {
   vaddr_t addr;
   sscanf(EXPR,"%x", &addr);
   int i;
+  printf("addr      mem");
   for(i=0;i<s1;i++){
     printf("0x%08x ",addr);
     vaddr_t data = vaddr_read(addr,4);
-    printf("%08x\n",data);
+    printf("%08x\n",data); //查阅得多数riscv为小段序,后续应改为小端显示内存
     addr+=4;
   }
   return 0;
