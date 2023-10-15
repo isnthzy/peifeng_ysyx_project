@@ -14,6 +14,7 @@
 ***************************************************************************************/
 
 #include <isa.h>
+#include <stdlib.h>
 #include <cpu/cpu.h>
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -58,7 +59,7 @@ static int cmd_si(char *args) {
   char *arg = strtok(NULL, " ");
   int step=1;
   if(arg!=NULL){
-    step=arg[0]-'0';
+    step=arg[0]-'0'; //注意这里只能处理各位数
   } 
   cpu_exec(step);
   return 0;
@@ -76,6 +77,13 @@ static int cmd_info(char *args) {
 }
 
 static int cmd_x(char *args) {
+  char *arg = strtok(NULL, " ");
+  int s1 = atoi(arg);
+  char *EXPR  = strtok(NULL, " ");
+  vaddr_t addr = (uint32_t)*EXPR;
+  printf("%d",s1);
+  printf("%d",addr);
+    
   return 0;
 }
 
