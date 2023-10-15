@@ -86,7 +86,7 @@ static int cmd_x(char *args) {
   vaddr_t addr;
   sscanf(EXPR,"%x", &addr);
   int i;
-  printf("addr      mem");
+  printf("addr       mem\n");
   for(i=0;i<s1;i++){
     printf("0x%08x ",addr);
     vaddr_t data = vaddr_read(addr,4);
