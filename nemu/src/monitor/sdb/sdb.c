@@ -15,6 +15,7 @@
 
 #include <isa.h>
 #include <stdlib.h>
+#include <memory/vaddr.h>
 #include <cpu/cpu.h>
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -80,12 +81,20 @@ static int cmd_x(char *args) {
   char *arg = strtok(NULL, " ");
   int s1 = atoi(arg);
   char *EXPR  = strtok(NULL, " ");
-  vaddr_t addr = (uint32_t)*EXPR;
-  char *str;
-  vaddr_t add =  strtol( EXPR,&str,16 );
-  printf("%d",s1);
-  printf("%d",addr);
-  printf("%d",add);
+  // vaddr_t addr = (uint32_t)*EXPR; (错误)
+  //错误原因因为它没有正确地解析表达式字符串中的数值，而是将表达式字符串的首个字符的 ASCII 值作为 addr 的值。
+  char *p;
+  vaddr_t addr =  strtol(EXPR,&p,16);
+  int i;
+  for(i=0;i<s1;i++){
+    paddr_t data = vaddr_read(addr + i * 4,4);
+    printf("0x%08x  " , addr+i*4 );
+    for(int j =0 ; j < 4 ; j++){
+        printf("0x%02x " , data & 0xff);
+        data = data >> 8 ;
+    }
+    printf("\n");
+  }
   return 0;
 }
 
