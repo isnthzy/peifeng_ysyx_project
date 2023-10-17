@@ -148,9 +148,9 @@ static bool make_token(char *e) {
           case TK_NUM:
             tokens[nr_token].type=TK_NUM;
             strncpy(tokens[nr_token++].str,&e[position-substr_len],substr_len);
+            break;
             // tokens[nr_token++].str='1';
-          default: //TODO();
-            printf("%d",i);
+          default: TODO();
         }
 
         break;
