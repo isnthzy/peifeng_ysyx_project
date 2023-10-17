@@ -179,14 +179,19 @@ static bool make_token(char *e) {
             break;
           case ')':
             tokens[nr_token++].type=')';
+            break;
           case '/':
             tokens[nr_token++].type='/';
+            break;
           case '*':
             tokens[nr_token++].type='*';
+            break;
           case '-':
             tokens[nr_token++].type='-';
+            break;
           case '+':
             tokens[nr_token++].type='+';
+            break;
           case TK_NOTYPE:
             break;
           case TK_NUM:
