@@ -67,6 +67,37 @@ void init_regex() {
   }
 }
 
+// uint32_t eval(int p,int q) {
+//   if (p > q) {
+//     /* Bad expression */
+//   }
+//   else if (p == q) {
+//     /* Single token.
+//      * For now this token should be a number.
+//      * Return the value of the number.
+//      */
+//   }
+//   else if (check_parentheses(p, q) == true) {
+//     /* The expression is surrounded by a matched pair of parentheses.
+//      * If that is the case, just throw away the parentheses.
+//      */
+//     return eval(p + 1, q - 1);
+//   }
+//   else {
+//     op = the position of 主运算符 in the token expression;
+//     val1 = eval(p, op - 1);
+//     val2 = eval(op + 1, q);
+
+//     switch (op_type) {
+//       case '+': return val1 + val2;
+//       case '-': return val1 - val2;
+//       case '*': return val1 * val2;
+//       case '/': return val1 / val2;
+//       default: assert(0);
+//     }
+//   }
+// }
+
 typedef struct token {
   int type;
   char str[32];
