@@ -216,7 +216,7 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  word_t a=eval(0,NR_REGEX);
+  word_t a=eval(0,sizeof(e));
   printf("%d",a);
   // TODO();
 
