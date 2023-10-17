@@ -20,6 +20,7 @@
  */
 #include <regex.h>
 #define max(a, b) (((a) > (b)) ? (a) : (b))
+int tokens_num; //放一个全局变量记录token的个数
 enum {
   TK_NOTYPE = 256, TK_EQ,
   TK_NUM=1
@@ -195,6 +196,7 @@ static bool make_token(char *e) {
             // tokens[nr_token++].str='1';
           default: TODO();
         }
+        tokens_num=nr_token;
         break;
       }
     }
@@ -216,7 +218,7 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  word_t a=eval(0,sizeof(e));
+  word_t a=eval(0,tokens_num);
   printf("%d",a);
   // TODO();
 
