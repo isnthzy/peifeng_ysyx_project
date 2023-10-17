@@ -149,7 +149,8 @@ static bool make_token(char *e) {
             tokens[nr_token].type=TK_NUM;
             strncpy(tokens[nr_token++].str,&e[position-substr_len],substr_len);
             // tokens[nr_token++].str='1';
-          default: TODO();
+          default: //TODO();
+            printf("%d",i);
         }
 
         break;
