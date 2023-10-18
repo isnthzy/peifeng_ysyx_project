@@ -19,8 +19,7 @@
  * Type 'man regex' for more information about POSIX regex functions.
  */
 #include <regex.h>
-#define min(a, b) (((a) < (b)) ? (a) : (b))
-int tokens_num; //放一个全局变量记录token的个数
+int tokens_num=0; //放一个全局变量记录token的个数
 enum {
   TK_NOTYPE = 256, TK_EQ,
   TK_NUM=1
