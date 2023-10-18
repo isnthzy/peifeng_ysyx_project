@@ -100,13 +100,13 @@ bool check_parentheses(int p,int q){
 
 int prio(int t){
   switch (t) {
-      case TK_NEG:
-          return 3;
       case '+':
       case '-':
-          return 2;
+          return 3;
       case '*':
       case '/':
+          return 2;
+      case TK_NEG:
           return 1;
       default:
           return 0;
@@ -152,9 +152,7 @@ word_t eval(int p,int q) {
     }
     
     
-    if(tokens[op].type==TK_NEG&&op-2>=0){
-      val1 = eval(p, op - 2);
-    }else{
+    if(tokens[op].type!=TK_NEG){
       val1 = eval(p, op - 1);
     }
     word_t val2 = eval(op + 1, q);
