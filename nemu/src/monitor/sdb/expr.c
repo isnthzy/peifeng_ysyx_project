@@ -124,8 +124,8 @@ word_t eval(int p,int q) {
     int i,j;
     for(i=p;i<=q;i++){
       if(tokens[i].type=='('){
-        for(j=i+1;j<q;j++){
-          if(tokens[j].type==')') i=j+1;
+        for(j=i+1;j<=q;j++){
+          if(tokens[j].type==')') i=j;
         }
       }
       if(tokens[i].type=='*'||tokens[i].type=='/'){
