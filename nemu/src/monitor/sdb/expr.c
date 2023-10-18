@@ -99,6 +99,8 @@ bool check_parentheses(int p,int q){
 
 int prio(int t){
   switch (t) {
+      case TK_NEG:
+          return 3;
       case '+':
       case '-':
           return 2;
