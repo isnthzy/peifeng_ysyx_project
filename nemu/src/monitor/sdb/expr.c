@@ -19,6 +19,7 @@
  * Type 'man regex' for more information about POSIX regex functions.
  */
 #include <regex.h>
+#define UNUSED(x) (void)(x)
 int tokens_num=0; //放一个全局变量记录token的个数
 enum {
   TK_NOTYPE = 256, TK_EQ,
@@ -136,6 +137,7 @@ word_t eval(int p,int q) {
     int op=0;
     int pr=-1;
     int i,j;
+    word_t val1=0;
     for(i=p;i<=q;i++){
       if(tokens[i].type=='('){
         for(j=i+1;j<=q;j++){
@@ -150,7 +152,9 @@ word_t eval(int p,int q) {
     }
     
     
-    word_t val1 = eval(p, op - 1);
+    if(tokens[op].type!=TK_NEG){
+      val1 = eval(p, op - 1);
+    }
     word_t val2 = eval(op + 1, q);
 
     switch (tokens[op].type) {
