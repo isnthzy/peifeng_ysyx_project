@@ -152,7 +152,9 @@ word_t eval(int p,int q) {
     }
     
     
-    if(tokens[op].type!=TK_NEG){
+    if(tokens[op].type==TK_NEG&&op-2>=0){
+      val1 = eval(p, op - 2);
+    }else{
       val1 = eval(p, op - 1);
     }
     word_t val2 = eval(op + 1, q);
