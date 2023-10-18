@@ -97,7 +97,18 @@ bool check_parentheses(int p,int q){
   return true;
 }
 
-
+int prio(int t){
+  switch (t) {
+      case '+':
+      case '-':
+          return 1;
+      case '*':
+      case '/':
+          return 2;
+      default:
+          return 0;
+  }
+}
 
 word_t eval(int p,int q) {
   if (p > q) {
@@ -120,19 +131,17 @@ word_t eval(int p,int q) {
   }
   else {
 //    op = the position of 主运算符 in the token expression;
-    int op=1e9;
+    int op=0;
+    int p=-1;
     int i,j;
     for(i=p;i<=q;i++){
       if(tokens[i].type=='('){
         for(j=i+1;j<=q;j++){
           if(tokens[j].type==')') i=j;
         }
-      }
-      if(tokens[i].type=='*'||tokens[i].type=='/'){
-        op=min(op,i);
-      }
-      if(tokens[i].type=='+'||tokens[i].type=='-'){
-        op=min(op,i);
+      }else if(prio(tokens[i].type)>p){ //p是当前最高优先级
+        p=prio(tokens[i].type);
+        op=i;
       }
     }
     
