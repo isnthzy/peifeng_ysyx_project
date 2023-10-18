@@ -22,7 +22,8 @@
 int tokens_num=0; //放一个全局变量记录token的个数
 enum {
   TK_NOTYPE = 256, TK_EQ,
-  TK_NUM=1
+  TK_NUM=1,TK_POINT=2,
+  TK_NEG=3,
   /* TODO: Add more token types */
 
 };
@@ -155,6 +156,7 @@ word_t eval(int p,int q) {
       case '-': return val1 - val2;
       case '*': return val1 * val2;
       case '/': return val1 / val2;
+      case TK_NEG: return -1*val2;
       default: assert(0);
     }
   }
@@ -231,7 +233,15 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-
+  int i;
+  for (i=0;i<tokens_num;i++) {
+    if (tokens[i].type == '-' && ( i == 0 || (tokens[i - 1].type!=')'&&tokens[i - 1].type != TK_NUM)) ) {
+      tokens[i].type = TK_NEG;
+    }
+    if (tokens[i].type == '*' && ( i == 0 || (tokens[i - 1].type!=')'&&tokens[i - 1].type != TK_NUM)) ) {
+      tokens[i].type = TK_POINT;
+    }
+  }
   /* TODO: Insert codes to evaluate the expression. */
   return eval(0,tokens_num-1);
   // printf("%d\n",tokens);
