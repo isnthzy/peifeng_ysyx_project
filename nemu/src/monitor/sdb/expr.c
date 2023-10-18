@@ -19,7 +19,7 @@
  * Type 'man regex' for more information about POSIX regex functions.
  */
 #include <regex.h>
-#define max(a, b) (((a) > (b)) ? (a) : (b))
+#define min(a, b) (((a) < (b)) ? (a) : (b))
 int tokens_num; //放一个全局变量记录token的个数
 enum {
   TK_NOTYPE = 256, TK_EQ,
@@ -120,7 +120,7 @@ word_t eval(int p,int q) {
   }
   else {
 //    op = the position of 主运算符 in the token expression;
-    int op=0;
+    int op=1e9;
     int i,j;
     for(i=p;i<=q;i++){
       if(tokens[i].type=='('){
@@ -129,10 +129,10 @@ word_t eval(int p,int q) {
         }
       }
       if(tokens[i].type=='*'||tokens[i].type=='/'){
-        op=max(op,i);
+        op=min(op,i);
       }
       if(tokens[i].type=='+'||tokens[i].type=='-'){
-        op=max(op,i);
+        op=min(op,i);
       }
     }
     
