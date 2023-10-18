@@ -137,7 +137,7 @@ word_t eval(int p,int q) {
     int op=0;
     int pr=-1;
     int i,j;
-    word_t val1=0;
+    int val1=1;
     for(i=p;i<=q;i++){
       if(tokens[i].type=='('){
         for(j=i+1;j<=q;j++){
