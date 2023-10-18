@@ -132,7 +132,7 @@ word_t eval(int p,int q) {
   else {
 //    op = the position of 主运算符 in the token expression;
     int op=0;
-    int p=-1;
+    int pr=-1;
     int i,j;
     for(i=p;i<=q;i++){
       if(tokens[i].type=='('){
@@ -141,8 +141,8 @@ word_t eval(int p,int q) {
         }
       }else if(tokens[i].type==TK_NUM){
         continue;
-      }else if(prio(tokens[i].type)>p){ //p是当前最高优先级
-        p=prio(tokens[i].type);
+      }else if(prio(tokens[i].type)>pr){ //pr是当前最高优先级
+        pr=prio(tokens[i].type);
         op=i;
       }
     }
