@@ -139,7 +139,7 @@ word_t eval(int p,int q) {
         for(j=i+1;j<=q;j++){
           if(tokens[j].type==')') i=j;
         }
-      }else if(tokens[i].type==TK_NUM){
+      }else if(tokens[i].type==TK_NUM||tokens[i].type==TK_NOTYPE){
         continue;
       }else if(prio(tokens[i].type)>pr){ //pr是当前最高优先级
         pr=prio(tokens[i].type);
