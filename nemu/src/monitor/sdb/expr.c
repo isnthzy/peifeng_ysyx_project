@@ -250,7 +250,7 @@ word_t expr(char *e, bool *success) {
     }
   }
   /* TODO: Insert codes to evaluate the expression. */
-  printf("nr_token= %d",tokens_num);
+  printf("nr_token= %d\n",tokens_num);
   return eval(0,tokens_num-1);
   // printf("%d\n",tokens);
   // TODO();
