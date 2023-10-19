@@ -84,9 +84,9 @@ bool check_parentheses(int p,int q){
   int i=0;
   int left_c=0;
   for(i=p;i<=q;i++){
-    if(tokens[p].type=='('){
+    if(tokens[i].type=='('){
       left_c++;
-    }else if(tokens[p].type==')'){
+    }else if(tokens[i].type==')'){
       left_c--;
       if(left_c<0){
         return false;
