@@ -83,15 +83,16 @@ bool check_parentheses(int p,int q){
   if(tokens[p].type!='('||tokens[q].type!=')') return false;
   int i=0;
   int left_c=0;
-  for(i=p;i<=q;i++){
+  int flag=0;
+  for(i=p;i<q;i++){
     if(tokens[i].type=='('){
       left_c++;
     }else if(tokens[i].type==')'){
+      if(left_c==0) flag=1;
       left_c--;
-      if(left_c<0){
-        return false;
-      }
     }
+    if(flag==1&&tokens[i+1].type==')') return false;
+    if(flag==0&&tokens[i+1].type==')') return true;
   }
   return (left_c==0);
 }
