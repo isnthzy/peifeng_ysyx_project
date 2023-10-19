@@ -224,13 +224,13 @@ static bool make_token(char *e) {
       }
       
     }
-    tokens_num=nr_token;
+    
     if (i == NR_REGEX) {
       printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
       return false;
     }
   }
-
+  tokens_num=nr_token;
   return true;
 }
 
