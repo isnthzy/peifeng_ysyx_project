@@ -88,13 +88,13 @@ bool check_parentheses(int p,int q){
     if(tokens[i].type=='('){
       left_c++;
     }else if(tokens[i].type==')'){
-      if(left_c==0) flag=1;
       left_c--;
     }
-    if(flag==1&&tokens[i+1].type==')') return false;
-    if(flag==0&&tokens[i+1].type==')') return true;
+    if(left_c==0) flag=1;
   }
-  return (left_c==0);
+  if(flag==1&&left_c==1) return false;
+  if(flag==0&&left_c==1) return true;
+  return false;
 }
 
 int prio(int t){ //优先级排序,很重要!!!
