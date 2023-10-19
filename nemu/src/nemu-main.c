@@ -12,7 +12,10 @@
 *
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
-
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include "monitor/sdb/sdb.h"
 #include <common.h>
 
 void init_monitor(int, char *[]);
@@ -27,8 +30,20 @@ int main(int argc, char *argv[]) {
 #else
   init_monitor(argc, argv);
 #endif
-
+  char ea[255];
+  char *val;
+  char *evall;
   /* Start engine. */
+  FILE *fp=fopen("../tools/gen-expr/input", "r");
+  while(fgets(ea,255,fp)){
+    val = strtok(ea, " ");
+    evall = strtok(ea, " ");
+    bool flag=true;
+    word_t value_p = expr(evall,&flag);
+    word_t u32;
+    u32 = strtoul(val, NULL, 10);
+    if(u32==value_p) printf("true\n");
+  }
   engine_start();
 
   return is_exit_status_bad();

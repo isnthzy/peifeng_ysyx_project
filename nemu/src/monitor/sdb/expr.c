@@ -98,7 +98,7 @@ bool check_parentheses(int p,int q){
   return true;
 }
 
-int prio(int t){
+int prio(int t){ //优先级排序,很重要!!!
   switch (t) {
       case '+':
       case '-':
