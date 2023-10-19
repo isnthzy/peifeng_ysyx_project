@@ -81,21 +81,19 @@ static int nr_token __attribute__((used))  = 0;
 
 bool check_parentheses(int p,int q){
   if(tokens[p].type!='('||tokens[q].type!=')') return false;
-  int l=p,r=q;
-  while(l<r){
+  int i=0;
+  int left_c=0;
+  for(i=p;i<=q;i++){
     if(tokens[p].type=='('){
-      if(tokens[p].type==')'){
-        l++,r--;
-        continue;
-      }else{
-        r--;
-      }
+      left_c++;
     }else if(tokens[p].type==')'){
-      return false;
-    }else l++;
-
+      left_c--;
+      if(left_c<0){
+        return 0;
+      }
+    }
   }
-  return true;
+  return (left_c==0);
 }
 
 int prio(int t){ //优先级排序,很重要!!!
@@ -250,7 +248,7 @@ word_t expr(char *e, bool *success) {
     }
   }
   /* TODO: Insert codes to evaluate the expression. */
-  printf("nr_token= %d\n",tokens_num);
+  // printf("nr_token= %d\n",tokens_num);
   return eval(0,tokens_num-1);
   // printf("%d\n",tokens);
   // TODO();
