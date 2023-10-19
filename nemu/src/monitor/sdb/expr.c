@@ -219,9 +219,10 @@ static bool make_token(char *e) {
             // tokens[nr_token++].str='1';
           default: TODO();
         }
-        tokens_num=nr_token;
+        
         break;
       }
+      tokens_num=nr_token;
     }
 
     if (i == NR_REGEX) {
