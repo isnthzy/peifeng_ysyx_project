@@ -35,6 +35,10 @@ int main(int argc, char *argv[]) {
   char *evall;
   /* Start engine. */
   FILE *fp=fopen("../tools/gen-expr/input", "r");
+  if (fp == NULL) {
+        printf("无法打开文件。\n");
+        return 1;
+    }
   while(fgets(ea,255,fp)){
     val = strtok(ea, " ");
     evall = strtok(ea, " ");
