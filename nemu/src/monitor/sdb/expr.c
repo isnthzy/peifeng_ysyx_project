@@ -89,7 +89,7 @@ bool check_parentheses(int p,int q){
     }else if(tokens[p].type==')'){
       left_c--;
       if(left_c<0){
-        return 0;
+        return false;
       }
     }
   }
