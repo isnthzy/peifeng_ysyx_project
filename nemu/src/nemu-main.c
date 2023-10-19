@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
   char *val;
   char *evall;
   /* Start engine. */
-  FILE *fp=fopen("../tools/gen-expr/input", "r");
+  FILE *fp=fopen("/home/wangxin/ysyx-workbench/nemu/tools/gen-expr/input", "r");
   if (fp == NULL) {
         printf("无法打开文件。\n");
         return 1;
