@@ -99,9 +99,6 @@ bool check_parentheses(int p,int q){
 
 int prio(int t){ //优先级排序,很重要!!!
   switch (t) {
-      case '(':
-      case ')':
-          return 4;
       case '+':
       case '-':
           return 3;
@@ -145,7 +142,8 @@ word_t eval(int p,int q) {
         for(j=i+1;j<=q;j++){
           if(tokens[j].type==')') i=j;
         }
-      }else if(tokens[i].type==TK_NUM||tokens[i].type==TK_NOTYPE){
+      }
+      if(tokens[i].type==TK_NUM||tokens[i].type==TK_NOTYPE){
         continue;
       }else if(prio(tokens[i].type)>pr){ //pr是当前最高优先级
         pr=prio(tokens[i].type);
