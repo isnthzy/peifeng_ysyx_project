@@ -34,6 +34,18 @@ void isa_reg_display() {
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
-  
+  int idx=0;
+  for(int i=0;i<32;i++){
+    if(regs[i]==s){
+      idx=i;
+      break;
+    }
+  }
+  if(gpr(idx)!=0){
+    return gpr(idx);
+    *success=true;
+  }else{
+    *success=false;
+  }
   return 0;
 }

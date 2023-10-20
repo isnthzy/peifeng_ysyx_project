@@ -14,18 +14,20 @@
 ***************************************************************************************/
 
 #include <isa.h>
-
+#include <memory/vaddr.h>
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
  */
 #include <regex.h>
+
 #define UNUSED(x) (void)(x)
 int tokens_num=0; //放一个全局变量记录token的个数
 enum {
   TK_NOTYPE = 256, TK_EQ,
   TK_NUM=1,TK_POINT=2,
-  TK_NEG=3,TK_AND=3,
-  TK_NEQ=4,
+  TK_NEG=3,TK_AND=4,
+  TK_NEQ=5,TK_OR=6,
+  TK_REG=7,TK_HEX=8,
   /* TODO: Add more token types */
 
 };
@@ -45,10 +47,13 @@ static struct rule {
   {"\\-", '-'},         // minus
   {"\\+", '+'},         // plus
   {" +", TK_NOTYPE},    // spaces
-  {"==", TK_EQ},        // equal
-  {"&&", TK_AND},       // && 和
-  {"!=", TK_NEQ},       // not equal 不等于
+  {"\\=\\=", TK_EQ},        // equal
+  {"\\&\\&", TK_AND},       // && 和
+  {"\\|\\|", TK_OR},         // || 与 
+  {"\\!\\=", TK_NEQ},       // not equal 不等于
   {"[0-9]*",TK_NUM},    // num  //"\\d+"不管用
+  {"0[xX][0-9a-fA-F]+",TK_HEX}, //识别32位类型
+  {"\\$[a-zA-Z]*[0-9]*", TK_REG}, //识别寄存器类型,特殊0号寄存器是$0永远是0不用处理
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -103,11 +108,16 @@ int prio(int t){ //优先级排序,很重要!!!
   switch (t) {
       case '+':
       case '-':
-          return 3;
+          return 5;
       case '*':
       case '/':
-          return 2;
+          return 4;
       case TK_NEG:
+          return 3;
+      case TK_POINT:
+          return 2;
+      case TK_EQ:
+      case TK_NEQ:
           return 1;
       default:
           return 0;
@@ -148,7 +158,7 @@ word_t eval(int p,int q) {
           }
         }
       }
-      if(tokens[i].type==TK_NUM||tokens[i].type==TK_NOTYPE){
+      if(tokens[i].type==TK_NUM||tokens[i].type==TK_NOTYPE||tokens[i].type==TK_HEX||tokens[i].type==TK_REG){
         continue;
       }else if(prio(tokens[i].type)>pr){ //pr是当前最高优先级
         pr=prio(tokens[i].type);
@@ -157,7 +167,7 @@ word_t eval(int p,int q) {
     }
     
     
-    if(tokens[op].type!=TK_NEG){
+    if(tokens[op].type!=TK_NEG||tokens[op].type!=TK_POINT){
       val1 = eval(p, op - 1);
     }
     word_t val2 = eval(op + 1, q);
@@ -168,6 +178,14 @@ word_t eval(int p,int q) {
       case '*': return val1 * val2;
       case '/': return val1 / val2;
       case TK_NEG: return -1*val2;
+      case TK_EQ:
+        if(val1==val2) return 1;
+        else return 0;
+      case TK_NEQ:
+        if(val1!=val2) return 1;
+        else return 0;
+      case TK_AND: return val1&&val2;
+      case TK_POINT: return vaddr_read(val2,4);
       default: assert(0);
     }
   }
@@ -217,8 +235,28 @@ static bool make_token(char *e) {
             break;
           case TK_NOTYPE:
             break;
+          case TK_AND:
+            tokens[nr_token++].type=TK_AND;
+            break;
+          case TK_OR:
+            tokens[nr_token++].type=TK_OR;
+            break;
+          case TK_NEQ:
+            tokens[nr_token++].type=TK_NEQ;
+            break;
+          case TK_EQ:
+            tokens[nr_token++].type=TK_EQ;
+            break;
           case TK_NUM:
             tokens[nr_token].type=TK_NUM;
+            strncpy(tokens[nr_token++].str,&e[position-substr_len],substr_len);
+            break;
+          case TK_HEX:
+            tokens[nr_token].type=TK_HEX;
+            strncpy(tokens[nr_token++].str,&e[position-substr_len],substr_len);
+            break;
+          case TK_REG:
+            tokens[nr_token].type=TK_REG;
             strncpy(tokens[nr_token++].str,&e[position-substr_len],substr_len);
             break;
             // tokens[nr_token++].str='1';
@@ -247,11 +285,17 @@ word_t expr(char *e, bool *success) {
   }
   int i;
   for (i=0;i<tokens_num;i++) {
-    if (tokens[i].type == '-' && ( i == 0 || (tokens[i - 1].type!=')'&&tokens[i - 1].type != TK_NUM)) ) {
+    if (tokens[i].type == '-' && ( i == 0 || (tokens[i - 1].type!=')'&&tokens[i - 1].type != TK_NUM&&tokens[i].type==TK_HEX&&tokens[i].type==TK_REG)) ) {
       tokens[i].type = TK_NEG;
     }
-    if (tokens[i].type == '*' && ( i == 0 || (tokens[i - 1].type!=')'&&tokens[i - 1].type != TK_NUM)) ) {
+    if (tokens[i].type == '*' && ( i == 0 || (tokens[i - 1].type!=')'&&tokens[i - 1].type != TK_NUM&&tokens[i].type==TK_HEX&&tokens[i].type==TK_REG)) ) {
       tokens[i].type = TK_POINT;
+    }
+    if (tokens[i].type == TK_REG){
+        bool flag=true; 
+        word_t reg_v=isa_reg_str2val(tokens[i].str,&flag);
+        if(flag==false) Log("load reg: %s error",tokens[i].str);
+        sprintf(tokens[i].str,"%u",reg_v);
     }
   }
   /* TODO: Insert codes to evaluate the expression. */
