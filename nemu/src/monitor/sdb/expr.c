@@ -95,7 +95,7 @@ bool check_parentheses(int p,int q){
   if(flag==1&&left_c==1) return false;
   if(flag==0&&left_c==1) return true;
   return false;
-}
+} //括号匹配算法,注意坑((1+1)*2)与(1+1)*(1+1)后者不能直接去掉两边括号
 
 int prio(int t){ //优先级排序,很重要!!!
   switch (t) {
@@ -138,7 +138,7 @@ word_t eval(int p,int q) {
     int i,j;
     int val1=1;
     for(i=p;i<=q;i++){
-      if(tokens[i].type=='('){
+      if(tokens[i].type=='('){ //
         for(j=i+1;j<=q;j++){
           if(tokens[j].type==')'){
             i=j;

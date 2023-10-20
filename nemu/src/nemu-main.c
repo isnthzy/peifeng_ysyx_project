@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
   //   word_t u32;
   //   u32 = strtoul(val, NULL, 10);
   //   if(u32==value_p) printf("%d true\n",cnt++);
-  // }
+  // } //此段代码为表达式求值检测正确性代码,可删
   engine_start();
 
   return is_exit_status_bad();
