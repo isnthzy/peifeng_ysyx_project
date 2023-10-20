@@ -102,6 +102,11 @@ static int cmd_x(char *args) {
 }
 
 static int cmd_p(char *args) {
+  // char *arg = strtok(NULL, " ");
+  bool flag=true;
+  word_t value_p = expr(args,&flag);
+  if(flag==false) printf("There is an error in the expression, please retype it\n");
+  else printf("%d\n",value_p);
   return 0;
 }
 
