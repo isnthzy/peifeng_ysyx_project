@@ -135,7 +135,7 @@ word_t eval(int p,int q) {
      * For now this token should be a number.
      * Return the value of the number.
      */
-    return atoi(tokens[p].str);
+    return strtoul(tokens[p].str, NULL, 0);
   }
   else if (check_parentheses(p, q) == true) {
     /* The expression is surrounded by a matched pair of parentheses.
