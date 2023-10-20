@@ -24,7 +24,8 @@ int tokens_num=0; //放一个全局变量记录token的个数
 enum {
   TK_NOTYPE = 256, TK_EQ,
   TK_NUM=1,TK_POINT=2,
-  TK_NEG=3,
+  TK_NEG=3,TK_AND=3,
+  TK_NEQ=4,
   /* TODO: Add more token types */
 
 };
@@ -45,6 +46,8 @@ static struct rule {
   {"\\+", '+'},         // plus
   {" +", TK_NOTYPE},    // spaces
   {"==", TK_EQ},        // equal
+  {"&&", TK_AND},       // && 和
+  {"!=", TK_NEQ},       // not equal 不等于
   {"[0-9]*",TK_NUM},    // num  //"\\d+"不管用
 };
 
@@ -84,17 +87,16 @@ bool check_parentheses(int p,int q){
   int i=0;
   int left_c=0;
   int flag=0;
-  for(i=p;i<q;i++){
+  for(i=p;i<=q;i++){
     if(tokens[i].type=='('){
       left_c++;
     }else if(tokens[i].type==')'){
       left_c--;
     }
-    if(left_c==0) flag=1;
+    if(left_c==0&&i!=q) flag=1;
   }
-  if(flag==1&&left_c==1) return false;
-  if(flag==0&&left_c==1) return true;
-  return false;
+  if(flag==1) return false;
+  else return true;
 } //括号匹配算法,注意坑((1+1)*2)与(1+1)*(1+1)后者不能直接去掉两边括号
 
 int prio(int t){ //优先级排序,很重要!!!
