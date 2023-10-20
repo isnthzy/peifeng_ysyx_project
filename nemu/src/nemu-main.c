@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
 #else
   init_monitor(argc, argv);
 #endif
-  char ea[1024];
+  char ea[10240];
   char *val;
   char *evall;
   /* Start engine. */
@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
         return 1;
   }
   int cnt=1;
-  while(fgets(ea,1024,fp)){
+  while(fgets(ea,10240,fp)){
     val = strtok(ea, " ");
     evall = strtok(ea, " ");
     bool flag=true;
