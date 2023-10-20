@@ -140,7 +140,10 @@ word_t eval(int p,int q) {
     for(i=p;i<=q;i++){
       if(tokens[i].type=='('){
         for(j=i+1;j<=q;j++){
-          if(tokens[j].type==')') i=j;
+          if(tokens[j].type==')'){
+            i=j;
+            break;
+          }
         }
       }
       if(tokens[i].type==TK_NUM||tokens[i].type==TK_NOTYPE){
