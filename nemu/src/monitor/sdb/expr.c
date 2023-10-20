@@ -53,7 +53,7 @@ static struct rule {
   {"\\!\\=", TK_NEQ},       // not equal 不等于
   {"[0-9]*",TK_NUM},        // num  //"\\d+"不管用
   {"0[xX][0-9a-fA-F]+",TK_HEX}, //识别32位类型
-  {"\\$[a-zA-Z]*[0-9]*", TK_REG}, //识别寄存器类型,特殊0号寄存器是$0永远是0不用处理
+  {"\\$\\w+", TK_REG}, //识别寄存器类型,特殊0号寄存器是$0永远是0不用处理
 };
 
 #define NR_REGEX ARRLEN(rules)
