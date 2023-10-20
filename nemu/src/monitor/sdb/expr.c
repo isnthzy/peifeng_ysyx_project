@@ -99,6 +99,9 @@ bool check_parentheses(int p,int q){
 
 int prio(int t){ //优先级排序,很重要!!!
   switch (t) {
+      case '(':
+      case ')':
+          return 4;
       case '+':
       case '-':
           return 3;
