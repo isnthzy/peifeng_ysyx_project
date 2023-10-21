@@ -38,7 +38,7 @@ word_t isa_reg_str2val(const char *s, bool *success) {
   char str[10];
   strcpy(str,s+1); //去除最左边的$
   for(int i=0;i<32;i++){
-    if(regs[i]==str){
+    if(strcmp(regs[i],str)==0){
       idx=i;
       printf("%d \n",idx);
       break;
