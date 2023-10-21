@@ -24,7 +24,7 @@
 int tokens_num=0; //放一个全局变量记录token的个数
 enum {
   TK_NOTYPE = 256, TK_EQ,
-  TK_NUM=1,TK_POINT=2,
+  TK_NUM=1,TK_DEF=2,
   TK_NEG=3,TK_AND=4,
   TK_NEQ=5,TK_OR=6,
   TK_REG=7,TK_HEX=8,
@@ -114,7 +114,7 @@ int prio(int t){ //优先级排序,很重要!!!
           return 4;
       case TK_NEG:
           return 3;
-      case TK_POINT:
+      case TK_DEF:
           return 2;
       case TK_EQ:
       case TK_NEQ:
@@ -167,7 +167,7 @@ word_t eval(int p,int q) {
     }
     
     
-    if(tokens[op].type!=TK_NEG||tokens[op].type!=TK_POINT){
+    if(tokens[op].type!=TK_NEG||tokens[op].type!=TK_DEF){
       val1 = eval(p, op - 1);
     }
     word_t val2 = eval(op + 1, q);
@@ -185,7 +185,7 @@ word_t eval(int p,int q) {
         if(val1!=val2) return 1;
         else return 0;
       case TK_AND: return val1&&val2;
-      case TK_POINT: return vaddr_read(val2,4);
+      case TK_DEF: return vaddr_read(val2,4);
       default: assert(0);
     }
   }
@@ -285,16 +285,16 @@ word_t expr(char *e, bool *success) {
   }
   int i;
   for (i=0;i<tokens_num;i++) {
-    if (tokens[i].type == '-' && ( i == 0 || (tokens[i - 1].type!=')'&&tokens[i - 1].type != TK_NUM&&tokens[i].type==TK_HEX&&tokens[i].type==TK_REG)) ) {
+    if (tokens[i].type == '-' && ( i == 0 || (tokens[i - 1].type!=')'&&tokens[i - 1].type != TK_NUM&&tokens[i-1].type!=TK_HEX&&tokens[i-1].type!=TK_REG)) ) {
       tokens[i].type = TK_NEG;
     }
-    if (tokens[i].type == '*' && ( i == 0 || (tokens[i - 1].type!=')'&&tokens[i - 1].type != TK_NUM&&tokens[i].type==TK_HEX&&tokens[i].type==TK_REG)) ) {
-      tokens[i].type = TK_POINT;
+    if (tokens[i].type == '*' && ( i == 0 || (tokens[i - 1].type!=')'&&tokens[i - 1].type != TK_NUM&&tokens[i-1].type!=TK_HEX&&tokens[i-1].type!=TK_REG)) ) {
+      tokens[i].type = TK_DEF;
     }
     if (tokens[i].type == TK_REG){
         bool flag=true; 
         word_t reg_v=isa_reg_str2val(tokens[i].str,&flag);
-        if(flag==false) Log("load reg: %s error",tokens[i].str);
+        if(flag==false) assert(0);
         sprintf(tokens[i].str,"%u",reg_v);
     }
   }
