@@ -81,7 +81,7 @@ static int cmd_x(char *args) {
   char *arg = strtok(NULL, " ");
   int s1 = atoi(arg);
   char *EXPR  = strtok(NULL, " ");
-  bool flag;
+  bool flag=true;
   word_t addr = expr(EXPR,&flag);
   if(flag==false) printf("There is an error in the expression, please retype it\n");
   // vaddr_t addr = (uint32_t)*EXPR; (错误)
