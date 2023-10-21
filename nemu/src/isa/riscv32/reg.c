@@ -37,10 +37,10 @@ word_t isa_reg_str2val(const char *s, bool *success) {
   int idx=0;
   char str[10];
   strcpy(str,s+1); //去除最左边的$
-  printf("%s",str);
   for(int i=0;i<32;i++){
     if(regs[i]==str){
       idx=i;
+      printf("%d",idx);
       break;
     }
   }
