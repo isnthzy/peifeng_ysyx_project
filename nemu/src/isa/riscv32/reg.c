@@ -40,7 +40,6 @@ word_t isa_reg_str2val(const char *s, bool *success) {
   for(int i=0;i<32;i++){
     if(strcmp(regs[i],str)==0){
       idx=i;
-      printf("%d \n",idx);
       break;
     }
   }
