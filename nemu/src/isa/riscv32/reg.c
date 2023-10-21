@@ -42,7 +42,7 @@ word_t isa_reg_str2val(const char *s, bool *success) {
       idx=i;
       break;
     }
-    *success=false;
+    if(i==31) *success=false;
   }
   return gpr(idx);
 }
