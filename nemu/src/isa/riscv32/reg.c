@@ -34,5 +34,15 @@ void isa_reg_display() {
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
-  return 0;
+  int idx=0;
+  char str[10];
+  strcpy(str,s+1); //去除最左边的$
+  for(int i=0;i<32;i++){
+    if(strcmp(regs[i],str)==0){
+      idx=i;
+      break;
+    }
+    if(i==31) *success=false;
+  }
+  return gpr(idx);
 }
