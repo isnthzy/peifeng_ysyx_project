@@ -87,14 +87,6 @@ void remove_watch(int num){
 }
 void wp_trace(){
   WP* h=head;
-  if(h!=NULL){
-    printf("before:");
-    while(h){
-      printf(" %s : %d,",h->expr,h->last);
-      h=h->next;
-    }
-    printf("\n");
-  }
   bool flag=false;
   while(h){
     bool b;
@@ -106,6 +98,16 @@ void wp_trace(){
       flag=true;
     }
     h=h->next;
+  }
+  if(flag){
+    if(h!=NULL){
+    printf("before:");
+    while(h){
+      printf(" %s : %d,",h->expr,h->last);
+      h=h->next;
+    }
+    printf("\n");
+    }
   }
   if(flag) nemu_state.state=NEMU_STOP;
 }
