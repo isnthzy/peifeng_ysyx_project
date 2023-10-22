@@ -100,17 +100,6 @@ void wp_trace(){
     }
     h=h->next;
   }
-  WP* h2=head;
-  if(flag){
-    if(h2!=NULL){
-      printf("before:");
-      while(h2){
-        printf(" %s : %u,",h2->expr,h2->last);
-        h2=h2->next;
-      }
-      printf("\n");
-    }
-  }
   if(flag) nemu_state.state=NEMU_STOP;
 }
 
