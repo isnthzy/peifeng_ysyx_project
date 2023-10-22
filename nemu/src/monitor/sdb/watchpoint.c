@@ -19,7 +19,7 @@
 
 typedef struct watchpoint {
   int NO;
-  char *expr;
+  char expr[10000];
   word_t last;
   word_t new;
   struct watchpoint *next;
