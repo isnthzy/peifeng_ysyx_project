@@ -67,7 +67,7 @@ void add_watch(char *expr,word_t addr){
   WP* wp=new_wp();
   strcpy(wp->expr,expr);
   wp->last=addr;
-  Log("watchpoint %d: %s",wp->NO,expr);
+  printf("watchpoint %d: %s",wp->NO,expr);
 }
 void display_watch(){
   WP* h=head;
@@ -75,7 +75,7 @@ void display_watch(){
     Log("No watchpoints\n");
   }else{
     while(h){
-      Log("%d , %s",h->NO,h->expr);
+      printf("%d , %s",h->NO,h->expr);
       h=h->next;
     }
   }
@@ -83,7 +83,7 @@ void display_watch(){
 void remove_watch(int num){
   WP* n = &wp_pool[num];
   free_wp(n);
-  Log("Delete watchpoint %d: %s\n", n->NO, n->expr);
+  printf("Delete watchpoint %d: %s\n", n->NO, n->expr);
 }
 
 void init_wp_pool() {
