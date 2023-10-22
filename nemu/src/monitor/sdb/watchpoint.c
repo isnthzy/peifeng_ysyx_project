@@ -105,7 +105,7 @@ void wp_trace(){
     if(h2!=NULL){
       printf("before:");
       while(h2){
-        printf(" %s : %u,",h->expr,h->last);
+        printf(" %s : %u,",h2->expr,h2->last);
         h2=h2->next;
       }
       printf("\n");
