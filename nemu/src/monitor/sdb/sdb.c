@@ -26,6 +26,9 @@ static int is_batch_mode = false;
 void init_regex();
 void init_wp_pool();
 
+void add_watch(char *expr,word_t addr);
+void display_watch();
+void remove_watch(int num);
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
   static char *line_read = NULL;
@@ -72,7 +75,9 @@ static int cmd_info(char *args) {
   if(subcmd=='r'){
     isa_reg_display();
   }else if(subcmd=='w'){
-
+    display_watch();
+  }else{
+    Log("Invalid info command\ns");
   }
   return 0;
 }
@@ -83,8 +88,10 @@ static int cmd_x(char *args) {
   char *EXPR  = strtok(NULL, " ");
   bool flag=true;
   word_t addr = expr(EXPR,&flag);
-  if(flag==false) printf("There is an error in the expression, please retype it\n");
-  // vaddr_t addr = (uint32_t)*EXPR; (错误)
+  if(flag==false){
+    Log("There is an error in the expression, please retype it\n");
+    return 0;
+  }// vaddr_t addr = (uint32_t)*EXPR; (错误)
   //错误原因因为它没有正确地解析表达式字符串中的数值，而是将表达式字符串的首个字符的 ASCII 值作为 addr 的值。
   // vaddr_t addr;
   // sscanf(EXPR,"%x", &addr);
@@ -108,16 +115,33 @@ static int cmd_p(char *args) {
   // char *arg = strtok(NULL, " ");
   bool flag=true;
   word_t value_p = expr(args,&flag);
-  if(flag==false) printf("There is an error in the expression, please retype it\n");
-  else printf("%d\n",value_p);
+  if(flag==false){
+    Log("There is an error in the expression, please retype it\n");
+    return 0;
+  }else printf("%d\n",value_p);
   return 0;
 }
 
 static int cmd_w(char *args) {
+  char *EXPR  = strtok(NULL, " ");
+  if(EXPR==NULL){
+    Log("There is an error in the expression, please retype it\n");
+    return 0;
+  }
+  bool flag=true;
+  word_t addr = expr(EXPR,&flag);
+  if(flag==false){
+    Log("There is an error in the expression, please retype it\n");
+    return 0;
+  }
+  add_watch(EXPR,addr);
   return 0;
 }
 
 static int cmd_d(char *args) {
+  char *NUM  = strtok(NULL, " ");
+  int num = atoi(NUM);
+  remove_watch(num);
   return 0;
 }
 

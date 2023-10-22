@@ -19,6 +19,9 @@
 
 typedef struct watchpoint {
   int NO;
+  char expr[10000];
+  word_t last;
+  word_t new;
   struct watchpoint *next;
 
   /* TODO: Add more members if necessary */
@@ -60,6 +63,46 @@ void free_wp(WP *wp){
   return;
 }
 
+void add_watch(char *expr,word_t addr){
+  WP* wp=new_wp();
+  strcpy(wp->expr,expr);
+  wp->last=addr;
+  printf("watchpoint %d: %s\n",wp->NO,expr);
+}
+void display_watch(){
+  WP* h=head;
+  if(h==NULL){
+    Log("No watchpoints\n");
+  }else{
+    printf("Num     What    Value\n");
+    while(h){
+      printf("%-8d%-8s%u(%#x)\n",h->NO,h->expr,h->last,h->last);
+      h=h->next;
+    }
+  }
+}
+void remove_watch(int num){
+  WP* n = &wp_pool[num];
+  free_wp(n);
+  printf("Delete watchpoint %d: %s\n", n->NO, n->expr);
+}
+void wp_trace(){
+  WP* h=head;
+  bool flag=false;
+  while(h){
+    bool b;
+    word_t new=expr(h->expr,&b);
+    if(new!=h->last){
+      printf("watchpoint %d: %s\n",h->NO,h->expr);
+      printf("Old value = %u\n",h->last);
+      printf("New value = %u\n",new);
+      h->last=new;
+      flag=true;
+    }
+    h=h->next;
+  }
+  if(flag) nemu_state.state=NEMU_STOP;
+}
 
 
 void init_wp_pool() {
