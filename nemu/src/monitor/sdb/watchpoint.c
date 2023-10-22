@@ -74,7 +74,7 @@ void display_watch(){
   if(h==NULL){
     Log("No watchpoints\n");
   }else{
-    printf("Num     What     Value\n");
+    printf("Num     What    Value\n");
     while(h){
       printf("%-8d%-8s%u(%#x)\n",h->NO,h->expr,h->last,h->last);
       h=h->next;
