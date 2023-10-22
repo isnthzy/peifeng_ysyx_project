@@ -124,6 +124,10 @@ static int cmd_p(char *args) {
 
 static int cmd_w(char *args) {
   char *EXPR  = strtok(NULL, " ");
+  if(EXPR==NULL){
+    Log("There is an error in the expression, please retype it\n");
+    return 0;
+  }
   bool flag=true;
   word_t addr = expr(EXPR,&flag);
   if(flag==false){
