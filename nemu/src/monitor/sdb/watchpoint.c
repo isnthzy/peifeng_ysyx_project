@@ -67,7 +67,7 @@ void add_watch(char *expr,word_t addr){
   WP* wp=new_wp();
   strcpy(wp->expr,expr);
   wp->last=addr;
-  printf("watchpoint %d: %s",wp->NO,expr);
+  printf("watchpoint %d: %s\n",wp->NO,expr);
 }
 void display_watch(){
   WP* h=head;
@@ -75,7 +75,7 @@ void display_watch(){
     Log("No watchpoints\n");
   }else{
     while(h){
-      printf("%d , %s",h->NO,h->expr);
+      printf("%d : %s\n",h->NO,h->expr);
       h=h->next;
     }
   }
@@ -85,6 +85,31 @@ void remove_watch(int num){
   free_wp(n);
   printf("Delete watchpoint %d: %s\n", n->NO, n->expr);
 }
+void wp_trace(){
+  WP* h=head;
+  if(h!=NULL){
+    printf("before:");
+    while(h){
+      printf(" %d : %s,",h->NO,h->expr);
+      h=h->next;
+    }
+    printf("\n");
+  }
+  bool flag=false;
+  while(h){
+    bool b;
+    word_t new=expr(h->expr,&b);
+    if(new!=h->last){
+      printf("watchpoint %d: %s\n",h->NO,h->expr);
+      printf("Old value = %d\n",h->last);
+      printf("Old value = %d\n",new);
+      flag=true;
+    }
+    h=h->next;
+  }
+  if(flag) nemu_state.state=NEMU_STOP;
+}
+
 
 void init_wp_pool() {
   int i;
