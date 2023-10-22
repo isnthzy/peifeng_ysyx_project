@@ -94,7 +94,7 @@ void wp_trace(){
     if(new!=h->last){
       printf("watchpoint %d: %s\n",h->NO,h->expr);
       printf("Old value = %d\n",h->last);
-      printf("Old value = %d\n",new);
+      printf("New value = %d\n",new);
       flag=true;
     }
     h=h->next;
