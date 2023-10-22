@@ -90,7 +90,7 @@ void wp_trace(){
   if(h!=NULL){
     printf("before:");
     while(h){
-      printf(" %d : %s,",h->NO,h->expr);
+      printf(" %s : %d,",h->expr,h->last);
       h=h->next;
     }
     printf("\n");
