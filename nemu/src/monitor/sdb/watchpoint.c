@@ -93,21 +93,22 @@ void wp_trace(){
     word_t new=expr(h->expr,&b);
     if(new!=h->last){
       printf("watchpoint %d: %s\n",h->NO,h->expr);
-      printf("Old value = %d\n",h->last);
-      printf("New value = %d\n",new);
+      printf("Old value = %u\n",h->last);
+      printf("New value = %u\n",new);
       h->last=new;
       flag=true;
     }
     h=h->next;
   }
+  WP* h2=head;
   if(flag){
-    if(h!=NULL){
-    printf("before:");
-    while(h){
-      printf(" %s : %d,",h->expr,h->last);
-      h=h->next;
-    }
-    printf("\n");
+    if(h2!=NULL){
+      printf("before:");
+      while(h2){
+        printf(" %s : %u,",h->expr,h->last);
+        h2=h2->next;
+      }
+      printf("\n");
     }
   }
   if(flag) nemu_state.state=NEMU_STOP;
