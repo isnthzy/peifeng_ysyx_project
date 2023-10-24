@@ -52,6 +52,12 @@ LDFLAGS += $(CFLAGS_BUILD)
 # Include rules for menuconfig
 include $(NEMU_HOME)/scripts/config.mk
 
+cnt_l := $(shell find . -name "*.h" -or -name "*.c" | xargs grep -ve "^$$" | wc -l)
+cnt_c := $(shell find . -name "*.h" -or -name "*.c" | xargs grep -ve "^." | wc -l)
+count:
+	@echo $(cnt_l) lines in nemu
+	@echo $(cnt_c) chars in nemu
+
 ifdef CONFIG_TARGET_AM
 include $(AM_HOME)/Makefile
 LINKAGE += $(ARCHIVES)
