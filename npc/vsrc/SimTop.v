@@ -1,14 +1,16 @@
 `timescale 1ns / 1ps
 module SimTop(
+  input clock,
+  input reset,
   output [6:0]io_seg1,
   output [6:0]io_seg2
 );
 
 /* parameter */
-parameter [31:0] clock_period = 10;
+// parameter [31:0] clock_period = 10;
 
 /* ps2_keyboard interface signals */
-reg clk,clrn;
+reg clrn;
 wire [7:0] data;
 wire ready,overflow;
 wire kbd_clk, kbd_data;
@@ -20,7 +22,7 @@ ps2_keyboard_model model(
 );
 
 ps2_keyboard inst(
-    .clk(clk),
+    .clk(clock),
     .clrn(clrn),
     .ps2_clk(kbd_clk),
     .ps2_data(kbd_data),
@@ -59,11 +61,11 @@ bcd7seg seg2(
 //     .seg_out(io_seg6)
 // );
 
-initial begin /* clock driver */
-    clk = 0;
-    forever
-        #(clock_period/2) clk = ~clk;
-end
+// initial begin /* clock driver */
+//     clk = 0;
+//     forever
+//         #(clock_period/2) clk = ~clk;
+// end
 
 initial begin
     clrn = 1'b0;  #20;
