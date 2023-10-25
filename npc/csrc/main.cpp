@@ -25,14 +25,14 @@ void nvboard_bind_all_pins(VSimTop* top);
 // }
 
 static void single_cycle() {
-  dut.clock = 0; dut.eval();
-  dut.clock = 1; dut.eval();
+  // dut.clock = 0; dut.eval();
+  // dut.clock = 1; dut.eval();
 }
 
 static void reset(int n) {
-  dut.reset = 1;
-  while (n -- > 0) single_cycle();
-  dut.reset = 0;
+  // dut.reset = 1;
+  // while (n -- > 0) single_cycle();
+  // dut.reset = 0;
 }
 
 int main() {
