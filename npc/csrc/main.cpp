@@ -40,17 +40,28 @@ static void reset(int n) {
   dut.reset = 0;
 }
 
-int main(int argc,char** argv) {
-  // sim_init();
 
-  nvboard_bind_all_pins(&dut);
-  nvboard_init();
+int main(int argc,char** argv){
+    VerilatedContext* contextp=new VerilatedContext;
+    contextp->commandArgs(argc,argv);
+    VSimTop* top=new VSimTop{contextp};
 
-  reset(10);
-
-  while(1) {
-    nvboard_update();
-    single_cycle();
-  }
-  // sim_exit();
+    VerilatedVcdC* tfp=new VerilatedVcdC;
+    contextp->traceEverOn(true);
+    top->trace(tfp,0);
+    tfp->open("wave.vcd");
+    int i=20;
+    while(!contextp->gotFinish()&&i>=0){
+        top->clock=0;
+        top->eval();
+        top->clock=1;
+        top->eval();
+        tfp->dump(contextp->time());
+        contextp->timeInc(1);
+        i--;
+    }
+    delete top;
+    delete contextp;
+    tfp->close();
+    return 0;
 }
