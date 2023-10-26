@@ -54,10 +54,12 @@ int main(int argc,char** argv){
     while(!contextp->gotFinish()&&i>=0){
         top->clock=0;
         top->eval();
+        tfp->dump(contextp->time());
+        contextp->timeInc(1);
         top->clock=1;
         top->eval();
         tfp->dump(contextp->time());
-        contextp->timeInc(2);
+        contextp->timeInc(1);
         i--;
     }
     delete top;
