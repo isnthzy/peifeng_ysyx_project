@@ -3,7 +3,7 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 
-static TOP_NAME dut;
+static VSimTop dut;
 
 void nvboard_bind_all_pins(VSimTop* top);
 // void step_and_dump_wave(){
@@ -14,15 +14,15 @@ void nvboard_bind_all_pins(VSimTop* top);
 // void sim_init(){
 //   contextp = new VerilatedContext;
 //   tfp = new VerilatedVcdC;
-//   top = new Vmux21;
+//   top = new VSimTop;
 //   contextp->traceEverOn(true);
 //   top->trace(tfp, 0);
-//   tfp->open("dump.vcd");
+//   tfp->open("wave.vcd");
 // }
-// void sim_exit(){
-//   step_and_dump_wave();
-//   tfp->close();
-// }
+// // void sim_exit(){
+// //   step_and_dump_wave();
+// //   tfp->close();
+// // }
 
 static void single_cycle() {
   dut.clock = 0; dut.eval();
@@ -36,14 +36,7 @@ static void reset(int n) {
 }
 
 int main(int argc,char** argv) {
-  VerilatedContext* contextp=new VerilatedContext;
-  contextp->commandArgs(argc,argv);
-  VSimTop* SimTop=new VSimTop{contextp};
-
-  VerilatedVcdC* tfp=new VerilatedVcdC;
-  contextp->traceEverOn(true);
-  SimTop->trace(tfp,0);
-  tfp->open("wave.vcd");
+  // sim_init();
 
   nvboard_bind_all_pins(&dut);
   nvboard_init();
