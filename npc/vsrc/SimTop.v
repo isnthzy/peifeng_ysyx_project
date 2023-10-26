@@ -8,7 +8,7 @@ module SimTop(
 );
 
 /* parameter */
-// parameter [31:0] clock_period = 10;
+parameter [31:0] clock_period = 10;
 
 /* ps2_keyboard interface signals */
 reg clrn,clk;
@@ -73,11 +73,11 @@ bcd7seg seg4(
 //     .seg_out(io_seg6)
 // );
 
-// initial begin /* clock driver */
-//     clk = 0;
-//     forever
-//         #(clock_period/2) clk = ~clk;
-// end
+initial begin /* clock driver */
+    clk = 0;
+    forever
+        #(clock_period/2) clk = ~clk;
+end
 
 initial begin
     clrn = 1'b0;  #20;
