@@ -38,11 +38,11 @@ static void reset(int n) {
 int main(int argc,char** argv) {
   VerilatedContext* contextp=new VerilatedContext;
   contextp->commandArgs(argc,argv);
-  VSimTop* top=new VSimTop{contextp};
+  VSimTop* SimTop=new VSimTop{contextp};
 
   VerilatedVcdC* tfp=new VerilatedVcdC;
   contextp->traceEverOn(true);
-  top->trace(tfp,0);
+  SimTop->trace(tfp,0);
   tfp->open("wave.vcd");
 
   nvboard_bind_all_pins(&dut);
