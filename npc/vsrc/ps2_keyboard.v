@@ -26,6 +26,10 @@ module ps2_keyboard(clk,resetn,ps2_clk,ps2_data,data,num);
                     (^buffer[9:1])) begin      // odd  parity
                     $display("receive %x", buffer[8:1]);
                     data <=buffer[8:1];
+                    if(data==8'hf0)begin
+                        num<=num+8'b1;
+                        $display("num %x", num);
+                    end
                 end
                 count <= 0;     // for next
               end else begin
@@ -33,10 +37,6 @@ module ps2_keyboard(clk,resetn,ps2_clk,ps2_data,data,num);
                 count <= count + 3'b1;
               end
             end
-        end
-        if(data==8'hf0)begin
-            num<=num+8'b1;
-            $display("num %x", num);
         end
     end
 
