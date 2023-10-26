@@ -2,8 +2,8 @@
 module SimTop(
   input clock,
   input reset,
-  input reg ps2_clk,
-  input reg ps2_data,
+  input ps2_clk,
+  input ps2_data,
   output [6:0]io_seg1,
   output [6:0]io_seg2,
   output [6:0]io_seg3,
@@ -18,9 +18,9 @@ module SimTop(
 /* ps2_keyboard interface signals */
 reg clrn;
 wire [7:0] data;
-wire ready,overflow;
-wire kbd_clk, kbd_data;
-reg nextdata_n;
+// wire ready,overflow;
+// // wire kbd_clk, kbd_data;
+// reg nextdata_n;
 
 // ps2_keyboard_model model(
 //     .ps2_clk(kbd_clk),
@@ -29,13 +29,10 @@ reg nextdata_n;
 
 ps2_keyboard inst(
     .clk(clock),
-    .clrn(reset),
+    .resetn(reset),
     .ps2_clk(ps2_clk),
     .ps2_data(ps2_data),
-    .data(data),
-    .ready(ready),
-    .nextdata_n(nextdata_n),
-    .overflow(overflow)
+    .data(data)
 );
 reg  [7:0] count;
 wire [7:0]asciicode;
