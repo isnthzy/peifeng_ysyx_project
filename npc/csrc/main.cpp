@@ -57,7 +57,7 @@ int main(int argc,char** argv){
         top->clock=1;
         top->eval();
         tfp->dump(contextp->time());
-        contextp->timeInc(1);
+        contextp->timeInc(2);
         i--;
     }
     delete top;
