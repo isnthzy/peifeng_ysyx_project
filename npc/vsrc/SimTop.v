@@ -3,7 +3,9 @@ module SimTop(
   input clock,
   input reset,
   output [6:0]io_seg1,
-  output [6:0]io_seg2
+  output [6:0]io_seg2,
+  output [6:0]io_seg3,
+  output [6:0]io_seg4
 );
 
 /* parameter */
@@ -31,10 +33,20 @@ ps2_keyboard inst(
     .nextdata_n(nextdata_n),
     .overflow(overflow)
 );
+wire [7:0]asciicode;
 wire [3:0]seg1_in;
 wire [3:0]seg2_in;
+wire [3:0]seg3_in;
+wire [3:0]seg4_in;
 assign seg1_in = data[3:0];
 assign seg2_in = data[7:4];
+assign seg3_in = asciicode[3:0];
+assign seg4_in = asciicode[7:4];
+tranAscii tranAscii(
+    .clock(clock),
+    .scanCode(data),
+    .asciiCode(asciicode)
+);
 
 bcd7seg seg1(
     .seg_in(seg1_in),
@@ -43,6 +55,14 @@ bcd7seg seg1(
 bcd7seg seg2(
     .seg_in(seg2_in),
     .seg_out(io_seg2)
+);
+bcd7seg seg3(
+    .seg_in(seg3_in),
+    .seg_out(io_seg3)
+);
+bcd7seg seg4(
+    .seg_in(seg4_in),
+    .seg_out(io_seg4)
 );
 // bcd7seg seg3(
 //     .seg_in(),
