@@ -52,7 +52,9 @@ int main(int argc,char** argv){
     tfp->open("wave.vcd");
     int i=10000;
     while(!contextp->gotFinish()&&i>=0){
-        top->eval();
+        tfp->dump(contextp->time());
+        contextp->timeInc(1);
+        // top->eval();
         i--;
     }
     delete top;
