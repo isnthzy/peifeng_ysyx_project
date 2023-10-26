@@ -37,7 +37,7 @@ ps2_keyboard inst(
     .ps2_data(ps2_data),
     .data(data)
 );
-reg  [7:0] count;
+reg  [7:0]ccount;
 wire [7:0]asciicode;
 wire [3:0]seg1_in;
 wire [3:0]seg2_in;
@@ -72,20 +72,23 @@ bcd7seg seg4(
 always @(posedge clock)
 begin
   resetn=~reset;
+  if(resetn==0)begin
+    ccount<=8'b0;
+  end
   if(data==8'hF0) begin
-    count=count+8'h1;
+    ccount<=ccount+8'b1;
   end
 end
-wire [3:0]count_l;
-wire [3:0]count_h;
-assign count_l=count[3:0];
-assign count_h=count[7:4];
+wire [3:0]ccount_l;
+wire [3:0]ccount_h;
+assign ccount_l=ccount[3:0];
+assign ccount_h=ccount[7:4];
 bcd7seg seg5(
-    .seg_in(count_l),
+    .seg_in(ccount_l),
     .seg_out(io_seg5)
 );
 bcd7seg seg6(
-    .seg_in(count_h),
+    .seg_in(ccount_h),
     .seg_out(io_seg6)
 );
 
