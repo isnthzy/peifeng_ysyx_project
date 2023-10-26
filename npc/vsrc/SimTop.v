@@ -74,7 +74,7 @@ bcd7seg seg4(
 // );
 
 initial begin /* clock driver */
-    clk = 0;
+    clk = 1;
     forever
         #(clock_period/2) clk = ~clk;
 end
