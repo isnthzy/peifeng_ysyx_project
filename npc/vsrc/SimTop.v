@@ -29,9 +29,9 @@ reg nextdata_n;
 
 ps2_keyboard inst(
     .clk(clock),
-    .clrn(clrn),
-    .ps2_clk(kbd_clk),
-    .ps2_data(kbd_data),
+    .clrn(reset),
+    .ps2_clk(ps2_clk),
+    .ps2_data(ps2_data),
     .data(data),
     .ready(ready),
     .nextdata_n(nextdata_n),
