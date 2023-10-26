@@ -1,6 +1,7 @@
-module ps2_keyboard(clk,resetn,ps2_clk,ps2_data,data);
+module ps2_keyboard(clk,resetn,ps2_clk,ps2_data,data,num);
     input clk,resetn,ps2_clk,ps2_data;
     output reg [7:0]data;
+    output reg [7:0]num;
 
     reg [9:0] buffer;        // ps2_data bits
     reg [3:0] count;  // count ps2_data bits
@@ -15,6 +16,7 @@ module ps2_keyboard(clk,resetn,ps2_clk,ps2_data,data);
     always @(posedge clk) begin
         if (resetn == 0) begin // reset
             count <= 0;
+            num<=0;
         end
         else begin
             if (sampling) begin
@@ -31,6 +33,10 @@ module ps2_keyboard(clk,resetn,ps2_clk,ps2_data,data);
                 count <= count + 3'b1;
               end
             end
+        end
+        if(data==8'hf0)begin
+            num<=num+8'b1;
+            $display("num %x", num);
         end
     end
 
