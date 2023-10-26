@@ -50,7 +50,7 @@ int main(int argc,char** argv){
     contextp->traceEverOn(true);
     top->trace(tfp,0);
     tfp->open("wave.vcd");
-    int i=20;
+    int i=1000;
     while(!contextp->gotFinish()&&i>=0){
         top->clock=0;
         top->eval();
