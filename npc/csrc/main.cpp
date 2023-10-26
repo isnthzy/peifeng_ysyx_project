@@ -50,11 +50,11 @@ int main(int argc,char** argv){
     contextp->traceEverOn(true);
     top->trace(tfp,0);
     tfp->open("wave.vcd");
-    int i=100000000;
+    int i=10000000;
     while(!contextp->gotFinish()&&i>=0){
         tfp->dump(contextp->time());
         contextp->timeInc(1);
-        // top->eval();
+        top->eval();
         i--;
     }
     delete top;
