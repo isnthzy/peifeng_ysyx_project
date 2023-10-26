@@ -1,6 +1,7 @@
 `timescale 1ns / 1ps
 module SimTop(
   input clock,
+  input a,
   input reset,
   output [6:0]io_seg1,
   output [6:0]io_seg2,
@@ -24,7 +25,7 @@ ps2_keyboard_model model(
 );
 
 ps2_keyboard inst(
-    .clk(clock),
+    .clk(a),
     .clrn(clrn),
     .ps2_clk(kbd_clk),
     .ps2_data(kbd_data),
@@ -43,7 +44,7 @@ assign seg2_in = data[7:4];
 assign seg3_in = asciicode[3:0];
 assign seg4_in = asciicode[7:4];
 tranAscii tranAscii(
-    .clock(clock),
+    .clock(a),
     .scanCode(data),
     .asciiCode(asciicode)
 );
