@@ -13,7 +13,7 @@ module SimTop(
 );
 
 /* parameter */
-parameter [31:0] clock_period = 10;
+// parameter [31:0] clock_period = 10;
 
 /* ps2_keyboard interface signals */
 reg clrn;
@@ -37,7 +37,7 @@ ps2_keyboard inst(
     .nextdata_n(nextdata_n),
     .overflow(overflow)
 );
-reg [7:0]  count;
+reg  [7:0] count;
 wire [7:0]asciicode;
 wire [3:0]seg1_in;
 wire [3:0]seg2_in;
