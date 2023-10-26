@@ -30,10 +30,8 @@ void sim_exit(){
 }
 
 static void single_cycle() {
-  // dut.clock = 0; dut.eval();
-  // SimTop->clock=0; SimTop->eval();
-  // dut.clock = 1; dut.eval();
-  // SimTop->clock=1; SimTop->eval();
+  dut.clock = 0; dut.eval();
+  dut.clock = 1; dut.eval();
 }
 
 static void reset(int n) {
@@ -43,7 +41,7 @@ static void reset(int n) {
 }
 
 int main(int argc,char** argv) {
-  sim_init();
+  // sim_init();
 
   nvboard_bind_all_pins(&dut);
   nvboard_init();
@@ -54,5 +52,5 @@ int main(int argc,char** argv) {
     nvboard_update();
     single_cycle();
   }
-  sim_exit();
+  // sim_exit();
 }
