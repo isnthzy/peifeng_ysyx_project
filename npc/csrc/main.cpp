@@ -30,10 +30,10 @@ void sim_exit(){
 }
 
 static void single_cycle() {
-  dut.clock = 0; dut.eval();
-  SimTop->clock=0; SimTop->eval();
-  dut.clock = 1; dut.eval();
-  SimTop->clock=1; SimTop->eval();
+  // dut.clock = 0; dut.eval();
+  // SimTop->clock=0; SimTop->eval();
+  // dut.clock = 1; dut.eval();
+  // SimTop->clock=1; SimTop->eval();
 }
 
 static void reset(int n) {
