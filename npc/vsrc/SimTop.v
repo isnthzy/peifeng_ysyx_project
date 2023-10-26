@@ -29,7 +29,7 @@ reg [7:0] data;
 // always @(posedge clock)begin
 //     $display("ps2_data %x",ps2_data);
 // end
-
+reg resetn;
 ps2_keyboard inst(
     .clk(clock),
     .resetn(reset),
@@ -71,6 +71,7 @@ bcd7seg seg4(
 );
 always @(posedge clock)
 begin
+  resetn=~reset;
   if(data==8'hF0) begin
     count=count+8'h1;
   end
