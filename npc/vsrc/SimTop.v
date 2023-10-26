@@ -64,6 +64,7 @@ bcd7seg seg4(
     .seg_in(seg4_in),
     .seg_out(io_seg4)
 );
+
 // bcd7seg seg5(
 //     .seg_in(),
 //     .seg_out(io_seg5)
