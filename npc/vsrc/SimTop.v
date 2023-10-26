@@ -2,8 +2,8 @@
 module SimTop(
   input clock,
   input reset,
-  input ps2_clk,
-  input ps2_data,
+  input reg ps2_clk,
+  input reg ps2_data,
   output [6:0]io_seg1,
   output [6:0]io_seg2,
   output [6:0]io_seg3,
