@@ -3,26 +3,31 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 
-static VSimTop dut;
+static TOP_NAME dut;
+VerilatedContext* contextp = NULL;
+VerilatedVcdC* tfp = NULL;
+
+static VSimTop* SimTop;
+
 
 void nvboard_bind_all_pins(VSimTop* top);
-// void step_and_dump_wave(){
-//   top->eval();
-//   contextp->timeInc(1);
-//   tfp->dump(contextp->time());
-// }
-// void sim_init(){
-//   contextp = new VerilatedContext;
-//   tfp = new VerilatedVcdC;
-//   top = new VSimTop;
-//   contextp->traceEverOn(true);
-//   top->trace(tfp, 0);
-//   tfp->open("wave.vcd");
-// }
-// // void sim_exit(){
-// //   step_and_dump_wave();
-// //   tfp->close();
-// // }
+void step_and_dump_wave(){
+  SimTop->eval();
+  contextp->timeInc(1);
+  tfp->dump(contextp->time());
+}
+void sim_init(){
+  contextp = new VerilatedContext;
+  tfp = new VerilatedVcdC;
+  SimTop = new VSimTop;
+  contextp->traceEverOn(true);
+  SimTop->trace(tfp, 0);
+  tfp->open("wave.vcd");
+}
+void sim_exit(){
+  step_and_dump_wave();
+  tfp->close();
+}
 
 static void single_cycle() {
   dut.clock = 0; dut.eval();
@@ -36,7 +41,7 @@ static void reset(int n) {
 }
 
 int main(int argc,char** argv) {
-  // sim_init();
+  sim_init();
 
   nvboard_bind_all_pins(&dut);
   nvboard_init();
@@ -47,4 +52,5 @@ int main(int argc,char** argv) {
     nvboard_update();
     single_cycle();
   }
+  sim_exit();
 }
