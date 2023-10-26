@@ -11,23 +11,23 @@ static VSimTop* SimTop;
 
 
 void nvboard_bind_all_pins(VSimTop* top);
-void step_and_dump_wave(){
-  SimTop->eval();
-  contextp->timeInc(1);
-  tfp->dump(contextp->time());
-}
-void sim_init(){
-  contextp = new VerilatedContext;
-  tfp = new VerilatedVcdC;
-  SimTop = new VSimTop;
-  contextp->traceEverOn(true);
-  SimTop->trace(tfp, 0);
-  tfp->open("wave.vcd");
-}
-void sim_exit(){
-  step_and_dump_wave();
-  tfp->close();
-}
+// void step_and_dump_wave(){
+//   SimTop->eval();
+//   contextp->timeInc(1);
+//   tfp->dump(contextp->time());
+// }
+// void sim_init(){
+//   contextp = new VerilatedContext;
+//   tfp = new VerilatedVcdC;
+//   SimTop = new VSimTop;
+//   contextp->traceEverOn(true);
+//   SimTop->trace(tfp, 0);
+//   tfp->open("wave.vcd");
+// }
+// void sim_exit(){
+//   step_and_dump_wave();
+//   tfp->close();
+// }
 
 static void single_cycle() {
   dut.clock = 0; dut.eval();
