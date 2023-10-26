@@ -26,6 +26,9 @@ wire [7:0] data;
 //     .ps2_clk(kbd_clk),
 //     .ps2_data(kbd_data)
 // );
+always @(posedge clock)begin
+    $display("ps2_data %x",ps2_data);
+end
 
 ps2_keyboard inst(
     .clk(clock),
