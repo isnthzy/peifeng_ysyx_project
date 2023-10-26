@@ -75,7 +75,7 @@ begin
   if(resetn==0)begin
     ccount<=8'b0;
   end
-  if(data==8'hF0) begin
+  if(data==8'hf0) begin
     ccount<=ccount+8'b1;
   end
 end
