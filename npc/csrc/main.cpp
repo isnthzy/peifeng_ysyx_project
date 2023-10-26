@@ -29,16 +29,16 @@ void nvboard_bind_all_pins(VSimTop* top);
 //   tfp->close();
 // }
 
-static void single_cycle() {
-  dut.clock = 0; dut.eval();
-  dut.clock = 1; dut.eval();
-}
+// static void single_cycle() {
+//   dut.clock = 0; dut.eval();
+//   dut.clock = 1; dut.eval();
+// }
 
-static void reset(int n) {
-  dut.reset = 1;
-  while (n -- > 0) single_cycle();
-  dut.reset = 0;
-}
+// static void reset(int n) {
+//   dut.reset = 1;
+//   while (n -- > 0) single_cycle();
+//   dut.reset = 0;
+// }
 
 
 int main(int argc,char** argv){
@@ -50,17 +50,8 @@ int main(int argc,char** argv){
     contextp->traceEverOn(true);
     top->trace(tfp,0);
     tfp->open("wave.vcd");
-    int i=1000;
-    while(!contextp->gotFinish()&&i>=0){
-        top->clock=0;
+    while(!contextp->gotFinish()){
         top->eval();
-        tfp->dump(contextp->time());
-        contextp->timeInc(1);
-        top->clock=1;
-        top->eval();
-        tfp->dump(contextp->time());
-        contextp->timeInc(1);
-        i--;
     }
     delete top;
     delete contextp;
