@@ -35,7 +35,16 @@ static void reset(int n) {
   dut.reset = 0;
 }
 
-int main() {
+int main(int argc,char** argv) {
+  VerilatedContext* contextp=new VerilatedContext;
+  contextp->commandArgs(argc,argv);
+  VSimTop* top=new VSimTop{contextp};
+
+  VerilatedVcdC* tfp=new VerilatedVcdC;
+  contextp->traceEverOn(true);
+  top->trace(tfp,0);
+  tfp->open("wave.vcd");
+
   nvboard_bind_all_pins(&dut);
   nvboard_init();
 
