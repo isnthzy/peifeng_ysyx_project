@@ -16,8 +16,8 @@ module SimTop(
 // parameter [31:0] clock_period = 10;
 
 /* ps2_keyboard interface signals */
-reg clrn;
-wire [7:0] data;
+// reg clrn;
+reg [7:0] data;
 // wire ready,overflow;
 // // wire kbd_clk, kbd_data;
 // reg nextdata_n;
@@ -26,9 +26,9 @@ wire [7:0] data;
 //     .ps2_clk(kbd_clk),
 //     .ps2_data(kbd_data)
 // );
-always @(posedge clock)begin
-    $display("ps2_data %x",ps2_data);
-end
+// always @(posedge clock)begin
+//     $display("ps2_data %x",ps2_data);
+// end
 
 ps2_keyboard inst(
     .clk(clock),
