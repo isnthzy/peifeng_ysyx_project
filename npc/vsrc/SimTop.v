@@ -26,13 +26,13 @@ reg [7:0] data;
 //     .ps2_clk(kbd_clk),
 //     .ps2_data(kbd_data)
 // );
-always @(posedge clock)begin
-    $display("resetn %x",resetn);
-end
+// always @(posedge clock)begin
+//     $display("resetn %x",resetn);
+// end
 reg resetn;
 ps2_keyboard inst(
     .clk(clock),
-    .resetn(reset),
+    .resetn(resetn),
     .ps2_clk(ps2_clk),
     .ps2_data(ps2_data),
     .data(data)
