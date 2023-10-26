@@ -17,7 +17,7 @@ task kbd_sendcode;
         send_buffer[9]   = ~(^code); // odd parity bit
         send_buffer[10]  = 1'b1;  // stop bit
         i = 0;
-        while( i < 11) begin
+        while(i<11) begin
             // set kbd_data
             ps2_data = send_buffer[i];
             #(kbd_clk_period/2) ps2_clk = 1'b0;
