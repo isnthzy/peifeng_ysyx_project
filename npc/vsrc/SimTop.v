@@ -18,6 +18,7 @@ module SimTop(
 /* ps2_keyboard interface signals */
 // reg clrn;
 reg [7:0] data;
+reg [7:0] num;
 // wire ready,overflow;
 // // wire kbd_clk, kbd_data;
 // reg nextdata_n;
@@ -27,17 +28,18 @@ reg [7:0] data;
 //     .ps2_data(kbd_data)
 // );
 // always @(posedge clock)begin
-//     $display("ps2_data %x",ps2_data);
+//     $display("resetn %x",resetn);
 // end
-
+reg resetn;
 ps2_keyboard inst(
     .clk(clock),
-    .resetn(reset),
+    .resetn(resetn),
     .ps2_clk(ps2_clk),
     .ps2_data(ps2_data),
-    .data(data)
+    .real_data(data),
+    .num(num)
 );
-reg  [7:0] count;
+reg  [7:0]ccount;
 wire [7:0]asciicode;
 wire [3:0]seg1_in;
 wire [3:0]seg2_in;
@@ -71,20 +73,19 @@ bcd7seg seg4(
 );
 always @(posedge clock)
 begin
-  if(data==8'hF0) begin
-    count=count+8'h1;
-  end
+    // $display("data %x", data);
+    resetn=~reset;
 end
-wire [3:0]count_l;
-wire [3:0]count_h;
-assign count_l=count[3:0];
-assign count_h=count[7:4];
+wire [3:0]ccount_l;
+wire [3:0]ccount_h;
+assign ccount_l=num[3:0];
+assign ccount_h=num[7:4];
 bcd7seg seg5(
-    .seg_in(count_l),
+    .seg_in(ccount_l),
     .seg_out(io_seg5)
 );
 bcd7seg seg6(
-    .seg_in(count_h),
+    .seg_in(ccount_h),
     .seg_out(io_seg6)
 );
 

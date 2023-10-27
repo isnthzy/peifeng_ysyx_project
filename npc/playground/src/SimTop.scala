@@ -1,6 +1,5 @@
 import chisel3._
 import chisel3.util._  
-import upickle.implicits.key
 
 class SimTop extends Module {
   val io = IO(new Bundle {
@@ -29,12 +28,54 @@ class SimTop extends Module {
   io.seg6 := bcd7seg2.seg.out
 }
 
-class KeycodeToAscii extends Module {
+class TranAscii extends Module {
   val io = IO(new Bundle {
-    val keycode = Input(UInt(8.W))
-    val ascii = Output(UInt(8.W))
+    val clock = Input(Clock())
+    val scanCode = Input(UInt(8.W))
+    val asciiCode = Output(UInt(8.W))
   })
-  // 没思路
+
+  val asciiCodeReg = RegInit(0.U(8.W))
+
+  asciiCodeReg := MuxLookup(io.scanCode, 0.U,(Seq(
+    "h16".U -> "h30".U, // 0
+    "h1e".U -> "h31".U, // 1
+    "h26".U -> "h32".U, // 2
+    "h25".U -> "h33".U, // 3
+    "h2e".U -> "h34".U, // 4
+    "h36".U -> "h35".U, // 5
+    "h3d".U -> "h36".U, // 6
+    "h3e".U -> "h37".U, // 7
+    "h46".U -> "h38".U, // 8
+    "h45".U -> "h39".U, // 9
+    "h15".U -> "h51".U, // Q
+    "h1d".U -> "h57".U, // W
+    "h24".U -> "h45".U, // E
+    "h2d".U -> "h52".U, // R
+    "h2c".U -> "h54".U, // T
+    "h35".U -> "h59".U, // Y
+    "h3c".U -> "h55".U, // U
+    "h43".U -> "h49".U, // I
+    "h44".U -> "h4f".U, // O
+    "h4d".U -> "h50".U, // P
+    "h1c".U -> "h41".U, // A
+    "h1b".U -> "h53".U, // S
+    "h23".U -> "h44".U, // D
+    "h2b".U -> "h46".U, // F
+    "h34".U -> "h47".U, // G
+    "h33".U -> "h48".U, // H
+    "h3b".U -> "h4a".U, // J
+    "h42".U -> "h4b".U, // K
+    "h4b".U -> "h4c".U, // L
+    "h1a".U -> "h5a".U, // Z
+    "h22".U -> "h58".U, // X
+    "h21".U -> "h43".U, // C
+    "h2a".U -> "h56".U, // V
+    "h32".U -> "h42".U, // B
+    "h31".U -> "h4e".U, // N
+    "h3a".U -> "h4d".U  // M
+  )))
+  io.asciiCode := asciiCodeReg
 }
 
 class bcd7seg extends Module{
