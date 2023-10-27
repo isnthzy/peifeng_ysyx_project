@@ -77,7 +77,7 @@ static int cmd_info(char *args) {
   }else if(subcmd=='w'){
     display_watch();
   }else{
-    Log("Invalid info command\ns");
+    Log("Invalid info command\n");
   }
   return 0;
 }
