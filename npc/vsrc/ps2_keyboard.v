@@ -44,5 +44,5 @@ module ps2_keyboard(clk,resetn,ps2_clk,ps2_data,real_data,num);
             end
         end
     end
-assign real_data = {8{empty}}&data;
+    assign real_data = {8{empty}}&data;
 endmodule
