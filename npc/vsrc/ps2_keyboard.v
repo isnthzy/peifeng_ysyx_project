@@ -28,7 +28,6 @@ module ps2_keyboard(clk,resetn,ps2_clk,ps2_data,data,num);
                     data <=buffer[8:1];
                     if(data==8'hf0)begin
                         num<=num+8'b1;
-                        $display("num %x", num);
                     end
                 end
                 count <= 0;     // for next
