@@ -43,7 +43,7 @@ always @(posedge clock) begin
 		8'h32: asciiCode <= 8'h42;	//B
 		8'h31: asciiCode <= 8'h4e;	//N
 		8'h3a: asciiCode <= 8'h4d;	//M
-		default: ;
+		default: asciiCode <= 8'h00;
 		endcase
     end
 endmodule
