@@ -17,16 +17,6 @@ always @(posedge clock) begin
         8'h46: asciiCode <= 8'h38;	//8
         8'h45: asciiCode <= 8'h39;	//9
 
-        8'h41: asciiCode <= 8'h2c;	//,
-        8'h49: asciiCode <= 8'h2e;	//.
-        8'h4a: asciiCode <= 8'h2f;	// /
-        8'h4c: asciiCode <= 8'h3b;	//;
-        8'h52: asciiCode <= 8'h27;	//'
-        8'h54: asciiCode <= 8'h5b;	//[
-        8'h5b: asciiCode <= 8'h5d;	//]
-        8'h5a: asciiCode <= 8'h0a;	//enter
-
-
 		8'h15: asciiCode <= 8'h51;	//Q
 		8'h1d: asciiCode <= 8'h57;	//W
 		8'h24: asciiCode <= 8'h45;	//E

@@ -8,7 +8,7 @@ module ps2_keyboard(clk,resetn,ps2_clk,ps2_data,real_data,num);
     reg [9:0] buffer;        // ps2_data bits
     reg [3:0] count;  // count ps2_data bits
     reg [2:0] ps2_clk_sync;
-    reg  empty; //清空情况
+    reg  empty;
     always @(posedge clk) begin
         ps2_clk_sync <=  {ps2_clk_sync[1:0],ps2_clk};
     end
