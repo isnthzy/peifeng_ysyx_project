@@ -300,7 +300,7 @@ word_t expr(char *e, bool *success) {
         bool flag=true; 
         word_t reg_v=isa_reg_str2val(tokens[i].str,&flag);
         if(flag==false) assert(0);
-        sprintf(tokens[i].str,"%u",reg_v);
+        sprintf(tokens[i].str,"%u",reg_v);//用于将格式化的数据写入字符串中(str类型转化为u类型)
     }
   }
   /* TODO: Insert codes to evaluate the expression. */
