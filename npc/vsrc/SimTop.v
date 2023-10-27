@@ -36,7 +36,7 @@ ps2_keyboard inst(
     .resetn(resetn),
     .ps2_clk(ps2_clk),
     .ps2_data(ps2_data),
-    .data(data),
+    .real_data(data),
     .num(num)
 );
 reg  [7:0]ccount;
