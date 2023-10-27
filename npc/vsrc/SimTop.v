@@ -73,6 +73,7 @@ bcd7seg seg4(
 );
 always @(posedge clock)
 begin
+  $display("data %x", data);
   resetn=~reset;
 end
 wire [3:0]ccount_l;
