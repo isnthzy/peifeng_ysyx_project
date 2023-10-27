@@ -1,5 +1,7 @@
 CFLAGS=-Wall -g
 
+%.o : %.c
+	gcc -c -o $@ $<
 all:
 	ex1 ex3
 
