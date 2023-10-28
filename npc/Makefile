@@ -61,10 +61,10 @@ use:
 	rm -rf ./playground/*
 	rm -rf ./constr/*
 	rm -rf ./csrc/*
-	cp -r nju-cpulab/$(folder)/csrc/*   csrc/
-	cp -r nju-cpulab/$(folder)/playground/*   playground/
-	cp -r nju-cpulab/$(folder)/vsrc/*   vsrc/
-	cp -r nju-cpulab/$(folder)/constr/* constr/
+	cp -r nju-cpulab/$(lab)/csrc/*   csrc/
+	cp -r nju-cpulab/$(lab)/playground/*   playground/
+	cp -r nju-cpulab/$(lab)/vsrc/*   vsrc/
+	cp -r nju-cpulab/$(lab)/constr/* constr/
 # verilog:
 # 	$(call git_commit, "generate verilog")
 # 	mkdir -p $(BUILD_DIR)
