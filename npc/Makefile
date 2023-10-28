@@ -56,6 +56,15 @@ verilog:
 	mkdir -p ./vsrc
 	mill -i __.test.runMain TopMain -td ./vsrc
 
+use: 
+	rm -rf ./vsrc/*
+	rm -rf ./playground/*
+	rm -rf ./constr/*
+	rm -rf ./csrc/*
+	cp -r nju-cpulab/$(lab)/csrc/*   csrc/
+	cp -r nju-cpulab/$(lab)/playground/*   playground/
+	cp -r nju-cpulab/$(lab)/vsrc/*   vsrc/
+	cp -r nju-cpulab/$(lab)/constr/* constr/
 # verilog:
 # 	$(call git_commit, "generate verilog")
 # 	mkdir -p $(BUILD_DIR)

@@ -180,7 +180,12 @@ word_t eval(int p,int q) {
       case '+': return val1 + val2;
       case '-': return val1 - val2;
       case '*': return val1 * val2;
-      case '/': return val1 / val2;
+      case '/':
+        if(val2==0){
+          Log("Val2 is invalid(val=0)");
+          assert(0);
+        }
+        else return val1 / val2;
       case TK_NEG: return -1*val2;
       case TK_EQ:
         if(val1==val2) return 1;
