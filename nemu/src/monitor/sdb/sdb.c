@@ -63,7 +63,7 @@ static int cmd_si(char *args) {
   char *arg = strtok(NULL, " ");
   int step=1;
   if(arg!=NULL){
-    step=arg[0]-'0'; //注意这里只能处理各位数
+    step=arg[0]-'0'; //注意这里只能处理个位数
   } 
   cpu_exec(step);
   return 0;
@@ -77,7 +77,7 @@ static int cmd_info(char *args) {
   }else if(subcmd=='w'){
     display_watch();
   }else{
-    Log("Invalid info command\ns");
+    Log("Invalid info command\n");
   }
   return 0;
 }
@@ -100,10 +100,11 @@ static int cmd_x(char *args) {
   for(i=0;i<s1;i++){
     printf("0x%08x: ",addr);
     vaddr_t data = vaddr_read(addr,4);
-    // printf("%08x\n",data); //查阅得多数riscv为小段序,后续应改为小端显示内存
-    for(j=0;j<4;j++){
-      printf("0x%02x ",data&0xff);
-      data=data>>8;
+    
+    for(j=3;j>=0;j--){
+      printf("0x%02x ",(data>>(j*8))&0xff);
+      // printf("0x%02x ",(data&0xff);
+      // data=data>>8; //内存显示顺序的两种方式,顺or逆
     }
     printf("\n");
     addr+=4;
@@ -115,7 +116,7 @@ static int cmd_p(char *args) {
   // char *arg = strtok(NULL, " ");
   bool flag=true;
   word_t value_p = expr(args,&flag);
-  if(flag==false){
+  if(flag==false&&args==NULL){
     Log("There is an error in the expression, please retype it\n");
     return 0;
   }else printf("%d\n",value_p);

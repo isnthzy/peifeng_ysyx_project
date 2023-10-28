@@ -21,7 +21,7 @@
 #include <regex.h>
 
 #define UNUSED(x) (void)(x)
-int tokens_num=0; //放一个全局变量记录token的个数
+int tokens_num=0; //放一个全局变量记录tokens的个数
 enum {
   TK_NOTYPE = 256, TK_EQ,
   TK_NUM=1,TK_DEF=2,
@@ -108,16 +108,20 @@ int prio(int t){ //优先级排序,很重要!!!
   switch (t) {
       case '+':
       case '-':
-          return 5;
+          return 7;
       case '*':
       case '/':
-          return 4;
+          return 6;
       case TK_NEG:
-          return 3;
+          return 5;
       case TK_DEF:
-          return 2;
+          return 4;
       case TK_EQ:
       case TK_NEQ:
+          return 3;
+      case TK_AND:
+          return 2;
+      case TK_OR:
           return 1;
       default:
           return 0;
@@ -135,7 +139,7 @@ word_t eval(int p,int q) {
      * For now this token should be a number.
      * Return the value of the number.
      */
-    return strtoul(tokens[p].str, NULL, 0);
+    return strtoul(tokens[p].str, NULL, 0); //strtoul将字符串转换为无符号长整型数
   }
   else if (check_parentheses(p, q) == true) {
     /* The expression is surrounded by a matched pair of parentheses.
@@ -185,6 +189,7 @@ word_t eval(int p,int q) {
         if(val1!=val2) return 1;
         else return 0;
       case TK_AND: return val1&&val2;
+      case TK_OR : return val1||val2;
       case TK_DEF: return vaddr_read(val2,4);
       default: assert(0);
     }
@@ -195,7 +200,7 @@ static bool make_token(char *e) {
   int position = 0;
   int i;
   regmatch_t pmatch;
-  memset(tokens, 0, sizeof(tokens));
+  memset(tokens, 0, sizeof(tokens)); //tokens清零,防止后续出现计算错误
   nr_token = 0;
 
   while (e[position] != '\0') {
@@ -295,7 +300,7 @@ word_t expr(char *e, bool *success) {
         bool flag=true; 
         word_t reg_v=isa_reg_str2val(tokens[i].str,&flag);
         if(flag==false) assert(0);
-        sprintf(tokens[i].str,"%u",reg_v);
+        sprintf(tokens[i].str,"%u",reg_v);//用于将格式化的数据写入字符串中(str类型转化为u类型)
     }
   }
   /* TODO: Insert codes to evaluate the expression. */
