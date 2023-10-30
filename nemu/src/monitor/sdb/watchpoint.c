@@ -95,6 +95,7 @@ void wp_trace(char *decodelog){
     if(new!=h->last){
       if(flagput==false){
         puts(decodelog);
+        flagput=true;
       }
       printf("watchpoint %d: %s\n",h->NO,h->expr);
       printf("Old value = %u\n",h->last);
