@@ -64,6 +64,7 @@ static int cmd_si(char *args) {
   int step=1;
   if(arg!=NULL){
     step=atoi(arg); 
+    printf("%d",step);
   } 
   cpu_exec(step);
   return 0;
