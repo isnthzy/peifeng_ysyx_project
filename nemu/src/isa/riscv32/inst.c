@@ -30,6 +30,7 @@ enum {
 
 #define src1R() do { *src1 = Reg(rs1); } while (0)
 #define src2R() do { *src2 = Reg(rs2); } while (0)
+#define shamtI() do{ *shamt= BITS(i, 25, 20); } while (0)
 #define immI() do { *imm = SEXT(BITS(i, 31, 20), 12); } while(0)
 #define immU() do { *imm = SEXT(BITS(i, 31, 12), 20) << 12; } while(0)
 #define immS() do { *imm = (SEXT(BITS(i, 31, 25), 7) << 5) | BITS(i, 11, 7); } while(0)
@@ -38,13 +39,13 @@ enum {
 #define immB() do { *imm = SEXT(BITS(i, 31, 31)<<12 | BITS(i, 7, 7)<<11 \
 | BITS(i, 30, 25)<<5 | BITS(i, 11, 8)<<1, 13); } while(0) //sext(immB)
 
-static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_t *imm, int type) {
+static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_t *shamt,word_t *imm, int type) {
   uint32_t i = s->isa.inst.val;
   int rs1 = BITS(i, 19, 15);
   int rs2 = BITS(i, 24, 20);
   *rd     = BITS(i, 11, 7);
   switch (type) {
-    case TYPE_I: src1R();          immI(); break;
+    case TYPE_I: src1R(); shamtI();immI(); break;
     case TYPE_U:                   immU(); break;
     case TYPE_S: src1R(); src2R(); immS(); break;
     case TYPE_B: src1R(); src2R(); immB(); break;
@@ -55,12 +56,12 @@ static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_
 
 static int decode_exec(Decode *s) {
   int rd = 0;
-  word_t src1 = 0, src2 = 0, imm = 0;
+  word_t src1 = 0, src2 = 0, imm = 0,shamt=0;
   s->dnpc = s->snpc;
 
 #define INSTPAT_INST(s) ((s)->isa.inst.val)
 #define INSTPAT_MATCH(s, name, type, ... /* execute body */ ) { \
-  decode_operand(s, &rd, &src1, &src2, &imm, concat(TYPE_, type)); \
+  decode_operand(s, &rd, &src1, &src2, &shamt, &imm, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
 }
 
@@ -71,6 +72,7 @@ static int decode_exec(Decode *s) {
   INSTPAT("??????? ????? ????? 000 ????? 00100 11", addi   , I, Reg(rd) = src1 + imm);
   INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr   , I, Reg(rd) = s->pc+4;s->dnpc=(src1+imm)&~1);
   INSTPAT("??????? ????? ????? 010 ????? 00000 11", lw     , I, Reg(rd) = Mr(src1 + imm, 4));
+  INSTPAT("000000? ????? ????? 001 ????? 00100 11", slli   , I, Reg(rd) = src1<<shamt);
   INSTPAT("??????? ????? ????? 011 ????? 00100 11", sltiu  , I, Reg(rd) = src1<(word_t)imm);
   INSTPAT("0000000 ????? ????? 000 ????? 01100 11", add    , R, Reg(rd) = src1 + src2);
   INSTPAT("0100000 ????? ????? 000 ????? 01100 11", sub    , R, Reg(rd) = src1 - src2);
