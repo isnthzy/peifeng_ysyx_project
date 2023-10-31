@@ -85,13 +85,18 @@ void remove_watch(int num){
   free_wp(n);
   printf("Delete watchpoint %d: %s\n", n->NO, n->expr);
 }
-void wp_trace(){
+void wp_trace(char *decodelog){
   WP* h=head;
   bool flag=false;
+  bool flagput=false;
   while(h){
     bool b;
     word_t new=expr(h->expr,&b);
     if(new!=h->last){
+      if(flagput==false){
+        puts(decodelog);
+        flagput=true;
+      }
       printf("watchpoint %d: %s\n",h->NO,h->expr);
       printf("Old value = %u\n",h->last);
       printf("New value = %u\n",new);

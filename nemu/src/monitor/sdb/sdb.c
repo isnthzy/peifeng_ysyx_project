@@ -63,7 +63,7 @@ static int cmd_si(char *args) {
   char *arg = strtok(NULL, " ");
   int step=1;
   if(arg!=NULL){
-    step=arg[0]-'0'; //注意这里只能处理个位数
+    step=atoi(arg); 
   } 
   cpu_exec(step);
   return 0;
