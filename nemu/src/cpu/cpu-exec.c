@@ -41,7 +41,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
   char decodelog[128];
   strcpy(decodelog,_this->logbuf);
-  // wp_trace(decodelog);
+  wp_trace(decodelog);
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {
