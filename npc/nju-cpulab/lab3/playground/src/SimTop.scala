@@ -11,7 +11,7 @@ class SimTop extends Module {
   })
 
   val op_add = io.a +& io.b
-  val overflow_add = op_sum(3)=/=io.a(3)
+  val overflow_add = op_add(3)=/=io.a(3)
 
   val op_sub = io.a -& io.b
   val overflow_sub = op_sub(3)=/=io.a(3)
