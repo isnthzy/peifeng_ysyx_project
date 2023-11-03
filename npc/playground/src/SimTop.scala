@@ -16,8 +16,8 @@ class SimTop extends Module {
   
   // val tmp = (("b1111".U)^io.b)+1.U
   val sub =io.a+(~io.b)
-  val (out_sub,op_sub)=(sub(4),sub(3,0))
-  val overflow_sub =(io.a(3)&&io.b(3))&&(op_sub(3)=/=io.a(3))
+  // val (out_sub,op_sub)=(sub(4),sub(3,0))
+  // val overflow_sub =(io.a(3)&&io.b(3))&&(op_sub(3)=/=io.a(3))
   
   val op_neg= ~io.a
 
