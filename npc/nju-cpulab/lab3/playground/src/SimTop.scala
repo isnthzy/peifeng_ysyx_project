@@ -8,7 +8,6 @@ class SimTop extends Module {
     val b = Input(SInt(4.W))
     val out = Output(SInt(4.W))
     val of = Output(Bool())
-    val out_c = Output(UInt(1.W))
   })
   val sum = io.a +& io.b
   val (out_add, op_add) = (sum(3), sum(2, 0))
@@ -17,7 +16,7 @@ class SimTop extends Module {
   val sub = io.a -& io.b
   val (out_sub, op_sub) = (sub(3), sub(2, 0))
   val overflow_sub = (io.a(3) =/= io.b(3)) && (io.a(3) < io.b(3))
-  
+
   val op_neg = ~io.a
   val op_and = io.a & io.b
   val op_or = io.a | io.b
