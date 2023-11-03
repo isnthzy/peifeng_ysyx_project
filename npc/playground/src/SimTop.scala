@@ -10,11 +10,11 @@ class SimTop extends Module {
     val of = Output(Bool())
   })
 
-  val sum = io.a +& io.b
-  val overflow_add = sum(3)=/=io.a(3)
+  val op_sum = io.a +& io.b
+  val overflow_add = op_sum(3)=/=io.a(3)
 
-  val sub = io.a -& io.b
-  val overflow_sub = sub(3)=/=io.a(3)
+  val op_sub = io.a -& io.b
+  val overflow_sub = op_sub(3)=/=io.a(3)
 
   val op_neg = ~io.a
 
