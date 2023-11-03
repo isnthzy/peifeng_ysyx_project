@@ -11,10 +11,11 @@ module SimTop(	// <stdin>:3:3
 );
 
   wire [4:0]      _GEN = {1'h0, io_a};	// playground/src/SimTop.scala:13:16, :30:18
-  wire [4:0]      sum = _GEN + {1'h0, io_b};	// playground/src/SimTop.scala:13:16, :30:18
-  wire [4:0]      sub = _GEN + {1'h0, ~io_b + 4'h1};	// playground/src/SimTop.scala:13:16, :17:{25,31}, :18:16, :30:18
+  wire [4:0]      _GEN_0 = {1'h0, io_b};	// playground/src/SimTop.scala:13:16, :30:18
+  wire [4:0]      sum = _GEN + _GEN_0;	// playground/src/SimTop.scala:13:16
+  wire [4:0]      sub = _GEN - _GEN_0;	// playground/src/SimTop.scala:13:16, :18:16
   wire            _io_out_c_T_2 = io_op == 3'h1;	// playground/src/SimTop.scala:33:34
-  wire [7:0][3:0] _GEN_0 =
+  wire [7:0][3:0] _GEN_1 =
     {{{3'h0, io_a == io_b}},
      {{3'h0, io_a < io_b}},
      {io_a ^ io_b},
@@ -24,7 +25,7 @@ module SimTop(	// <stdin>:3:3
      {sub[3:0]},
      {sum[3:0]}};	// playground/src/SimTop.scala:13:16, :14:35, :18:16, :19:35, :22:15, :24:19, :26:19, :28:19, :30:23, :32:23, :33:34
   wire            _io_out_c_T = io_op == 3'h0;	// playground/src/SimTop.scala:33:34, :39:33
-  assign io_out = _GEN_0[io_op];	// <stdin>:3:3, playground/src/SimTop.scala:33:34
+  assign io_out = _GEN_1[io_op];	// <stdin>:3:3, playground/src/SimTop.scala:33:34
   assign io_of =
     _io_out_c_T_2
       ? io_a[3] & io_b[3] & sub[3] != io_a[3]
