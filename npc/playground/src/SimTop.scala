@@ -8,12 +8,11 @@ class SimTop extends Module {
     val b = Input(SInt(4.W))
     val out = Output(SInt(4.W))
     val of = Output(Bool())
-    val out_c = Output(UInt(1.W))
   })
 
   val sum = io.a +& io.b
   val (out_add, op_add) = (sum(3), sum(2, 0))
-  val overflow_add = sum(4) ^ op_add(3)
+  val overflow_add = sum(4) ^ sum(3)
 
   val sub = io.a -& io.b
   val (out_sub, op_sub) = (sub(3), sub(2, 0))
