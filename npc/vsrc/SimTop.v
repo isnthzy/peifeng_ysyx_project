@@ -12,7 +12,7 @@ module SimTop(	// <stdin>:3:3
 
   wire [4:0]      _GEN = {1'h0, io_a};	// playground/src/SimTop.scala:13:16, :30:18
   wire [4:0]      sum = _GEN + {1'h0, io_b};	// playground/src/SimTop.scala:13:16, :30:18
-  wire [4:0]      sub = _GEN + {1'h0, ~io_b};	// playground/src/SimTop.scala:13:16, :17:13, :18:16, :30:18
+  wire [4:0]      sub = _GEN + {1'h0, ~io_b + 4'h1};	// playground/src/SimTop.scala:13:16, :17:{25,31}, :18:16, :30:18
   wire            _io_out_c_T_2 = io_op == 3'h1;	// playground/src/SimTop.scala:33:34
   wire [7:0][3:0] _GEN_0 =
     {{{3'h0, io_a == io_b}},
