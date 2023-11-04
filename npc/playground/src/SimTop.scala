@@ -1,42 +1,40 @@
 import chisel3._
-import chisel3.util._
+import chisel3.util._  
 
 class SimTop extends Module {
   val io = IO(new Bundle {
-    val op = Input(UInt(3.W))
-    val a = Input(SInt(4.W))
-    val b = Input(SInt(4.W))
-    val out = Output(SInt(4.W))
-    val of = Output(Bool())
+    val in = Input(Bool()) //为1暂停,为0开始
+    val seg1 =Output(UInt(7.W))
+    val seg2 =Output(UInt(7.W))
+    val ld =Output(UInt(8.W))
+  })  
+  val reg =RegInit("b01000000".U(8.W))
+  val x8 =reg(0)+reg(2)+reg(3)+reg(4)
+  when(io.in===true.B){
+    reg := Cat(x8,reg(7,1))
+  }
+  val bcd7seg1 = Module(new bcd7seg())
+  val bcd7seg2 = Module(new bcd7seg())
+  bcd7seg1.seg.in := reg(3,0)
+  bcd7seg2.seg.in := reg(7,4)
+  io.seg1 := bcd7seg1.seg.out
+  io.seg2 := bcd7seg2.seg.out
+  io.ld := reg 
+}
+
+class bcd7seg extends Module{
+  val seg = IO(new Bundle {
+    val in = Input(UInt(4.W))
+    val out= Output(UInt(7.W))
   })
-
-  val sum = io.a + io.b
-  val op_add=sum
-  val overflow_add = (io.a(3) === io.b(3)) && (sum(3)=/= io.a(3))
-
-  val sub = io.a - io.b
-  val op_sub=sub
-  val overflow_sub = (io.a(3) === io.b(3)) && (sub(3)=/= io.a(3))
-
-  val op_neg = ~io.a
-
-  val op_and = io.a & io.b
-
-  val op_or = io.a | io.b
-
-  val op_xor = io.a ^ io.b
-
-  val op_tha = Mux(io.a < io.b, 1.S, 0.S)
-
-  val op_eq = Mux(io.a === io.b, 1.S, 0.S)
-
-  io.out := MuxLookup(io.op, 0.S)(Seq(
-    0.U -> op_add.asSInt, 1.U -> op_sub.asSInt,
-    2.U -> op_neg, 3.U -> op_and,
-    4.U -> op_or, 5.U -> op_xor,
-    6.U -> op_tha, 7.U -> op_eq
-  ))
-  io.of := MuxLookup(io.op, 0.U)(Seq(
-    0.U -> overflow_add, 1.U -> overflow_sub,
+  seg.out := MuxLookup(seg.in, 0.U)(Seq(
+    0.U -> "b1000000".U, 1.U -> "b1111001".U, 
+    2.U -> "b0100100".U, 3.U -> "b0110000".U,
+    4.U -> "b0011001".U, 5.U -> "b0010010".U,
+    6.U -> "b0000010".U, 7.U -> "b1111000".U, 
+    8.U -> "b0000000".U, 9.U -> "b0010000".U,
+    10.U -> "b0001000".U, 11.U -> "b0000011".U,
+    12.U -> "b1000110".U, 13.U -> "b0100001".U,
+    14.U -> "b0000110".U, 15.U -> "b0001110".U
   ))
 }
