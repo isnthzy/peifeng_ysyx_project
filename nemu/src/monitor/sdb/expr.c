@@ -106,22 +106,22 @@ bool check_parentheses(int p,int q){
 
 int prio(int t){ //优先级排序,很重要!!!
   switch (t) {
-      case '+':
-      case '-':
+      case TK_OR:
           return 7;
-      case '*':
-      case '/':
+      case TK_AND:
           return 6;
-      case TK_NEG:
-          return 5;
-      case TK_DEF:
-          return 4;
       case TK_EQ:
       case TK_NEQ:
+          return 5;
+      case '+':
+      case '-':
+          return 4;
+      case '*':
+      case '/':
           return 3;
-      case TK_AND:
+      case TK_NEG:
           return 2;
-      case TK_OR:
+      case TK_DEF:
           return 1;
       default:
           return 0;

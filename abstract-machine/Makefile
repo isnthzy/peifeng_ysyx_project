@@ -12,7 +12,8 @@ ifeq ($(MAKECMDGOALS),)
   MAKECMDGOALS  = image
   .DEFAULT_GOAL = image
 endif
-
+#am_makefile 被使用
+$(info "The am_makefile begin"$(NAME)-$(MAKECMDGOALS)-$(ARCH))
 ### Override checks when `make clean/clean-all/html`
 ifeq ($(findstring $(MAKECMDGOALS),clean|clean-all|html),)
 
@@ -154,6 +155,9 @@ image-dep: $(OBJS) am $(LIBS)
 clean:
 	rm -rf Makefile.html $(WORK_DIR)/build/
 .PHONY: clean
+
+#am_makefile 被使用
+$(info "The am_makefile end"$(NAME)-$(MAKECMDGOALS)-$(ARCH))
 
 ### Clean all sub-projects within depth 2 (and ignore errors)
 CLEAN_ALL = $(dir $(shell find . -mindepth 2 -name Makefile))
