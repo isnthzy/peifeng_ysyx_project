@@ -3,51 +3,40 @@ import chisel3.util._
 
 class SimTop extends Module {
   val io = IO(new Bundle {
-    val in = Input(UInt(8.W))
-    val en = Input(Bool())
-    val led_out = Output(UInt(3.W))
-    val hex_out = Output(UInt(7.W))
-    val led4 = Output(Bool())
+    val op = Input(UInt(3.W))
+    val a = Input(SInt(4.W))
+    val b = Input(SInt(4.W))
+    val out = Output(SInt(4.W))
+    val of = Output(Bool())
   })
-  val encode = Module(new encode82())
-  val seg = Module(new bcd7seg())
-  encode.encode.in := io.in
-  encode.encode.en := io.en
-  io.led4 := Mux(io.in === 0.U, true.B, false.B)
 
-  seg.seg.in := encode.encode.out
-  io.led_out := encode.encode.out
-  io.hex_out := seg.seg.out
+  val sum = io.a + io.b
+  val op_add=sum
+  val overflow_add = (io.a(3) === io.b(3)) && (sum(3)=/= io.a(3))
 
-}
+  val sub = io.a - io.b
+  val op_sub=sub
+  val overflow_sub = (io.a(3) === io.b(3)) && (sub(3)=/= io.a(3))
 
-class encode82 extends Module {
-  val encode = IO(new Bundle {
-    val in = Input(UInt(8.W))
-    val en = Input(Bool())
-    val out = Output(UInt(3.W))
-  })
-  when(encode.en){
-    encode.out:=0.U
-    for(i<-0 until 8){
-      when(encode.in(i)===1.U){
-        encode.out:=i.U(3.W)
-      }
-    }
-  }otherwise{
-    encode.out := 0.U
-  }
-}
+  val op_neg = ~io.a
 
-class bcd7seg extends Module{
-  val seg = IO(new Bundle {
-    val in = Input(UInt(3.W))
-    val out= Output(UInt(7.W))
-  })
-  seg.out := MuxLookup(seg.in, 0.U)(Seq(
-    0.U -> "b1000000".U, 1.U -> "b1111001".U, 
-    2.U -> "b0100100".U, 3.U -> "b0110000".U,
-    4.U -> "b0011001".U, 5.U -> "b0010010".U,
-    6.U -> "b0000010".U, 7.U -> "b1111000".U, 
+  val op_and = io.a & io.b
+
+  val op_or = io.a | io.b
+
+  val op_xor = io.a ^ io.b
+
+  val op_tha = Mux(io.a < io.b, 1.S, 0.S)
+
+  val op_eq = Mux(io.a === io.b, 1.S, 0.S)
+
+  io.out := MuxLookup(io.op, 0.S)(Seq(
+    0.U -> op_add.asSInt, 1.U -> op_sub.asSInt,
+    2.U -> op_neg, 3.U -> op_and,
+    4.U -> op_or, 5.U -> op_xor,
+    6.U -> op_tha, 7.U -> op_eq
+  ))
+  io.of := MuxLookup(io.op, 0.U)(Seq(
+    0.U -> overflow_add, 1.U -> overflow_sub,
   ))
 }
