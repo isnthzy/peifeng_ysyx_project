@@ -101,20 +101,20 @@ void *memcpy(void *out, const void *in, size_t n) {
 }
 
 int memcmp(const void *s1, const void *s2, size_t n) {
-  if(s1==NULL||s2==NULL){
-    // return NULL;
-    assert(0);
-  }
-  size_t i=0;
-  for(i=0;i<n;i++){
-    if(*((char *)s1+i)>*((char *)s2+i)){
-      return 1;
-    }else if(*((char *)s1+i)<*((char *)s2+i)){
-      return -1;
-    }else if(*((char *)s1+i)==*((char *)s2+i)){
-      continue;
-    }
-  }
+  // if(s1==NULL||s2==NULL){
+  //   // return NULL;
+  //   assert(0);
+  // }
+  // size_t i=0;
+  // for(i=0;i<n;i++){
+  //   if(*((char *)s1+i)>*((char *)s2+i)){
+  //     return 1;
+  //   }else if(*((char *)s1+i)<*((char *)s2+i)){
+  //     return -1;
+  //   }else if(*((char *)s1+i)==*((char *)s2+i)){
+  //     continue;
+  //   }
+  // }
   return 0;
   // panic("Not implemented");
 }
