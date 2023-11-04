@@ -41,7 +41,7 @@ int strcmp(const char *s1, const char *s2) {
   size_t lens2=strlen(s2);
   size_t len=MIN(lens1,lens2);
   int retn=strncmp(s1,s2,len);
-  if(retn!=0){
+  if(retn==0){
     if(lens1<lens2){
       return -1;
     }else{
