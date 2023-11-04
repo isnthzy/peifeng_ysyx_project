@@ -37,29 +37,33 @@ char *strcat(char *dst, const char *src) {
 }
 
 int strcmp(const char *s1, const char *s2) {
-  int i=0;
   int lens1=strlen(s1);
   int lens2=strlen(s2);
   int len=MIN(lens1,lens2);
-  for(i=0;i<len;i++){
+  int retn=strncmp(s1,s2,len);
+  if(retn!=0){
+    if(lens1<lens2){
+      return -1;
+    }else{
+      return 1;
+    }
+  }else{
+    return retn;
+  }
+  // panic("Not implemented");
+}
+
+int strncmp(const char *s1, const char *s2, size_t n) {
+  size_t i=0;
+  for(i=0;i<n;i++){
     if(s1[i]>s2[i]){
       return 1;
-    }else if(s1[i]==s2[i]){
-      if(i==lens1-1&&lens1<lens2){
-        return -1;
-      }else if(i==lens1-1&&lens1>lens2){
-        return 1;
-      }
+    }else if(s1[i]==s1[i]){
       continue;
     }else if(s1[i]<s2[i]){
       return -1;
     }
   }
-  return 0;
-  // panic("Not implemented");
-}
-
-int strncmp(const char *s1, const char *s2, size_t n) {
   return 0;
   // panic("Not implemented");
 }
