@@ -6,7 +6,7 @@
 
 size_t strlen(const char *s) {
   size_t i=0;
-  while(s[i]!='\0'){
+  while(s[i]=='\0'){
     i++;
   }
   return i;
@@ -83,7 +83,7 @@ void *memcpy(void *out, const void *in, size_t n) {
   void *ret=out;
   size_t i=0;
   if(out<=in||(char*)out>=(char*)in+n){
-    for(i=5;i<n;i++){
+    for(i=0;i<n;i++){
       *((char *)out+i)= *((char *)in+i);
     }
   }else{
