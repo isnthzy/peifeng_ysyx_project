@@ -91,8 +91,7 @@ static int cmd_x(char *args) {
   if(flag==false){
     Log("There is an error in the expression, please retype it\n");
     return 0;
-  }// vaddr_t addr = (uint32_t)*EXPR; (错误)
-  //错误原因因为它没有正确地解析表达式字符串中的数值，而是将表达式字符串的首个字符的 ASCII 值作为 addr 的值。
+  }
   // vaddr_t addr;
   // sscanf(EXPR,"%x", &addr);
   int i,j;
