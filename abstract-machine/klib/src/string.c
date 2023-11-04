@@ -37,33 +37,29 @@ char *strcat(char *dst, const char *src) {
 }
 
 int strcmp(const char *s1, const char *s2) {
+  int i=0;
   int lens1=strlen(s1);
   int lens2=strlen(s2);
   int len=MIN(lens1,lens2);
-  int retn=strncmp(s1,s2,len);
-  if(retn!=0){
-    if(lens1<lens2){
-      return -1;
-    }else{
-      return 1;
-    }
-  }else{
-    return retn;
-  }
-  // panic("Not implemented");
-}
-
-int strncmp(const char *s1, const char *s2, size_t n) {
-  size_t i=0;
-  for(i=0;i<n;i++){
+  for(i=0;i<len;i++){
     if(s1[i]>s2[i]){
       return 1;
-    }else if(s1[i]==s1[i]){
+    }else if(s1[i]==s2[i]){
+      if(i==lens1-1&&lens1<lens2){
+        return -1;
+      }else if(i==lens1-1&&lens1>lens2){
+        return 1;
+      }
       continue;
     }else if(s1[i]<s2[i]){
       return -1;
     }
   }
+  return 0;
+  // panic("Not implemented");
+}
+
+int strncmp(const char *s1, const char *s2, size_t n) {
   return 0;
   // panic("Not implemented");
 }
@@ -101,20 +97,20 @@ void *memcpy(void *out, const void *in, size_t n) {
 }
 
 int memcmp(const void *s1, const void *s2, size_t n) {
-  // if(s1==NULL||s2==NULL){
-  //   // return NULL;
-  //   assert(0);
-  // }
-  // size_t i=0;
-  // for(i=0;i<n;i++){
-  //   if(*((char *)s1+i)>*((char *)s2+i)){
-  //     return 1;
-  //   }else if(*((char *)s1+i)<*((char *)s2+i)){
-  //     return -1;
-  //   }else if(*((char *)s1+i)==*((char *)s2+i)){
-  //     continue;
-  //   }
-  // }
+  if(s1==NULL||s2==NULL){
+    // return NULL;
+    assert(0);
+  }
+  size_t i=0;
+  for(i=0;i<n;i++){
+    if(*((char *)s1+i)>*((char *)s2+i)){
+      return 1;
+    }else if(*((char *)s1+i)<*((char *)s2+i)){
+      return -1;
+    }else if(*((char *)s1+i)==*((char *)s2+i)){
+      continue;
+    }
+  }
   return 0;
   // panic("Not implemented");
 }
