@@ -26,11 +26,12 @@ char *strcpy(char *dst, const char *src) {
 }
 
 char *strncpy(char *dst, const char *src, size_t n) {
-  size_t i;
-  for(i=0;i<n&&src[i]!='\0';i++){
-    dst[i]=src[i];
-    if(src[i+1]=='\0') dst[i+1]=src[i+1];
-  }
+  memcpy(dst, src, n);
+  // size_t i;
+  // for(i=0;i<n&&src[i]!='\0';i++){
+  //   dst[i]=src[i];
+  //   if(src[i+1]=='\0') dst[i+1]=src[i+1];
+  // }
   return dst;
   // panic("Not implemented");
 }
