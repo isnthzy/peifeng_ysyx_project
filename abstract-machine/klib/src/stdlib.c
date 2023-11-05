@@ -29,10 +29,10 @@ int atoi(const char* nptr) {
   return x;
 }
 
-void reverse(char *s, int len) {
-  char *end =s+len-1;
+void reverse(char *s,int len) {
+  char *end=s+len-1;
   char tmp;
-  while (s<end) {
+  while (s<end){
     tmp=*s;
     *s=*end;
     *end=tmp;
@@ -47,6 +47,9 @@ char *itoa(int value,char * str,int radix){
   	neg=true;
   }
   int i=0; 
+  if (value==0){
+    str[i++]='0';
+  }
   while(value!=0){
   	int tmp=0;
     tmp=value%radix;

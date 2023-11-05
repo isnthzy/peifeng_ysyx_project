@@ -18,9 +18,10 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 int sprintf(char *out, const char *fmt, ...) { //fmt可以当个字符串处理
   va_list ap;
   va_start(ap, fmt);
+//   printf("%s\n",out);
+  *out='\0';
   char *s,c;
   int d,i;
-  *out='\0';
   for (i=0;fmt[i]!='\0';i++) {
     if (fmt[i]!='%') {
       strncat(out,&fmt[i],1);
@@ -33,15 +34,15 @@ int sprintf(char *out, const char *fmt, ...) { //fmt可以当个字符串处理
 	    strcat(out,s);
 	    break;
     case 'd':
-      d=va_arg(ap,int);
-      char tmp[30];
-      itoa(d,tmp,10);
-      strcat(out,tmp);
-      break;
+        d=va_arg(ap,int);
+        char tmp[30];
+        itoa(d,tmp,10);
+        strcat(out,tmp);
+        break;
     case 'c':
-      c=(char)va_arg(ap,int);
-      strncat(out,&c,1);
-      break;
+        c=(char)va_arg(ap,int);
+        strncat(out,&c,1);
+        break;
     }
   }
   va_end(ap);
