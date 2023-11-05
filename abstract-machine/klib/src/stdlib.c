@@ -29,10 +29,10 @@ int atoi(const char* nptr) {
   return x;
 }
 
-void reverse(char *s,int len) {
-  char *end=s+len-1;
+void reverse(char *s, int len) {
+  char *end =s+len-1;
   char tmp;
-  while (s<end){
+  while (s<end) {
     tmp=*s;
     *s=*end;
     *end=tmp;
@@ -53,14 +53,15 @@ char *itoa(int value,char * str,int radix){
   while(value!=0){
   	int tmp=0;
     tmp=value%radix;
-	  str[i++]=tmp+'0';
-	  value/=radix;
+	str[i++]=tmp+'0';
+	value/=radix;
   }
   if(neg) str[i++]='-';
   reverse(str,i);
   str[i]='\0';
   return str;
 }
+
 
 void *malloc(size_t size) {
   // On native, malloc() will be called during initializaion of C runtime.
