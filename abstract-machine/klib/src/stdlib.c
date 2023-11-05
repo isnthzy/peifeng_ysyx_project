@@ -29,6 +29,40 @@ int atoi(const char* nptr) {
   return x;
 }
 
+void reverse(char *s, int len){
+  char *end=s+len-1;
+  char tmp;
+  while (s<end) {
+    tmp=*s;
+    *s=*end;
+    *end=tmp;
+    s++;
+    end--;
+  }
+}
+char *itoa(int value,char * str,int radix){
+  bool neg=false;
+  if(value<0){
+  	value*=-1;
+  	neg=true;
+  }
+  int i=0; 
+  if (value==0){
+    str[i++]='0';
+  }
+  while(value!=0){
+  	int tmp=0;
+    tmp=value%radix;
+	  str[i++]=tmp+'0';
+	  value/=radix;
+  }
+  if(neg) str[i++]='-';
+  reverse(str,i);
+  str[i]='\0';
+  return str;
+}
+
+
 void *malloc(size_t size) {
   // On native, malloc() will be called during initializaion of C runtime.
   // Therefore do not call panic() here, else it will yield a dead recursion:

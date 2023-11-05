@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-// #define __NATIVE_USE_KLIB__
+#define __NATIVE_USE_KLIB__
 
 // string.h
 void  *stpcpy    (char *restrict dst, const char *restrict src);
@@ -19,6 +19,7 @@ void  *memmove   (void *dst, const void *src, size_t n);
 int    memcmp    (const void *s1, const void *s2, size_t n);
 size_t strlen    (const char *s);
 char  *strcat    (char *dst, const char *src);
+char  *strncat   (char *dst, const char *src, size_t n);
 char  *strcpy    (char *dst, const char *src);
 char  *strncpy   (char *dst, const char *src, size_t n);
 int    strcmp    (const char *s1, const char *s2);
@@ -31,6 +32,7 @@ void  *malloc    (size_t size);
 void   free      (void *ptr);
 int    abs       (int x);
 int    atoi      (const char *nptr);
+char  *itoa      (int value,char *str,int radix); 
 
 // stdio.h
 int    printf    (const char *format, ...);
