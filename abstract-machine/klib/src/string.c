@@ -40,6 +40,11 @@ char *strcat(char *dst, const char *src) {
   return dst;
   // panic("Not implemented");
 }
+char *strncat(char *dst, const char *src, size_t n){
+  stpcpy(dst + n, src);
+  return dst;
+  // panic("Not implemented");
+}
 
 int strcmp(const char *s1, const char *s2) {
   size_t lens1=strlen(s1);
