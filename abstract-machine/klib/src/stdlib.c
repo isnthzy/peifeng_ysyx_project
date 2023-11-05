@@ -50,8 +50,8 @@ char *itoa(int value,char * str,int radix){
   while(value!=0){
   	int tmp=0;
     tmp=value%radix;
-	str[i++]=tmp+'0';
-	value/=radix;
+	  str[i++]=tmp+'0';
+	  value/=radix;
   }
   if(neg) str[i++]='-';
   reverse(str,i);

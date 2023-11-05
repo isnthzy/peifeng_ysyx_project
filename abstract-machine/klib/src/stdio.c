@@ -19,8 +19,9 @@ int sprintf(char *out, const char *fmt, ...) { //fmt可以当个字符串处理
   va_list ap;
   va_start(ap, fmt);
   char *s,c;
-  int d;
-  for (int i=0;fmt[i]!='\0';i++) {
+  int d,i;
+  *out='\0';
+  for (i=0;fmt[i]!='\0';i++) {
     if (fmt[i]!='%') {
       strncat(out,&fmt[i],1);
       continue;
