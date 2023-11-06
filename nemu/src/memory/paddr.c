@@ -38,7 +38,7 @@ static void pmem_write(paddr_t addr, int len, word_t data) {
 }
 
 static void putIringbuf(){
-  if(!isIRingBufferEmpty(&iring_buffer)){
+  while(!isIRingBufferEmpty(&iring_buffer)){
     char pop_iringbufdata[100];
     dequeueIRingBuffer(&iring_buffer,pop_iringbufdata);
     Log("%s",pop_iringbufdata);
