@@ -107,7 +107,7 @@ void assert_fail_msg() {
   statistic();
 }
 void putIringbuf(){
-  if(!isIRingBufferEmpty(&iring_buffer)){
+  while(!isIRingBufferEmpty(&iring_buffer)){
     char pop_iringbufdata[100];
     dequeueIRingBuffer(&iring_buffer,pop_iringbufdata);
     Log("%s",pop_iringbufdata);
