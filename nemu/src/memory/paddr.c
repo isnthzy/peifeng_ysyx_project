@@ -41,7 +41,7 @@ static void putIringbuf(){
   while(!isIRingBufferEmpty(&iring_buffer)){
     char pop_iringbufdata[100];
     dequeueIRingBuffer(&iring_buffer,pop_iringbufdata);
-    Log("%s",pop_iringbufdata);
+    printf("%s\n",pop_iringbufdata);
   }
 }
 
