@@ -17,6 +17,7 @@
 #include <cpu/decode.h>
 #include <cpu/difftest.h>
 #include <locale.h>
+#include "iringbuf.h"
 
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
@@ -29,7 +30,7 @@ CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
-
+IRingBuffer iring_buffer;
 void device_update();
 void wp_trace();
 
@@ -42,6 +43,11 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   char decodelog[128];
   // printf("0x%x\n",_this->pc);
   strcpy(decodelog,_this->logbuf);
+  if(isIRingBufferEmpty(&iring_buffer)){
+    char pop_iringbufdata[100];
+    dequeueIRingBuffer(&iring_buffer,pop_iringbufdata);
+  }
+  enqueueIRingBuffer(&iring_buffer,decodelog);
   wp_trace(decodelog);
 }
 
@@ -102,7 +108,12 @@ void assert_fail_msg() {
 }
 
 /* Simulate how the CPU works. */
+bool init_iringbuf_f=false;
 void cpu_exec(uint64_t n) {
+  if(!init_iringbuf_f){
+    init_iringbuf_f=true;
+    initializeIRingBuffer(&iring_buffer);
+  } //初始化iringbuffer,只初始化一次
   g_print_step = (n < MAX_INST_TO_PRINT);
   switch (nemu_state.state) {
     case NEMU_END: case NEMU_ABORT:
