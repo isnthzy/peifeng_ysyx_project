@@ -51,13 +51,6 @@ static void exec_once(Decode *s, vaddr_t pc) {
   s->snpc = pc;
   isa_exec_once(s);
   cpu.pc = s->dnpc;
-  //环形缓冲区
-  if(isIRingBufferEmpty(&iring_buffer)){
-    char pop_iringbufdata[100];
-    dequeueIRingBuffer(&iring_buffer,pop_iringbufdata);
-  }
-  enqueueIRingBuffer(&iring_buffer,s->logbuf);
-  //环形缓冲区
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
   p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
@@ -81,6 +74,13 @@ static void exec_once(Decode *s, vaddr_t pc) {
 #else
   p[0] = '\0'; // the upstream llvm does not support loongarch32r
 #endif
+  //环形缓冲区
+  if(isIRingBufferEmpty(&iring_buffer)){
+    char pop_iringbufdata[100];
+    dequeueIRingBuffer(&iring_buffer,pop_iringbufdata);
+  }
+  enqueueIRingBuffer(&iring_buffer,s->logbuf);
+  //环形缓冲区
 #endif
 }
 
