@@ -106,6 +106,13 @@ void assert_fail_msg() {
   isa_reg_display();
   statistic();
 }
+void putIringbuf(){
+  if(!isIRingBufferEmpty(&iring_buffer)){
+    char pop_iringbufdata[100];
+    dequeueIRingBuffer(&iring_buffer,pop_iringbufdata);
+    Log("%s",pop_iringbufdata);
+  }
+}
 
 /* Simulate how the CPU works. */
 bool init_iringbuf_f=false;
@@ -133,9 +140,10 @@ void cpu_exec(uint64_t n) {
     case NEMU_RUNNING: nemu_state.state = NEMU_STOP; break;
 
     case NEMU_END: case NEMU_ABORT:
+      if(nemu_state.state==NEMU_ABORT) putIringbuf();
       Log("nemu: %s at pc = " FMT_WORD,
-          (nemu_state.state == NEMU_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED) :
-           (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
+          (nemu_state.state == NEMU_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED):
+           (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN):
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
           nemu_state.halt_pc);
       // fall through
