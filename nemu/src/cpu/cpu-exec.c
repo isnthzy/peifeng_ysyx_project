@@ -43,11 +43,6 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   char decodelog[128];
   // printf("0x%x\n",_this->pc);
   strcpy(decodelog,_this->logbuf);
-  if(isIRingBufferEmpty(&iring_buffer)){
-    char pop_iringbufdata[100];
-    dequeueIRingBuffer(&iring_buffer,pop_iringbufdata);
-  }
-  enqueueIRingBuffer(&iring_buffer,decodelog);
   wp_trace(decodelog);
 }
 
@@ -56,6 +51,13 @@ static void exec_once(Decode *s, vaddr_t pc) {
   s->snpc = pc;
   isa_exec_once(s);
   cpu.pc = s->dnpc;
+  //环形缓冲区
+  if(isIRingBufferEmpty(&iring_buffer)){
+    char pop_iringbufdata[100];
+    dequeueIRingBuffer(&iring_buffer,pop_iringbufdata);
+  }
+  enqueueIRingBuffer(&iring_buffer,s->logbuf);
+  //环形缓冲区
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
   p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
