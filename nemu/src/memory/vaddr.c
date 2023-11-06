@@ -17,11 +17,13 @@
 #include <memory/paddr.h>
 
 word_t vaddr_ifetch(vaddr_t addr, int len) {
-  return paddr_read(addr, len);
+  int r_mode=0;//取指时隐藏访存
+  return paddr_read(addr, len,r_mode);
 }
 
 word_t vaddr_read(vaddr_t addr, int len) {
-  return paddr_read(addr, len);
+  int r_mode=1;//不隐藏
+  return paddr_read(addr, len,r_mode);
 }
 
 void vaddr_write(vaddr_t addr, int len, word_t data) {
