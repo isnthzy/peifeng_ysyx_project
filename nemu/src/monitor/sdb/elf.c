@@ -33,7 +33,8 @@ void init_elf(const char *elf_file){
 void find_symtab_func(const char *pbuff){
     //从节区里面定位到偏移
     Elf64_Ehdr* pfilehead = (Elf64_Ehdr*)pbuff;
-    // Elf64_Half eshstrndx = pfilehead->e_shstrndx;
+    Elf64_Half eshstrndx = pfilehead->e_shstrndx;
+    printf("%d",eshstrndx);
     Elf64_Shdr* psecheader = (Elf64_Shdr*)(pbuff + pfilehead->e_shoff);
     // Elf64_Shdr* pshstr = (Elf64_Shdr*)(psecheader + eshstrndx);
     // char* pshstrbuff = (char *)(pbuff + pshstr->sh_offset);
