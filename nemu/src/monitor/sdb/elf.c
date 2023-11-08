@@ -46,7 +46,7 @@ void find_symtab_func(const char *pbuff){
             char* pbuffstr = (char*)((psecheader + psecheader[i].sh_link)->sh_offset + pbuff);
             // printf("Symbol table '%s' contains %d entries:\r\n", psecheader[i].sh_name + pshstrbuff, ncount);
             outputsyminfo(psym, pbuffstr, ncount);
-            break;
+            // break;
         // }
     }
 }
