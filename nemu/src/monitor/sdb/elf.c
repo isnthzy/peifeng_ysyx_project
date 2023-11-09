@@ -49,8 +49,8 @@ void init_elf(const char *elf_file){
             // 获取符号的名称
             char* symbol_name = string_table + symbols[i].st_name;
             // 获取符号的地址
-            Elf64_Addr symbol_address = symbols[i].st_value;
-            printf("Function: %s Address: 0x%lx\n", symbol_name, symbol_address);
+            Elf_Addr symbol_address = symbols[i].st_value;
+            printf("Function: %s Address: 0x%x Size: %d\n", symbol_name, symbol_address,symbols[i].st_size);
         }
     }
     fclose(file);
