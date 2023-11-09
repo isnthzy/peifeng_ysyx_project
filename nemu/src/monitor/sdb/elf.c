@@ -1,7 +1,12 @@
 #include <common.h>
 #include <stdio.h>
 // 解析elf文件代码
-
+typedef struct {
+    char func_name[64]; // 函数名
+    size_t value;      // 起始地址
+    size_t size;        // 函数体大小
+}ELF_Func;              // [start, start+size)
+ELF_Func elf_func[1024]; 
 void init_elf(const char *elf_file){
     FILE* file = fopen(elf_file, "rb");//以只读的形式打开elf_file
     if(!file){
@@ -47,10 +52,11 @@ void init_elf(const char *elf_file){
     for (size_t i = 0; i < symbol_count; ++i) {
         if (ELF32_ST_TYPE(symbols[i].st_info) == STT_FUNC) {
             // 获取符号的名称
-            char* symbol_name = string_table + symbols[i].st_name;
+            char* symbol_name=string_table + symbols[i].st_name;
+            strcpy(elf_func[i].func_name,symbol_name);
             // 获取符号的地址
-            Elf_Addr symbol_address = symbols[i].st_value;
-            printf("Function: %s Address: 0x%x Size: %d\n", symbol_name, symbol_address,symbols[i].st_size);
+            elf_func[i].value=symbols[i].st_value;
+            elf_func[i].size =symbols[i].st_size;
         }
     }
     fclose(file);
