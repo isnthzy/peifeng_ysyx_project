@@ -7,7 +7,7 @@
 #include <string.h>
 #include <elf.h>
 // 解析elf文件代码
-void outputsyminfo(const Elf64_Sym *psym, const char *pbuffstr, int ncount);
+void outputsyminfo(const Elf32_Sym *psym, const char *pbuffstr, int ncount);
 void find_symtab_func(const char *pbuff);
 void init_elf(const char *elf_file){
     int fd=open(elf_file, O_RDONLY);//以只读的形式打开elf_file
@@ -32,32 +32,32 @@ void init_elf(const char *elf_file){
 }
 void find_symtab_func(const char *pbuff){
     //从节区里面定位到偏移
-    Elf64_Ehdr* pfilehead = (Elf64_Ehdr*)pbuff;
-    Elf64_Half eshstrndx = pfilehead->e_shstrndx;
-    printf("%d",eshstrndx);
-    Elf64_Shdr* psecheader = (Elf64_Shdr*)(pbuff + pfilehead->e_shoff);
-    // Elf64_Shdr* pshstr = (Elf64_Shdr*)(psecheader + eshstrndx);
-    // char* pshstrbuff = (char *)(pbuff + pshstr->sh_offset);
+    Elf32_Ehdr* pfilehead = (Elf32_Ehdr*)pbuff;
+    Elf32_Half eshstrndx = pfilehead->e_shstrndx;
+    // printf("%d",eshstrndx);
+    Elf32_Shdr* psecheader = (Elf32_Shdr*)(pbuff + pfilehead->e_shoff);
+    Elf32_Shdr* pshstr = (Elf32_Shdr*)(psecheader + eshstrndx);
+    char* pshstrbuff = (char *)(pbuff + pshstr->sh_offset);
     for(int i = 0;i<pfilehead->e_shnum;++i)
     {
-        // if(!strcmp(psecheader[i].sh_name + pshstrbuff, ".symtab"))
-        // {
-            Elf64_Sym* psym = (Elf64_Sym*)(pbuff + psecheader[i].sh_offset);
+        if(!strcmp(psecheader[i].sh_name + pshstrbuff, ".symtab"))
+        {
+            Elf32_Sym* psym = (Elf32_Sym*)(pbuff + psecheader[i].sh_offset);
             int ncount = psecheader[i].sh_size / psecheader[i].sh_entsize;
             char* pbuffstr = (char*)((psecheader + psecheader[i].sh_link)->sh_offset + pbuff);
-            // printf("Symbol table '%s' contains %d entries:\r\n", psecheader[i].sh_name + pshstrbuff, ncount);
+            printf("Symbol table '%s' contains %d entries:\r\n", psecheader[i].sh_name + pshstrbuff, ncount);
             outputsyminfo(psym, pbuffstr, ncount);
-            // break;
-        // }
+            break;
+        }
     }
 }
-void outputsyminfo(const Elf64_Sym *psym, const char *pbuffstr, int ncount)
+void outputsyminfo(const Elf32_Sym *psym, const char *pbuffstr, int ncount)
 {
     printf("%7s  %-8s          %s  %s    %s   %s      %s  %s\r\n",
            "Num:", "Value", "Size", "Type", "Bind", "Vis", "Ndx", "Name");
     for(int i = 0;i<ncount;++i)
     {
-        printf("%6d:  %016lx  %-6lu", i, psym[i].st_value, psym[i].st_size);
+        printf("%6d:  %016x  %-6u", i, psym[i].st_value, psym[i].st_size);
         char typelow = ELF32_ST_TYPE(psym[i].st_info);
         char bindhig = ELF32_ST_BIND(psym[i].st_info);
         switch(typelow)
