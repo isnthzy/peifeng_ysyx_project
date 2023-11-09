@@ -57,6 +57,7 @@ void init_elf(const char *elf_file){
             // 获取符号的地址
             elf_func[i].value=symbols[i].st_value;
             elf_func[i].size =symbols[i].st_size;
+            printf("Function: %s\nAddress: 0x%x %d\n",elf_func[i].func_name,symbols[i].st_value,symbols[i].st_size);
         }
     }
     fclose(file);
