@@ -40,7 +40,8 @@ void find_symtab_func(const char *pbuff){
     char* pshstrbuff = (char *)(pbuff + pshstr->sh_offset);
     for(int i = 0;i<pfilehead->e_shnum;++i)
     {
-        if(!strcmp(psecheader[i].sh_name + pshstrbuff, ".symtab"))
+        // if(!strcmp(psecheader[i].sh_name + pshstrbuff, ".symtab"))
+        if(psecheader->sh_type==SHT_SYMTAB)
         {
             Elf32_Sym* psym = (Elf32_Sym*)(pbuff + psecheader[i].sh_offset);
             int ncount = psecheader[i].sh_size / psecheader[i].sh_entsize;
