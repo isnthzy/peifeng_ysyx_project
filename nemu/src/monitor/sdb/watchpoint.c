@@ -98,8 +98,8 @@ void wp_trace(char *decodelog){
         flagput=true;
       }
       printf("watchpoint %d: %s\n",h->NO,h->expr);
-      printf("Old value = %u\n",h->last);
-      printf("New value = %u\n",new);
+      printf("Old value = %u(%#x)\n",h->last,h->last);
+      printf("New value = %u(%#x)\n",new,new);
       h->last=new;
       flag=true;
     }
