@@ -86,7 +86,7 @@ void func_ret(paddr_t pc,paddr_t dnpc){
     func_depth--;
     strcmp(func_name,find_funcname(dnpc));
     generateSpaces(func_depth,n_spaces);
-    Log("0x%x:%s ret [%s@0x%x]",pc,n_spaces,func_name,dnpc);
+    Log(" 0x%x:%s ret [%s@0x%x]",pc,n_spaces,func_name,dnpc);
 }
 
 char* find_funcname(paddr_t pc){
