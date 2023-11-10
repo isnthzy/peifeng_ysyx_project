@@ -26,7 +26,7 @@ module ps2_keyboard(clk,resetn,ps2_clk,ps2_data,real_data,num);
               if (count == 4'd10) begin
                 if ((buffer[0] == 0) &&  // start bit
                     (ps2_data)       &&  // stop bit
-                    (^buffer[9:1])) begin      // odd  parity
+                    (^buffer[9:1])) begin      //奇偶校验,奇数个1
                     $display("receive %x", buffer[8:1]);
                     data <=buffer[8:1];
                     if(data==8'hf0)begin
