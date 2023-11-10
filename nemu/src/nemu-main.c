@@ -46,9 +46,6 @@ int main(int argc, char *argv[]) {
         *space = '\0'; 
         val = ea; 
         evall = space + 1; 
-    } else {
-        val = ea;
-        evall = NULL; 
     }
     bool flag=true;
     printf("%s\n",evall);
