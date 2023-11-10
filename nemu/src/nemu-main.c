@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
   //   if(u32==value_p) printf("%d true\n",cnt++);
   //   else assert(0);
   // } //此段代码为表达式求值检测正确性代码,可删
-  // engine_start();
+  engine_start();
 
   return is_exit_status_bad();
 }
