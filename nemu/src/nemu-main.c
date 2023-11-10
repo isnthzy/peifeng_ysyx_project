@@ -40,10 +40,7 @@ int main(int argc, char *argv[]) {
         return 1;
   }
   int cnt=1;
-  int i=133;
   while(fgets(ea,10240,fp)){
-    i--;
-    if(i==0) assert(0);
     val = strtok(ea, " ");
     evall = strtok(ea, " ");
     bool flag=true;
