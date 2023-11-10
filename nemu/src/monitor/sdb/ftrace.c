@@ -8,9 +8,10 @@ char n_spaces[32];
 char put_ftrace[128];
 ELF_Func elf_func[1024]; 
 int func_cnt=0;
+extern bool ftrace_flag;
 // 解析elf文件代码
 void init_elf(const char *elf_file){
-    if(elf_file==NULL){Log("Ftrace: OFF");
+    if(ftrace_flag==false){Log("Ftrace: OFF");
         return ;
     }
     else Log("Ftrace: ON");
