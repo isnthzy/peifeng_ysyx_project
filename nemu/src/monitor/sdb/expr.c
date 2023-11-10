@@ -119,9 +119,9 @@ int prio(int t){ //优先级排序,很重要!!!
       case '*':
       case '/':
           return 3;
-      case TK_NEG:
-          return 2;
       case TK_DEF:
+          return 2;
+      case TK_NEG:
           return 1;
       default:
           return 0;
