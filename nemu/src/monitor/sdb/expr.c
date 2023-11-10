@@ -150,18 +150,21 @@ word_t eval(int p,int q) {
 //    op = the position of 主运算符 in the token expression;
     int op=0;
     int pr=-1;
-    int i,j;
+    int i;
     int val1=1;
-    int leftcc=0;
+    int bracketCount=0;
     for(i=p;i<=q;i++){
-      if(tokens[i].type=='('){ //
-        leftcc++;
-        for(j=i+1;j<=q;j++){
-          if(tokens[j].type==')'&&leftcc==0){
-            i=j;
-            break;
-          }else if(tokens[j].type==')') leftcc--;
-        }
+      if (tokens[i].type == '(') {
+          bracketCount++;
+          continue;
+      } else if (tokens[i].type == ')') {
+          bracketCount--;
+          if (bracketCount > 0) {
+              continue; // 如果还有未匹配的括号，则继续跳过
+          }
+      }
+      if (bracketCount > 0) {
+          continue; // 在括号内部，跳过处理
       }
       if(tokens[i].type==TK_NUM||tokens[i].type==TK_NOTYPE||tokens[i].type==TK_HEX||tokens[i].type==TK_REG){
         continue;
