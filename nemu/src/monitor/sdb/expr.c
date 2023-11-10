@@ -152,13 +152,15 @@ word_t eval(int p,int q) {
     int pr=-1;
     int i,j;
     int val1=1;
+    int leftcc=0;
     for(i=p;i<=q;i++){
       if(tokens[i].type=='('){ //
+        leftcc++;
         for(j=i+1;j<=q;j++){
-          if(tokens[j].type==')'){
+          if(tokens[j].type==')'&&leftcc==0){
             i=j;
             break;
-          }
+          }else if(tokens[j].type==')') leftcc--;
         }
       }
       if(tokens[i].type==TK_NUM||tokens[i].type==TK_NOTYPE||tokens[i].type==TK_HEX||tokens[i].type==TK_REG){
