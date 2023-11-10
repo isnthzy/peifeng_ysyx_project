@@ -31,8 +31,8 @@ int main(int argc, char *argv[]) {
   init_monitor(argc, argv);
 #endif
   char ea[10240];
-  char *val;
-  char *evall;
+  char val[10];
+  char evall[10000];
   /* Start engine. */
   FILE *fp=fopen("/home/wangxin/ysyx-workbench/nemu/tools/gen-expr/input", "r");
   if (fp == NULL) {
@@ -41,8 +41,7 @@ int main(int argc, char *argv[]) {
   }
   int cnt=1;
   while(fgets(ea,10240,fp)){
-    val = strtok(ea, " ");
-    evall = strtok(NULL, " ");
+    sscanf(ea, "%s %[^\n]", val, evall);
     bool flag=true;
     printf("%s\n",evall);
     word_t value_p = expr(evall,&flag);
