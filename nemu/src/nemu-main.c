@@ -41,8 +41,15 @@ int main(int argc, char *argv[]) {
   }
   int cnt=1;
   while(fgets(ea,10240,fp)){
-    val = strtok(ea, " ");
-    evall = strtok(NULL, " ");
+    char *space = strchr(ea, ' '); 
+    if (space) {
+        *space = '\0'; 
+        val = ea; 
+        evall = space + 1; 
+    } else {
+        val = ea;
+        evall = NULL; 
+    }
     bool flag=true;
     printf("%s\n",evall);
     word_t value_p = expr(evall,&flag);
