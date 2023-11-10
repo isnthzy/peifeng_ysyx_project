@@ -1,12 +1,14 @@
-#include <common.h>
+
 #include <stdio.h>
-// 解析elf文件代码
-typedef struct {
-    char func_name[64]; // 函数名
-    size_t value;      // 起始地址
-    size_t size;        // 函数体大小
-}ELF_Func;              // [start, start+size)
+#include "ftrace.h"
+
+int func_depth=0;
+char func_name[64];
+char n_spaces[32];
+char put_ftrace[128];
 ELF_Func elf_func[1024]; 
+int func_cnt=0;
+// 解析elf文件代码
 void init_elf(const char *elf_file){
     FILE* file = fopen(elf_file, "rb");//以只读的形式打开elf_file
     if(!file){
@@ -58,9 +60,40 @@ void init_elf(const char *elf_file){
             // 获取符号的地址
             elf_func[i].value=symbols[i].st_value;
             elf_func[i].size =symbols[i].st_size;
+            func_cnt++;
             printf("Function: %s\nAddress: 0x%x %d(Dec) %x(Hec)\n",elf_func[i].func_name,symbols[i].st_value,symbols[i].st_size,symbols[i].st_size);
         }
     }
     fclose(file);
 }
 
+/*ftrace追踪内容*/
+void generateSpaces(int length, char* spaces) {
+    spaces[0] = '\0'; // 确保初始为空字符串
+    char space[] = " "; // 单个空格字符
+    while (length>0) {
+        strncat(spaces, space, sizeof(space) - 1);
+        length--;
+    }
+}
+void func_call(paddr_t pc,paddr_t dnpc){
+    func_depth++;
+    strcmp(func_name,find_funcname(dnpc));
+    generateSpaces(func_depth,n_spaces);
+    Log("0x%x:%s call[%s@0x%x]",pc,n_spaces,func_name,dnpc);
+}
+void func_ret(paddr_t pc,paddr_t dnpc){
+    func_depth--;
+    strcmp(func_name,find_funcname(dnpc));
+    generateSpaces(func_depth,n_spaces);
+    Log("0x%x:%s ret [%s@0x%x]",pc,n_spaces,func_name,dnpc);
+}
+
+char* find_funcname(paddr_t pc){
+    for(int i=0;i<func_cnt;i++){
+        if(elf_func[i].value<=pc&&(pc<elf_func[i].value+elf_func[i].size)){
+            return elf_func[i].func_name;
+        }
+    }
+    return "???";
+}
