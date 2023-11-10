@@ -42,12 +42,12 @@ int main(int argc, char *argv[]) {
   int cnt=1;
   while(fgets(ea,10240,fp)){
     val = strtok(ea, " ");
-    evall = strtok(ea, " ");
+    evall = strtok(NULL, " ");
     bool flag=true;
     word_t value_p = expr(evall,&flag);
     word_t u32;
     u32 = strtoul(val, NULL, 10);
-    printf("%d %d %s\n",u32,value_p,evall);
+    // printf("%d %d %s\n",u32,value_p,evall);
     if(u32==value_p) printf("%d true\n",cnt++);
     else assert(0);
   } //此段代码为表达式求值检测正确性代码,可删
