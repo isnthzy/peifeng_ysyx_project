@@ -10,6 +10,8 @@ ELF_Func elf_func[1024];
 int func_cnt=0;
 // 解析elf文件代码
 void init_elf(const char *elf_file){
+    if(elf_file==NULL) Log("Ftrace: OFF");
+    else Log("Ftrace: ON");
     FILE* file = fopen(elf_file, "rb");//以只读的形式打开elf_file
     if(!file){
         Log("文件打开失败!\n");
