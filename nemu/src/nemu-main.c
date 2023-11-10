@@ -30,27 +30,27 @@ int main(int argc, char *argv[]) {
 #else
   init_monitor(argc, argv);
 #endif
-  // char ea[10240];
-  // char val[10];
-  // char evall[10000];
-  // /* Start engine. */
-  // FILE *fp=fopen("/home/wangxin/ysyx-workbench/nemu/tools/gen-expr/input", "r");
-  // if (fp == NULL) {
-  //       printf("无法打开文件。\n");
-  //       return 1;
-  // }
-  // int cnt=1;
-  // while(fgets(ea,10240,fp)){
-  //   sscanf(ea, "%s %[^\n]", val, evall);
-  //   bool flag=true;
-  //   printf("%s\n",evall);
-  //   word_t value_p = expr(evall,&flag);
-  //   word_t u32;
-  //   u32 = strtoul(val, NULL, 10);
-  //   printf("%d %d %s\n",u32,value_p,evall);
-  //   if(u32==value_p) printf("%d true\n",cnt++);
-  //   else assert(0);
-  // } //此段代码为表达式求值检测正确性代码,可删
+  char ea[10240];
+  char val[10];
+  char evall[10000];
+  /* Start engine. */
+  FILE *fp=fopen("/home/wangxin/ysyx-workbench/nemu/tools/gen-expr/input", "r");
+  if (fp == NULL) {
+        printf("无法打开文件。\n");
+        return 1;
+  }
+  int cnt=1;
+  while(fgets(ea,10240,fp)){
+    sscanf(ea, "%s %[^\n]", val, evall);
+    bool flag=true;
+    printf("%s\n",evall);
+    word_t value_p = expr(evall,&flag);
+    word_t u32;
+    u32 = strtoul(val, NULL, 10);
+    printf("%d %d %s\n",u32,value_p,evall);
+    if(u32==value_p) printf("%d true\n",cnt++);
+    else assert(0);
+  } //此段代码为表达式求值检测正确性代码,可删
   engine_start();
 
   return is_exit_status_bad();
