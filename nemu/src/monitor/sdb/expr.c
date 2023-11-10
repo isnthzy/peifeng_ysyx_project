@@ -163,7 +163,7 @@ word_t eval(int p,int q) {
       }
       if(tokens[i].type==TK_NUM||tokens[i].type==TK_NOTYPE||tokens[i].type==TK_HEX||tokens[i].type==TK_REG){
         continue;
-      }else if(prio(tokens[i].type)>pr){ //pr是当前最高优先级
+      }else if(prio(tokens[i].type)>=pr){ //pr是当前最高优先级
         pr=prio(tokens[i].type);
         op=i;
       }
