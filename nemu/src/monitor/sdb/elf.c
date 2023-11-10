@@ -51,6 +51,7 @@ void init_elf(const char *elf_file){
     // 遍历符号表，筛选出类型为FUNC的符号
     for (size_t i = 0; i < symbol_count; ++i) {
         if (ELF32_ST_TYPE(symbols[i].st_info) == STT_FUNC) {
+            if(symbols[i].st_size==0) continue; //不符合的大小直接略过
             // 获取符号的名称
             char* symbol_name=string_table + symbols[i].st_name;
             strcpy(elf_func[i].func_name,symbol_name);
