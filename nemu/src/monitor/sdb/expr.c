@@ -154,16 +154,16 @@ word_t eval(int p,int q) {
     int val1=1;
     int bracketCount=0;
     for(i=p;i<=q;i++){
-      if (tokens[i].type == '(') {
+      if (tokens[i].type=='(') {
           bracketCount++;
           continue;
-      } else if (tokens[i].type == ')') {
+      } else if (tokens[i].type==')') {
           bracketCount--;
-          if (bracketCount > 0) {
+          if (bracketCount>0) {
               continue; // 如果还有未匹配的括号，则继续跳过
           }
       }
-      if (bracketCount > 0) {
+      if (bracketCount>0) {
           continue; // 在括号内部，跳过处理
       }
       if(tokens[i].type==TK_NUM||tokens[i].type==TK_NOTYPE||tokens[i].type==TK_HEX||tokens[i].type==TK_REG){
