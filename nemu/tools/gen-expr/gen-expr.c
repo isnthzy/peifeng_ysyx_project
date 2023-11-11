@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
 
     gen_rand_expr();
 
-    if (buf_start - buf > 40) {
+    if (buf_start - buf > 30) {
       continue;  // Skip if the generated expression is too long
     }
 
