@@ -5,7 +5,7 @@ module tranAscii(
   output reg[7:0] asciiCode
 );
 always @(posedge clock) begin
-	case (scanCode)		
+	case (scanCode)		//键值转换为ASCII码，这里做的比较简单，只处理字母
         8'h16: asciiCode <= 8'h30;	//0
         8'h1e: asciiCode <= 8'h31;	//1
         8'h26: asciiCode <= 8'h32;	//2
