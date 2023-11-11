@@ -9,6 +9,7 @@ typedef struct {
     char buffer[BUFFER_SIZE][MAX_STRING_LENGTH];
     int head;     // 指向队列头部的指针
     int tail;     // 指向队列尾部的指针
+    int size;     // 缓冲区有多少个元素
     bool full;    // 标志缓冲区是否已满
 } IRingBuffer;
 

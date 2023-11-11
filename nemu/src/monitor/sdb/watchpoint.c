@@ -19,7 +19,7 @@
 
 typedef struct watchpoint {
   int NO;
-  char expr[10000];
+  char expr[1000];
   word_t last;
   struct watchpoint *next;
 
@@ -52,9 +52,11 @@ void free_wp(WP *wp){
     head=head->next;
     wp->next=free_;
     free_=wp;
-  }else{
+  }
+  else{
     WP *tmp=head;
-    while(tmp->next==wp) tmp=tmp->next;
+    while(tmp->next!=wp) tmp=tmp->next;
+    if(tmp==NULL) return;
     tmp->next=wp->next;
     wp->next=free_;
     free_=wp;
@@ -75,7 +77,7 @@ void display_watch(){
   }else{
     printf("Num     What    Value\n");
     while(h){
-      printf("%-8d%-8s%u(%#x)\n",h->NO,h->expr,h->last,h->last);
+      printf("%-8d%-8s%u(0x%08x)\n",h->NO,h->expr,h->last,h->last);
       h=h->next;
     }
   }
@@ -98,8 +100,8 @@ void wp_trace(char *decodelog){
         flagput=true;
       }
       printf("watchpoint %d: %s\n",h->NO,h->expr);
-      printf("Old value = %u\n",h->last);
-      printf("New value = %u\n",new);
+      printf("Old value = %u(0x%08x)\n",h->last,h->last);
+      printf("New value = %u(0x%08x)\n",new,new);
       h->last=new;
       flag=true;
     }

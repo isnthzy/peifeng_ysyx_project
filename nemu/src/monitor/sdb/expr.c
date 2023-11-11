@@ -119,10 +119,9 @@ int prio(int t){ //优先级排序,很重要!!!
       case '*':
       case '/':
           return 3;
+      case TK_DEF:
       case TK_NEG:
           return 2;
-      case TK_DEF:
-          return 1;
       default:
           return 0;
   }
@@ -151,20 +150,25 @@ word_t eval(int p,int q) {
 //    op = the position of 主运算符 in the token expression;
     int op=0;
     int pr=-1;
-    int i,j;
+    int i;
     int val1=1;
+    int bracketCount=0;
     for(i=p;i<=q;i++){
-      if(tokens[i].type=='('){ //
-        for(j=i+1;j<=q;j++){
-          if(tokens[j].type==')'){
-            i=j;
-            break;
+      if (tokens[i].type == '(') {
+          bracketCount++;
+          continue;
+      } else if (tokens[i].type == ')') {
+          bracketCount--;
+          if (bracketCount > 0) {
+              continue; // 如果还有未匹配的括号，则继续跳过
           }
-        }
+      }
+      if (bracketCount > 0) {
+          continue; // 在括号内部，跳过处理
       }
       if(tokens[i].type==TK_NUM||tokens[i].type==TK_NOTYPE||tokens[i].type==TK_HEX||tokens[i].type==TK_REG){
         continue;
-      }else if(prio(tokens[i].type)>pr){ //pr是当前最高优先级
+      }else if(prio(tokens[i].type)>=pr){ //pr是当前最高优先级
         pr=prio(tokens[i].type);
         op=i;
       }
@@ -186,7 +190,7 @@ word_t eval(int p,int q) {
           assert(0);
         }
         else return val1 / val2;
-      case TK_NEG: return -1*val2;
+      case TK_NEG: return val2=-val2;
       case TK_EQ:
         if(val1==val2) return 1;
         else return 0;
