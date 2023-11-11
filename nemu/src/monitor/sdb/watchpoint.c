@@ -52,13 +52,14 @@ void free_wp(WP *wp){
     head=head->next;
     wp->next=free_;
     free_=wp;
-  }else{
-    WP *tmp=head;
-    while(tmp->next==wp) tmp=tmp->next;
-    tmp->next=wp->next;
-    wp->next=free_;
-    free_=wp;
   }
+  // else{
+  //   WP *tmp=head;
+  //   while(tmp->next==wp) tmp=tmp->next;
+  //   tmp->next=wp->next;
+  //   wp->next=free_;
+  //   free_=wp;
+  // }
   return;
 }
 
