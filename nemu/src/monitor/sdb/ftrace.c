@@ -84,7 +84,6 @@ void generateSpaces(int length, char* spaces) {
 void func_call(paddr_t pc,paddr_t dnpc){
     func_depth++;
     strcmp(func_name,find_funcname(dnpc));
-    printf("func_name: %s",func_name);
     generateSpaces(func_depth,n_spaces);
     Log("0x%x:%s call[%s@0x%x]",pc,n_spaces,func_name,dnpc);
 }
@@ -98,6 +97,7 @@ void func_ret(paddr_t pc,paddr_t dnpc){
 char* find_funcname(paddr_t pc){
     for(int i=0;i<func_cnt;i++){
         if(elf_func[i].value<=pc&&(pc<elf_func[i].value+elf_func[i].size)){
+            printf("func_name: %s",elf_func[i].func_name);
             return elf_func[i].func_name;
         }
     }
