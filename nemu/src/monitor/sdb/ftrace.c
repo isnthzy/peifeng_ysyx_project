@@ -95,12 +95,8 @@ void func_ret(paddr_t pc,paddr_t dnpc){
 }
 
 char* find_funcname(paddr_t pc){
-    printf("pc: %x\n",pc);
     for(int i=0;i<func_cnt;i++){
-        printf("value: %lx + %lx\n",elf_func[i].value,elf_func[i].size);
         if(elf_func[i].value<=pc&&pc<(elf_func[i].value+elf_func[i].size)){
-            
-            printf("func_name: %s",elf_func[i].func_name);
             return elf_func[i].func_name;
         }
     }
