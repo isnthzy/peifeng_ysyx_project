@@ -4,7 +4,7 @@
 #include "ftrace.h"
 
 int func_depth=0;
-char n_spaces[32];
+char n_spaces[64];
 char put_ftrace[128];
 ELF_Func elf_func[1024]; 
 int func_cnt=0;
