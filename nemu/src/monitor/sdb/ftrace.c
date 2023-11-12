@@ -55,19 +55,18 @@ void init_elf(const char *elf_file){
     // 读取符号表
     Elf_Sym symbols[symbol_count];
     result=fread(symbols, sizeof(Elf64_Sym), symbol_count, file);
-    int func_idx=0;
     // 遍历符号表，筛选出类型为FUNC的符号
     for (size_t i = 0; i < symbol_count; ++i) {
         if (ELF32_ST_TYPE(symbols[i].st_info) == STT_FUNC) {
             if(symbols[i].st_size==0) continue; //不符合的大小直接略过
             // 获取符号的名称
             char* symbol_name=string_table + symbols[i].st_name;
-            strcpy(elf_func[func_idx].func_name,symbol_name);
+            strcpy(elf_func[func_cnt].func_name,symbol_name);
             // 获取符号的地址
-            elf_func[func_idx].value=symbols[i].st_value;
-            elf_func[func_idx].size =symbols[i].st_size;
-            printf("Function: %s\nAddress: 0x%lx %ld(Dec) %lx(Hec)\n",elf_func[func_idx].func_name,elf_func[func_idx].value,elf_func[func_idx].size,elf_func[func_idx].size);
-            func_idx++; //func_idx用于只筛出来符合要求的函数
+            elf_func[func_cnt].value=symbols[i].st_value;
+            elf_func[func_cnt].size =symbols[i].st_size;
+            printf("Function: %s\nAddress: 0x%lx %ld(Dec) %lx(Hec)\n",elf_func[func_cnt].func_name,elf_func[func_cnt].value,elf_func[func_cnt].size,elf_func[func_cnt].size);
+            func_cnt++; //func_cnt用于只筛出来符合要求的函数
         }
     }
     fclose(file);
