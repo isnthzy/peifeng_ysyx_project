@@ -75,9 +75,7 @@ static int decode_exec(Decode *s) {
   if(ftrace_flag==true){
     if(s->isa.inst.val==0x00008067){
       func_ret(s->pc,s->dnpc);
-    }else if(rd==1){
-      func_call(s->pc,s->dnpc);
-    }else if(rd==0&&imm==0){
+    }else if(rd==1){ //jal
       func_call(s->pc,s->dnpc);
     }
   });
