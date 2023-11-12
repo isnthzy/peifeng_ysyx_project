@@ -66,7 +66,7 @@ void init_elf(const char *elf_file){
             elf_func[i].value=symbols[i].st_value;
             elf_func[i].size =symbols[i].st_size;
             func_cnt++;
-            printf("Function: %s\nAddress: 0x%x %d(Dec) %x(Hec)\n",elf_func[i].func_name,symbols[i].st_value,symbols[i].st_size,symbols[i].st_size);
+            printf("Function: %s\nAddress: 0x%lx %ld(Dec) %lx(Hec)\n",elf_func[i].func_name,elf_func[i].value,elf_func[i].size,elf_func[i].size);
         }
     }
     fclose(file);
@@ -97,7 +97,7 @@ void func_ret(paddr_t pc,paddr_t dnpc){
 char* find_funcname(paddr_t pc){
     printf("pc: %x\n",pc);
     for(int i=0;i<func_cnt;i++){
-        printf("value: %lx + %lx\n",elf_func[i].value,elf_func[i].size);
+        // printf("value: %lx + %lx\n",elf_func[i].value,elf_func[i].size);
         if(elf_func[i].value<=pc&&pc<(elf_func[i].value+elf_func[i].size)){
             
             printf("func_name: %s",elf_func[i].func_name);
