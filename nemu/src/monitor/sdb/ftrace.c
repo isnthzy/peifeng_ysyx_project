@@ -3,7 +3,7 @@
 #include "ftrace.h"
 
 int func_depth=0;
-char func_name[64];
+char put_name[64];
 char n_spaces[32];
 char put_ftrace[128];
 ELF_Func elf_func[1024]; 
@@ -84,14 +84,14 @@ void generateSpaces(int length, char* spaces) {
 void func_call(paddr_t pc,paddr_t dnpc){
     func_depth++;
     printf("func_name:%s",find_funcname(dnpc));
-    strcmp(func_name,find_funcname(dnpc));
+    strcmp(put_name,find_funcname(dnpc));
     generateSpaces(func_depth,n_spaces);
-    Log("0x%x:%s call[%s@0x%x]",pc,n_spaces,func_name,dnpc);
+    Log("0x%x:%s call[%s@0x%x]",pc,n_spaces,put_name,dnpc);
 }
 void func_ret(paddr_t pc,paddr_t dnpc){
-    strcmp(func_name,find_funcname(dnpc));
+    strcmp(put_name,find_funcname(dnpc));
     generateSpaces(func_depth,n_spaces);
-    Log(" 0x%x:%s ret [%s@0x%x]",pc,n_spaces,func_name,dnpc);
+    Log(" 0x%x:%s ret [%s@0x%x]",pc,n_spaces,put_name,dnpc);
     func_depth--;
 }
 
