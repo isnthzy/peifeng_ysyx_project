@@ -90,7 +90,7 @@ void func_call(paddr_t pc,paddr_t dnpc){
 void func_ret(paddr_t pc,paddr_t dnpc){
     strcpy(put_name,find_funcname(dnpc));
     generateSpaces(func_depth,n_spaces);
-    printf(" 0x%x:%s ret [%s@0x%x]\n",pc,n_spaces,put_name,dnpc);
+    printf("0x%x:%s ret [%s@0x%x]\n",pc,n_spaces,put_name,dnpc);
     func_depth--;
 }
 
