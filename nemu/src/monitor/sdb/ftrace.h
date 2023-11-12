@@ -1,7 +1,6 @@
 #ifndef _FTRACE_H__
 #define _FTRACE_H__
 #include <common.h>
-#include <string.h>
 typedef struct {
     char func_name[64]; // 函数名
     size_t value;      // 起始地址

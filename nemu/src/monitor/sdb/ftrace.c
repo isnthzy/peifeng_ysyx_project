@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include <string.h>
 #include "ftrace.h"
 
 int func_depth=0;
