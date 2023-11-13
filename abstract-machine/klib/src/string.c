@@ -13,7 +13,7 @@ size_t strlen(const char *s) {
   // panic("Not implemented");
 }
 
-void *stpcpy(char *restrict dst, const char *restrict src){
+char *stpcpy(char *restrict dst, const char *restrict src){
     char  *p;
     p = memcpy(dst, src, strlen(src))+strlen(src); //mempcpy
     *p = '\0';
