@@ -13,7 +13,7 @@ size_t strlen(const char *s) {
   // panic("Not implemented");
 }
 
-void *stpcpy(char *restrict dst, const char *restrict src){
+char *stpcpy(char *restrict dst, const char *restrict src){
     char  *p;
     p = memcpy(dst, src, strlen(src))+strlen(src); //mempcpy
     *p = '\0';
@@ -26,6 +26,7 @@ char *strcpy(char *dst, const char *src) {
 }
 
 char *strncpy(char *dst, const char *src, size_t n) {
+  if(strlen(src)<n) n=strlen(src);
   memcpy(dst, src, n);
   // size_t i;
   // for(i=0;i<n&&src[i]!='\0';i++){
@@ -89,6 +90,9 @@ int strncmp(const char *s1, const char *s2, size_t n) {
 }
 
 void *memset(void *s, int c, size_t n) {
+  if(s==NULL){
+    return NULL;
+  }
   char *set=s;
   while(n--){
     *set++=c;

@@ -75,7 +75,7 @@ static int decode_exec(Decode *s) {
   if(ftrace_flag==true){
     if(s->isa.inst.val==0x00008067){
       func_ret(s->pc,s->dnpc);
-    }else if(rd==1){ //jalr是跳转,jr不是
+    }else if(rd==1){ //jalr是跳转,jr不是(jr被编译器优化为尾调用)
       func_call(s->pc,s->dnpc);
     }
   });

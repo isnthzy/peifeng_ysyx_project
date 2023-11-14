@@ -34,15 +34,15 @@ int sprintf(char *out, const char *fmt, ...) { //fmt可以当个字符串处理
 	    strcat(out,s);
 	    break;
     case 'd':
-        d=va_arg(ap,int);
-        char tmp[30];
-        itoa(d,tmp,10);
-        strcat(out,tmp);
-        break;
+      d=va_arg(ap,int);
+      char tmp[30];
+      itoa(d,tmp,10);
+      strcat(out,tmp);
+      break;
     case 'c':
-        c=(char)va_arg(ap,int);
-        strncat(out,&c,1);
-        break;
+      c=(char)va_arg(ap,int);
+      strncat(out,&c,1);
+      break;
     }
   }
   va_end(ap);
