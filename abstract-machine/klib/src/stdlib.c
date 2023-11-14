@@ -1,7 +1,7 @@
 #include <am.h>
 #include <klib.h>
 #include <klib-macros.h>
-
+#define INT_MIN -2147483648
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 static unsigned long int next = 1;
 
@@ -42,11 +42,17 @@ void reverse(char *s, int len){
 }
 char *itoa(int value,char * str,int radix){
   bool neg=false;
+  int i=0; 
   if(value<0){
+    if (value==INT_MIN) {
+      // 经过测试(INT_MIN)会发生这种情况,因而特殊处理最小负数(INT_MIN)
+      value++;
+      str[i++]='8';  // 个位数为8
+      value/=radix;
+    }
   	value*=-1;
   	neg=true;
   }
-  int i=0; 
   if (value==0){
     str[i++]='0';
   }
