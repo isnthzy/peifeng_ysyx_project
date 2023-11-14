@@ -26,6 +26,7 @@ char *strcpy(char *dst, const char *src) {
 }
 
 char *strncpy(char *dst, const char *src, size_t n) {
+  if(strlen(src)<n) n=strlen(src);
   memcpy(dst, src, n);
   // size_t i;
   // for(i=0;i<n&&src[i]!='\0';i++){
