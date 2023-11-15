@@ -23,7 +23,7 @@
 
 #include <generated/autoconf.h>
 #include <macro.h>
-#include <elf.h>
+
 #ifdef CONFIG_TARGET_AM
 #include <klib.h>
 #else
@@ -34,12 +34,7 @@
 #if CONFIG_MBASE + CONFIG_MSIZE > 0x100000000ul
 #define PMEM64 1
 #endif
-typedef MUXDEF(CONFIG_ISA64, Elf64_Ehdr, Elf32_Ehdr) Elf_Ehdr;
-typedef MUXDEF(CONFIG_ISA64, Elf64_Half, Elf32_Half) Elf_Half;
-typedef MUXDEF(CONFIG_ISA64, Elf64_Shdr, Elf32_Shdr) Elf_Shdr;
-typedef MUXDEF(CONFIG_ISA64, Elf64_Off , Elf32_Off ) Elf_Off ;
-typedef MUXDEF(CONFIG_ISA64, Elf64_Sym , Elf32_Sym ) Elf_Sym ;
-typedef MUXDEF(CONFIG_ISA64, Elf64_Addr, Elf32_Addr) Elf_Addr;
+
 
 typedef MUXDEF(CONFIG_ISA64, uint64_t, uint32_t) word_t;
 typedef MUXDEF(CONFIG_ISA64, int64_t, int32_t)  sword_t;
