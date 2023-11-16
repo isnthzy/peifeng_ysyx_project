@@ -6,7 +6,7 @@ class SimTop extends Module {
     val in=Input(UInt(4.W))
     val out=Output(UInt(4.W))
   })  
-  val i1=Module(new Reg(3,0.U))
+  val i1=Module(new Reg(1,1.U))
   i1.reg.din := io.in
   io.out := i1.reg.dout
   i1.reg.wen := io.out(0)
