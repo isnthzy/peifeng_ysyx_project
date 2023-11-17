@@ -6,6 +6,7 @@ class SimTop extends Module {
   val io = IO(new Bundle {
     val pc=Output(UInt(32.W))
     val inst=Input(UInt(32.W))
+    val result=Output(UInt(32.W))
   })
   
 // IFU begin
@@ -75,8 +76,8 @@ class SimTop extends Module {
   alu.io.op  :=alu_op.asUInt
   alu.io.src1:=src1
   alu.io.src2:=src2
-  val result=alu.io.result
-  RegFile.io.wdata:=result
+  io.result:=alu.io.result
+  RegFile.io.wdata:=io.result
 //WB begin
   
 }
