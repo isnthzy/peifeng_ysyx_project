@@ -34,8 +34,8 @@ class SimTop extends Module {
   ImmType.ImmBType:=0.U
   ImmType.ImmUType:=0.U
   ImmType.ImmJType:=0.U
-  val Imm=UInt(32.W) //指定位宽,自动进行有符号拓展(chisel概念)
-  Imm:=MuxLookup(ImmType.asUInt,0.U)(Seq( 
+  val Imm=SInt(32.W) //指定位宽,自动进行有符号拓展(chisel概念)
+  Imm:=MuxLookup(ImmType.asUInt,0.S)(Seq( 
     "b00001".U -> Inst.immI,
     "b00010".U -> Inst.immS,
     "b00100".U -> Inst.immB,
@@ -81,11 +81,11 @@ class SimTop extends Module {
   
 }
 class Inst extends Bundle{
-  val immI=UInt(12.W)
-  val immS=UInt(12.W)
-  val immB=UInt(12.W)
-  val immU=UInt(32.W)
-  val immJ=UInt(20.W)
+  val immI=SInt(12.W)
+  val immS=SInt(12.W)
+  val immB=SInt(12.W)
+  val immU=SInt(32.W)
+  val immJ=SInt(20.W)
   val rs2 =UInt(5.W)
   val rs1 =UInt(5.W)
   val funct3=UInt(3.W)
