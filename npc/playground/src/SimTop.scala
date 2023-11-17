@@ -30,5 +30,5 @@ class RegFile extends Module{
     val wen=Input(Bool())
   })
   val rf=RegInit(VecInit(Seq.fill(32)(0.U(32.W))))
-  when(io.wen) rf(waddr):=wdata 
+  when(io.wen){ rf(io.waddr):=io.wdata }
 }
