@@ -51,17 +51,17 @@
 `endif // not def SYNTHESIS
 
 module Reg(	// <stdin>:3:3
-  input        clock,	// <stdin>:4:11
-               reset,	// <stdin>:5:11
-  input  [2:0] reg_din,	// playground/src/SimTop.scala:16:13
-  input        reg_wen,	// playground/src/SimTop.scala:16:13
-  output [2:0] reg_dout	// playground/src/SimTop.scala:16:13
+  input  clock,	// <stdin>:4:11
+         reset,	// <stdin>:5:11
+         reg_din,	// playground/src/SimTop.scala:16:13
+         reg_wen,	// playground/src/SimTop.scala:16:13
+  output reg_dout	// playground/src/SimTop.scala:16:13
 );
 
-  reg [2:0] reg_dout_0;	// playground/src/SimTop.scala:21:23
+  reg reg_dout_0;	// playground/src/SimTop.scala:21:23
   always @(posedge clock) begin	// <stdin>:4:11
     if (reset)	// <stdin>:4:11
-      reg_dout_0 <= 3'h0;	// playground/src/SimTop.scala:21:23
+      reg_dout_0 <= 1'h1;	// <stdin>:3:3, playground/src/SimTop.scala:21:23
     else if (reg_wen)	// playground/src/SimTop.scala:16:13
       reg_dout_0 <= reg_din;	// playground/src/SimTop.scala:21:23
   end // always @(posedge)
@@ -76,7 +76,7 @@ module Reg(	// <stdin>:3:3
       `endif // INIT_RANDOM_PROLOG_
       `ifdef RANDOMIZE_REG_INIT	// <stdin>:3:3
         _RANDOM[/*Zero width*/ 1'b0] = `RANDOM;	// <stdin>:3:3
-        reg_dout_0 = _RANDOM[/*Zero width*/ 1'b0][2:0];	// <stdin>:3:3, playground/src/SimTop.scala:21:23
+        reg_dout_0 = _RANDOM[/*Zero width*/ 1'b0][0];	// <stdin>:3:3, playground/src/SimTop.scala:21:23
       `endif // RANDOMIZE_REG_INIT
     end // initial
     `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:3:3
@@ -93,14 +93,14 @@ module SimTop(	// <stdin>:14:3
   output [3:0] io_out	// playground/src/SimTop.scala:5:14
 );
 
-  wire [2:0] _i1_reg_dout;	// playground/src/SimTop.scala:9:16
+  wire _i1_reg_dout;	// playground/src/SimTop.scala:9:16
   Reg i1 (	// playground/src/SimTop.scala:9:16
     .clock    (clock),
     .reset    (reset),
-    .reg_din  (io_in[2:0]),	// playground/src/SimTop.scala:10:14
-    .reg_wen  (_i1_reg_dout[0]),	// playground/src/SimTop.scala:9:16, :12:23
+    .reg_din  (io_in[0]),	// playground/src/SimTop.scala:10:14
+    .reg_wen  (_i1_reg_dout),	// playground/src/SimTop.scala:9:16
     .reg_dout (_i1_reg_dout)
   );
-  assign io_out = {1'h0, _i1_reg_dout};	// <stdin>:14:3, playground/src/SimTop.scala:9:16, :11:10
+  assign io_out = {3'h0, _i1_reg_dout};	// <stdin>:14:3, playground/src/SimTop.scala:9:16, :11:10
 endmodule
 

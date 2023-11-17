@@ -22,3 +22,12 @@ class Reg(val WIDTH:Int=1,val RESET_VAL:UInt=0.U) extends Module{
   when(reg.wen){reg_dout:=reg.din}
   reg.dout:=reg_dout
 }
+
+class RegFile extends Module{
+  val io=IO(new Bundle {
+    val wdata=Input(UInt(32.W))
+    val waddr=Input(UInt(32.W))
+    val wen=Input(Bool())
+  })
+  RegInit(VecInit(Seq.fill(32)(0.U(32.W))))
+}
