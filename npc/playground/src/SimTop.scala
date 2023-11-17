@@ -64,7 +64,7 @@ class SimTop extends Module {
   RegFile.io.raddr1:=Inst.rs1
   RegFile.io.raddr2:=Inst.rs2
   RegFile.io.waddr:=Inst.rd
-  RegFile.io.waddr:=result
+  RegFile.io.wdata:=result
   RegFile.io.wen:=wen
   val rf_rdata1=RegFile.io.rdata1
   val rf_rdata2=RegFile.io.rdata2
