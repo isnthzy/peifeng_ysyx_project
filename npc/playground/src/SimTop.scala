@@ -8,7 +8,7 @@ class SimTop extends Module {
   })
   
 // IFU begin
-  val pc=RegInit("b80000000".U)
+  val pc=RegInit("b80000000".U(32.W))
   pc:=pc+4.U
 
 // IDU begin
