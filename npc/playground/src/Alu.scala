@@ -4,9 +4,9 @@ import chisel3.util._
 class Alu extends Module {
   val io = IO(new Bundle {
     val op = Input(UInt(12.W))
-    val src1 = Input(SInt(4.W))
-    val src2 = Input(SInt(4.W))
-    val result = Output(SInt(4.W))
+    val src1 = Input(SInt(32.W))
+    val src2 = Input(SInt(32.W))
+    val result = Output(SInt(32.W))
   })
   val op_add= io.src1 + io.src2
   val op_sub= io.src1 - io.src2
