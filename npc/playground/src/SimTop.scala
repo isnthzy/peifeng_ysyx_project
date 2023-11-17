@@ -5,13 +5,13 @@ import config.Configs._
 class SimTop extends Module {
   val io = IO(new Bundle {
     val pc=Output(UInt(32.W))
-    val inst=Output(UInt(32.W))
+    val inst=Input(UInt(32.W))
   })
   
 // IFU begin
   val pc=RegInit(START_ADDR)
   pc:=pc+4.U
-
+  io.pc:=pc
 // IDU begin
   val Inst=Wire(new Inst())
   val Isa =Wire(new Isa())
