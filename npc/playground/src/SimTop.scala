@@ -29,5 +29,6 @@ class RegFile extends Module{
     val waddr=Input(UInt(32.W))
     val wen=Input(Bool())
   })
-  RegInit(VecInit(Seq.fill(32)(0.U(32.W))))
+  val rf=RegInit(VecInit(Seq.fill(32)(0.U(32.W))))
+  when(io.wen) rf(waddr):=wdata 
 }
