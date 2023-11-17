@@ -1,5 +1,6 @@
 import chisel3._
 import chisel3.util._  
+import config.Configs._
 
 class SimTop extends Module {
   val io = IO(new Bundle {
@@ -8,13 +9,13 @@ class SimTop extends Module {
   })
   
 // IFU begin
-  val pc=RegInit("h80000000".U(32.W))
+  val pc=RegInit(START_ADDR)
   pc:=pc+4.U
 
 // IDU begin
   val Inst=Wire(new Inst())
   val Isa =Wire(new Isa())
-  Inst.immI  :=io.inst(31,20).asSInt(32.W)
+  Inst.immI  :=io.inst(31,20)
   Inst.immS  :=Cat(io.inst(31,25),io.inst(11,7))
   Inst.immB  :=Cat(io.inst(31),io.inst(7),io.inst(30,25),io.inst(11,8),0.U(1.W))
   Inst.immU  :=Cat(io.inst(31,12),0.U(12.W))
@@ -34,13 +35,12 @@ class SimTop extends Module {
   ImmType.ImmBType:=0.U
   ImmType.ImmUType:=0.U
   ImmType.ImmJType:=0.U
-  val Imm=SInt(32.W) //指定位宽,自动进行有符号拓展(chisel概念)
-  Imm:=MuxLookup(ImmType.asUInt,0.S)(Seq( 
-    "b00001".U -> Inst.immI,
-    "b00010".U -> Inst.immS,
-    "b00100".U -> Inst.immB,
-    "b01000".U -> Inst.immU,
-    "b10000".U -> Inst.immJ,
+  val Imm=MuxLookup(ImmType.asUInt,0.U)(Seq( 
+    "b00001".U -> Sext(Inst.immI,32),
+    "b00010".U -> Sext(Inst.immS,32),
+    "b00100".U -> Sext(Inst.immB,32),
+    "b01000".U -> Sext(Inst.immU,32),
+    "b10000".U -> Sext(Inst.immJ,32),
   ))
   val wen=Isa.addi
   val src2_is_imm=Isa.addi
@@ -80,29 +80,7 @@ class SimTop extends Module {
 //WB begin
   
 }
-class Inst extends Bundle{
-  val immI=SInt(32.W)
-  val immS=SInt(32.W)
-  val immB=SInt(32.W)
-  val immU=SInt(32.W)
-  val immJ=SInt(32.W)
-  val rs2 =UInt(5.W)
-  val rs1 =UInt(5.W)
-  val funct3=UInt(3.W)
-  val rd  =UInt(5.W)
-  val opcode=UInt(7.W)
-}
-class Isa extends Bundle{
-  val addi=Bool()
-  val ebreak=Bool()
-}
-class ImmType extends Bundle{
-  val ImmIType=Bool()
-  val ImmSType=Bool()
-  val ImmBType=Bool()
-  val ImmUType=Bool()
-  val ImmJType=Bool()
-}
+
 
 
 
