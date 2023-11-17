@@ -50,19 +50,283 @@
   `endif // not def ENABLE_INITIAL_MEM_
 `endif // not def SYNTHESIS
 
+module RegFile(	// <stdin>:3:3
+  input         clock,	// <stdin>:4:11
+                reset,	// <stdin>:5:11
+  input  [4:0]  io_waddr,	// playground/src/RegFile.scala:5:12
+  input  [31:0] io_wdata,	// playground/src/RegFile.scala:5:12
+  input  [4:0]  io_raddr1,	// playground/src/RegFile.scala:5:12
+                io_raddr2,	// playground/src/RegFile.scala:5:12
+  input         io_wen,	// playground/src/RegFile.scala:5:12
+  output [31:0] io_rdata1,	// playground/src/RegFile.scala:5:12
+                io_rdata2	// playground/src/RegFile.scala:5:12
+);
+
+  reg  [31:0]       rf_0;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_1;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_2;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_3;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_4;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_5;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_6;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_7;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_8;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_9;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_10;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_11;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_12;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_13;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_14;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_15;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_16;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_17;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_18;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_19;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_20;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_21;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_22;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_23;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_24;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_25;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_26;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_27;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_28;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_29;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_30;	// playground/src/RegFile.scala:14:17
+  reg  [31:0]       rf_31;	// playground/src/RegFile.scala:14:17
+  wire [31:0][31:0] _GEN =
+    {{rf_31},
+     {rf_30},
+     {rf_29},
+     {rf_28},
+     {rf_27},
+     {rf_26},
+     {rf_25},
+     {rf_24},
+     {rf_23},
+     {rf_22},
+     {rf_21},
+     {rf_20},
+     {rf_19},
+     {rf_18},
+     {rf_17},
+     {rf_16},
+     {rf_15},
+     {rf_14},
+     {rf_13},
+     {rf_12},
+     {rf_11},
+     {rf_10},
+     {rf_9},
+     {rf_8},
+     {rf_7},
+     {rf_6},
+     {rf_5},
+     {rf_4},
+     {rf_3},
+     {rf_2},
+     {rf_1},
+     {rf_0}};	// playground/src/RegFile.scala:14:17, :16:17
+  always @(posedge clock) begin	// <stdin>:4:11
+    if (reset) begin	// <stdin>:4:11
+      rf_0 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_1 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_2 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_3 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_4 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_5 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_6 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_7 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_8 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_9 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_10 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_11 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_12 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_13 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_14 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_15 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_16 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_17 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_18 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_19 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_20 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_21 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_22 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_23 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_24 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_25 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_26 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_27 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_28 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_29 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_30 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+      rf_31 <= 32'h0;	// playground/src/RegFile.scala:14:{17,25}
+    end
+    else begin	// <stdin>:4:11
+      if (io_wen & io_waddr == 5'h0)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_0 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h1)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_1 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h2)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_2 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h3)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_3 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h4)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_4 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h5)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_5 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h6)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_6 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h7)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_7 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h8)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_8 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h9)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_9 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'hA)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_10 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'hB)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_11 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'hC)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_12 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'hD)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_13 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'hE)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_14 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'hF)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_15 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h10)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_16 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h11)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_17 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h12)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_18 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h13)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_19 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h14)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_20 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h15)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_21 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h16)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_22 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h17)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_23 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h18)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_24 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h19)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_25 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h1A)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_26 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h1B)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_27 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h1C)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_28 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h1D)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_29 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & io_waddr == 5'h1E)	// <stdin>:3:3, playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_30 <= io_wdata;	// playground/src/RegFile.scala:14:17
+      if (io_wen & (&io_waddr))	// playground/src/RegFile.scala:14:17, :15:{15,29}
+        rf_31 <= io_wdata;	// playground/src/RegFile.scala:14:17
+    end
+  end // always @(posedge)
+  `ifdef ENABLE_INITIAL_REG_	// <stdin>:3:3
+    `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:3:3
+      `FIRRTL_BEFORE_INITIAL	// <stdin>:3:3
+    `endif // FIRRTL_BEFORE_INITIAL
+    initial begin	// <stdin>:3:3
+      automatic logic [31:0] _RANDOM[0:31];	// <stdin>:3:3
+      `ifdef INIT_RANDOM_PROLOG_	// <stdin>:3:3
+        `INIT_RANDOM_PROLOG_	// <stdin>:3:3
+      `endif // INIT_RANDOM_PROLOG_
+      `ifdef RANDOMIZE_REG_INIT	// <stdin>:3:3
+        for (logic [5:0] i = 6'h0; i < 6'h20; i += 6'h1) begin
+          _RANDOM[i[4:0]] = `RANDOM;	// <stdin>:3:3
+        end	// <stdin>:3:3
+        rf_0 = _RANDOM[5'h0];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_1 = _RANDOM[5'h1];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_2 = _RANDOM[5'h2];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_3 = _RANDOM[5'h3];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_4 = _RANDOM[5'h4];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_5 = _RANDOM[5'h5];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_6 = _RANDOM[5'h6];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_7 = _RANDOM[5'h7];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_8 = _RANDOM[5'h8];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_9 = _RANDOM[5'h9];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_10 = _RANDOM[5'hA];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_11 = _RANDOM[5'hB];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_12 = _RANDOM[5'hC];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_13 = _RANDOM[5'hD];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_14 = _RANDOM[5'hE];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_15 = _RANDOM[5'hF];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_16 = _RANDOM[5'h10];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_17 = _RANDOM[5'h11];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_18 = _RANDOM[5'h12];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_19 = _RANDOM[5'h13];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_20 = _RANDOM[5'h14];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_21 = _RANDOM[5'h15];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_22 = _RANDOM[5'h16];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_23 = _RANDOM[5'h17];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_24 = _RANDOM[5'h18];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_25 = _RANDOM[5'h19];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_26 = _RANDOM[5'h1A];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_27 = _RANDOM[5'h1B];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_28 = _RANDOM[5'h1C];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_29 = _RANDOM[5'h1D];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_30 = _RANDOM[5'h1E];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+        rf_31 = _RANDOM[5'h1F];	// <stdin>:3:3, playground/src/RegFile.scala:14:17
+      `endif // RANDOMIZE_REG_INIT
+    end // initial
+    `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:3:3
+      `FIRRTL_AFTER_INITIAL	// <stdin>:3:3
+    `endif // FIRRTL_AFTER_INITIAL
+  `endif // ENABLE_INITIAL_REG_
+  assign io_rdata1 = (|io_raddr1) ? _GEN[io_raddr1] : 32'h0;	// <stdin>:3:3, playground/src/RegFile.scala:14:25, :16:{17,27}
+  assign io_rdata2 = (|io_raddr2) ? _GEN[io_raddr2] : 32'h0;	// <stdin>:3:3, playground/src/RegFile.scala:14:25, :16:17, :17:{17,27}
+endmodule
+
+module Alu(	// <stdin>:52:3
+  input  [11:0] io_op,	// playground/src/Alu.scala:5:14
+  input  [31:0] io_src1,	// playground/src/Alu.scala:5:14
+                io_src2,	// playground/src/Alu.scala:5:14
+  output [31:0] io_result	// playground/src/Alu.scala:5:14
+);
+
+  assign io_result =
+    io_op == 12'h80
+      ? {31'h0, io_src1 == io_src2}
+      : io_op == 12'h40
+          ? {31'h0, io_src1 < io_src2}
+          : io_op == 12'h20
+              ? io_src1 ^ io_src2
+              : io_op == 12'h10
+                  ? io_src1 | io_src2
+                  : io_op == 12'h8
+                      ? io_src1 & io_src2
+                      : io_op == 12'h4
+                          ? ~io_src1
+                          : io_op == 12'h2
+                              ? io_src1 - io_src2
+                              : io_op == 12'h1 ? io_src1 + io_src2 : 32'h0;	// <stdin>:52:3, playground/src/Alu.scala:11:23, :12:23, :13:15, :14:23, :15:23, :16:23, :17:28, :18:27, :19:37
+endmodule
+
 module SimTop(	// <stdin>:87:3
   input         clock,	// <stdin>:88:11
                 reset,	// <stdin>:89:11
   input  [31:0] io_inst,	// playground/src/SimTop.scala:6:14
-  output [31:0] io_pc	// playground/src/SimTop.scala:6:14
+  output [31:0] io_pc,	// playground/src/SimTop.scala:6:14
+                io_result	// playground/src/SimTop.scala:6:14
 );
 
-  reg [31:0] pc;	// playground/src/SimTop.scala:12:17
+  wire [31:0] _alu_io_result;	// playground/src/SimTop.scala:72:18
+  wire [31:0] _RegFile_io_rdata1;	// playground/src/SimTop.scala:64:21
+  wire [31:0] _RegFile_io_rdata2;	// playground/src/SimTop.scala:64:21
+  reg  [31:0] pc;	// playground/src/SimTop.scala:13:17
+  wire        alu_op_0 = {io_inst[14:12], io_inst[6:0]} == 10'h13;	// playground/src/SimTop.scala:30:23
   always @(posedge clock) begin	// <stdin>:88:11
     if (reset)	// <stdin>:88:11
-      pc <= 32'h80000000;	// playground/src/SimTop.scala:12:17
+      pc <= 32'h80000000;	// playground/src/SimTop.scala:13:17
     else	// <stdin>:88:11
-      pc <= pc + 32'h4;	// playground/src/SimTop.scala:12:17, :13:9
+      pc <= pc + 32'h4;	// playground/src/SimTop.scala:13:17, :14:9
   end // always @(posedge)
   `ifdef ENABLE_INITIAL_REG_	// <stdin>:87:3
     `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:87:3
@@ -75,13 +339,36 @@ module SimTop(	// <stdin>:87:3
       `endif // INIT_RANDOM_PROLOG_
       `ifdef RANDOMIZE_REG_INIT	// <stdin>:87:3
         _RANDOM[/*Zero width*/ 1'b0] = `RANDOM;	// <stdin>:87:3
-        pc = _RANDOM[/*Zero width*/ 1'b0];	// <stdin>:87:3, playground/src/SimTop.scala:12:17
+        pc = _RANDOM[/*Zero width*/ 1'b0];	// <stdin>:87:3, playground/src/SimTop.scala:13:17
       `endif // RANDOMIZE_REG_INIT
     end // initial
     `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:87:3
       `FIRRTL_AFTER_INITIAL	// <stdin>:87:3
     `endif // FIRRTL_AFTER_INITIAL
   `endif // ENABLE_INITIAL_REG_
-  assign io_pc = pc;	// <stdin>:87:3, playground/src/SimTop.scala:12:17
+  RegFile RegFile (	// playground/src/SimTop.scala:64:21
+    .clock     (clock),
+    .reset     (reset),
+    .io_waddr  (io_inst[11:7]),	// playground/src/SimTop.scala:20:42
+    .io_wdata  (_alu_io_result),	// playground/src/SimTop.scala:72:18
+    .io_raddr1 (io_inst[19:15]),	// playground/src/SimTop.scala:25:23
+    .io_raddr2 (io_inst[24:20]),	// playground/src/SimTop.scala:24:23
+    .io_wen    (alu_op_0),	// playground/src/SimTop.scala:30:23
+    .io_rdata1 (_RegFile_io_rdata1),
+    .io_rdata2 (_RegFile_io_rdata2)
+  );
+  Alu alu (	// playground/src/SimTop.scala:72:18
+    .io_op     ({11'h0, alu_op_0}),	// playground/src/SimTop.scala:30:23, :76:23
+    .io_src1   (_RegFile_io_rdata1),	// playground/src/SimTop.scala:64:21
+    .io_src2
+      (alu_op_0
+         ? (alu_op_0 | {io_inst[31:12], io_inst[6:0]} == 27'h8073
+              ? {{12{io_inst[19]}}, io_inst[19:12], io_inst[20], io_inst[30:21], 1'h0}
+              : 32'h0)
+         : _RegFile_io_rdata2),	// <stdin>:87:3, playground/src/Bundle.scala:32:{10,15,37}, playground/src/SimTop.scala:23:{39,54,66}, :30:23, :31:23, :34:30, :39:40, :64:21, :74:15
+    .io_result (_alu_io_result)
+  );
+  assign io_pc = pc;	// <stdin>:87:3, playground/src/SimTop.scala:13:17
+  assign io_result = _alu_io_result;	// <stdin>:87:3, playground/src/SimTop.scala:72:18
 endmodule
 

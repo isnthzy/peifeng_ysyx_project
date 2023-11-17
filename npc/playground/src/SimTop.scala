@@ -4,9 +4,11 @@ import config.Configs._
 
 class SimTop extends Module {
   val io = IO(new Bundle {
-    val pc=Output(UInt(32.W))
     val inst=Input(UInt(32.W))
+    val pc=Output(UInt(32.W))
     val result=Output(UInt(32.W))
+    val wen=Bool()
+    val imm=Output(UInt(32.W))
   })
   
 // IFU begin
@@ -43,7 +45,9 @@ class SimTop extends Module {
     "b01000".U -> Sext(Inst.immU,32),
     "b10000".U -> Sext(Inst.immJ,32),
   ))
+  io.imm:=Imm
   val wen=Isa.addi
+  io.wen:=wen
   val src2_is_imm=Isa.addi
 // EXU begin
 
