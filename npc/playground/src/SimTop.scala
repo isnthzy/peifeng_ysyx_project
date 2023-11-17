@@ -14,7 +14,7 @@ class SimTop extends Module {
 // IDU begin
   val Inst=Wire(new Inst())
   val Isa =Wire(new Isa())
-  Inst.immI  :=io.inst(31,20)
+  Inst.immI  :=io.inst(31,20).asSInt(32.W)
   Inst.immS  :=Cat(io.inst(31,25),io.inst(11,7))
   Inst.immB  :=Cat(io.inst(31),io.inst(7),io.inst(30,25),io.inst(11,8),0.U(1.W))
   Inst.immU  :=Cat(io.inst(31,12),0.U(12.W))
@@ -81,11 +81,11 @@ class SimTop extends Module {
   
 }
 class Inst extends Bundle{
-  val immI=SInt(12.W)
-  val immS=SInt(12.W)
-  val immB=SInt(12.W)
+  val immI=SInt(32.W)
+  val immS=SInt(32.W)
+  val immB=SInt(32.W)
   val immU=SInt(32.W)
-  val immJ=SInt(20.W)
+  val immJ=SInt(32.W)
   val rs2 =UInt(5.W)
   val rs1 =UInt(5.W)
   val funct3=UInt(3.W)
