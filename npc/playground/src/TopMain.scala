@@ -12,10 +12,10 @@ object TopMain extends App {
     FirtoolOption(
       "--lowering-options=disallowLocalVariables,disallowPackedArrays,locationInfoStyle=wrapInAtSquareBracket"
     ),
-    FirtoolOption("--verilog"),
-    FirtoolOption("--split-verilog"),
-    FirtoolOption("-o=vsrc"),
-    FirtoolOption("--disable-all-randomization")
+    // FirtoolOption("--verilog"),
+    // FirtoolOption("--split-verilog"),
+    // FirtoolOption("-o=vsrc"),
+    // FirtoolOption("--disable-all-randomization")
   )
   val executeOptions=ChiselStageOptions++firtoolOptions
   (new ChiselStage).execute(args,executeOptions)
