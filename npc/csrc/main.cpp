@@ -9,13 +9,6 @@ typedef unsigned int   uint32_t;
 static uint32_t pmem[10] = {
   0xC0010093,
   0x40008213,
-  0x40008213,
-  0x40008213,
-  0x40008213,
-  0x40008213,
-  0x40008213,
-  0x40008213,
-  0x40008213,
   0x00100073
 };
 
@@ -79,7 +72,7 @@ int main() {
   //   nvboard_update();
   //   single_cycle();
   // }
-  int i=10;
+  int i=3;
   sim_init();
   reset(10);
   while(i--){
