@@ -30,6 +30,14 @@ uint32_t pmem_read(uint32_t addr) {
   return ret;
 }
 
+void sim_init(){
+  top = new VSimTop;
+  contextp = new VerilatedContext;
+  tfp = new VerilatedVcdC;
+  contextp->traceEverOn(true);
+  top->trace(tfp, 0);
+  tfp->open("dump.vcd");
+}
 void singlecycle_wave(){
   top->clock=0;
   top->eval();
@@ -39,17 +47,8 @@ void singlecycle_wave(){
   top->clock=1;
   top->io_inst=pmem_read(top->io_pc);
   top->eval();
-  top->eval();
   contextp->timeInc(1); //时间+1
   tfp->dump(contextp->time()); //使用时间
-}
-void sim_init(){
-  top = new VSimTop;
-  contextp = new VerilatedContext;
-  tfp = new VerilatedVcdC;
-  contextp->traceEverOn(true);
-  top->trace(tfp, 0);
-  tfp->open("dump.vcd");
 }
 extern void sim_exit(){
   delete top;
