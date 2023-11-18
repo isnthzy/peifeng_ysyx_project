@@ -21,6 +21,7 @@ static TOP_NAME dut;
 
 uint32_t pmem_read(uint32_t addr) {
   uint32_t ret=pmem[addr-0x80000000];
+  printf("%x\n",ret);
   return ret;
 }
 
