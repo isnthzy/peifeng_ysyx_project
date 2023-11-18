@@ -1,5 +1,5 @@
 import "DPI-C" function void sim_exit();
-module ebreak(
+module singal_ebreak(
     input clock,
     input flag
 );
