@@ -33,7 +33,7 @@ uint32_t pmem_read(uint32_t addr) {
 void sim_init(){
   top = new VSimTop;
   contextp = new VerilatedContext;
-  contextp->traceEverOn(true);
+  Verilated::traceEverOn(true);
   tfp = new VerilatedVcdC;
   top->trace(tfp, 0);
   tfp->open("dump.vcd");
