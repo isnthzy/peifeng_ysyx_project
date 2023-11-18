@@ -21,7 +21,6 @@ static TOP_NAME dut;
 
 uint32_t pmem_read(uint32_t addr) {
   uint32_t ret=pmem[addr-0x80000000];
-  printf("%x\n",ret);
   return ret;
 }
 
@@ -80,7 +79,7 @@ int main() {
     step_and_dump_wave();
 
     top->clock=1;
-    // top->io_inst=pmem_read(top->io_pc);
+    top->io_inst=pmem_read(top->io_pc);
     step_and_dump_wave();
   }
   sim_exit();
