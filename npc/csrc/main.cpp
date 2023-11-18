@@ -41,6 +41,16 @@ extern void sim_exit(){
   delete top;
   tfp->close();
 }
+void reset(int n){
+  top->reset=1;
+  while (n-->0){
+    dut.clock=0;
+    step_and_dump_wave();
+    dut.clock=1;
+    step_and_dump_wave();
+  }
+  top->reset=0;
+}
 
 // static void single_cycle() {
 //   dut.clock = 0; dut.eval();
@@ -63,6 +73,7 @@ int main() {
   // }
   int i=100;
   sim_init();
+  reset(10);
   while(i--){
     top->clock=0;
     step_and_dump_wave();
