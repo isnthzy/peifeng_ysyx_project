@@ -89,11 +89,11 @@ class SimTop extends Module {
   
 }
 
-class singal_ebreak extends BlackBox with HasBlackBoxPath {
+class singal_ebreak extends BlackBox with HasBlackBoxPath{
   val io=IO(new Bundle {
     val clock=Input(Clock())
     val flag=Input(Bool())
   })
-  addResource("ebreak.v")
+  addPath("ebreak.v")
 }
 
