@@ -17,5 +17,7 @@ object TopMain extends App {
     FirtoolOption("--disable-all-randomization")
   )
   val executeOptions=ChiselStageOptions++firtoolOptions
-  (new ChiselStage).execute(args,executeOptions)
+  val executeArgs=Array("-td","build")
+  // (new ChiselStage).execute(args,executeOptions)
+  (new ChiselStage).execute(executeArgs,executeOptions)
 }
