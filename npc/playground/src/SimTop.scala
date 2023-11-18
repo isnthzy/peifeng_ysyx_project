@@ -7,7 +7,7 @@ class SimTop extends Module {
     val inst=Input(UInt(32.W))
     val pc=Output(UInt(32.W))
     val result=Output(UInt(32.W))
-    val wen=Bool()
+    val wen=Output(Bool())
     val imm=Output(UInt(32.W))
   })
   
@@ -30,7 +30,10 @@ class SimTop extends Module {
   Inst.opcode:=io.inst( 6,0)
 
   Isa.addi  :=(io.inst===BitPat("b??????? ????? ????? 000 ????? 00100 11"))
-  Isa.ebreak:=(io.inst===BitPat("b0000000 00001 00000 000 ????? 11100 11"))
+  Isa.ebreak:=(io.inst===BitPat("b0000000 00001 00000 000 00000 11100 11"))
+  val singal_ebreak=Module(new singal_ebreak())
+  singal_ebreak.io.flag:=Isa.ebreak
+  singal_ebreak.io.clock:=clock
 
   val ImmType=Wire(new ImmType())
   ImmType.ImmIType:=Isa.addi | Isa.ebreak 
@@ -86,6 +89,11 @@ class SimTop extends Module {
   
 }
 
-
-
+class singal_ebreak extends BlackBox with HasBlackBoxResource {
+  val io=IO(new Bundle {
+    val clock=Input(Clock())
+    val flag=Input(Bool())
+  })
+  addResource("ebreak.v")
+}
 

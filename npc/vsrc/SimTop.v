@@ -314,19 +314,25 @@ module SimTop(	// <stdin>:87:3
                 reset,	// <stdin>:89:11
   input  [31:0] io_inst,	// playground/src/SimTop.scala:6:14
   output [31:0] io_pc,	// playground/src/SimTop.scala:6:14
-                io_result	// playground/src/SimTop.scala:6:14
+                io_result,	// playground/src/SimTop.scala:6:14
+  output        io_wen,	// playground/src/SimTop.scala:6:14
+  output [31:0] io_imm	// playground/src/SimTop.scala:6:14
 );
 
-  wire [31:0] _alu_io_result;	// playground/src/SimTop.scala:72:18
-  wire [31:0] _RegFile_io_rdata1;	// playground/src/SimTop.scala:64:21
-  wire [31:0] _RegFile_io_rdata2;	// playground/src/SimTop.scala:64:21
-  reg  [31:0] pc;	// playground/src/SimTop.scala:13:17
-  wire        alu_op_0 = {io_inst[14:12], io_inst[6:0]} == 10'h13;	// playground/src/SimTop.scala:30:23
+  wire [31:0] _alu_io_result;	// playground/src/SimTop.scala:76:18
+  wire [31:0] _RegFile_io_rdata1;	// playground/src/SimTop.scala:68:21
+  wire [31:0] _RegFile_io_rdata2;	// playground/src/SimTop.scala:68:21
+  reg  [31:0] pc;	// playground/src/SimTop.scala:15:17
+  wire        alu_op_0 = {io_inst[14:12], io_inst[6:0]} == 10'h13;	// playground/src/SimTop.scala:32:23
+  wire [31:0] Imm =
+    alu_op_0 | {io_inst[31:12], io_inst[6:0]} == 27'h8073
+      ? {{12{io_inst[19]}}, io_inst[19:12], io_inst[20], io_inst[30:21], 1'h0}
+      : 32'h0;	// <stdin>:87:3, playground/src/Bundle.scala:32:{10,15,37}, playground/src/SimTop.scala:25:{39,54,66}, :32:23, :33:23, :36:30, :41:40
   always @(posedge clock) begin	// <stdin>:88:11
     if (reset)	// <stdin>:88:11
-      pc <= 32'h80000000;	// playground/src/SimTop.scala:13:17
+      pc <= 32'h80000000;	// playground/src/SimTop.scala:15:17
     else	// <stdin>:88:11
-      pc <= pc + 32'h4;	// playground/src/SimTop.scala:13:17, :14:9
+      pc <= pc + 32'h4;	// playground/src/SimTop.scala:15:17, :16:9
   end // always @(posedge)
   `ifdef ENABLE_INITIAL_REG_	// <stdin>:87:3
     `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:87:3
@@ -339,36 +345,33 @@ module SimTop(	// <stdin>:87:3
       `endif // INIT_RANDOM_PROLOG_
       `ifdef RANDOMIZE_REG_INIT	// <stdin>:87:3
         _RANDOM[/*Zero width*/ 1'b0] = `RANDOM;	// <stdin>:87:3
-        pc = _RANDOM[/*Zero width*/ 1'b0];	// <stdin>:87:3, playground/src/SimTop.scala:13:17
+        pc = _RANDOM[/*Zero width*/ 1'b0];	// <stdin>:87:3, playground/src/SimTop.scala:15:17
       `endif // RANDOMIZE_REG_INIT
     end // initial
     `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:87:3
       `FIRRTL_AFTER_INITIAL	// <stdin>:87:3
     `endif // FIRRTL_AFTER_INITIAL
   `endif // ENABLE_INITIAL_REG_
-  RegFile RegFile (	// playground/src/SimTop.scala:64:21
+  RegFile RegFile (	// playground/src/SimTop.scala:68:21
     .clock     (clock),
     .reset     (reset),
-    .io_waddr  (io_inst[11:7]),	// playground/src/SimTop.scala:20:42
-    .io_wdata  (_alu_io_result),	// playground/src/SimTop.scala:72:18
-    .io_raddr1 (io_inst[19:15]),	// playground/src/SimTop.scala:25:23
-    .io_raddr2 (io_inst[24:20]),	// playground/src/SimTop.scala:24:23
-    .io_wen    (alu_op_0),	// playground/src/SimTop.scala:30:23
+    .io_waddr  (io_inst[11:7]),	// playground/src/SimTop.scala:22:42
+    .io_wdata  (_alu_io_result),	// playground/src/SimTop.scala:76:18
+    .io_raddr1 (io_inst[19:15]),	// playground/src/SimTop.scala:27:23
+    .io_raddr2 (io_inst[24:20]),	// playground/src/SimTop.scala:26:23
+    .io_wen    (alu_op_0),	// playground/src/SimTop.scala:32:23
     .io_rdata1 (_RegFile_io_rdata1),
     .io_rdata2 (_RegFile_io_rdata2)
   );
-  Alu alu (	// playground/src/SimTop.scala:72:18
-    .io_op     ({11'h0, alu_op_0}),	// playground/src/SimTop.scala:30:23, :76:23
-    .io_src1   (_RegFile_io_rdata1),	// playground/src/SimTop.scala:64:21
-    .io_src2
-      (alu_op_0
-         ? (alu_op_0 | {io_inst[31:12], io_inst[6:0]} == 27'h8073
-              ? {{12{io_inst[19]}}, io_inst[19:12], io_inst[20], io_inst[30:21], 1'h0}
-              : 32'h0)
-         : _RegFile_io_rdata2),	// <stdin>:87:3, playground/src/Bundle.scala:32:{10,15,37}, playground/src/SimTop.scala:23:{39,54,66}, :30:23, :31:23, :34:30, :39:40, :64:21, :74:15
+  Alu alu (	// playground/src/SimTop.scala:76:18
+    .io_op     ({11'h0, alu_op_0}),	// playground/src/SimTop.scala:32:23, :80:23
+    .io_src1   (_RegFile_io_rdata1),	// playground/src/SimTop.scala:68:21
+    .io_src2   (alu_op_0 ? Imm : _RegFile_io_rdata2),	// playground/src/SimTop.scala:32:23, :41:40, :68:21, :78:15
     .io_result (_alu_io_result)
   );
-  assign io_pc = pc;	// <stdin>:87:3, playground/src/SimTop.scala:13:17
-  assign io_result = _alu_io_result;	// <stdin>:87:3, playground/src/SimTop.scala:72:18
+  assign io_pc = pc;	// <stdin>:87:3, playground/src/SimTop.scala:15:17
+  assign io_result = _alu_io_result;	// <stdin>:87:3, playground/src/SimTop.scala:76:18
+  assign io_wen = alu_op_0;	// <stdin>:87:3, playground/src/SimTop.scala:32:23
+  assign io_imm = Imm;	// <stdin>:87:3, playground/src/SimTop.scala:41:40
 endmodule
 
