@@ -72,7 +72,7 @@ int main() {
   //   nvboard_update();
   //   single_cycle();
   // }
-  int i=100;
+  int i=10;
   sim_init();
   reset(10);
   while(i--){
