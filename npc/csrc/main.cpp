@@ -74,8 +74,9 @@ int main() {
   //   nvboard_update();
   //   single_cycle();
   // }
+  int i=1000;
   sim_init();
-  while(1){
+  while(i--){
     singlecycle_wave();
   }
   sim_exit();
