@@ -94,6 +94,6 @@ class singal_ebreak extends BlackBox with HasBlackBoxPath{
     val clock=Input(Clock())
     val flag=Input(Bool())
   })
-  addPath("playground/src/v_resource/ebreak.v")
+  addPath("playground/src/v_resource/ebreak.sv")
 }
 
