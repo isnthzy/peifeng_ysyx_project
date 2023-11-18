@@ -13,7 +13,7 @@ object TopMain extends App {
       "--lowering-options=disallowLocalVariables,disallowPackedArrays,locationInfoStyle=wrapInAtSquareBracket"
     ),
     FirtoolOption("--split-verilog"),
-    FirtoolOption("-o=build/v-gen"),
+    FirtoolOption("-o=vsrc"),
     FirtoolOption("--disable-all-randomization")
   )
   val executeOptions=ChiselStageOptions++firtoolOptions
