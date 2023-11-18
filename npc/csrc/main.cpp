@@ -6,7 +6,7 @@
 #include "VSimTop__Dpi.h"
 typedef unsigned int   uint32_t;
 #define START_ADDR 0x80000000
-static uint32_t pmem[10] = {
+static uint32_t pmem[] = {
   0xC0010093,
   0x40008213,
   0x00100073
