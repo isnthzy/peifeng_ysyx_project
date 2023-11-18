@@ -44,9 +44,9 @@ extern void sim_exit(){
 void reset(int n){
   top->reset=1;
   while (n-->0){
-    dut.clock=0;
+    top->clock=0;
     step_and_dump_wave();
-    dut.clock=1;
+    top->clock=1;
     step_and_dump_wave();
   }
   top->reset=0;
