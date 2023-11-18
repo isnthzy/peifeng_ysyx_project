@@ -19,14 +19,8 @@ static VSimTop* top;
 static TOP_NAME dut;
 
 
-void* guest_to_host(uint32_t paddr) {
-  return pmem + paddr - START_ADDR;
-}
-static inline uint32_t host_read(void* addr) {
-  return *(uint32_t*)addr;
-}
 uint32_t pmem_read(uint32_t addr) {
-  uint32_t ret = host_read(guest_to_host(addr));
+  uint32_t ret=pmem[addr-0x80000000];
   return ret;
 }
 
@@ -69,13 +63,13 @@ int main() {
   // }
   int i=100;
   sim_init();
-  // while(i--){
+  while(i--){
     top->clock=0;
     step_and_dump_wave();
 
     top->clock=1;
     // top->io_inst=pmem_read(top->io_pc);
     step_and_dump_wave();
-  // }
+  }
   sim_exit();
 }
