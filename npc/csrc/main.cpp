@@ -1,15 +1,32 @@
-#include <nvboard.h>
+// #include <nvboard.h>
 #include <VSimTop.h>
 #include "verilated.h"
 #include "verilated_vcd_c.h"
+#include "svdpi.h"
+#include "VSimTop__Dpi.h"
 typedef unsigned int   uint32_t;
 #define START_ADDR 0x80000000
-uint32_t pmem[0x8000000]={};
-static TOP_NAME dut;
-uint32_t* guest_to_host(paddr_t paddr) { return pmem + paddr - START_ADDR; }
+uint32_t pmem[0x8000000]={
+  0xC0010093,
+  0x40008213,
+  0x00100073
+};
+
+VerilatedContext* contextp = NULL;
+VerilatedVcdC* tfp = NULL;
+static VSimTop* top;
 // void nvboard_bind_all_pins(VSimTop* top);
-uint32_t pmem_read(uint32_t pc){
-  uint32_t ret=guest_to_host(addr);
+static TOP_NAME dut;
+
+
+void* guest_to_host(uint32_t paddr) {
+  return pmem + paddr - START_ADDR;
+}
+static inline uint32_t host_read(void* addr) {
+  return *(uint32_t*)addr;
+}
+uint32_t pmem_read(uint32_t addr) {
+  uint32_t ret = host_read(guest_to_host(addr));
   return ret;
 }
 
@@ -20,7 +37,7 @@ void singlecycle_wave(){
   tfp->dump(contextp->time()); //使用时间
 
   top->clock=1;
-  top->io_inst=pmem_read(io_inst->pc);
+  top->io_inst=pmem_read(top->io_pc);
   top->eval();
   top->eval();
   contextp->timeInc(1); //时间+1

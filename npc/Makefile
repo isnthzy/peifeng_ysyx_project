@@ -16,19 +16,23 @@ default: $(BIN)
 
 $(shell mkdir -p $(BUILD_DIR))
 
-# constraint file
-SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
-$(SRC_AUTO_BIND): $(NXDC_FILES)
-	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 
 # project source
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.sv")
 CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
 CSRCS += $(SRC_AUTO_BIND)
 
-# rules for NVBoard
+###注释这两行中间关闭nvboard
 
-include $(NVBOARD_HOME)/scripts/nvboard.mk
+# # rules for NVBoard
+# include $(NVBOARD_HOME)/scripts/nvboard.mk
+
+# # constraint file
+# SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
+# $(SRC_AUTO_BIND): $(NXDC_FILES)
+# 	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
+
+###注释这两行中间关闭nvboard
 
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))
