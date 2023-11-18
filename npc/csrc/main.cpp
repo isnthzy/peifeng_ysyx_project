@@ -67,7 +67,7 @@ int main() {
   //   nvboard_update();
   //   single_cycle();
   // }
-  int i=1000;
+  int i=100;
   sim_init();
   while(i--){
     top->clock=0;
