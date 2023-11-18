@@ -27,6 +27,7 @@ CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*
 CSRCS += $(SRC_AUTO_BIND)
 
 # rules for NVBoard
+
 include $(NVBOARD_HOME)/scripts/nvboard.mk
 
 # rules for verilator
