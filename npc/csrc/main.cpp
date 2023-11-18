@@ -51,8 +51,7 @@ void singlecycle_wave(){
   tfp->dump(contextp->time()); //使用时间
 }
 extern void sim_exit(){
-  delete top;
-  tfp->close();
+
 }
 
 // static void single_cycle() {
@@ -80,4 +79,6 @@ int main() {
     singlecycle_wave();
   }
   sim_exit();
+  delete top;
+  tfp->close();
 }
