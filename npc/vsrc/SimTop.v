@@ -491,7 +491,7 @@ endmodule
 // ----- 8< ----- FILE "./ebreak.v" ----- 8< -----
 
 import "DPI-C" function void sim_exit();
-module ebreak(
+module singal_ebreak(
     input clock,
     input flag
 );
@@ -501,4 +501,5 @@ end
 endmodule //moduleName
 
 // ----- 8< ----- FILE "firrtl_black_box_resource_files.f" ----- 8< -----
+
 
