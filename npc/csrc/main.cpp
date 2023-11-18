@@ -74,7 +74,7 @@ int main() {
     step_and_dump_wave();
 
     top->clock=1;
-    top->io_inst=pmem_read(top->io_pc);
+    // top->io_inst=pmem_read(top->io_pc);
     step_and_dump_wave();
   // }
   sim_exit();
