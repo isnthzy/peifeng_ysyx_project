@@ -39,15 +39,15 @@ void sim_init(){
   tfp->open("dump.vcd");
 }
 void singlecycle_wave(){
+  contextp->timeInc(1); //时间+1
   top->clock=0;
   top->eval();
-  contextp->timeInc(1); //时间+1
   tfp->dump(contextp->time()); //使用时间
 
+  contextp->timeInc(1); //时间+1
   top->clock=1;
   top->io_inst=pmem_read(top->io_pc);
   top->eval();
-  contextp->timeInc(1); //时间+1
   tfp->dump(contextp->time()); //使用时间
 }
 extern void sim_exit(){
