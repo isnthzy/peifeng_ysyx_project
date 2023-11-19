@@ -1,5 +1,4 @@
 TOPNAME=SimTop
-include $(NVBOARD_HOME)/scripts/nvboard.mk
 BUILD_DIR = ./build
 export PATH := $(PATH):$(abspath ./utils)
 
@@ -17,18 +16,23 @@ default: $(BIN)
 
 $(shell mkdir -p $(BUILD_DIR))
 
-# constraint file
-SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
-$(SRC_AUTO_BIND): $(NXDC_FILES)
-	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 
 # project source
-VSRCS = $(shell find $(abspath ./vsrc) -name "*.v")
+VSRCS = $(shell find $(abspath ./vsrc) -name "*.sv")
 CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
 CSRCS += $(SRC_AUTO_BIND)
 
-# rules for NVBoard
+###注释这两行中间关闭nvboard
 
+# # rules for NVBoard
+# include $(NVBOARD_HOME)/scripts/nvboard.mk
+
+# # constraint file
+# SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
+# $(SRC_AUTO_BIND): $(NXDC_FILES)
+# 	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
+
+###注释这两行中间关闭nvboard
 
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))
@@ -56,20 +60,26 @@ verilog:
 	mkdir -p ./vsrc
 	mill -i __.test.runMain TopMain -td ./vsrc
 
-use: 
-	rm -rf ./vsrc/*
-	rm -rf ./playground/*
-	rm -rf ./constr/*
-	rm -rf ./csrc/*
-	cp -r nju-cpulab/$(lab)/csrc/*   csrc/
-	cp -r nju-cpulab/$(lab)/playground/*   playground/
-	cp -r nju-cpulab/$(lab)/vsrc/*   vsrc/
-	cp -r nju-cpulab/$(lab)/constr/* constr/
+# use: 
+# 	rm -rf ./vsrc/*
+# 	rm -rf ./playground/*
+# 	rm -rf ./constr/*
+# 	rm -rf ./csrc/*
+# 	cp -r nju-cpulab/$(lab)/csrc/*   csrc/
+# 	cp -r nju-cpulab/$(lab)/playground/*   playground/
+# 	cp -r nju-cpulab/$(lab)/vsrc/*   vsrc/
+# 	cp -r nju-cpulab/$(lab)/constr/* constr/
 # verilog:
 # 	$(call git_commit, "generate verilog")
 # 	mkdir -p $(BUILD_DIR)
 # 	mill -i __.test.runMain TopMain -td $(BUILD_DIR)
 
+#显示写了多少行代码
+cnt_v := $(shell find vsrc/ -name "*.sv" -or -name "*.scala" | xargs grep -ve "^$$" | wc -l)
+cnt_s := $(shell find playground/ -name "*.sv" -or -name "*.scala" | xargs grep -ve "^$$" | wc -l)
+count:
+	@echo $(cnt_v)-sverilog-lines in npc/vsrc	  
+	@echo $(cnt_s)--chisel--lines in npc/playground
 
 help:
 	mill -i __.test.runMain TopMain --help
