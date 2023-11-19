@@ -78,10 +78,10 @@ int main() {
   //   nvboard_update();
   //   single_cycle();
   // }
-  int i=2;
+  // int i=2;
   sim_init();
   reset(10);
-  while(i--){
+  while(1){
     top->clock=0;
     step_and_dump_wave();
 
