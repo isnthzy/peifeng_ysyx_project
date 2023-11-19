@@ -76,9 +76,9 @@ void reset(int n){
 //   while (n -- > 0) single_cycle();
 //   dut.reset = 0;
 // }
-bool si_break=true;
+bool sim_end=true;
 extern void sim_break(){
-  si_break=false;
+  sim_end=false;
 }
 int main() {
   // nvboard_bind_all_pins(&dut);
@@ -91,7 +91,7 @@ int main() {
   // int i=2;
   sim_init();
   reset(10);
-  while(si_break){
+  while(sim_end){
     top->clock=0;
     step_and_dump_wave();
 

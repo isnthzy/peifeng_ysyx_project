@@ -74,6 +74,12 @@ verilog:
 # 	mkdir -p $(BUILD_DIR)
 # 	mill -i __.test.runMain TopMain -td $(BUILD_DIR)
 
+#显示写了多少行代码
+cnt_v := $(shell find vsrc/ -name "*.sv" -or -name "*.scala" | xargs grep -ve "^$$" | wc -l)
+cnt_s := $(shell find playground/ -name "*.sv" -or -name "*.scala" | xargs grep -ve "^$$" | wc -l)
+count:
+	@echo $(cnt_v)-sverilog-lines in npc/vsrc	  
+	@echo $(cnt_s)--chisel--lines in npc/playground
 
 help:
 	mill -i __.test.runMain TopMain --help
