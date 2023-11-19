@@ -6,7 +6,7 @@
 #include "VSimTop__Dpi.h"
 typedef unsigned int   uint32_t;
 #define START_ADDR 0x80000000
-static uint32_t pmem[] = {
+uint32_t pmem[0x8000000]= {
   0xC0010093,
   0x40008213,
   0x00100073
@@ -19,9 +19,15 @@ static VSimTop* top;
 static TOP_NAME dut;
 
 
+// void* guest_to_host(uint32_t paddr) {
+//   return pmem + paddr - START_ADDR;
+// }
+// static inline uint32_t host_read(void* addr) {
+//   return *(uint32_t*)addr;
+// }
 uint32_t pmem_read(uint32_t addr) {
-  uint32_t ret=pmem[addr-0x80000000];
-  printf("%x\n",ret);
+  uint32_t ret =pmem[addr-0x80000000];
+  printf("%x %x\n",addr,ret);
   return ret;
 }
 
