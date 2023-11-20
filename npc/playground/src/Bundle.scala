@@ -13,9 +13,53 @@ class Inst extends Bundle{
   val rd  =UInt(5.W)
   val opcode=UInt(7.W)
 }
-class Isa extends Bundle{
-  val addi=Bool()
+class IsaR extends Bundle{
+  val add  =Bool()
+  val sub  =Bool()
+  val sll  =Bool()
+  val slt  =Bool()
+  val sltu =Bool()
+  val xor  =Bool()
+  val srl  =Bool()
+  val sra  =Bool()
+  val or   =Bool()
+  val and  =Bool()
+}
+class IsaI extends Bundle{
+  val jalr =Bool()
+  val lb   =Bool()
+  val lh   =Bool()
+  val lw   =Bool()
+  val lbu  =Bool()
+  val lhu  =Bool()
+  val addi =Bool()
+  val slti =Bool()
+  val sltiu=Bool()
+  val xori =Bool()
+  val ori  =Bool()
+  val andi =Bool()
+  val slli =Bool()
+  val srli =Bool()
+  val srai =Bool()
   val ebreak=Bool()
+}
+class IsaS extends Bundle{
+  val sb   =Bool()
+  val sh   =Bool()
+  val sw   =Bool()
+}
+class IsaB extends Bundle{
+  val beq  =Bool()
+  val bne  =Bool()
+  val blt  =Bool()
+  val bge  =Bool()
+  val bltu =Bool()
+  val bgeu =Bool()
+}
+class IsaU extends Bundle{ //jal指令放在u里
+  val lui  =Bool()
+  val auipc=Bool()
+  val jal  =Bool()
 }
 class ImmType extends Bundle{
   val ImmIType=Bool()
