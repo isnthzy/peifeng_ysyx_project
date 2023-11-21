@@ -8,3 +8,5 @@
 !Kconfig
 *.*
 *
+include/config
+include/generated
