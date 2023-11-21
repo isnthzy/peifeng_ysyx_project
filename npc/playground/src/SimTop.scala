@@ -11,6 +11,15 @@ class SimTop extends Module {
     val imm=Output(UInt(32.W))
   })
 
+//定义变量
+  val Imm=UInt(32.W)
+  val Inst=Wire(new Inst())
+  val IsaR=Wire(new IsaR())
+  val IsaI=Wire(new IsaI())
+  val IsaS=Wire(new IsaS())
+  val IsaB=Wire(new IsaB())
+  val IsaU=Wire(new IsaU())
+
 // IFU begin
   val pc=RegInit(START_ADDR)
   val dnpc=Mux(IsaI.jalr,(pc+Imm)& ~1.U,pc+Imm) //下一条动态指令
@@ -23,12 +32,7 @@ class SimTop extends Module {
   io.pc:=pc
   
 // IDU begin
-  val Inst=Wire(new Inst())
-  val IsaR=Wire(new IsaR())
-  val IsaI=Wire(new IsaI())
-  val IsaS=Wire(new IsaS())
-  val IsaB=Wire(new IsaB())
-  val IsaU=Wire(new IsaU())
+
 
   Inst.immI  :=io.inst(31,20)
   Inst.immS  :=Cat(io.inst(31,25),io.inst(11,7))
@@ -91,7 +95,7 @@ class SimTop extends Module {
   ImmType.ImmBType:=Mux(IsaB.asUInt=/=0.U,1.U,0.U)
   ImmType.ImmUType:=Mux(IsaU.asUInt=/=0.U,1.U,0.U)
   ImmType.ImmJType:=Mux(IsaU.jal,1.U,0.U) //j指令被包在u里
-  val Imm=MuxLookup(ImmType.asUInt,0.U)(Seq( 
+  Imm:=MuxLookup(ImmType.asUInt,0.U)(Seq( 
     "b10000".U -> Sext(Inst.immI,32),
     "b01000".U -> Sext(Inst.immS,32),
     "b00100".U -> Sext(Inst.immB,32),
@@ -135,11 +139,11 @@ class SimTop extends Module {
   //tha <  结果取反就是判断 >=
   alu_op(8 ):= IsaI.slli| IsaR.sll
   //sll << 左移
-  alu_op(9 ):=0.U
+  alu_op(9 ):= IsaI.srai| IsaR.sra
   //sra >> 无符号右移
-  alu_op(10):= IsaI.srai| IsaR.sra
+  alu_op(10):= IsaI.srli| IsaR.srl 
   //srl >> 有符号右移 
-  alu_op(11):= IsaI.srli| IsaR.srl 
+  alu_op(11):= 0.U
   
   val RegFile=Module(new RegFile())
   RegFile.io.raddr1:=Inst.rs1
