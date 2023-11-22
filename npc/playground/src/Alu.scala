@@ -15,8 +15,8 @@ class Alu extends Module {
   val alu_utha= Mux(io.src1 < io.src2,1.U,0.U)
   val alu_stha= Mux(io.src1.asSInt < io.src2.asSInt,1.U,0.U)
 
-  val sr=Wire(UInt(64.W))
-  sr := io.src1.asUInt << io.src2 //左移
+  val sll=Wire(UInt(64.W))
+  sll := io.src1 << io.src2 //左移
 
   val alu_add = Mux(io.sign,alu_sadd.asUInt,alu_uadd)
 
@@ -34,7 +34,7 @@ class Alu extends Module {
 
   val alu_tha = Mux(io.sign,alu_stha.asUInt,alu_utha)
 
-  val alu_sl  = sr(31,0)
+  val alu_sll = sll(31,0)
 
   val alu_sra = io.src1.asSInt >> io.src2
 
@@ -49,7 +49,7 @@ class Alu extends Module {
     "b000000100000".U -> alu_xor,
     "b000001000000".U -> alu_eq,
     "b000010000000".U -> alu_tha,
-    "b000100000000".U -> alu_sl, 
+    "b000100000000".U -> alu_sll, 
     "b001000000000".U -> alu_sra.asUInt,
     "b010000000000".U -> alu_srl,
   ))
