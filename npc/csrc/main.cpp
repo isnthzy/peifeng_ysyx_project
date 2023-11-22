@@ -23,7 +23,7 @@ VerilatedContext* contextp = NULL;
 VerilatedVcdC* tfp = NULL;
 static VSimTop* top;
 // void nvboard_bind_all_pins(VSimTop* top);
-static TOP_NAME dut;
+// static TOP_NAME dut;
 
 
 // void* guest_to_host(uint32_t paddr) {
