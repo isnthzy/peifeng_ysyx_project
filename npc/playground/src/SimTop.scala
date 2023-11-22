@@ -22,7 +22,7 @@ class SimTop extends Module {
 
 // IFU begin
   val pc=RegInit(START_ADDR)
-  val dnpc=Mux(IsaI.jalr,(pc+Imm)& ~1.U,pc+Imm) //下一条动态指令
+  val dnpc=Mux(IsaI.jalr,(pc+io.imm)& ~1.U,pc+io.imm) //下一条动态指令
   val snpc=pc+4.U //下一条静态指令
   when(is_jump){
     pc := dnpc
