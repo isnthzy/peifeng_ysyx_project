@@ -12,7 +12,7 @@ class SimTop extends Module {
   })
 
 //定义变量
-  val Imm=UInt(32.W)
+  val Imm=Wire(UInt(32.W))
   val Inst=Wire(new Inst())
   val IsaR=Wire(new IsaR())
   val IsaI=Wire(new IsaI())
