@@ -22,7 +22,7 @@ class SimTop extends Module {
 
 // IFU begin
   val pc=RegInit(START_ADDR)
-  val dnpc=Mux(IsaI.jalr,(pc+io.imm)& ~1.U,pc+io.imm) //下一条动态指令
+  val dnpc=Mux(IsaI.jalr,(pc+Imm)& ~1.U,pc+Imm) //下一条动态指令
   val snpc=pc+4.U //下一条静态指令
   when(is_jump){
     pc := dnpc
@@ -95,7 +95,7 @@ class SimTop extends Module {
   ImmType.ImmBType:=Mux(IsaB.asUInt=/=0.U,1.U,0.U)
   ImmType.ImmUType:=Mux(IsaU.asUInt=/=0.U,1.U,0.U)
   ImmType.ImmJType:=Mux(IsaU.jal,1.U,0.U) //j指令被包在u里
-  Imm:=MuxLookup(ImmType.asUInt,0.U)(Seq( 
+  Imm := MuxLookup(ImmType.asUInt,0.U)(Seq( 
     "b10000".U -> Sext(Inst.immI,32),
     "b01000".U -> Sext(Inst.immS,32),
     "b00100".U -> Sext(Inst.immB,32),
