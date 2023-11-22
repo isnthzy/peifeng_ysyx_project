@@ -13,6 +13,7 @@ class SimTop extends Module {
 
 //定义变量
   val Imm=Wire(UInt(32.W))
+  val is_jump=Wire(Bool())
   val Inst=Wire(new Inst())
   val IsaR=Wire(new IsaR())
   val IsaI=Wire(new IsaI())
@@ -164,14 +165,14 @@ class SimTop extends Module {
   alu.io.src2:=src2
   alu.io.sign:=src_is_sign 
 
-  val is_jump =(IsaU.jal 
-              | IsaB.beq &&  alu.io.result(0)
-              | IsaB.bne && ~alu.io.result(0)
-              | IsaB.blt &&  alu.io.result(0)
-              | IsaB.bltu&&  alu.io.result(0)
-              | IsaB.bge && ~alu.io.result(0)
-              | IsaB.bgeu&& ~alu.io.result(0)
-              )
+  is_jump := (IsaU.jal 
+            | IsaB.beq &&  alu.io.result(0)
+            | IsaB.bne && ~alu.io.result(0)
+            | IsaB.blt &&  alu.io.result(0)
+            | IsaB.bltu&&  alu.io.result(0)
+            | IsaB.bge && ~alu.io.result(0)
+            | IsaB.bgeu&& ~alu.io.result(0)
+            )
               
 
 
