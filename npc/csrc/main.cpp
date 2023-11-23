@@ -121,9 +121,10 @@ int main(int argc, char *argv[]) {
   //   single_cycle();
   // }
   // int i=2;
-  if(argc<2) printf("img=NULL\n");
   img_file=argv[1];
-  load_img();
+  if(argc<2) printf("img=NULL\n");
+  else load_img();
+  
   sim_init();
   reset(10);
   while(sim_end){
