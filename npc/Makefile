@@ -60,7 +60,7 @@ count:
 	@echo $(cnt_s)--chisel--lines in npc/playground
 .PHONY: test verilog help compile bsp reformat checkformat clean count
 
-sim:$(BIN)
+run:$(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@$^ $(IMG)
 
