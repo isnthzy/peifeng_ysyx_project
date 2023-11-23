@@ -8,7 +8,7 @@ html:
 ## 1. Basic Setup and Checks
 
 ### Default to create a bare-metal kernel image
-ifeq ($(MAKECMDGOALS),)
+ifeq ($(MAKECMDGOALS),) # 如果MAKECMDGOALS为空，则将其设置为image
   MAKECMDGOALS  = image
   .DEFAULT_GOAL = image
 endif
@@ -32,6 +32,7 @@ ifeq ($(filter $(ARCHS), $(ARCH)), )
 endif
 
 ### Extract instruction set architecture (`ISA`) and platform from `$ARCH`. Example: `ARCH=x86_64-qemu -> ISA=x86_64; PLATFORM=qemu`
+###从"$ARCH"中提取指令集架构
 ARCH_SPLIT = $(subst -, ,$(ARCH))
 ISA        = $(word 1,$(ARCH_SPLIT))
 PLATFORM   = $(word 2,$(ARCH_SPLIT))
@@ -47,6 +48,7 @@ endif
 ## 2. General Compilation Targets
 
 ### Create the destination directory (`build/$ARCH`)
+###例如在/tests/cpu-tests/调用后创建一个/tests/cpu-tests/build/riscv32-nemu文件夹
 WORK_DIR  = $(shell pwd)
 DST_DIR   = $(WORK_DIR)/build/$(ARCH)
 $(shell mkdir -p $(DST_DIR))
