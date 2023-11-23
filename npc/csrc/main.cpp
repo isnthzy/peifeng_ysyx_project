@@ -12,6 +12,7 @@ typedef unsigned int   uint32_t;
 typedef unsigned char  uint8_t;  
 typedef unsigned short int  uint16_t; 
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
+static char *img_file = NULL;
 static inline uint32_t host_read(void *addr, int len) {
   switch (len) {
     case 1: return *(uint8_t  *)addr;
@@ -111,7 +112,7 @@ bool sim_end=true;
 extern void sim_break(){
   sim_end=false;
 }
-int main() {
+int main(int argc, char *argv[]) {
   // nvboard_bind_all_pins(&dut);
   // nvboard_init();
   // reset(10);
@@ -120,6 +121,8 @@ int main() {
   //   single_cycle();
   // }
   // int i=2;
+  if(argc<2) printf("img=NULL\n");
+  img_file=argv[1];
   load_img();
   sim_init();
   reset(10);
