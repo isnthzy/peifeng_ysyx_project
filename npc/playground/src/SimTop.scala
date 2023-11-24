@@ -10,13 +10,10 @@ class SimTop extends Module {
     val wen=Output(Bool())
     val imm=Output(UInt(32.W))
   })
-  
-// IFU begin
-  val pc=RegInit(START_ADDR)
-  pc:=pc+4.U
-  io.pc:=pc
-  
-// IDU begin
+
+//定义变量
+  val Imm=Wire(UInt(32.W))
+  val is_jump=Wire(Bool())
   val Inst=Wire(new Inst())
   val IsaR=Wire(new IsaR())
   val IsaI=Wire(new IsaI())
@@ -24,12 +21,26 @@ class SimTop extends Module {
   val IsaB=Wire(new IsaB())
   val IsaU=Wire(new IsaU())
 
+// IFU begin
+  val pc=RegInit(START_ADDR)
+  val dnpc=Mux(IsaI.jalr,(pc+Imm)& ~1.U,pc+Imm) //下一条动态指令
+  val snpc=pc+4.U //下一条静态指令
+  when(is_jump){
+    pc := dnpc
+  }.otherwise{
+    pc := snpc
+  }
+  io.pc:=pc
+  
+// IDU begin
+
+
   Inst.immI  :=io.inst(31,20)
   Inst.immS  :=Cat(io.inst(31,25),io.inst(11,7))
   Inst.immB  :=Cat(io.inst(31),io.inst(7),io.inst(30,25),io.inst(11,8),0.U(1.W))
   Inst.immU  :=Cat(io.inst(31,12),0.U(12.W))
   Inst.immJ  :=Cat(io.inst(31),io.inst(19,12),io.inst(20),io.inst(30,21),0.U(1.W))
-  Inst.rs2   :=io.inst(24,20)
+  Inst.rs2   :=io.inst(24,20) 
   Inst.rs1   :=io.inst(19,15)
   Inst.funct3:=io.inst(14,12)
   Inst.rd    :=io.inst(11,7)
@@ -81,36 +92,59 @@ class SimTop extends Module {
 
   val ImmType=Wire(new ImmType())
   ImmType.ImmIType:=Mux(IsaI.asUInt=/=0.U,1.U,0.U)
-  ImmType.ImmSType:=0.U
-  ImmType.ImmBType:=0.U
-  ImmType.ImmUType:=0.U
-  ImmType.ImmJType:=0.U
-  val Imm=MuxLookup(ImmType.asUInt,0.U)(Seq( 
-    "b00001".U -> Sext(Inst.immI,32),
-    "b00010".U -> Sext(Inst.immS,32),
+  ImmType.ImmSType:=Mux(IsaS.asUInt=/=0.U,1.U,0.U)
+  ImmType.ImmBType:=Mux(IsaB.asUInt=/=0.U,1.U,0.U)
+  ImmType.ImmUType:=Mux(IsaU.asUInt=/=0.U,1.U,0.U)
+  ImmType.ImmJType:=Mux(IsaU.jal,1.U,0.U) //j指令被包在u里
+  Imm := MuxLookup(ImmType.asUInt,0.U)(Seq( 
+    "b10000".U -> Sext(Inst.immI,32),
+    "b01000".U -> Sext(Inst.immS,32),
     "b00100".U -> Sext(Inst.immB,32),
-    "b01000".U -> Sext(Inst.immU,32),
-    "b10000".U -> Sext(Inst.immJ,32),
+    "b00010".U -> Sext(Inst.immU,32),
+    "b00011".U -> Sext(Inst.immJ,32),
   ))
   io.imm:=Imm
-  val wen=IsaI.addi
+  val wen=(IsaI.addi | IsaR.add  | IsaI.andi| IsaR.and  | IsaU.lui | IsaU.auipc
+         | IsaR.slt  | IsaR.sltu | IsaR.sub | IsaI.ori  | IsaR.or
+         | IsaI.xori | IsaR.xor
+         | IsaI.slti | IsaI.sltiu| IsaI.slli| IsaI.srai | IsaI.srli
+         | IsaR.slt  | IsaR.sltu | IsaR.sll | IsaR.sra  | IsaR.srl )
+  val is_b_jump =ImmType.ImmBType
+  val result_is_imm= IsaU.lui
+  val result_is_dnpc=IsaU.jal | IsaI.jalr
+  val src_is_sign=IsaI.srai | IsaR.sra | IsaR.slt  | IsaB.blt | IsaB.bltu
+  val src1_is_pc =IsaU.auipc
+  val src2_is_imm=IsaI.addi | IsaI.slti| IsaI.sltiu| IsaI.xori| IsaI.ori | IsaI.andi
+  val src2_is_shamt_imm=IsaI.slli | IsaI.srai | IsaI.srli
+  val src2_is_shamt_src=IsaR.sll  | IsaR.sra  | IsaR.srl
   io.wen:=wen
-  val src2_is_imm=IsaI.addi
 
 // EXU begin
   val alu_op=Wire(Vec(12, Bool()))
-  alu_op(0 ):=IsaI.addi
-  alu_op(1 ):=0.U
+  alu_op(0 ):= IsaI.addi | IsaR.add 
+  //add加法
+  alu_op(1 ):= IsaR.sub
+  //sub减法
   alu_op(2 ):=0.U
-  alu_op(3 ):=0.U
-  alu_op(4 ):=0.U
-  alu_op(5 ):=0.U
-  alu_op(6 ):=0.U
-  alu_op(7 ):=0.U
-  alu_op(8 ):=0.U
-  alu_op(9 ):=0.U
-  alu_op(10):=0.U
-  alu_op(11):=0.U
+  //neg取反
+  alu_op(3 ):= IsaI.andi| IsaR.and
+  //and &&
+  alu_op(4 ):= IsaI.ori | IsaR.or
+  //or  ||
+  alu_op(5 ):= IsaI.xori| IsaR.xor
+  //xor ^
+  alu_op(6 ):= IsaB.beq | IsaB.bne 
+  //eq === 结果取反就是判断!=
+  alu_op(7 ):=(IsaB.blt | IsaB.bltu | IsaB.bge | IsaB.bgeu | IsaR.slt | IsaR.sltu 
+             | IsaI.slti| IsaI.sltiu)
+  //tha <  结果取反就是判断 >=
+  alu_op(8 ):= IsaI.slli| IsaR.sll
+  //sll << 左移
+  alu_op(9 ):= IsaI.srai| IsaR.sra
+  //sra >> 无符号右移
+  alu_op(10):= IsaI.srli| IsaR.srl 
+  //srl >> 有符号右移 
+  alu_op(11):= 0.U
   
   val RegFile=Module(new RegFile())
   RegFile.io.raddr1:=Inst.rs1
@@ -121,13 +155,29 @@ class SimTop extends Module {
   val rf_rdata2=RegFile.io.rdata2
 
   val alu =Module(new Alu())
-  val src1=rf_rdata1
-  val src2=Mux(src2_is_imm,Imm,rf_rdata2)
+  val src1=Mux(src1_is_pc ,pc,rf_rdata1)
+  val src2=Mux(src2_is_imm,Imm,
+            Mux(src2_is_shamt_imm,Inst.immI(5,0), //立即数(5,0)的位移量
+              Mux(src2_is_shamt_src,rf_rdata2(5,0),rf_rdata2))) //src2(5,0)的位移量
 
   alu.io.op  :=alu_op.asUInt
   alu.io.src1:=src1
   alu.io.src2:=src2
-  io.result:=alu.io.result
+  alu.io.sign:=src_is_sign 
+
+  is_jump := (IsaU.jal 
+            | IsaB.beq &&  alu.io.result(0)
+            | IsaB.bne && ~alu.io.result(0)
+            | IsaB.blt &&  alu.io.result(0)
+            | IsaB.bltu&&  alu.io.result(0)
+            | IsaB.bge && ~alu.io.result(0)
+            | IsaB.bgeu&& ~alu.io.result(0)
+            )
+              
+
+
+  io.result:=Mux(result_is_imm,Imm,
+              Mux(result_is_dnpc,dnpc,alu.io.result)) //要往rd中写入dnpc
   RegFile.io.wdata:=io.result
 //WB begin
   
