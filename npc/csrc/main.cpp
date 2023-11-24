@@ -64,11 +64,6 @@ static long load_img() {
   return size;
 }
 
-uint32_t pmem_read(uint32_t addr) {
-  uint32_t ret =pmem[(addr-0x80000000)/4];
-  printf("%x %x\n",addr,ret);
-  return ret;
-}
 
 void sim_init(){
   contextp = new VerilatedContext;
