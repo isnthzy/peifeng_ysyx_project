@@ -2,7 +2,7 @@ BUILD_DIR = ./build
 TOPNAME=SimTop
 export PATH := $(PATH):$(abspath ./utils)
 $(shell mkdir -p $(BUILD_DIR))
-IMAGE?=
+IMG?=
 
 NXDC_FILES = constr/SimTop.nxdc
 
@@ -19,7 +19,7 @@ CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 $(info building riscv32e-npc)
-$(info IMG=$(IMAGE))
+$(info IMG=$(IMG))
 
 $(BIN): $(VSRCS) $(CSRCS)
 	@rm -rf $(OBJ_DIR)
