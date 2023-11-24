@@ -140,7 +140,7 @@ int main(int argc, char *argv[]) {
   
   sim_init();
   reset(10);
-  int cnt=100;
+  int cnt=20;
   while(sim_end&&cnt){
     top->clock=0;
     step_and_dump_wave();
