@@ -24,7 +24,7 @@ static const uint32_t init_img [] = {
   0x40008213,
   0x40008213,
   0x40008213,
-  0x00100073
+  0x00100073,
 };
 
 static char *img_file = NULL;
