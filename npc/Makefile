@@ -18,6 +18,7 @@ VSRCS = $(shell find $(abspath ./vsrc) -name "*.sv")
 CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
+$(info building riscv32e-npc)
 
 $(BIN): $(VSRCS) $(CSRCS)
 	@rm -rf $(OBJ_DIR)
@@ -60,7 +61,7 @@ count:
 	@echo $(cnt_s)--chisel--lines in npc/playground
 .PHONY: test verilog help compile bsp reformat checkformat clean count
 
-run:$(BIN)
+sim:$(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@$^ $(IMG)
 
