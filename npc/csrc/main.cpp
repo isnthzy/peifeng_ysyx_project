@@ -88,7 +88,9 @@ void sim_init(){
   top = new VSimTop;
   contextp->traceEverOn(true);
   top->trace(tfp, 0);
-  tfp->open("dump.vcd");
+  tfp->open("dump.vcd"); 
+  //使用make sim生成的dump.vcd在npc/
+  //SimTop+*.bin生成的dump.vcd在npc/build
 }
 void step_and_dump_wave(){
   top->eval();
@@ -135,12 +137,12 @@ int main(int argc, char *argv[]) {
   // int i=2;
   img_file=argv[1];
   if(argc<2){
-    printf("\033[0m\033[1;31mimg=NULL -> use init_img\033[0m\n");
+    printf("\033[0m\033[1;31m img=NULL -> use init_img \033[0m\n");
     memcpy(guest_to_host(START_ADDR),init_img, sizeof(init_img));
   }else load_img();
   
   sim_init();
-  reset(10);
+  reset(2);
   int cnt=100000;
   while(sim_end&&cnt){
     top->clock=0;
