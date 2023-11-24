@@ -2,7 +2,7 @@ BUILD_DIR = ./build
 TOPNAME=SimTop
 export PATH := $(PATH):$(abspath ./utils)
 $(shell mkdir -p $(BUILD_DIR))
-IMG?=
+IMAGE?=
 
 NXDC_FILES = constr/SimTop.nxdc
 
