@@ -12,6 +12,19 @@ typedef unsigned int   uint32_t;
 typedef unsigned char  uint8_t;  
 typedef unsigned short int  uint16_t; 
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
+static const uint32_t init_img [] = {
+  0xC0010093,
+  0x40008213,
+  0x40008213,
+  0x40008213,
+  0x40008213,
+  0x40008213,
+  0x40008213,
+  0x40008213,
+  0x40008213,
+  0x00100073
+};
+
 static char *img_file = NULL;
 static inline uint32_t host_read(void *addr, int len) {
   switch (len) {
@@ -117,8 +130,10 @@ int main(int argc, char *argv[]) {
   // }
   // int i=2;
   img_file=argv[1];
-  if(argc<2) printf("img=NULL\n");
-  else load_img();
+  if(argc<2){
+    printf("img=NULL -> use init_img\n");
+    memcpy(guest_to_host(START_ADDR),init_img, sizeof(init_img));
+  }else load_img();
   
   sim_init();
   reset(10);
