@@ -135,7 +135,7 @@ int main(int argc, char *argv[]) {
   // int i=2;
   img_file=argv[1];
   if(argc<2){
-    printf("img=NULL -> use init_img\n");
+    printf("\033[0m\033[1;31mimg=NULL -> use init_img\033[0m\n");
     memcpy(guest_to_host(START_ADDR),init_img, sizeof(init_img));
   }else load_img();
   
