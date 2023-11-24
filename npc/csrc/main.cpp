@@ -1,5 +1,7 @@
 // #include <nvboard.h>
 #include <VSimTop.h>
+#include <stdio.h>
+#include <string.h>
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 #include "svdpi.h"
