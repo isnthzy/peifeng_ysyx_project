@@ -8,7 +8,7 @@
 #include "VSimTop__Dpi.h"
 #define NULL 0
 #define CONFIG_MSIZE 0x8000000
-#define START_ADDR   0x80000000
+#define START_ADDR   0x7fffffff
 #define CONFIG_MBASE 0x7fffffff
 #define PG_ALIGN __attribute((aligned(4096)))
 typedef unsigned int   uint32_t;
