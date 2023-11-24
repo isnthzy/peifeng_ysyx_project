@@ -90,7 +90,7 @@ module SimTop(	// @[<stdin>:121:3]
       : ImmType_ImmJType | IsaI_jalr ? (IsaI_jalr ? 32'h0 : _dnpc_T_4) : _alu_io_result;	// @[playground/src/SimTop.scala:26:{15,29,34}, :49:24, :51:24, :52:24, :99:39, :114:31, :157:18, :179:17, :180:18]
   always @(posedge clock) begin	// @[<stdin>:122:11]
     if (reset)	// @[<stdin>:122:11]
-      pc <= 32'h7FFFFFFF;	// @[playground/src/SimTop.scala:25:17]
+      pc <= 32'h80000000;	// @[playground/src/SimTop.scala:25:17]
     else if (ImmType_ImmJType | IsaB_beq & _alu_io_result[0] | IsaB_bne
              & ~(_alu_io_result[0]) | IsaB_blt & _alu_io_result[0] | IsaB_bltu
              & _alu_io_result[0] | IsaB_bge & ~(_alu_io_result[0]) | IsaB_bgeu
