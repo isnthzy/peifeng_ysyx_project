@@ -12,6 +12,8 @@ class SimTop extends Module {
   })
 
 //定义变量
+  val dnpc=dontTouch(Wire(UInt(32.W)))
+  val snpc=dontTouch(Wire(UInt(32.W)))
   val Imm=Wire(UInt(32.W))
   val Inst_inv=Wire(Bool())
   val is_jump=Wire(Bool())
@@ -24,8 +26,8 @@ class SimTop extends Module {
 
 // IFU begin
   val pc=RegInit(START_ADDR)
-  val dnpc=Mux(IsaI.jalr,(pc+Imm)& ~1.U,pc+Imm) //下一条动态指令
-  val snpc=pc+4.U //下一条静态指令
+  dnpc:=Mux(IsaI.jalr,(pc+Imm)& ~1.U,pc+Imm) //下一条动态指令
+  snpc:=pc+4.U //下一条静态指令
   when(is_jump){
     pc := dnpc
   }.otherwise{
