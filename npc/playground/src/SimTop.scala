@@ -29,6 +29,7 @@ class SimTop extends Module {
   nextpc:=Mux(is_jump,pc+Imm,pc+4.U)
   io.dnpc:=nextpc
   pc:=nextpc
+  io.pc:=pc
 // IDU begin
 
 
