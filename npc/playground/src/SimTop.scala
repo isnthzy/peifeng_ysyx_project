@@ -30,11 +30,8 @@ class SimTop extends Module {
   dnpc:=Mux(IsaI.jalr,(pc+Imm)& ~1.U,
           Mux(IsaU.jal,pc+Imm,snpc)) //下一条动态指令
   snpc:=pc+4.U //下一条静态指令
-  when(is_jump){
-    pc := dnpc
-  }.otherwise{
-    pc := snpc
-  }
+  pc:=dnpc
+
   io.pc:=pc
   io.dnpc:=dnpc //用下条指令取指
 // IDU begin
