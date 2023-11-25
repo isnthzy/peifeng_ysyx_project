@@ -119,7 +119,7 @@ module SimTop(	// @[<stdin>:125:3]
     .io_waddr  (io_inst[11:7]),	// @[playground/src/SimTop.scala:40:42]
     .io_wdata  (_io_result_output),	// @[playground/src/SimTop.scala:178:17]
     .io_raddr1 (IsaI_ebreak ? 5'hA : io_inst[19:15]),	// @[playground/src/SimTop.scala:45:23, :89:24, :149:25]
-    .io_raddr2 (io_inst[24:20]),	// @[playground/src/SimTop.scala:44:23]
+    .io_raddr2 (IsaI_ebreak ? 5'h0 : io_inst[24:20]),	// @[playground/src/SimTop.scala:44:23, :89:24, :150:25]
     .io_wen    (wen),	// @[playground/src/SimTop.scala:110:57]
     .io_rdata1 (_RegFile_io_rdata1),
     .io_rdata2 (_RegFile_io_rdata2)
