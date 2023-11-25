@@ -31,7 +31,7 @@ class SimTop extends Module {
           Mux(IsaU.jal,pc+Imm,snpc)) //下一条动态指令
   snpc:=pc+4.U //下一条静态指令
   when(is_jump){
-    pc := pc+Imm
+    pc := dnpc
   }.otherwise{
     pc := snpc
   }
