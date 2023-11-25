@@ -109,8 +109,7 @@ void reset(int n){
     top->clock=0;
     step_and_dump_wave();
   }
-  top->reset=0; 
-  //这样做的目的是确保在下一个时钟上升沿前 reset一直是1，
+  top->reset=0;
 }
 
 bool sim_end=true;
@@ -134,11 +133,11 @@ int main(int argc, char *argv[]) {
   reset(2);
   int cnt=100000;
   while(sim_end&&cnt){
-    top->clock=0;
-    step_and_dump_wave();
-
     top->clock=1;
     top->io_inst=pmem_read(top->io_pc,4);
+    step_and_dump_wave();
+
+    top->clock=0;
     step_and_dump_wave();
     cnt--;
   }
