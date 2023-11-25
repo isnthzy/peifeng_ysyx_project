@@ -167,6 +167,7 @@ class SimTop extends Module {
   alu.io.sign:=src_is_sign 
 
   is_jump := (IsaU.jal 
+            | IsaI.jalr
             | IsaB.beq &&  alu.io.result(0)
             | IsaB.bne && ~alu.io.result(0)
             | IsaB.blt &&  alu.io.result(0)
