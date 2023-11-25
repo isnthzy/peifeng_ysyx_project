@@ -25,11 +25,11 @@ class SimTop extends Module {
   val IsaU=dontTouch(Wire(new IsaU())) //避免取指代码被优化，出现波形找不到现象
 
 // IFU begin
-  val pc=RegInit(START_ADDR)
-  nextpc:=Mux(is_jump,pc+Imm,pc+4.U)
+  val REGpc=RegInit(START_ADDR)
+  nextpc:=Mux(is_jump,REGpc+Imm,REGpc+4.U)
   io.dnpc:=nextpc
-  pc:=nextpc
-  io.pc:=pc
+  REGpc:=nextpc
+  io.pc:=REGpc
 // IDU begin
 
 
@@ -151,7 +151,7 @@ class SimTop extends Module {
   val rf_rdata2=RegFile.io.rdata2
 
   val alu =Module(new Alu())
-  val src1=Mux(src1_is_pc ,pc,rf_rdata1)
+  val src1=Mux(src1_is_pc ,io.pc,rf_rdata1)
   val src2=Mux(src2_is_imm,Imm,
             Mux(src2_is_shamt_imm,Inst.immI(5,0), //立即数(5,0)的位移量
               Mux(src2_is_shamt_src,rf_rdata2(5,0),rf_rdata2))) //src2(5,0)的位移量
