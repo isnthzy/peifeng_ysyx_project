@@ -7,9 +7,12 @@ IMG?=
 NXDC_FILES = constr/SimTop.nxdc
 
 VERILATOR = verilator
-VERILATOR_CFLAGS += -MMD --build -cc  \
-				-O3 --x-assign fast --x-initial \
-				fast --noassert --timing --trace
+VERILATOR_CFLAGS += -MMD --build -cc  
+VERILATOR_CFLAGS += --timing --trace
+
+# VERILATOR_CFLAGS += -O3 --x-assign fast --x-initial fast --noassert 
+#优化加速
+				
 INC_PATH ?=
 OBJ_DIR = $(BUILD_DIR)/obj_dirtop
 BIN = $(BUILD_DIR)/$(TOPNAME)
