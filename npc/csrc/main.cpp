@@ -134,7 +134,7 @@ int main(int argc, char *argv[]) {
   int cnt=100;
   while(sim_end&&cnt){
     top->clock=1;
-    top->io_inst=pmem_read(top->io_pc,4);
+    top->io_inst=pmem_read(top->io_pc+4,4);
     step_and_dump_wave();
 
     top->clock=0;
