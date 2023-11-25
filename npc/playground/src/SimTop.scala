@@ -25,11 +25,13 @@ class SimTop extends Module {
   val IsaU=dontTouch(Wire(new IsaU())) //避免取指代码被优化，出现波形找不到现象
 
 // IFU begin
+  io.dnpc:=pc+Imm
   val pc=RegInit(START_ADDR)
-  io.dnpc:=Mux(IsaU.jal,pc+Imm,snpc) //下一条动态指令
-  snpc:=pc+4.U //下一条静态指令
-  pc:=io.dnpc
-
+  when(is_jump){
+    pc:=io.dnpc
+  }.otherwise{
+    pc:=pc+4.U
+  }
   io.pc:=pc //用下条指令取指
 // IDU begin
 
