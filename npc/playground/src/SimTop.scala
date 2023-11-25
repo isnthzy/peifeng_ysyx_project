@@ -147,7 +147,7 @@ class SimTop extends Module {
   
   val RegFile=Module(new RegFile())
   RegFile.io.raddr1:=Mux(IsaI.ebreak,10.U,Inst.rs1)
-  RegFile.io.raddr2:=Inst.rs2
+  RegFile.io.raddr2:=Mux(IsaI.ebreak, 0.U,Inst.rs2)
   RegFile.io.waddr:=Inst.rd
   RegFile.io.wen:=wen
   val rf_rdata1=RegFile.io.rdata1
