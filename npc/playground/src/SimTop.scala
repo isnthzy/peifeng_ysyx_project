@@ -13,7 +13,6 @@ class SimTop extends Module {
   })
 
 //定义变量
-  val dnpc=dontTouch(Wire(UInt(32.W)))
   val snpc=dontTouch(Wire(UInt(32.W)))
   val Imm=Wire(UInt(32.W))
   val Inst_inv=Wire(Bool())
@@ -27,12 +26,11 @@ class SimTop extends Module {
 
 // IFU begin
   val pc=RegInit(START_ADDR)
-  dnpc:=Mux(IsaU.jal,pc+Imm,snpc) //下一条动态指令
+  io.dnpc:=Mux(IsaU.jal,pc+Imm,snpc) //下一条动态指令
   snpc:=pc+4.U //下一条静态指令
-  pc:=dnpc
+  pc:=io.dnpc
 
-  io.pc:=pc
-  io.dnpc:=dnpc //用下条指令取指
+  io.pc:=pc //用下条指令取指
 // IDU begin
 
 
@@ -176,7 +174,7 @@ class SimTop extends Module {
 
 
   io.result:=Mux(result_is_imm,Imm,
-              Mux(result_is_dnpc,dnpc,alu.io.result)) //要往rd中写入dnpc
+              Mux(result_is_dnpc,io.dnpc,alu.io.result)) //要往rd中写入dnpc
   RegFile.io.wdata:=io.result
 
   val singal_dpi=Module(new singal_dpi())
