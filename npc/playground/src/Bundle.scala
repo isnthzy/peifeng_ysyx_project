@@ -1,4 +1,5 @@
 import chisel3._
+import chisel3.dontTouch
 import chisel3.util._  
 
 class Inst extends Bundle{
