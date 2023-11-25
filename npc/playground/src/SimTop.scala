@@ -13,6 +13,7 @@ class SimTop extends Module {
 
 //定义变量
   val Imm=Wire(UInt(32.W))
+  val Inst_inv=Wire(Bool())
   val is_jump=Wire(Bool())
   val Inst=Wire(new Inst())
   val IsaR=Wire(new IsaR())
@@ -84,11 +85,13 @@ class SimTop extends Module {
   IsaR.or    :=(io.inst===BitPat("b0000000 ????? ????? 110 ????? 01100 11"))
   IsaR.and   :=(io.inst===BitPat("b0000000 ????? ????? 111 ????? 01100 11"))
   
-
+  Inst_inv   :=(io.inst===BitPat("b??????? ????? ????? ??? ????? ????? ??")) //inv ->inst not valid
   IsaI.ebreak:=(io.inst===BitPat("b0000000 00001 00000 000 00000 11100 11"))
-  val singal_ebreak=Module(new singal_ebreak())
-  singal_ebreak.io.flag:=IsaI.ebreak
-  singal_ebreak.io.clock:=clock
+  val singal_dpi=Module(new singal_dpi())
+  singal_dpi.io.clock:=clock
+  singal_dpi.io.pc:=io.pc
+  singal_dpi.io.ebreak_flag:=IsaI.ebreak
+  singal_dpi.io.inv_flag   :=Inst_inv
 
   val ImmType=Wire(new ImmType())
   ImmType.ImmIType:=Mux(IsaI.asUInt=/=0.U,1.U,0.U)
@@ -183,11 +186,13 @@ class SimTop extends Module {
   
 }
 
-class singal_ebreak extends BlackBox with HasBlackBoxPath{
+class singal_dpi extends BlackBox with HasBlackBoxPath{
   val io=IO(new Bundle {
     val clock=Input(Clock())
-    val flag=Input(Bool())
+    val pc=Input(UInt(32.W))
+    val ebreak_flag=Input(Bool())
+    val inv_flag=Input(Bool()) //inv -> inst not vaild 无效的指令
   })
-  addPath("playground/src/v_resource/ebreak.sv")
+  addPath("playground/src/v_resource/dpi.sv")
 }
 
