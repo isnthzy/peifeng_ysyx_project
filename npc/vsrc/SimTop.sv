@@ -95,16 +95,18 @@ module SimTop(	// @[<stdin>:125:3]
     | IsaR_sub | IsaI_ori | IsaR_or | IsaI_xori | IsaR_xor | IsaI_slti | IsaI_sltiu
     | IsaI_slli | IsaI_srai | IsaI_srli | IsaR_sll | IsaR_sra | IsaR_srl;	// @[playground/src/SimTop.scala:21:26, :22:26, :25:26, :108:22, :112:57]
   wire        alu_op_9 = IsaI_srai | IsaR_sra;	// @[playground/src/SimTop.scala:21:26, :22:26, :116:29]
+  wire        is_jump =
+    IsaU_jal | IsaB_beq & _alu_io_result[0] | IsaB_bne & ~(_alu_io_result[0]) | IsaB_blt
+    & _alu_io_result[0] | IsaB_bltu & _alu_io_result[0] | IsaB_bge & ~(_alu_io_result[0])
+    | IsaB_bgeu & ~(_alu_io_result[0]);	// @[playground/src/SimTop.scala:19:29, :24:26, :25:26, :158:18, :170:{24,41}, :171:{24,27}, :172:24, :173:24, :174:{24,27}, :175:{13,24,27}]
   wire [31:0] _io_result_output =
     IsaU_lui ? Imm : IsaU_jal | IsaI_jalr ? dnpc : _alu_io_result;	// @[playground/src/SimTop.scala:15:26, :22:26, :25:26, :100:39, :115:31, :158:18, :180:17, :181:18]
   always @(posedge clock) begin	// @[<stdin>:126:11]
     if (reset)	// @[<stdin>:126:11]
       pc <= 32'h7FFFFFFC;	// @[playground/src/SimTop.scala:28:17]
-    else if (IsaU_jal | IsaB_beq & _alu_io_result[0] | IsaB_bne & ~(_alu_io_result[0])
-             | IsaB_blt & _alu_io_result[0] | IsaB_bltu & _alu_io_result[0] | IsaB_bge
-             & ~(_alu_io_result[0]) | IsaB_bgeu & ~(_alu_io_result[0]))	// @[playground/src/SimTop.scala:24:26, :25:26, :158:18, :170:{24,41}, :171:{24,27}, :172:24, :173:24, :174:{24,27}, :175:{13,24,27}]
+    else if (is_jump)	// @[playground/src/SimTop.scala:19:29]
       pc <= dnpc;	// @[playground/src/SimTop.scala:15:26, :28:17]
-    else	// @[playground/src/SimTop.scala:175:13]
+    else	// @[playground/src/SimTop.scala:19:29]
       pc <= snpc;	// @[playground/src/SimTop.scala:16:26, :28:17]
   end // always @(posedge)
   RegFile RegFile (	// @[playground/src/SimTop.scala:150:21]
