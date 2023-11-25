@@ -186,7 +186,7 @@ class SimTop extends Module {
   val singal_dpi=Module(new singal_dpi())
   singal_dpi.io.clock:=clock
   singal_dpi.io.reset:=reset
-  singal_dpi.io.pc:=io.pc
+  singal_dpi.io.pc:=io.dnpc
   singal_dpi.io.ebreak_flag:=IsaI.ebreak
   singal_dpi.io.inv_flag   :=Inst_inv
   singal_dpi.io.ret_reg    :=alu.io.result
