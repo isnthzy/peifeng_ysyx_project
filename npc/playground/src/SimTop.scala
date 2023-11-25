@@ -27,10 +27,11 @@ class SimTop extends Module {
 // IFU begin
   val pc=RegInit(START_ADDR)
   io.dnpc:=pc+Imm
+  snpc:=pc+4.U
   when(is_jump){
     pc:=io.dnpc
   }.otherwise{
-    pc:=pc+4.U
+    pc:=snpc
   }
   io.pc:=pc //用下条指令取指
 // IDU begin
