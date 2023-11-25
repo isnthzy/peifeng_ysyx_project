@@ -6,6 +6,7 @@ class SimTop extends Module {
   val io = IO(new Bundle {
     val inst=Input(UInt(32.W))
     val pc=Output(UInt(32.W))
+    val dnpc=Output(UInt(32.W))
     val result=Output(UInt(32.W))
     val wen=Output(Bool())
     val imm=Output(UInt(32.W))
@@ -35,7 +36,7 @@ class SimTop extends Module {
     pc := snpc
   }
   io.pc:=pc
-  
+  io.dnpc:=dnpc
 // IDU begin
 
 
