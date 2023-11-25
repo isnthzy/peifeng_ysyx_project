@@ -111,12 +111,12 @@ void reset(int n){
 }
 
 bool sim_end=true;
-extern void sim_break(input int pc,input int ret_reg){
+extern void sim_break(int pc,int ret_reg){
   if(ret_reg==0) printf("npc: \033[1;32mHIT GOOD TRAP\033[0m at pc = 0x%08x",pc);
   else printf("npc: \033[1;31mHIT BAD TRAP\033[0m at pc = 0x%08x",pc);
   sim_end=false;
 }
-extern void inv_break(input int pc){
+extern void inv_break(int pc){
   printf("npc: \033[1;31mABORT\033[0m at pc = 0x%08x",pc);
   sim_end=false;
 }
