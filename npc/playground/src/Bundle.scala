@@ -59,7 +59,7 @@ class IsaB extends Bundle{
 class IsaU extends Bundle{ //jal指令放在u里
   val lui  =Bool()
   val auipc=Bool()
-  val jal  =Bool()
+  val jal  =dontTouch(Bool()) //避免被优化
 }
 class ImmType extends Bundle{
   val ImmIType=Bool()
