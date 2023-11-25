@@ -87,11 +87,7 @@ class SimTop extends Module {
   
   Inst_inv   := IsaB.asUInt===0.U & IsaI.asUInt===0.U & IsaR.asUInt===0.U & IsaS.asUInt===0.U & IsaU.asUInt===0.U//inv ->inst not valid
   IsaI.ebreak:=(io.inst===BitPat("b0000000 00001 00000 000 00000 11100 11"))
-  val singal_dpi=Module(new singal_dpi())
-  singal_dpi.io.clock:=clock
-  singal_dpi.io.pc:=io.pc
-  singal_dpi.io.ebreak_flag:=IsaI.ebreak
-  singal_dpi.io.inv_flag   :=Inst_inv
+  //ebreak的过程->为达到取出a0 (reg[10])号寄存器的目的， 把rs1取10，rs2取0 加起来，交给regfile取
 
   val ImmType=Wire(new ImmType())
   ImmType.ImmIType:=Mux(IsaI.asUInt=/=0.U,1.U,0.U)
@@ -124,7 +120,7 @@ class SimTop extends Module {
 
 // EXU begin
   val alu_op=Wire(Vec(12, Bool()))
-  alu_op(0 ):= IsaI.addi | IsaR.add 
+  alu_op(0 ):= IsaI.addi | IsaR.add | IsaI.ebreak
   //add加法
   alu_op(1 ):= IsaR.sub
   //sub减法
@@ -150,7 +146,7 @@ class SimTop extends Module {
   alu_op(11):= 0.U
   
   val RegFile=Module(new RegFile())
-  RegFile.io.raddr1:=Inst.rs1
+  RegFile.io.raddr1:=Mux(IsaI.ebreak,10.U,Inst.rs1)
   RegFile.io.raddr2:=Inst.rs2
   RegFile.io.waddr:=Inst.rd
   RegFile.io.wen:=wen
@@ -182,6 +178,13 @@ class SimTop extends Module {
   io.result:=Mux(result_is_imm,Imm,
               Mux(result_is_dnpc,dnpc,alu.io.result)) //要往rd中写入dnpc
   RegFile.io.wdata:=io.result
+
+  val singal_dpi=Module(new singal_dpi())
+  singal_dpi.io.clock:=clock
+  singal_dpi.io.pc:=io.pc
+  singal_dpi.io.ebreak_flag:=IsaI.ebreak
+  singal_dpi.io.inv_flag   :=Inst_inv
+  singal_dpi.io.ret_reg    :=alu.io.result
 //WB begin
   
 }
@@ -192,6 +195,7 @@ class singal_dpi extends BlackBox with HasBlackBoxPath{
     val pc=Input(UInt(32.W))
     val ebreak_flag=Input(Bool())
     val inv_flag=Input(Bool()) //inv -> inst not vaild 无效的指令
+    val ret_reg=Input(UInt(32.W))
   })
   addPath("playground/src/v_resource/dpi.sv")
 }

@@ -60,8 +60,7 @@ static void pmem_write(uint32_t addr, int len, uint32_t data) {
 VerilatedContext* contextp = NULL;
 VerilatedVcdC* tfp = NULL;
 static VSimTop* top;
-// void nvboard_bind_all_pins(VSimTop* top);
-// static TOP_NAME dut;
+
 
 static long load_img() {
   if (img_file == NULL) {
@@ -111,29 +110,17 @@ void reset(int n){
   top->reset=0;
 }
 
-// static void single_cycle() {
-//   dut.clock = 0; dut.eval();
-//   dut.clock = 1; dut.eval();
-// }
-
-// static void reset(int n) {
-//   dut.reset = 1;
-//   while (n -- > 0) single_cycle();
-//   dut.reset = 0;
-// }
 bool sim_end=true;
-extern void sim_break(){
+extern void sim_break(input int pc,input int ret_reg){
+  if(ret_reg==0) printf("npc: \033[1;32mHIT GOOD TRAP\033[0m at pc = 0x%08x",pc);
+  else printf("npc: \033[1;31mHIT BAD TRAP\033[0m at pc = 0x%08x",pc);
+  sim_end=false;
+}
+extern void inv_break(input int pc){
+  printf("npc: \033[1;31mABORT\033[0m at pc = 0x%08x",pc);
   sim_end=false;
 }
 int main(int argc, char *argv[]) {
-  // nvboard_bind_all_pins(&dut);
-  // nvboard_init();
-  // reset(10);
-  // while(1) {
-  //   nvboard_update();
-  //   single_cycle();
-  // }
-  // int i=2;
   img_file=argv[1];
   if(argc<2){
     printf("\033[0m\033[1;31m img=NULL -> use init_img \033[0m\n");
