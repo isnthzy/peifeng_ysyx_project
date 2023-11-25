@@ -180,8 +180,8 @@ class SimTop extends Module {
   RegFile.io.wdata:=io.result
 
   val singal_dpi=Module(new singal_dpi())
-  singal_dpi.io.clock:=reset
   singal_dpi.io.clock:=clock
+  singal_dpi.io.clock:=reset
   singal_dpi.io.pc:=io.pc
   singal_dpi.io.ebreak_flag:=IsaI.ebreak
   singal_dpi.io.inv_flag   :=Inst_inv
