@@ -25,8 +25,8 @@ class SimTop extends Module {
   val IsaU=dontTouch(Wire(new IsaU())) //避免取指代码被优化，出现波形找不到现象
 
 // IFU begin
-  io.dnpc:=pc+Imm
   val pc=RegInit(START_ADDR)
+  io.dnpc:=pc+Imm
   when(is_jump){
     pc:=io.dnpc
   }.otherwise{
