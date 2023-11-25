@@ -47,6 +47,7 @@ static inline void host_write(void *addr, int len, uint32_t data) {
 uint8_t* guest_to_host(uint32_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 uint32_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 static uint32_t pmem_read(uint32_t addr, int len) {
+  printf("pc: %x,inst: %x",addr,ret);
   uint32_t ret = host_read(guest_to_host(addr), len);
   // printf("%x\n",ret);
   return ret;
@@ -131,7 +132,7 @@ int main(int argc, char *argv[]) {
   
   sim_init();
   reset(2);
-  int cnt=100000;
+  int cnt=100;
   while(sim_end&&cnt){
     top->clock=1;
     top->io_inst=pmem_read(top->io_pc,4);
