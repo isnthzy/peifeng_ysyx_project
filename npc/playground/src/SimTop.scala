@@ -92,7 +92,7 @@ class SimTop extends Module {
   IsaI.ebreak:=(io.inst===BitPat("b0000000 00001 00000 000 00000 11100 11"))
   //ebreak的过程->为达到取出a0 (reg[10])号寄存器的目的， 把rs1取10，rs2取0 加起来，交给regfile取
 
-  val ImmType=Wire(new ImmType())
+  val ImmType=dontTouch(Wire(new ImmType()))
   ImmType.ImmIType:=Mux(IsaI.asUInt=/=0.U,1.U,0.U)
   ImmType.ImmSType:=Mux(IsaS.asUInt=/=0.U,1.U,0.U)
   ImmType.ImmBType:=Mux(IsaB.asUInt=/=0.U,1.U,0.U)
