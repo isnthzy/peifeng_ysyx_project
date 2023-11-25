@@ -154,7 +154,7 @@ module SimTop(	// @[<stdin>:125:3]
   singal_dpi singal_dpi (	// @[playground/src/SimTop.scala:186:24]
     .clock       (clock),
     .reset       (reset),
-    .pc          (pc),	// @[playground/src/SimTop.scala:29:17]
+    .pc          (dnpc),	// @[playground/src/SimTop.scala:16:26]
     .ebreak_flag (IsaI_ebreak),	// @[playground/src/SimTop.scala:23:26]
     .inv_flag
       ({IsaB_beq, IsaB_bne, IsaB_blt, IsaB_bge, IsaB_bltu, IsaB_bgeu} == 6'h0
