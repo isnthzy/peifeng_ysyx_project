@@ -20,7 +20,7 @@ class SimTop extends Module {
   val IsaI=Wire(new IsaI())
   val IsaS=Wire(new IsaS())
   val IsaB=Wire(new IsaB())
-  val IsaU=Wire(new IsaU())
+  val IsaU=dontTouch(Wire(new IsaU())) //避免jal被优化
 
 // IFU begin
   val pc=RegInit(START_ADDR)

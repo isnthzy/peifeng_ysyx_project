@@ -1,5 +1,4 @@
 import chisel3._
-import chisel3.dontTouch
 import chisel3.util._  
 
 class Inst extends Bundle{
@@ -60,7 +59,7 @@ class IsaB extends Bundle{
 class IsaU extends Bundle{ //jal指令放在u里
   val lui  =Bool()
   val auipc=Bool()
-  val jal  =dontTouch(Bool()) //避免被优化
+  val jal  =Bool()
 }
 class ImmType extends Bundle{
   val ImmIType=Bool()
