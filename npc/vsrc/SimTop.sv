@@ -94,25 +94,24 @@ module SimTop(	// @[<stdin>:125:3]
     _alu_op_0_T | IsaI_andi | IsaR_and | IsaU_lui | IsaU_auipc | IsaR_slt | IsaR_sltu
     | IsaR_sub | IsaI_ori | IsaR_or | IsaI_xori | IsaR_xor | IsaI_slti | IsaI_sltiu
     | IsaI_slli | IsaI_srai | IsaI_srli | IsaR_sll | IsaR_sra | IsaR_srl;	// @[playground/src/SimTop.scala:21:26, :22:26, :25:26, :108:22, :112:57]
-  wire        result_is_dnpc = IsaU_jal | IsaI_jalr;	// @[playground/src/SimTop.scala:22:26, :25:26, :115:31]
   wire        alu_op_9 = IsaI_srai | IsaR_sra;	// @[playground/src/SimTop.scala:21:26, :22:26, :116:29]
-  wire [31:0] _io_result_output = IsaU_lui ? Imm : result_is_dnpc ? dnpc : _alu_io_result;	// @[playground/src/SimTop.scala:15:26, :25:26, :100:39, :115:31, :158:18, :181:17, :182:18]
+  wire [31:0] _io_result_output =
+    IsaU_lui ? Imm : IsaU_jal | IsaI_jalr ? dnpc : _alu_io_result;	// @[playground/src/SimTop.scala:15:26, :22:26, :25:26, :100:39, :115:31, :158:18, :180:17, :181:18]
   always @(posedge clock) begin	// @[<stdin>:126:11]
     if (reset)	// @[<stdin>:126:11]
       pc <= 32'h7FFFFFFC;	// @[playground/src/SimTop.scala:28:17]
-    else if (result_is_dnpc | IsaB_beq & _alu_io_result[0] | IsaB_bne
-             & ~(_alu_io_result[0]) | IsaB_blt & _alu_io_result[0] | IsaB_bltu
-             & _alu_io_result[0] | IsaB_bge & ~(_alu_io_result[0]) | IsaB_bgeu
-             & ~(_alu_io_result[0]))	// @[playground/src/SimTop.scala:24:26, :115:31, :158:18, :171:{24,41}, :172:{24,27}, :173:24, :174:24, :175:{24,27}, :176:{13,24,27}]
+    else if (IsaU_jal | IsaB_beq & _alu_io_result[0] | IsaB_bne & ~(_alu_io_result[0])
+             | IsaB_blt & _alu_io_result[0] | IsaB_bltu & _alu_io_result[0] | IsaB_bge
+             & ~(_alu_io_result[0]) | IsaB_bgeu & ~(_alu_io_result[0]))	// @[playground/src/SimTop.scala:24:26, :25:26, :158:18, :170:{24,41}, :171:{24,27}, :172:24, :173:24, :174:{24,27}, :175:{13,24,27}]
       pc <= dnpc;	// @[playground/src/SimTop.scala:15:26, :28:17]
-    else	// @[playground/src/SimTop.scala:176:13]
+    else	// @[playground/src/SimTop.scala:175:13]
       pc <= snpc;	// @[playground/src/SimTop.scala:16:26, :28:17]
   end // always @(posedge)
   RegFile RegFile (	// @[playground/src/SimTop.scala:150:21]
     .clock     (clock),
     .reset     (reset),
     .io_waddr  (io_inst[11:7]),	// @[playground/src/SimTop.scala:42:42]
-    .io_wdata  (_io_result_output),	// @[playground/src/SimTop.scala:181:17]
+    .io_wdata  (_io_result_output),	// @[playground/src/SimTop.scala:180:17]
     .io_raddr1 (IsaI_ebreak ? 5'hA : io_inst[19:15]),	// @[playground/src/SimTop.scala:22:26, :47:23, :151:25]
     .io_raddr2 (IsaI_ebreak ? 5'h0 : io_inst[24:20]),	// @[playground/src/SimTop.scala:22:26, :46:23, :152:25]
     .io_wen    (wen),	// @[playground/src/SimTop.scala:112:57]
@@ -146,7 +145,7 @@ module SimTop(	// @[<stdin>:125:3]
     .io_sign   (alu_op_9 | IsaR_slt | IsaB_blt | IsaB_bltu),	// @[playground/src/SimTop.scala:21:26, :24:26, :116:{29,63}]
     .io_result (_alu_io_result)
   );
-  singal_dpi singal_dpi (	// @[playground/src/SimTop.scala:185:24]
+  singal_dpi singal_dpi (	// @[playground/src/SimTop.scala:184:24]
     .clock       (clock),
     .reset       (reset),
     .pc          (pc),	// @[playground/src/SimTop.scala:28:17]
@@ -183,7 +182,7 @@ module SimTop(	// @[<stdin>:125:3]
     .ret_reg     (_alu_io_result)	// @[playground/src/SimTop.scala:158:18]
   );
   assign io_pc = pc;	// @[<stdin>:125:3, playground/src/SimTop.scala:28:17]
-  assign io_result = _io_result_output;	// @[<stdin>:125:3, playground/src/SimTop.scala:181:17]
+  assign io_result = _io_result_output;	// @[<stdin>:125:3, playground/src/SimTop.scala:180:17]
   assign io_wen = wen;	// @[<stdin>:125:3, playground/src/SimTop.scala:112:57]
   assign io_imm = Imm;	// @[<stdin>:125:3, playground/src/SimTop.scala:100:39]
 endmodule
