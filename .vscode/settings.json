@@ -15,7 +15,11 @@
         "reg.h": "c",
         "stdint.h": "c",
         "ftrace.h": "c",
-        "cpu.h": "c"
+        "cpu.h": "c",
+        "bitset": "cpp",
+        "memory": "cpp",
+        "random": "cpp",
+        "optional": "cpp"
     },
     "C_Cpp.intelliSenseEngineFallback": "disabled", //需要添加的
     "C_Cpp.intelliSenseEngine": "Tag Parser",  //  需要添加的
