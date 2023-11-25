@@ -13,6 +13,5 @@ always @(posedge clock)begin
         if(ebreak_flag==1) sim_break(pc,ret_reg);
         if(inv_flag==1) inv_break(pc);
     }
-
 end
 endmodule //moduleName
