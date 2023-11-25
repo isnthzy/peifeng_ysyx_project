@@ -16,11 +16,11 @@ class SimTop extends Module {
   val Inst_inv=Wire(Bool())
   val is_jump=Wire(Bool())
   val Inst=Wire(new Inst())
-  val IsaR=Wire(new IsaR())
-  val IsaI=Wire(new IsaI())
-  val IsaS=Wire(new IsaS())
-  val IsaB=Wire(new IsaB())
-  val IsaU=dontTouch(Wire(new IsaU())) //避免jal被优化
+  val IsaR=dontTouch(Wire(new IsaR()))
+  val IsaI=dontTouch(Wire(new IsaI()))
+  val IsaS=dontTouch(Wire(new IsaS()))
+  val IsaB=dontTouch(Wire(new IsaB()))
+  val IsaU=dontTouch(Wire(new IsaU())) //避免取指代码被优化，出现波形找不到现象
 
 // IFU begin
   val pc=RegInit(START_ADDR)
