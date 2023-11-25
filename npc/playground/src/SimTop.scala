@@ -124,7 +124,7 @@ class SimTop extends Module {
   //add加法
   alu_op(1 ):= IsaR.sub
   //sub减法
-  alu_op(2 ):=0.U
+  alu_op(2 ):= 0.U
   //neg取反
   alu_op(3 ):= IsaI.andi| IsaR.and
   //and &&
@@ -180,6 +180,7 @@ class SimTop extends Module {
   RegFile.io.wdata:=io.result
 
   val singal_dpi=Module(new singal_dpi())
+  singal_dpi.io.clock:=reset
   singal_dpi.io.clock:=clock
   singal_dpi.io.pc:=io.pc
   singal_dpi.io.ebreak_flag:=IsaI.ebreak
@@ -192,6 +193,7 @@ class SimTop extends Module {
 class singal_dpi extends BlackBox with HasBlackBoxPath{
   val io=IO(new Bundle {
     val clock=Input(Clock())
+    val reset=Input(Bool())
     val pc=Input(UInt(32.W))
     val ebreak_flag=Input(Bool())
     val inv_flag=Input(Bool()) //inv -> inst not vaild 无效的指令
