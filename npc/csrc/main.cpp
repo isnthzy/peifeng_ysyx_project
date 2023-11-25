@@ -64,7 +64,7 @@ static VSimTop* top;
 
 static long load_img() {
   if (img_file == NULL) {
-    printf("No image is given. Use the default build-in image.");
+    printf("No image is given. Use the default build-in image.\n");
     return 4096; // built-in image size
   }
 
@@ -101,13 +101,16 @@ extern void sim_exit(){
 }
 void reset(int n){
   top->reset=1;
+  top->clock=0;
+  step_and_dump_wave();
   while (n-->0){
-    top->clock=0;
-    step_and_dump_wave();
     top->clock=1;
     step_and_dump_wave();
+    top->clock=0;
+    step_and_dump_wave();
   }
-  top->reset=0;
+  top->reset=0; 
+  //这样做的目的是确保在下一个时钟上升沿前 reset一直是1，
 }
 
 bool sim_end=true;
