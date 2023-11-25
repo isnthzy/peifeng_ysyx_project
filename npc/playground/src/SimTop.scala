@@ -36,7 +36,7 @@ class SimTop extends Module {
     pc := snpc
   }
   io.pc:=pc
-  io.dnpc:=dnpc
+  io.dnpc:=dnpc //用下条指令取指
 // IDU begin
 
 
