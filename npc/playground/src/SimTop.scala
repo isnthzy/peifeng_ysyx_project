@@ -85,7 +85,7 @@ class SimTop extends Module {
   IsaR.or    :=(io.inst===BitPat("b0000000 ????? ????? 110 ????? 01100 11"))
   IsaR.and   :=(io.inst===BitPat("b0000000 ????? ????? 111 ????? 01100 11"))
   
-  Inst_inv   :=IsaB.asUInt | IsaI.asUInt | IsaR.asUInt | IsaS.asUInt | IsaU.asUInt//inv ->inst not valid
+  Inst_inv   := IsaB.asUInt===0.U & IsaI.asUInt===0.U & IsaR.asUInt===0.U & IsaS.asUInt===0.U & IsaU.asUInt===0.U//inv ->inst not valid
   IsaI.ebreak:=(io.inst===BitPat("b0000000 00001 00000 000 00000 11100 11"))
   val singal_dpi=Module(new singal_dpi())
   singal_dpi.io.clock:=clock

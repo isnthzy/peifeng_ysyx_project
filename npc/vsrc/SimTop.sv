@@ -10,6 +10,7 @@ module SimTop(	// @[<stdin>:123:3]
 );
 
   wire [31:0] Imm;	// @[playground/src/SimTop.scala:102:39]
+  wire        IsaI_ebreak;	// @[playground/src/SimTop.scala:89:24]
   wire        IsaI_jalr;	// @[playground/src/SimTop.scala:53:24]
   wire [31:0] _alu_io_result;	// @[playground/src/SimTop.scala:160:18]
   wire [31:0] _RegFile_io_rdata1;	// @[playground/src/SimTop.scala:152:21]
@@ -27,6 +28,7 @@ module SimTop(	// @[<stdin>:123:3]
   wire        IsaB_bge = _GEN == 10'h2E3;	// @[playground/src/SimTop.scala:53:24, :57:24]
   wire        IsaB_bltu = _GEN == 10'h363;	// @[playground/src/SimTop.scala:53:24, :58:24]
   wire        IsaB_bgeu = _GEN == 10'h3E3;	// @[playground/src/SimTop.scala:53:24, :59:24]
+  wire        IsaS_sw = _GEN == 10'h123;	// @[playground/src/SimTop.scala:53:24, :67:24]
   wire        IsaI_addi = _GEN == 10'h13;	// @[playground/src/SimTop.scala:53:24, :68:24]
   wire        IsaI_slti = _GEN == 10'h113;	// @[playground/src/SimTop.scala:53:24, :69:24]
   wire        IsaI_sltiu = _GEN == 10'h193;	// @[playground/src/SimTop.scala:53:24, :70:24]
@@ -46,7 +48,7 @@ module SimTop(	// @[<stdin>:123:3]
   wire        IsaR_sra = _GEN_0 == 17'h82B3;	// @[playground/src/SimTop.scala:74:24, :84:24]
   wire        IsaR_or = _GEN_0 == 17'h333;	// @[playground/src/SimTop.scala:74:24, :85:24]
   wire        IsaR_and = _GEN_0 == 17'h3B3;	// @[playground/src/SimTop.scala:74:24, :86:24]
-  wire        IsaI_ebreak = io_inst == 32'h100073;	// @[playground/src/SimTop.scala:89:24]
+  assign IsaI_ebreak = io_inst == 32'h100073;	// @[playground/src/SimTop.scala:89:24]
   wire [4:0]  _Imm_T =
     {|{IsaI_jalr,
        _GEN == 10'h3,
@@ -64,7 +66,7 @@ module SimTop(	// @[<stdin>:123:3]
        IsaI_srli,
        IsaI_srai,
        IsaI_ebreak},
-     |{_GEN == 10'h23, _GEN == 10'hA3, _GEN == 10'h123},
+     |{_GEN == 10'h23, _GEN == 10'hA3, IsaS_sw},
      |{IsaB_beq, IsaB_bne, IsaB_blt, IsaB_bge, IsaB_bltu, IsaB_bgeu},
      |{IsaU_lui, IsaU_auipc, ImmType_ImmJType},
      ImmType_ImmJType};	// @[playground/src/SimTop.scala:50:24, :51:24, :52:24, :53:24, :54:24, :55:24, :56:24, :57:24, :58:24, :59:24, :60:24, :61:24, :62:24, :63:24, :64:24, :65:24, :66:24, :67:24, :68:24, :69:24, :70:24, :71:24, :72:24, :73:24, :74:24, :75:24, :76:24, :89:24, :97:{30,36}, :98:{30,36}, :99:{30,36}, :100:{30,36}, :102:28]
@@ -107,7 +109,7 @@ module SimTop(	// @[<stdin>:123:3]
     .clock       (clock),
     .pc          (pc),	// @[playground/src/SimTop.scala:26:17]
     .ebreak_flag (IsaI_ebreak),	// @[playground/src/SimTop.scala:89:24]
-    .inv_flag    (1'h1)	// @[playground/src/SimTop.scala:27:36]
+    .inv_flag    (IsaB_bgeu | IsaI_ebreak | IsaR_and | IsaS_sw | ImmType_ImmJType)	// @[playground/src/SimTop.scala:52:24, :59:24, :67:24, :86:24, :88:70, :89:24]
   );
   RegFile RegFile (	// @[playground/src/SimTop.scala:152:21]
     .clock     (clock),
