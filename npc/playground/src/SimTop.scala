@@ -6,14 +6,13 @@ class SimTop extends Module {
   val io = IO(new Bundle {
     val inst=Input(UInt(32.W))
     val pc=Output(UInt(32.W))
-    val dnpc=Output(UInt(32.W))
     val result=Output(UInt(32.W))
     val wen=Output(Bool())
     val imm=Output(UInt(32.W))
   })
 
 //定义变量
-  val nextpc=dontTouch(Reg(UInt(32.W)))
+  val nextpc=dontTouch(Wire(UInt(32.W)))
   val Imm=Wire(UInt(32.W))
   val Inst_inv=Wire(Bool())
   val is_jump=dontTouch(Wire(Bool()))
@@ -27,7 +26,7 @@ class SimTop extends Module {
 // IFU begin
   val REGpc=RegInit(START_ADDR)
   nextpc:=Mux(is_jump,REGpc+Imm,REGpc+4.U)
-  io.dnpc:=nextpc
+  val dnpc=nextpc
   REGpc:=nextpc
   io.pc:=REGpc
 // IDU begin
@@ -173,13 +172,13 @@ class SimTop extends Module {
 
 
   io.result:=Mux(result_is_imm,Imm,
-              Mux(result_is_dnpc,io.dnpc,alu.io.result)) //要往rd中写入dnpc
+              Mux(result_is_dnpc,dnpc,alu.io.result)) //要往rd中写入dnpc
   RegFile.io.wdata:=io.result
 
   val singal_dpi=Module(new singal_dpi())
   singal_dpi.io.clock:=clock
   singal_dpi.io.reset:=reset
-  singal_dpi.io.pc:=io.dnpc
+  singal_dpi.io.pc:=dnpc
   singal_dpi.io.ebreak_flag:=IsaI.ebreak
   singal_dpi.io.inv_flag   :=Inst_inv
   singal_dpi.io.ret_reg    :=alu.io.result
