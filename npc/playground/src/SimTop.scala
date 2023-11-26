@@ -12,7 +12,7 @@ class SimTop extends Module {
   })
 
 //定义变量 
-  val jalr_taget=Wire(UInt(32.W))
+  val jalr_taget=dontTouch(Wire(UInt(32.W)))
   val nextpc=dontTouch(Wire(UInt(32.W)))
   val snpc=dontTouch(Wire(UInt(32.W)))
   val dnpc=dontTouch(Wire(UInt(32.W)))
