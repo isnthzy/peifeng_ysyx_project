@@ -11,8 +11,11 @@ class SimTop extends Module {
     val imm=Output(UInt(32.W))
   })
 
-//定义变量
+//定义变量 
+  val jalr_taget=Wire(UInt(32.W))
   val nextpc=dontTouch(Wire(UInt(32.W)))
+  val snpc=dontTouch(Wire(UInt(32.W)))
+  val dnpc=dontTouch(Wire(UInt(32.W)))
   val Imm=Wire(UInt(32.W))
   val Inst_inv=Wire(Bool())
   val is_jump=dontTouch(Wire(Bool()))
@@ -25,8 +28,11 @@ class SimTop extends Module {
 
 // IFU begin
   val REGpc=RegInit(START_ADDR)
-  nextpc:=Mux(is_jump,REGpc+Imm,REGpc+4.U)
-  val dnpc=nextpc
+  snpc:=REGpc+4.U
+  dnpc:=Mux(IsaU.jal,REGpc+Imm,
+          Mux(IsaI.jalr,jalr_taget,snpc))
+  nextpc:=Mux(!is_jump,snpc,dnpc)
+  
   REGpc:=nextpc
   io.pc:=REGpc
 // IDU begin
@@ -106,17 +112,17 @@ class SimTop extends Module {
          | IsaR.slt  | IsaR.sltu | IsaR.sll | IsaR.sra  | IsaR.srl )
   val is_b_jump =ImmType.ImmBType
   val result_is_imm= IsaU.lui
-  val result_is_dnpc=IsaU.jal | IsaI.jalr
+  val result_is_snpc=IsaU.jal | IsaI.jalr
   val src_is_sign=IsaI.srai | IsaR.sra | IsaR.slt  | IsaB.blt | IsaB.bltu
   val src1_is_pc =IsaU.auipc
-  val src2_is_imm=IsaI.addi | IsaI.slti| IsaI.sltiu| IsaI.xori| IsaI.ori | IsaI.andi
+  val src2_is_imm=IsaI.addi | IsaI.slti| IsaI.sltiu| IsaI.xori| IsaI.ori | IsaI.andi | IsaI.jalr
   val src2_is_shamt_imm=IsaI.slli | IsaI.srai | IsaI.srli
   val src2_is_shamt_src=IsaR.sll  | IsaR.sra  | IsaR.srl
   io.wen:=wen
 
 // EXU begin
   val alu_op=Wire(Vec(12, Bool()))
-  alu_op(0 ):= IsaI.addi | IsaR.add | IsaI.ebreak
+  alu_op(0 ):= IsaI.addi | IsaR.add | IsaI.ebreak | IsaI.jalr
   //add加法
   alu_op(1 ):= IsaR.sub
   //sub减法
@@ -161,6 +167,7 @@ class SimTop extends Module {
   alu.io.sign:=src_is_sign 
 
   is_jump := (IsaU.jal 
+            | IsaI.jalr
             | IsaB.beq &&  alu.io.result(0)
             | IsaB.bne && ~alu.io.result(0)
             | IsaB.blt &&  alu.io.result(0)
@@ -172,7 +179,8 @@ class SimTop extends Module {
 
 
   io.result:=Mux(result_is_imm,Imm,
-              Mux(result_is_dnpc,dnpc,alu.io.result)) //要往rd中写入dnpc
+              Mux(result_is_snpc,snpc,alu.io.result)) //要往rd中写入dnpc
+  jalr_taget:=(alu.io.result+Imm)& ~(1.U(1.W))
   RegFile.io.wdata:=io.result
 
   val singal_dpi=Module(new singal_dpi())
