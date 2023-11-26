@@ -5,7 +5,7 @@ import config.Configs._
 class SimTop extends Module {
   val io = IO(new Bundle {
     val inst=Input(UInt(32.W))
-    val pc=Output(Reg(UInt(32.W)))
+    val pc=Output(RegInit(START_ADDR))
     val dnpc=Output(UInt(32.W))
     val result=Output(UInt(32.W))
     val wen=Output(Bool())
@@ -25,11 +25,9 @@ class SimTop extends Module {
   val IsaU=dontTouch(Wire(new IsaU())) //避免取指代码被优化，出现波形找不到现象
 
 // IFU begin
-  val REGpc=RegInit(START_ADDR)
-  nextpc:=Mux(is_jump,REGpc+Imm,REGpc+4.U)
+  nextpc:=Mux(is_jump,io.pc+Imm,io.pc+4.U)
   io.dnpc:=nextpc
-  REGpc:=nextpc
-  io.pc:=REGpc
+  io.pc:=nextpc
 // IDU begin
 
 
