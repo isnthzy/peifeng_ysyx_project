@@ -5,7 +5,7 @@ import config.Configs._
 class SimTop extends Module {
   val io = IO(new Bundle {
     val inst=Input(UInt(32.W))
-    val pc=Output(UInt(32.W))
+    val pc=Output(Reg(UInt(32.W)))
     val dnpc=Output(UInt(32.W))
     val result=Output(UInt(32.W))
     val wen=Output(Bool())
