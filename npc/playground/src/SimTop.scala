@@ -13,7 +13,7 @@ class SimTop extends Module {
   })
 
 //定义变量
-  val nextpc=dontTouch(Wire(UInt(32.W)))
+  val nextpc=dontTouch(Reg(UInt(32.W)))
   val Imm=Wire(UInt(32.W))
   val Inst_inv=Wire(Bool())
   val is_jump=dontTouch(Wire(Bool()))
@@ -28,7 +28,7 @@ class SimTop extends Module {
   val REGpc=RegInit(START_ADDR)
   nextpc:=Mux(is_jump,REGpc+Imm,REGpc+4.U)
   io.dnpc:=nextpc
-  REGpc:=RegNext(nextpc)
+  REGpc:=nextpc
   io.pc:=REGpc
 // IDU begin
 
