@@ -102,7 +102,7 @@ module SimTop(	// @[<stdin>:125:3]
     IsaU_lui ? Imm : IsaU_jal | IsaI_jalr ? nextpc : _alu_io_result;	// @[playground/src/SimTop.scala:15:28, :21:26, :24:26, :94:39, :109:31, :152:18, :174:17, :175:18]
   always @(posedge clock) begin	// @[<stdin>:126:11]
     if (reset)	// @[<stdin>:126:11]
-      REGpc <= 32'h7FFFFFFC;	// @[playground/src/SimTop.scala:27:20]
+      REGpc <= 32'h80000000;	// @[playground/src/SimTop.scala:27:20]
     else	// @[<stdin>:126:11]
       REGpc <= nextpc;	// @[playground/src/SimTop.scala:15:28, :27:20]
   end // always @(posedge)
