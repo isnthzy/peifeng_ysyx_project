@@ -105,9 +105,9 @@ class SimTop extends Module {
     "b00011".U -> Sext(Inst.immJ,32),
   ))
   io.imm:=Imm
-  val wen=(IsaI.addi | IsaR.add  | IsaI.andi| IsaR.and  | IsaU.lui | IsaU.auipc
+  val wen=(IsaI.addi | IsaR.add  | IsaI.andi| IsaR.and  | IsaU.lui 
          | IsaR.slt  | IsaR.sltu | IsaR.sub | IsaI.ori  | IsaR.or
-         | IsaI.xori | IsaR.xor
+         | IsaI.xori | IsaR.xor  | IsaI.jalr| IsaU.jal  | IsaU.auipc
          | IsaI.slti | IsaI.sltiu| IsaI.slli| IsaI.srai | IsaI.srli
          | IsaR.slt  | IsaR.sltu | IsaR.sll | IsaR.sra  | IsaR.srl )
   val is_b_jump =ImmType.ImmBType
@@ -182,7 +182,7 @@ class SimTop extends Module {
               Mux(result_is_snpc,snpc,alu.io.result)) //要往rd中写入dnpc
   val jalr_tmp=alu.io.result+Imm
   jalr_taget:=Cat(jalr_tmp(31,1),0.U(1.W))
-  printf("jalr_taget %x\n",jalr_taget)
+  printf("rd= jalr_taget %x\n",jalr_taget)
   RegFile.io.wdata:=io.result
 
   val singal_dpi=Module(new singal_dpi())
