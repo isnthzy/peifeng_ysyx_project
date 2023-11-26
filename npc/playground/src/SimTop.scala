@@ -182,13 +182,12 @@ class SimTop extends Module {
               Mux(result_is_snpc,snpc,alu.io.result)) //要往rd中写入dnpc
   val jalr_tmp=alu.io.result+Imm
   jalr_taget:=Cat(jalr_tmp(31,1),0.U(1.W))
-  printf("rd= jalr_taget %x\n",jalr_taget)
   RegFile.io.wdata:=io.result
 
   val singal_dpi=Module(new singal_dpi())
   singal_dpi.io.clock:=clock
   singal_dpi.io.reset:=reset
-  singal_dpi.io.pc:=dnpc
+  singal_dpi.io.pc:=REGpc
   singal_dpi.io.ebreak_flag:=IsaI.ebreak
   singal_dpi.io.inv_flag   :=Inst_inv
   singal_dpi.io.ret_reg    :=alu.io.result
