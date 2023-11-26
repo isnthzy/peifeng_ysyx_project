@@ -13,9 +13,9 @@ module SimTop(	// @[<stdin>:125:3]
   wire [31:0] _alu_io_result;	// @[playground/src/SimTop.scala:158:18]
   wire [31:0] _RegFile_io_rdata1;	// @[playground/src/SimTop.scala:150:21]
   wire [31:0] _RegFile_io_rdata2;	// @[playground/src/SimTop.scala:150:21]
-  wire [31:0] jalr_taget = 32'h0;	// @[playground/src/SimTop.scala:15:32, :100:39]
   reg  [31:0] REGpc;	// @[playground/src/SimTop.scala:30:20]
   wire [31:0] snpc = REGpc + 32'h4;	// @[playground/src/SimTop.scala:17:26, :30:20, :31:14]
+  wire [31:0] jalr_taget;	// @[playground/src/SimTop.scala:15:32]
   wire        IsaI_jalr;	// @[playground/src/SimTop.scala:24:26]
   wire        IsaU_jal;	// @[playground/src/SimTop.scala:27:26]
   wire [31:0] dnpc = IsaU_jal ? REGpc + Imm : IsaI_jalr ? jalr_taget : snpc;	// @[playground/src/SimTop.scala:15:32, :17:26, :18:26, :24:26, :27:26, :30:20, :32:{12,27}, :33:14, :100:39]
@@ -105,6 +105,8 @@ module SimTop(	// @[<stdin>:125:3]
     | IsaB_blt & _alu_io_result[0] | IsaB_bltu & _alu_io_result[0] | IsaB_bge
     & ~(_alu_io_result[0]) | IsaB_bgeu & ~(_alu_io_result[0]);	// @[playground/src/SimTop.scala:21:29, :26:26, :115:31, :158:18, :171:{24,41}, :172:{24,27}, :173:24, :174:24, :175:{24,27}, :176:{13,24,27}]
   wire [31:0] _io_result_output = IsaU_lui ? Imm : result_is_snpc ? snpc : _alu_io_result;	// @[playground/src/SimTop.scala:17:26, :27:26, :100:39, :115:31, :158:18, :181:17, :182:18]
+  wire [31:0] _jalr_tmp_T = _alu_io_result + Imm;	// @[playground/src/SimTop.scala:100:39, :158:18, :183:29]
+  assign jalr_taget = {_jalr_tmp_T[31:1], 1'h0};	// @[playground/src/SimTop.scala:15:32, :34:15, :183:29, :184:{18,27}]
   always @(posedge clock) begin	// @[<stdin>:126:11]
     if (reset)	// @[<stdin>:126:11]
       REGpc <= 32'h80000000;	// @[playground/src/SimTop.scala:30:20]
@@ -149,7 +151,7 @@ module SimTop(	// @[<stdin>:125:3]
     .io_sign   (alu_op_9 | IsaR_slt | IsaB_blt | IsaB_bltu),	// @[playground/src/SimTop.scala:23:26, :26:26, :116:{29,63}]
     .io_result (_alu_io_result)
   );
-  singal_dpi singal_dpi (	// @[playground/src/SimTop.scala:186:24]
+  singal_dpi singal_dpi (	// @[playground/src/SimTop.scala:187:24]
     .clock       (clock),
     .reset       (reset),
     .pc          (dnpc),	// @[playground/src/SimTop.scala:18:26]
