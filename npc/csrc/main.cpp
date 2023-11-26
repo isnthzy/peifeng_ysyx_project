@@ -7,8 +7,8 @@
 #include "svdpi.h"
 #include "VSimTop__Dpi.h"
 #define CONFIG_MSIZE 0x8000000
-#define START_ADDR   0x7ffffffc
-#define CONFIG_MBASE 0x7ffffffc
+#define START_ADDR   0x80000000
+#define CONFIG_MBASE 0x80000000
 #define PG_ALIGN __attribute((aligned(4096)))
 typedef unsigned int   uint32_t;
 typedef unsigned char  uint8_t;  
@@ -48,7 +48,7 @@ uint8_t* guest_to_host(uint32_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 uint32_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 static uint32_t pmem_read(uint32_t addr, int len) {
   uint32_t ret = host_read(guest_to_host(addr), len);
-  // printf("%x\n",ret);
+  printf("pc: %x,inst: %x\n",addr,ret);
   return ret;
 }
 
@@ -60,19 +60,18 @@ static void pmem_write(uint32_t addr, int len, uint32_t data) {
 VerilatedContext* contextp = NULL;
 VerilatedVcdC* tfp = NULL;
 static VSimTop* top;
-// void nvboard_bind_all_pins(VSimTop* top);
-// static TOP_NAME dut;
+
 
 static long load_img() {
   if (img_file == NULL) {
-    printf("No image is given. Use the default build-in image.");
+    printf("No image is given. Use the default build-in image.\n");
     return 4096; // built-in image size
   }
 
   FILE *fp = fopen(img_file, "rb");
   fseek(fp, 0, SEEK_END);
   long size = ftell(fp);
-  printf("The image is %s, size = %ld", img_file, size);
+  printf("The image is %s, size = %ld\n", img_file, size);
   fseek(fp, 0, SEEK_SET);
   int ret = fread(guest_to_host(START_ADDR), size, 1, fp);
   assert(ret == 1);
@@ -102,38 +101,28 @@ extern void sim_exit(){
 }
 void reset(int n){
   top->reset=1;
+  top->clock=0;
+  step_and_dump_wave();
   while (n-->0){
-    top->clock=0;
-    step_and_dump_wave();
     top->clock=1;
+    step_and_dump_wave();
+    top->clock=0;
     step_and_dump_wave();
   }
   top->reset=0;
 }
 
-// static void single_cycle() {
-//   dut.clock = 0; dut.eval();
-//   dut.clock = 1; dut.eval();
-// }
-
-// static void reset(int n) {
-//   dut.reset = 1;
-//   while (n -- > 0) single_cycle();
-//   dut.reset = 0;
-// }
 bool sim_end=true;
-extern void sim_break(){
+extern void sim_break(int pc,int ret_reg){
+  if(ret_reg==0) printf("npc: \033[1;32mHIT GOOD TRAP\033[0m at pc = 0x%08x\n",pc);
+  else printf("npc: \033[1;31mHIT BAD TRAP\033[0m at pc = 0x%08x\n",pc);
+  sim_end=false;
+}
+extern void inv_break(int pc){
+  printf("npc: \033[1;31mABORT\033[0m at pc = 0x%08x\n",pc);
   sim_end=false;
 }
 int main(int argc, char *argv[]) {
-  // nvboard_bind_all_pins(&dut);
-  // nvboard_init();
-  // reset(10);
-  // while(1) {
-  //   nvboard_update();
-  //   single_cycle();
-  // }
-  // int i=2;
   img_file=argv[1];
   if(argc<2){
     printf("\033[0m\033[1;31m img=NULL -> use init_img \033[0m\n");
@@ -142,13 +131,13 @@ int main(int argc, char *argv[]) {
   
   sim_init();
   reset(2);
-  int cnt=100000;
+  int cnt=100;
   while(sim_end&&cnt){
-    top->clock=0;
-    step_and_dump_wave();
-
     top->clock=1;
     top->io_inst=pmem_read(top->io_pc,4);
+    step_and_dump_wave();
+
+    top->clock=0;
     step_and_dump_wave();
     cnt--;
   }

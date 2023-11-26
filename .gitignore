@@ -13,4 +13,4 @@
 !/am-kernels/*
 !/nvboard/*
 !fceux-am/*
-!.vscode/
+!.vscode/*

@@ -7,9 +7,12 @@ IMG?=
 NXDC_FILES = constr/SimTop.nxdc
 
 VERILATOR = verilator
-VERILATOR_CFLAGS += -MMD --build -cc  \
-				-O3 --x-assign fast --x-initial \
-				fast --noassert --timing --trace
+VERILATOR_CFLAGS += -MMD --build -cc  
+VERILATOR_CFLAGS += --trace
+
+# VERILATOR_CFLAGS += -O3 --x-assign fast --x-initial fast --noassert 
+#优化加速
+				
 INC_PATH ?=
 OBJ_DIR = $(BUILD_DIR)/obj_dirtop
 BIN = $(BUILD_DIR)/$(TOPNAME)
@@ -18,8 +21,8 @@ VSRCS = $(shell find $(abspath ./vsrc) -name "*.sv")
 CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
-$(info \033[0m\033[1;32m building riscv32e-npc \033[0m)
-$(info \033[0m\033[1;32m IMG=$(IMG) \033[0m)
+$(info #building riscv32e-npc)
+$(info #IMG=$(IMG))
 
 $(BIN): $(VSRCS) $(CSRCS)
 	@rm -rf $(OBJ_DIR)

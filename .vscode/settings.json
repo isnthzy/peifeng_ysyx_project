@@ -1,0 +1,32 @@
+{
+    "C_Cpp.errorSquiggles": "enabledIfIncludesResolve",
+    "files.watcherExclude": {
+        "**/target": true
+    },
+    "search.useIgnoreFiles": true,
+    "files.associations": {
+        "common.h": "c",
+        "isa.h": "c",
+        "sdb.h": "c",
+        "paddr.h": "c",
+        "stdbool.h": "c",
+        "sdl.h": "c",
+        "am.h": "c",
+        "reg.h": "c",
+        "stdint.h": "c",
+        "ftrace.h": "c",
+        "cpu.h": "c",
+        "bitset": "cpp",
+        "memory": "cpp",
+        "random": "cpp",
+        "optional": "cpp",
+        "array": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "regex": "cpp",
+        "utility": "cpp"
+    },
+    "C_Cpp.intelliSenseEngineFallback": "disabled", //需要添加的
+    "C_Cpp.intelliSenseEngine": "Tag Parser",  //  需要添加的
+
+}

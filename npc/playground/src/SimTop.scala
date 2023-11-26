@@ -11,27 +11,30 @@ class SimTop extends Module {
     val imm=Output(UInt(32.W))
   })
 
-//定义变量
+//定义变量 
+  val jalr_taget=dontTouch(Wire(UInt(32.W)))
+  val nextpc=dontTouch(Wire(UInt(32.W)))
+  val snpc=dontTouch(Wire(UInt(32.W)))
+  val dnpc=dontTouch(Wire(UInt(32.W)))
   val Imm=Wire(UInt(32.W))
-  val is_jump=Wire(Bool())
+  val Inst_inv=Wire(Bool())
+  val is_jump=dontTouch(Wire(Bool()))
   val Inst=Wire(new Inst())
-  val IsaR=Wire(new IsaR())
-  val IsaI=Wire(new IsaI())
-  val IsaS=Wire(new IsaS())
-  val IsaB=Wire(new IsaB())
-  val IsaU=Wire(new IsaU())
+  val IsaR=dontTouch(Wire(new IsaR()))
+  val IsaI=dontTouch(Wire(new IsaI()))
+  val IsaS=dontTouch(Wire(new IsaS()))
+  val IsaB=dontTouch(Wire(new IsaB()))
+  val IsaU=dontTouch(Wire(new IsaU())) //避免取指代码被优化，出现波形找不到现象
 
 // IFU begin
-  val pc=RegInit(START_ADDR)
-  val dnpc=Mux(IsaI.jalr,(pc+Imm)& ~1.U,pc+Imm) //下一条动态指令
-  val snpc=pc+4.U //下一条静态指令
-  when(is_jump){
-    pc := dnpc
-  }.otherwise{
-    pc := snpc
-  }
-  io.pc:=pc
+  val REGpc=RegInit(START_ADDR)
+  snpc:=REGpc+4.U
+  dnpc:=Mux(IsaU.jal,REGpc+Imm,
+          Mux(IsaI.jalr,jalr_taget,snpc))
+  nextpc:=Mux(!is_jump,snpc,dnpc)
   
+  REGpc:=nextpc
+  io.pc:=REGpc
 // IDU begin
 
 
@@ -84,11 +87,9 @@ class SimTop extends Module {
   IsaR.or    :=(io.inst===BitPat("b0000000 ????? ????? 110 ????? 01100 11"))
   IsaR.and   :=(io.inst===BitPat("b0000000 ????? ????? 111 ????? 01100 11"))
   
-
+  Inst_inv   := IsaB.asUInt===0.U & IsaI.asUInt===0.U & IsaR.asUInt===0.U & IsaS.asUInt===0.U & IsaU.asUInt===0.U//inv ->inst not valid
   IsaI.ebreak:=(io.inst===BitPat("b0000000 00001 00000 000 00000 11100 11"))
-  val singal_ebreak=Module(new singal_ebreak())
-  singal_ebreak.io.flag:=IsaI.ebreak
-  singal_ebreak.io.clock:=clock
+  //ebreak的过程->为达到取出a0 (reg[10])号寄存器的目的， 把rs1取10，rs2取0 加起来，交给regfile取
 
   val ImmType=Wire(new ImmType())
   ImmType.ImmIType:=Mux(IsaI.asUInt=/=0.U,1.U,0.U)
@@ -104,28 +105,28 @@ class SimTop extends Module {
     "b00011".U -> Sext(Inst.immJ,32),
   ))
   io.imm:=Imm
-  val wen=(IsaI.addi | IsaR.add  | IsaI.andi| IsaR.and  | IsaU.lui | IsaU.auipc
+  val wen=(IsaI.addi | IsaR.add  | IsaI.andi| IsaR.and  | IsaU.lui 
          | IsaR.slt  | IsaR.sltu | IsaR.sub | IsaI.ori  | IsaR.or
-         | IsaI.xori | IsaR.xor
+         | IsaI.xori | IsaR.xor  | IsaI.jalr| IsaU.jal  | IsaU.auipc
          | IsaI.slti | IsaI.sltiu| IsaI.slli| IsaI.srai | IsaI.srli
          | IsaR.slt  | IsaR.sltu | IsaR.sll | IsaR.sra  | IsaR.srl )
   val is_b_jump =ImmType.ImmBType
   val result_is_imm= IsaU.lui
-  val result_is_dnpc=IsaU.jal | IsaI.jalr
+  val result_is_snpc=IsaU.jal | IsaI.jalr
   val src_is_sign=IsaI.srai | IsaR.sra | IsaR.slt  | IsaB.blt | IsaB.bltu
   val src1_is_pc =IsaU.auipc
-  val src2_is_imm=IsaI.addi | IsaI.slti| IsaI.sltiu| IsaI.xori| IsaI.ori | IsaI.andi
+  val src2_is_imm=IsaI.addi | IsaI.slti| IsaI.sltiu| IsaI.xori| IsaI.ori | IsaI.andi | IsaI.jalr
   val src2_is_shamt_imm=IsaI.slli | IsaI.srai | IsaI.srli
   val src2_is_shamt_src=IsaR.sll  | IsaR.sra  | IsaR.srl
   io.wen:=wen
 
 // EXU begin
   val alu_op=Wire(Vec(12, Bool()))
-  alu_op(0 ):= IsaI.addi | IsaR.add 
+  alu_op(0 ):= IsaI.addi | IsaR.add | IsaI.ebreak | IsaI.jalr
   //add加法
   alu_op(1 ):= IsaR.sub
   //sub减法
-  alu_op(2 ):=0.U
+  alu_op(2 ):= 0.U
   //neg取反
   alu_op(3 ):= IsaI.andi| IsaR.and
   //and &&
@@ -147,15 +148,15 @@ class SimTop extends Module {
   alu_op(11):= 0.U
   
   val RegFile=Module(new RegFile())
-  RegFile.io.raddr1:=Inst.rs1
-  RegFile.io.raddr2:=Inst.rs2
+  RegFile.io.raddr1:=Mux(IsaI.ebreak,10.U,Inst.rs1)
+  RegFile.io.raddr2:=Mux(IsaI.ebreak, 0.U,Inst.rs2)
   RegFile.io.waddr:=Inst.rd
   RegFile.io.wen:=wen
   val rf_rdata1=RegFile.io.rdata1
   val rf_rdata2=RegFile.io.rdata2
 
   val alu =Module(new Alu())
-  val src1=Mux(src1_is_pc ,pc,rf_rdata1)
+  val src1=Mux(src1_is_pc ,io.pc,rf_rdata1)
   val src2=Mux(src2_is_imm,Imm,
             Mux(src2_is_shamt_imm,Inst.immI(5,0), //立即数(5,0)的位移量
               Mux(src2_is_shamt_src,rf_rdata2(5,0),rf_rdata2))) //src2(5,0)的位移量
@@ -166,6 +167,7 @@ class SimTop extends Module {
   alu.io.sign:=src_is_sign 
 
   is_jump := (IsaU.jal 
+            | IsaI.jalr
             | IsaB.beq &&  alu.io.result(0)
             | IsaB.bne && ~alu.io.result(0)
             | IsaB.blt &&  alu.io.result(0)
@@ -177,17 +179,31 @@ class SimTop extends Module {
 
 
   io.result:=Mux(result_is_imm,Imm,
-              Mux(result_is_dnpc,dnpc,alu.io.result)) //要往rd中写入dnpc
+              Mux(result_is_snpc,snpc,alu.io.result)) //要往rd中写入dnpc
+  val jalr_tmp=alu.io.result+Imm
+  jalr_taget:=Cat(jalr_tmp(31,1),0.U(1.W))
   RegFile.io.wdata:=io.result
+
+  val singal_dpi=Module(new singal_dpi())
+  singal_dpi.io.clock:=clock
+  singal_dpi.io.reset:=reset
+  singal_dpi.io.pc:=REGpc
+  singal_dpi.io.ebreak_flag:=IsaI.ebreak
+  singal_dpi.io.inv_flag   :=Inst_inv
+  singal_dpi.io.ret_reg    :=alu.io.result
 //WB begin
   
 }
 
-class singal_ebreak extends BlackBox with HasBlackBoxPath{
+class singal_dpi extends BlackBox with HasBlackBoxPath{
   val io=IO(new Bundle {
     val clock=Input(Clock())
-    val flag=Input(Bool())
+    val reset=Input(Bool())
+    val pc=Input(UInt(32.W))
+    val ebreak_flag=Input(Bool())
+    val inv_flag=Input(Bool()) //inv -> inst not vaild 无效的指令
+    val ret_reg=Input(UInt(32.W))
   })
-  addPath("playground/src/v_resource/ebreak.sv")
+  addPath("playground/src/v_resource/dpi.sv")
 }
 
