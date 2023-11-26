@@ -106,9 +106,10 @@ module SimTop(	// @[<stdin>:125:3]
                   : _Imm_T == 5'h10 ? {{20{io_inst[31]}}, io_inst[31:20]} : 32'h0;	// @[playground/src/Bundle.scala:76:{10,15,37}, playground/src/SimTop.scala:34:15, :41:23, :42:{27,42}, :43:{39,50,65}, :44:{19,27}, :45:{39,54,66}, :100:{28,39}]
   wire        _alu_op_0_T = IsaI_addi | IsaR_add;	// @[playground/src/SimTop.scala:23:26, :24:26, :108:22]
   wire        wen =
-    _alu_op_0_T | IsaI_andi | IsaR_and | IsaU_lui | IsaU_auipc | IsaR_slt | IsaR_sltu
-    | IsaR_sub | IsaI_ori | IsaR_or | IsaI_xori | IsaR_xor | IsaI_slti | IsaI_sltiu
-    | IsaI_slli | IsaI_srai | IsaI_srli | IsaR_sll | IsaR_sra | IsaR_srl;	// @[playground/src/SimTop.scala:23:26, :24:26, :27:26, :108:22, :112:57]
+    _alu_op_0_T | IsaI_andi | IsaR_and | IsaU_lui | IsaR_slt | IsaR_sltu | IsaR_sub
+    | IsaI_ori | IsaR_or | IsaI_xori | IsaR_xor | IsaI_jalr | IsaU_jal | IsaU_auipc
+    | IsaI_slti | IsaI_sltiu | IsaI_slli | IsaI_srai | IsaI_srli | IsaR_sll | IsaR_sra
+    | IsaR_srl;	// @[playground/src/SimTop.scala:23:26, :24:26, :27:26, :108:22, :112:57]
   wire        result_is_snpc = IsaU_jal | IsaI_jalr;	// @[playground/src/SimTop.scala:24:26, :27:26, :115:31]
   wire        alu_op_9 = IsaI_srai | IsaR_sra;	// @[playground/src/SimTop.scala:23:26, :24:26, :116:29]
   assign is_jump =
@@ -121,7 +122,7 @@ module SimTop(	// @[<stdin>:125:3]
   `ifndef SYNTHESIS	// @[playground/src/SimTop.scala:185:9]
     always @(posedge clock) begin	// @[playground/src/SimTop.scala:185:9]
       if ((`PRINTF_COND_) & ~reset)	// @[playground/src/SimTop.scala:185:9]
-        $fwrite(32'h80000002, "jalr_taget %x\n", jalr_taget);	// @[playground/src/SimTop.scala:15:32, :185:9]
+        $fwrite(32'h80000002, "rd= jalr_taget %x\n", jalr_taget);	// @[playground/src/SimTop.scala:15:32, :185:9]
     end // always @(posedge)
   `endif // not def SYNTHESIS
   always @(posedge clock) begin	// @[<stdin>:126:11]
