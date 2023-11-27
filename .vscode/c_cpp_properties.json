@@ -17,7 +17,7 @@
             "cStandard": "c17",
             "cppStandard": "gnu++17",
             "intelliSenseMode": "linux-gcc-x64",
-            "compileCommands": "/home/wangxin/ysyx-workbench/nemu/compile_commands.json",
+            "compileCommands": "/home/wangxin/ysyx-workbench/compile_commands.json",
             "browse": {
                 "path": [
                     "${workspaceFolder}/",
