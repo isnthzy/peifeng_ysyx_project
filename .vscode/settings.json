@@ -26,7 +26,7 @@
         "regex": "cpp",
         "utility": "cpp"
     },
-    "C_Cpp.intelliSenseEngineFallback": "disabled", //需要添加的
-    "C_Cpp.intelliSenseEngine": "Tag Parser",  //  需要添加的
+    "C_Cpp.intelliSenseEngineFallback": "disabled", //玄学
+    "C_Cpp.intelliSenseEngine": "default",  //  需要添加的
 
 }
