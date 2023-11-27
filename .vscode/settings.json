@@ -24,7 +24,8 @@
         "string_view": "cpp",
         "initializer_list": "cpp",
         "regex": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "iostream": "cpp"
     },
     "C_Cpp.intelliSenseEngine": "default",  //  需要添加的
 

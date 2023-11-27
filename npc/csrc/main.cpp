@@ -1,11 +1,12 @@
 // #include <nvboard.h>
 #include <VSimTop.h>
-#include "stdio.h"
+#include <iostream>
 #include <string.h>
-#include "verilated.h"
-#include "verilated_vcd_c.h"
+#include <verilated.h>
+#include <verilated_vcd_c.h>
 #include "svdpi.h"
 #include "VSimTop__Dpi.h"
+#define NULL 0
 #define CONFIG_MSIZE 0x8000000
 #define START_ADDR   0x80000000
 #define CONFIG_MBASE 0x80000000
