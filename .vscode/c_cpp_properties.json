@@ -3,8 +3,11 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**",
+                "/home/wangxin/ysyx-workbench/**",
+                "/home/wangxin/ysyx-workbench/npc/build/obj_dirtop",
+                "${workspaceFolder}",
                 "/usr/local/share/verilator/include/**",
+                "/usr/local/share/verilator/include/vltstd/**",
                 "/usr/include/**"
             ],
             "defines": [

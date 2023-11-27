@@ -26,7 +26,6 @@
         "regex": "cpp",
         "utility": "cpp"
     },
-    "C_Cpp.intelliSenseEngineFallback": "disabled", //玄学
     "C_Cpp.intelliSenseEngine": "default",  //  需要添加的
 
 }
