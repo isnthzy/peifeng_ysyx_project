@@ -3,14 +3,29 @@
         {
             "name": "Linux",
             "includePath": [
+                "/home/wangxin/ysyx-workbench/npc/build/obj_dirtop",
+                "/home/wangxin/ysyx-workbench/npc/csrc/**",
                 "${workspaceFolder}/**",
                 "/usr/local/share/verilator/include/**",
-                "/usr/include/**"
+                "/usr/local/share/verilator/include/vltstd/**",
+                "/usr/include/**",
+                "${workspaceFolder}/nemu/include"
             ],
-            "defines": [],
+            "defines": [
+                "MYSYMBOL",
+                "MYVALUE=1"
+            ],
             "cStandard": "c17",
             "cppStandard": "gnu++17",
-            "intelliSenseMode": "linux-gcc-x64"
+            "intelliSenseMode": "linux-gcc-x64",
+            "compileCommands": "/home/wangxin/ysyx-workbench/compile_commands.json",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/",
+                    "/usr/local/share/verilator/include/",
+                    "/usr/include/"
+                ]
+            }
         }
     ],
     "version": 4
