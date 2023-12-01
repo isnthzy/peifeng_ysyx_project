@@ -28,7 +28,7 @@ void assert_fail_msg() {
 static void npc_execute(uint64_t n) {
   for (;n > 0; n --) {
     top->clock=1;
-    top->io_inst=pmem_read(top->io_pc,4);
+    // top->io_inst=pmem_read(top->io_pc,4);
     step_and_dump_wave();
 
     top->clock=0;
