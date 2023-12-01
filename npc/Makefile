@@ -67,13 +67,13 @@ count:
 	@echo $(cnt_cp)-cpp-lines in npc/vsrc	
 	@echo $(cnt_v)-sverilog-lines in npc/vsrc	  
 	@echo $(cnt_s)--chisel--lines in npc/playground
-.PHONY: test verilog help compile bsp reformat checkformat clean count
+.PHONY: test verilog help compile bsp reformat checkformat clean count gdb sim
 
 sim:$(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@$^ $(IMG)
 
 gdb:$(BIN)
-	$(call git_commit, "sim(gdb) RTL") # DO NOT REMOVE THIS LINE!!!
+	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	gdb -ex "handle SIGSEGV noprint nostop" -ex "set print thread-events off" $^ $(IMG)
 -include ../Makefile
