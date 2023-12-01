@@ -109,7 +109,7 @@ void init_monitor(int argc, char *argv[]) {
 
   init_sim();
   //初始化verilator仿真文件
-
+  printf("%d\n",top->io_pc);
   /* Open the log file. */
   init_log(log_file);
 
