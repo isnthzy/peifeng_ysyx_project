@@ -25,7 +25,15 @@
         "initializer_list": "cpp",
         "regex": "cpp",
         "utility": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "regex.h": "c",
+        "vaddr.h": "c",
+        "npc_common.h": "c",
+        "new": "cpp",
+        "systemc": "cpp",
+        "ratio": "cpp",
+        "stdio.h": "c",
+        "*.tcc": "cpp"
     },
     "C_Cpp.intelliSenseEngine": "default",  //  需要添加的
 

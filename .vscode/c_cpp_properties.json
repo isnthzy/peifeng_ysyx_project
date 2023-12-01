@@ -3,12 +3,13 @@
         {
             "name": "Linux",
             "includePath": [
-                "/home/wangxin/ysyx-workbench/**",
                 "/home/wangxin/ysyx-workbench/npc/build/obj_dirtop",
-                "${workspaceFolder}",
+                "/home/wangxin/ysyx-workbench/npc/csrc/**",
+                "${workspaceFolder}/**",
                 "/usr/local/share/verilator/include/**",
                 "/usr/local/share/verilator/include/vltstd/**",
-                "/usr/include/**"
+                "/usr/include/**",
+                "${workspaceFolder}/nemu/include"
             ],
             "defines": [
                 "MYSYMBOL",

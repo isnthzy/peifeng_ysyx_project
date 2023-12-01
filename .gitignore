@@ -14,5 +14,5 @@
 !/nvboard/*
 !fceux-am/*
 !.vscode/*
-!.nxdc
-!.json
+!*.nxdc
+!compile_commands.json
