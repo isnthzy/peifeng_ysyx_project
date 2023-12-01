@@ -55,10 +55,10 @@ void npc_exev(int step){
     case NPC_END: case NPC_ABORT:
       // if(npc_state.state==NPC_ABORT||npc_state.halt_ret!=0) putIringbuf();
       if(npc_state.state == NPC_ABORT){
-        Log("npc: \033[1;31mABORT\033[0m at pc = %d",npc_state.halt_pc);
+        Log("npc: \033[1;31mABORT\033[0m at pc = 0x%08x",npc_state.halt_pc);
       }else if(npc_state.state == NPC_END){
-        if(npc_state.halt_ret==0) Log("npc: \033[1;32mHIT GOOD TRAP\033[0m at pc = %d",npc_state.halt_pc);
-        else Log("npc: \033[1;31mHIT BAD TRAP\033[0m at pc = %d",npc_state.halt_pc);
+        if(npc_state.halt_ret==0) Log("npc: \033[1;32mHIT GOOD TRAP\033[0m at pc = 0x%08x",npc_state.halt_pc);
+        else Log("npc: \033[1;31mHIT BAD TRAP\033[0m at pc = 0x%08x",npc_state.halt_pc);
       }
       // Log("npc: %s at pc = " FMT_WORD,
       //     (npc_state.state == NPC_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED):
