@@ -1,5 +1,6 @@
 #include "include/npc_common.h"
 #include "include/npc_verilator.h"
+void step_and_dump_wave();
 uint8_t* guest_to_host(paddr_t paddr);
 paddr_t host_to_guest(uint8_t *haddr);
 static const uint32_t defaultImg [] = {
@@ -26,6 +27,17 @@ static void welcome() {
   printf("For help, type \"help\"\n");
 }
 
+void reset(int n){
+  top->reset=1;
+  while (n-->0){
+    top->clock=0;
+    step_and_dump_wave();
+    top->clock=1;
+    step_and_dump_wave();
+  }
+  top->reset=0;
+}
+
 void init_sim(){
   contextp = new VerilatedContext;
   tfp = new VerilatedVcdC;
@@ -33,7 +45,6 @@ void init_sim(){
   contextp->traceEverOn(true);
   top->trace(tfp, 0);
   tfp->open("dump.vcd"); 
-  printf("%d\n",top->io_pc);
   //使用make sim生成的dump.vcd在npc/
   //SimTop+*.bin生成的dump.vcd在npc/build
 }
@@ -110,6 +121,9 @@ void init_monitor(int argc, char *argv[]) {
 
   init_sim();
   //初始化verilator仿真文件
+
+  reset(2);
+  //初始化reset
 
   /* Open the log file. */
   init_log(log_file);
