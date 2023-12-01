@@ -119,7 +119,7 @@ static struct {
 } cmd_table [] = {
   { "help", "Display information about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
-  { "q", "Exit NEMU", cmd_q },
+  { "q", "Exit NPC", cmd_q },
   { "si", " \"si [N]\" Lets the program pause after executing N instructions in a single step.\
 When N is not given, the default is 1", cmd_si },
   { "info", "info r:Printing Register Status \n \
@@ -165,7 +165,7 @@ static char* rl_gets() {
     line_read = NULL;
   }
 
-  line_read = readline("(nemu) ");
+  line_read = readline("(npc) ");
 
   if (line_read && *line_read) {
     add_history(line_read);
