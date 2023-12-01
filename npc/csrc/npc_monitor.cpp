@@ -1,8 +1,5 @@
 #include "include/npc_common.h"
 #include "include/npc_verilator.h"
-VerilatedContext* contextp=NULL;
-VerilatedVcdC* tfp=NULL;
-VSimTop* top;
 uint8_t* guest_to_host(paddr_t paddr);
 paddr_t host_to_guest(uint8_t *haddr);
 static const uint32_t defaultImg [] = {
