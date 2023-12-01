@@ -74,6 +74,6 @@ sim:$(BIN)
 	@$^ $(IMG)
 
 gdb:$(BIN)
-	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
+	$(call git_commit, "gdb RTL") # DO NOT REMOVE THIS LINE!!!
 	gdb -ex "handle SIGSEGV noprint nostop" -ex "set print thread-events off" $^ $(IMG)
 -include ../Makefile
