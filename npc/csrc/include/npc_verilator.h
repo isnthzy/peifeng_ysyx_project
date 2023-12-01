@@ -7,8 +7,5 @@
 #include "svdpi.h"
 #include "VSimTop__Dpi.h"
 
-extern VerilatedContext* contextp;
-extern VerilatedVcdC* tfp;
-extern VSimTop* top;
 
 #endif

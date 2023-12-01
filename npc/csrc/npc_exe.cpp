@@ -1,5 +1,8 @@
 #include "include/npc_common.h"
 #include "include/npc_verilator.h"
+extern VerilatedContext* contextp;
+extern VerilatedVcdC* tfp;
+extern VSimTop* top;
 #define MAX_INST_TO_PRINT 21
 void reg_display();
 static bool g_print_step = false;

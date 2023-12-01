@@ -4,10 +4,9 @@
 #include "include/npc_verilator.h"
 void init_monitor(int, char *[]);
 void sdb_mainloop();
-VerilatedContext* contextp = NULL;
-VerilatedVcdC* tfp = NULL;
-VSimTop* top;
-
+extern VerilatedContext* contextp;
+extern VerilatedVcdC* tfp;
+extern VSimTop* top;
 NPCState npc_state = { .state = NPC_STOP };
 
 void sim_exit(){
