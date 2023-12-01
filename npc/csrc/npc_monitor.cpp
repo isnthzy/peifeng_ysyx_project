@@ -33,6 +33,7 @@ void init_sim(){
   contextp->traceEverOn(true);
   top->trace(tfp, 0);
   tfp->open("dump.vcd"); 
+  printf("%d\n",top->io_pc);
   //使用make sim生成的dump.vcd在npc/
   //SimTop+*.bin生成的dump.vcd在npc/build
 }
@@ -109,7 +110,7 @@ void init_monitor(int argc, char *argv[]) {
 
   init_sim();
   //初始化verilator仿真文件
-  printf("%d\n",top->io_pc);
+
   /* Open the log file. */
   init_log(log_file);
 
