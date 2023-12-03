@@ -71,6 +71,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
   int space_len = ilen_max - ilen;
   if (space_len < 0) space_len = 0;
   space_len = space_len * 3 + 1;
+  printf("%d\n",space_len);
   memset(p, ' ', space_len);
   p += space_len;
 
