@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <inttypes.h>
 typedef uint32_t word_t;
 typedef word_t vaddr_t;
 typedef word_t paddr_t;
@@ -15,6 +16,8 @@ typedef word_t paddr_t;
 #define PG_ALIGN __attribute__((aligned(4096)))
 #define FMT_WORD MUXDEF(CONFIG_ISA64, "0x%016" PRIx64, "0x%08" PRIx32)
 #define FMT_PADDR MUXDEF(PMEM64, "0x%016" PRIx64, "0x%08" PRIx32)
+#define PMEM_LEFT  ((paddr_t)CONFIG_MBASE)
+#define PMEM_RIGHT ((paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1)
 #define printf_red(...) \
     do { \
         printf("\033[1;32m"); \

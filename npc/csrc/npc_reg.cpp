@@ -3,7 +3,7 @@
 
 uint32_t read_reg_idx(int idx) {
   uint32_t rf_tmp;
-  if(idx==0) rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_0;
+  if(idx==0)       rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_0;
   else if(idx==1)  rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_1;
   else if(idx==2)  rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_2;
   else if(idx==3)  rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_3;

@@ -1,4 +1,5 @@
 #include "include/npc_common.h"
+#include "include/npc_verilator.h"
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN={};
 
 static inline uint32_t host_read(void *addr, int len) {
@@ -21,17 +22,20 @@ static inline void host_write(void *addr, int len, uint32_t data) {
 uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
+static void out_of_bound(paddr_t addr) {
+  // putIringbuf();
+  panic("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
+      addr, PMEM_LEFT, PMEM_RIGHT,top->io_pc);
+}
+
 word_t pmem_read(paddr_t addr, int len) {
   word_t ret = host_read(guest_to_host(addr), len);
+  out_of_bound(addr);
   return ret;
 }
 
 void pmem_write(paddr_t addr, int len, word_t data) {
   host_write(guest_to_host(addr), len, data);
+  out_of_bound(addr);
 }
 
-// static void out_of_bound(paddr_t addr) {
-//   putIringbuf();
-//   panic("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
-//       addr, PMEM_LEFT, PMEM_RIGHT, cpu.pc);
-// }
