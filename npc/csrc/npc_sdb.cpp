@@ -1,9 +1,15 @@
-#include "npc_common.h"
+#include "include/npc_common.h"
 #include <readline/readline.h>
 #include <readline/history.h>
-#define NR_CMD ARRLEN(cmd_table)
+void reg_display();
 void npc_exev(int step);
 void sdb_mainloop();
+void init_regex();
+void init_wp_pool();
+
+void add_watch(char *expr,word_t addr);
+void display_watch();
+void remove_watch(int num);
 
 static int cmd_c(char *args) {
   npc_exev(-1);
@@ -21,7 +27,7 @@ static int cmd_si(char *args) {
 }
 
 static int cmd_q(char *args) {
-  nemu_state.state = NEMU_QUIT;
+  npc_state.state = NPC_QUIT;
   //pa1 rtfsc优美的退出
   return -1;
 }
@@ -30,7 +36,7 @@ static int cmd_info(char *args) {
   char *arg = strtok(NULL, " ");
   char subcmd = arg[0];
   if(subcmd=='r'){
-    isa_reg_display();
+    reg_display();
   }else if(subcmd=='w'){
     display_watch();
   }else{
@@ -57,7 +63,7 @@ static int cmd_x(char *args) {
   printf("addr        mem\n");
   for(i=0;i<s1;i++){
     printf("0x%08x: ",addr);
-    vaddr_t data = pmem_read(addr,4);
+    vaddr_t data = paddr_read(addr,4);
     
     for(j=3;j>=0;j--){
       printf("0x%02x ",(data>>(j*8))&0xff);
@@ -104,6 +110,30 @@ static int cmd_d(char *args) {
   return 0;
 }
 
+static int cmd_help(char *args);
+
+static struct {
+  const char *name;
+  const char *description;
+  int (*handler) (char *);
+} cmd_table [] = {
+  { "help", "Display information about all supported commands", cmd_help },
+  { "c", "Continue the execution of the program", cmd_c },
+  { "q", "Exit NPC", cmd_q },
+  { "si", " \"si [N]\" Lets the program pause after executing N instructions in a single step.\
+When N is not given, the default is 1", cmd_si },
+  { "info", "info r:Printing Register Status \n \
+  info w:Print watchpoint information",cmd_info },
+  { "x", "\"x N EXPR\"Find the value of the expression EXPR, use the result as the starting memory \
+address,\n and output N consecutive 4-byte outputs in hexadecimal." ,cmd_x},
+  { "p", "\"p EXPR\"Find the value of the expression EXPR" , cmd_p},
+  { "w", "\"w EXPR\"Suspends program execution when the value of expression EXPR changes." ,cmd_w},
+  { "d", "\"d N\"Delete the monitoring point with serial number N" ,cmd_d},
+  /* TODO: Add more commands */
+
+};
+#define NR_CMD ARRLEN(cmd_table)
+
 static int cmd_help(char *args) {
   /* extract the first argument */
   char *arg = strtok(NULL, " ");
@@ -127,29 +157,6 @@ static int cmd_help(char *args) {
   return 0;
 }
 
-static struct {
-  const char *name;
-  const char *description;
-  int (*handler) (char *);
-} cmd_table [] = {
-  { "help", "Display information about all supported commands", cmd_help },
-  { "c", "Continue the execution of the program", cmd_c },
-  { "q", "Exit NEMU", cmd_q },
-  { "si", " \"si [N]\" Lets the program pause after executing N instructions in a single step.\
-When N is not given, the default is 1", cmd_si },
-  { "info", "info r:Printing Register Status \n \
-  info w:Print watchpoint information",cmd_info },
-  { "x", "\"x N EXPR\"Find the value of the expression EXPR, use the result as the starting memory \
-address,\n and output N consecutive 4-byte outputs in hexadecimal." ,cmd_x},
-  { "p", "\"p EXPR\"Find the value of the expression EXPR" , cmd_p},
-  { "w", "\"w EXPR\"Suspends program execution when the value of expression EXPR changes." ,cmd_w},
-  { "d", "\"d N\"Delete the monitoring point with serial number N" ,cmd_d},
-  /* TODO: Add more commands */
-
-};
-
-
-
 static char* rl_gets() {
   static char *line_read = NULL;
 
@@ -158,7 +165,7 @@ static char* rl_gets() {
     line_read = NULL;
   }
 
-  line_read = readline("(nemu) ");
+  line_read = readline("(npc) ");
 
   if (line_read && *line_read) {
     add_history(line_read);
@@ -191,4 +198,12 @@ void sdb_mainloop() {
     }
     if (i == NR_CMD) { printf("Unknown command '%s'\n", cmd); }
   }
+}
+
+void init_sdb() {
+  /* Compile the regular expressions. */
+  init_regex();
+
+  /* Initialize the watchpoint pool. */
+  init_wp_pool();
 }

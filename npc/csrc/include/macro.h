@@ -90,7 +90,6 @@
 #define ROUNDUP(a, sz)   ((((uintptr_t)a) + (sz) - 1) & ~((sz) - 1))
 #define ROUNDDOWN(a, sz) ((((uintptr_t)a)) & ~((sz) - 1))
 
-#define PG_ALIGN __attribute((aligned(4096)))
 
 #if !defined(likely)
 #define likely(cond)   __builtin_expect(cond, 1)
