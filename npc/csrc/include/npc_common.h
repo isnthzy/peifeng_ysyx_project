@@ -13,6 +13,8 @@ typedef word_t paddr_t;
 #define START_ADDR   0x80000000
 #define CONFIG_MBASE 0x80000000
 #define PG_ALIGN __attribute__((aligned(4096)))
+#define FMT_WORD MUXDEF(CONFIG_ISA64, "0x%016" PRIx64, "0x%08" PRIx32)
+#define FMT_PADDR MUXDEF(PMEM64, "0x%016" PRIx64, "0x%08" PRIx32)
 #define printf_red(...) \
     do { \
         printf("\033[1;32m"); \

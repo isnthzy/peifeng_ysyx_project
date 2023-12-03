@@ -33,7 +33,9 @@
         "systemc": "cpp",
         "ratio": "cpp",
         "stdio.h": "c",
-        "*.tcc": "cpp"
+        "*.tcc": "cpp",
+        "iosfwd": "cpp",
+        "functional": "cpp"
     },
     "C_Cpp.intelliSenseEngine": "default",  //  需要添加的
 
