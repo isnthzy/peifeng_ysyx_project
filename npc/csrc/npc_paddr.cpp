@@ -19,6 +19,10 @@ static inline void host_write(void *addr, int len, uint32_t data) {
   }
 }
 
+static inline bool in_pmem(paddr_t addr) {
+  return addr - CONFIG_MBASE < CONFIG_MSIZE;
+}
+
 uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
@@ -39,3 +43,21 @@ void pmem_write(paddr_t addr, int len, word_t data) {
   out_of_bound(addr);
 }
 
+word_t paddr_read(paddr_t addr, int len,int model) {
+  #ifdef CONFIG_MTRACE
+  // if(model==1) Log(" r: 0x%x data:0x%08x",addr,pmem_read(addr, len));
+  #endif
+  if (likely(in_pmem(addr))) return pmem_read(addr, len);
+  IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
+  out_of_bound(addr);
+  return 0;
+}
+
+void paddr_write(paddr_t addr, int len, word_t data) {
+  #ifdef CONFIG_MTRACE
+  Log("w: 0x%x data:0x%08x",addr,data);
+  #endif
+  if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
+  IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
+  out_of_bound(addr);
+}
