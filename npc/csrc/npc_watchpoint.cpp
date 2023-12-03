@@ -55,7 +55,7 @@ void add_watch(char *expr,word_t addr){
 void display_watch(){
   WP* h=head;
   if(h==NULL){
-    Log("No watchpoints\n");
+    Log("No watchpoints");
   }else{
     printf("Num     What    Value\n");
     while(h){
