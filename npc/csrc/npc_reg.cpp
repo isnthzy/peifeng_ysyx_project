@@ -3,7 +3,7 @@
 
 uint32_t read_reg_idx(int idx) {
   // uint32_t* npc_reg_value=(uint32_t*)(top->rootp->SimTop__DOT__RegFile__DOT__rf_0+idx*sizeof(uint32_t));
-  uint32_t npc_reg_value=top->rootp->SimTop__DOT__RegFile__DOT__rf_0;
+  uint32_t npc_reg_value=top->rootp->SimTop__DOT__RegFile__DOT__rf_0+idx*sizeof(uint32_t);
   return npc_reg_value;
 }
 
