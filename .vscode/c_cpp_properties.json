@@ -7,6 +7,7 @@
                 "/home/wangxin/ysyx-workbench/npc/csrc/**",
                 "${workspaceFolder}/**",
                 "/usr/local/share/verilator/include/**",
+                "/usr/include/llvm-11/llvm/**",
                 "/usr/local/share/verilator/include/vltstd/**",
                 "/usr/include/**",
                 "${workspaceFolder}/nemu/include"

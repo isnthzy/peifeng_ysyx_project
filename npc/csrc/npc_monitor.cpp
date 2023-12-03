@@ -134,6 +134,13 @@ void init_monitor(int argc, char *argv[]) {
   /* Initialize the simple debugger. */
   init_sdb();
 
+  IFDEF(CONFIG_ITRACE, init_disasm(
+    MUXDEF(CONFIG_ISA_riscv,
+      MUXDEF(CONFIG_RV64,      "riscv64",
+                               "riscv32"),
+                               "bad") "-pc-linux-gnu"
+  ));//初始化llvm实现itrace
+
   /* Display welcome message. */
   welcome();
 }
