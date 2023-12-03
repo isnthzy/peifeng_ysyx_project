@@ -43,11 +43,10 @@ void pmem_write(paddr_t addr, int len, word_t data) {
   out_of_bound(addr);
 }
 
-word_t paddr_read(paddr_t addr, int len,int model) {
+word_t paddr_read(paddr_t addr, int len) {
   #ifdef CONFIG_MTRACE
   // if(model==1) Log(" r: 0x%x data:0x%08x",addr,pmem_read(addr, len));
   #endif
-  printf("%x\n",addr);
   if (likely(in_pmem(addr))) return pmem_read(addr, len);
   IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
   out_of_bound(addr);

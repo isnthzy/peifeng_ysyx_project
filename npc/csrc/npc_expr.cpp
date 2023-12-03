@@ -183,7 +183,7 @@ word_t eval(int p,int q) {
         else return 0;
       case TK_AND: return val1&&val2;
       case TK_OR : return val1||val2;
-      case TK_DEF: return pmem_read(val2,4);
+      case TK_DEF: return paddr_read(val2,4);
       default: assert(0);
     }
   }

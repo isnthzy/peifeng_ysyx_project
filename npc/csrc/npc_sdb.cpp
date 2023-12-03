@@ -63,7 +63,7 @@ static int cmd_x(char *args) {
   printf("addr        mem\n");
   for(i=0;i<s1;i++){
     printf("0x%08x: ",addr);
-    vaddr_t data = pmem_read(addr,4);
+    vaddr_t data = paddr_read(addr,4);
     
     for(j=3;j>=0;j--){
       printf("0x%02x ",(data>>(j*8))&0xff);

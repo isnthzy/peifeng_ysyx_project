@@ -25,8 +25,8 @@ typedef word_t paddr_t;
         printf("\033[0m"); \
     } while (0)
 #define gpr(idx) (read_reg_idx(check_reg_idx(idx)))
-void pmem_write(uint32_t addr, int len, uint32_t data);
-uint32_t pmem_read(uint32_t addr, int len);
+word_t paddr_read(paddr_t addr, int len);
+void paddr_write(paddr_t addr, int len, word_t data);
 word_t expr(char *e, bool *success);
 void sdb_mainloop();
 
