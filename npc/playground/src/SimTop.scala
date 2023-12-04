@@ -28,11 +28,11 @@ class SimTop extends Module {
 
 // IFU begin
   val REGpc=RegInit(START_ADDR)
+  io.pc:=REGpc
   snpc:=REGpc+4.U
   dnpc:=Mux(IsaU.jal,REGpc+Imm,
           Mux(IsaI.jalr,jalr_taget,snpc))
   nextpc:=Mux(!is_jump,snpc,dnpc)
-  io.pc:=REGpc
   REGpc:=nextpc
   
 // IDU begin
