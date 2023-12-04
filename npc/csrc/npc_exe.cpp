@@ -33,11 +33,11 @@ static void npc_execute(uint64_t n) {
     top->io_inst=paddr_read(top->io_pc,4);
     step_and_dump_wave();
 
-    static char logbuf[64];
-    static word_t tmp_inst;
-    tmp_inst=top->io_inst;
-    disassemble(logbuf, sizeof(logbuf),top->io_pc, (uint8_t*)&tmp_inst,4);
-    printf("0x%08x: %x\t%s\n",top->io_pc,tmp_inst,logbuf);
+    // static char logbuf[64];
+    // static word_t tmp_inst;
+    // tmp_inst=top->io_inst;
+    // disassemble(logbuf, sizeof(logbuf),top->io_pc, (uint8_t*)&tmp_inst,4);
+    // printf("0x%08x: %x\t%s\n",top->io_pc,tmp_inst,logbuf);
 
     top->clock=0;
     step_and_dump_wave();
