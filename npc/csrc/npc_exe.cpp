@@ -1,6 +1,6 @@
 #include "include/npc_common.h"
 #include "include/npc_verilator.h"
-
+void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 #define MAX_INST_TO_PRINT 21
 void reg_display();
 static bool g_print_step = false;
@@ -32,6 +32,12 @@ static void npc_execute(uint64_t n) {
     // printf("%x\n",top->io_pc);
     top->io_inst=paddr_read(top->io_pc,4);
     step_and_dump_wave();
+
+    static char logbuf[64];
+    static word_t tmp_inst;
+    tmp_inst=top->io_inst;
+    disassemble(logbuf, sizeof(logbuf),top->io_pc, (uint8_t*)&tmp_inst, 4);
+    printf("pc:%08x\t%s\n",top->io_pc,logbuf);
 
     top->clock=0;
     step_and_dump_wave();

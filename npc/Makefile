@@ -17,11 +17,18 @@ OBJ_DIR = $(BUILD_DIR)/obj_dirtop
 BIN = $(BUILD_DIR)/$(TOPNAME)
 
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.sv")
-CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
+CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cpp")
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\"" 
 CXXFLAGS += -Wall -Werror
 LDFLAGS += -lreadline
+
+##分隔符 llvm用于反汇编itrace
+CSRCS += /home/wangxin/ysyx-workbench/npc/csrc/disasm.cc
+CXXFLAGS += $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config --cxxflags)) -fPIE
+LDFLAGS += $(shell llvm-config --libs)
+##分隔符 llvm用于反汇编itrace
+
 $(info #building riscv32e-npc)
 $(info #IMG=$(IMG))
 

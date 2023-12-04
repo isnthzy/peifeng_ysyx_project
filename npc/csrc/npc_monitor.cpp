@@ -19,6 +19,7 @@ static const uint32_t defaultImg [] = {
 void init_log(const char *log_file);
 // void init_elf(const char *elf_file);
 void init_sdb();
+void init_disasm(const char *triple);
 
 bool ftrace_flag=false;
 static void welcome() {
