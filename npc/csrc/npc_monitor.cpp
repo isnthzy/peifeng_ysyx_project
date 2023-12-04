@@ -4,15 +4,18 @@ void step_and_dump_wave();
 uint8_t* guest_to_host(paddr_t paddr);
 paddr_t host_to_guest(uint8_t *haddr);
 static const uint32_t defaultImg [] = {
-  0xC0010093,
-  0x40008213,
-  0x40008213,
-  0x40008213,
-  0x40008213,
-  0x40008213,
-  0x40008213,
-  0x40008213,
-  0x40008213,
+  0x00000413,
+  0x00009117,
+  0xffc10113,
+  0x00c000ef,
+  0xff410113,
+  0x00000517,
+  0x01c50513,
+  0x00112423,
+  0xfe9ff0ef,
+  0x00000513,
+  0x00008067,
+  0x00050513,
   0x00100073,
 };
 
