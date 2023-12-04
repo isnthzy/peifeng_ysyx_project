@@ -8,6 +8,8 @@ static const uint32_t defaultImg [] = {
   0x00009117,
   0xffc10113,
   0x00c000ef,
+  0x00000513,
+  0x00008067,
   0xff410113,
   0x00000517,
   0x01c50513,
