@@ -1,4 +1,4 @@
-#include "include/npc_common.h"
+#include "../include/npc_common.h"
 #define NR_WP 32
 
 typedef struct watchpoint {

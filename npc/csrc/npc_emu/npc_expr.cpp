@@ -1,5 +1,5 @@
-#include "include/npc_common.h"
-#include "include/npc_debug.h"
+#include "../include/npc_common.h"
+#include "../include/npc_debug.h"
 #include <regex.h>
 
 #define UNUSED(x) (void)(x)

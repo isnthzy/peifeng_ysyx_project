@@ -24,7 +24,7 @@ CXXFLAGS += -Wall -Werror
 LDFLAGS += -lreadline
 
 ##分隔符 llvm用于反汇编itrace
-CSRCS += /home/wangxin/ysyx-workbench/npc/csrc/disasm.cc
+CSRCS += /home/wangxin/ysyx-workbench/npc/csrc/npc_emu/disasm.cc
 CXXFLAGS += $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config --cxxflags)) -fPIE
 LDFLAGS += $(shell llvm-config --libs)
 ##分隔符 llvm用于反汇编itrace

@@ -18,7 +18,7 @@ static const uint32_t defaultImg [] = {
   0x00000513, //2c
   0x00100073, //30
   0x0000006f, //34
-};
+}; //defaultImg本质其实是个dummy
 
 void init_log(const char *log_file);
 // void init_elf(const char *elf_file);

@@ -1,5 +1,5 @@
-#include "include/npc_common.h"
-#include "include/npc_verilator.h"
+#include "../include/npc_common.h"
+#include "../include/npc_verilator.h"
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN={};
 
 static inline uint32_t host_read(void *addr, int len) {

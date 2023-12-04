@@ -1,5 +1,5 @@
-#include "include/npc_common.h"
-#include "include/npc_verilator.h"
+#include "../include/npc_common.h"
+#include "../include/npc_verilator.h"
 
 uint32_t read_reg_idx(int idx) {
   uint32_t rf_tmp;
