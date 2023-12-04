@@ -36,7 +36,7 @@ static void npc_execute(uint64_t n) {
     static char logbuf[64];
     static word_t tmp_inst;
     tmp_inst=top->io_inst;
-    disassemble(logbuf, sizeof(logbuf),top->io_pc, (uint8_t*)&tmp_inst, 2);
+    disassemble(logbuf, sizeof(logbuf),top->io_pc, (uint8_t*)&tmp_inst,4);
     printf("pc:%08x %s\n",top->io_pc,logbuf);
 
     top->clock=0;
