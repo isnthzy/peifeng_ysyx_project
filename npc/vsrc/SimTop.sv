@@ -110,7 +110,7 @@ module SimTop(	// @[<stdin>:125:3]
   assign jalr_taget = {_jalr_tmp_T[31:1], 1'h0};	// @[playground/src/SimTop.scala:15:32, :34:15, :183:29, :184:{18,27}]
   always @(posedge clock) begin	// @[<stdin>:126:11]
     if (reset)	// @[<stdin>:126:11]
-      REGpc <= 32'h7FFFFFFC;	// @[playground/src/SimTop.scala:30:20]
+      REGpc <= 32'h80000000;	// @[playground/src/SimTop.scala:30:20]
     else	// @[<stdin>:126:11]
       REGpc <= nextpc;	// @[playground/src/SimTop.scala:16:28, :30:20]
   end // always @(posedge)
