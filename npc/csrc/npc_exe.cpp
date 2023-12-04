@@ -37,7 +37,7 @@ static void npc_execute(uint64_t n) {
     static word_t tmp_inst;
     tmp_inst=top->io_inst;
     disassemble(logbuf, sizeof(logbuf),top->io_pc, (uint8_t*)&tmp_inst, 4);
-    printf("pc:%08x\t%s\n",top->io_pc,logbuf);
+    printf("pc:%08x %s\n",top->io_pc,logbuf);
 
     top->clock=0;
     step_and_dump_wave();
