@@ -1,6 +1,7 @@
 #ifndef __NPCCOMMON_H__
 #define __NPCCOMMON_H__
 #include "macro.h"
+#include "npc_conf.h"
 #include <assert.h>
 #include <iostream>
 #include <stdlib.h>

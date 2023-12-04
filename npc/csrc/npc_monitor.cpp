@@ -4,21 +4,26 @@ void step_and_dump_wave();
 uint8_t* guest_to_host(paddr_t paddr);
 paddr_t host_to_guest(uint8_t *haddr);
 static const uint32_t defaultImg [] = {
-  0xC0010093,
-  0x40008213,
-  0x40008213,
-  0x40008213,
-  0x40008213,
-  0x40008213,
-  0x40008213,
-  0x40008213,
-  0x40008213,
-  0x00100073,
-};
+  0x00000413, //00
+  0x00009117, //04
+  0xffc10113, //08
+  0x00c000ef, //0c
+  0x00000513, //10
+  0x00008067, //14
+  0xff410113, //18
+  0x00000517, //1c
+  0x01c50513, //20
+  0x00112423, //24
+  0xfe9ff0ef, //28
+  0x00000513, //2c
+  0x00100073, //30
+  0x0000006f, //34
+}; //defaultImg本质其实是个dummy
 
 void init_log(const char *log_file);
 // void init_elf(const char *elf_file);
 void init_sdb();
+void init_disasm(const char *triple);
 
 bool ftrace_flag=false;
 static void welcome() {
@@ -29,10 +34,12 @@ static void welcome() {
 
 void reset(int n){
   top->reset=1;
+  top->clock=0;
+  step_and_dump_wave();
   while (n-->0){
-    top->clock=0;
-    step_and_dump_wave();
     top->clock=1;
+    step_and_dump_wave();
+    top->clock=0;
     step_and_dump_wave();
   }
   top->reset=0;
@@ -133,6 +140,13 @@ void init_monitor(int argc, char *argv[]) {
 
   /* Initialize the simple debugger. */
   init_sdb();
+
+  IFDEF(CONFIG_ITRACE, init_disasm(
+    MUXDEF(CONFIG_ISA_riscv,
+      MUXDEF(CONFIG_RV64,      "riscv64",
+                               "riscv32"),
+                               "bad") "-pc-linux-gnu"
+  ));//初始化llvm实现itrace
 
   /* Display welcome message. */
   welcome();
