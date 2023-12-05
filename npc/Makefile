@@ -32,7 +32,7 @@ LDFLAGS += $(shell llvm-config --libs)
 $(info #building riscv32e-npc)
 $(info #IMG=$(IMG))
 
-com: $(VSRCS) $(CSRCS)
+com:$(VSRCS) $(CSRCS)
 	@rm -rf $(BIN)
 	$(VERILATOR) $(VERILATOR_CFLAGS) \
 		--top-module $(TOPNAME) $^ \
