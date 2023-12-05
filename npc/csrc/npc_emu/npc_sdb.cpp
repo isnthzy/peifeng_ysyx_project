@@ -81,7 +81,7 @@ static int cmd_p(char *args) {
   bool flag=true;
   word_t value_p = expr(args,&flag);
   if(flag==false&&args==NULL){
-    Log("There is an error in the expression, please retype it\n");
+    Log("There is an error in the expression, please retype it");
     return 0;
   }else printf("%d\n",value_p);
   return 0;
@@ -90,13 +90,13 @@ static int cmd_p(char *args) {
 static int cmd_w(char *args) {
   char *EXPR  = strtok(NULL, " ");
   if(EXPR==NULL){
-    Log("There is an error in the expression, please retype it\n");
+    Log("There is an error in the expression, please retype it");
     return 0;
   }
   bool flag=true;
   word_t addr = expr(EXPR,&flag);
   if(flag==false){
-    Log("There is an error in the expression, please retype it\n");
+    Log("There is an error in the expression, please retype it");
     return 0;
   }
   add_watch(EXPR,addr);
@@ -105,6 +105,10 @@ static int cmd_w(char *args) {
 
 static int cmd_d(char *args) {
   char *NUM  = strtok(NULL, " ");
+  if(NUM==NULL){
+    Log("There is an error in the expression, please retype it");
+    return 0;
+  }
   int num = atoi(NUM);
   remove_watch(num);
   return 0;
