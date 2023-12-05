@@ -33,7 +33,7 @@ $(info #building riscv32e-npc)
 $(info #IMG=$(IMG))
 
 $(BIN): $(VSRCS) $(CSRCS)
-	rm -rf ./build/SimTop
+	@rm -rf $(BIN)
 	$(VERILATOR) $(VERILATOR_CFLAGS) \
 		--top-module $(TOPNAME) $^ \
 		$(addprefix -CFLAGS , $(CXXFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
