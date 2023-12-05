@@ -37,7 +37,8 @@
         "iosfwd": "cpp",
         "functional": "cpp",
         "autoconf.h": "c",
-        "isa-def.h": "c"
+        "isa-def.h": "c",
+        "iomanip": "cpp"
     },
     "C_Cpp.intelliSenseEngine": "default",  //  需要添加的
 
