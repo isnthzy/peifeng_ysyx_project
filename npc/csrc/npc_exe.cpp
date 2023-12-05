@@ -58,10 +58,10 @@ static void trace_and_difftese(){
   static word_t tmp_inst;
   tmp_inst=top->io_inst;
   disassemble(tmp_dis, sizeof(tmp_dis),top->io_pc, (uint8_t*)&tmp_inst,4);
-  sprintf(logbuf,"0x%08x: %08x\t%s\n",top->io_pc,tmp_inst,tmp_dis);
-  log_write("%s",logbuf);
+  sprintf(logbuf,"0x%08x: %08x\t%s",top->io_pc,tmp_inst,tmp_dis);
+  log_write("%s\n",logbuf);
   enqueueIRingBuffer(&iring_buffer,logbuf); //入队环形缓冲区
-  if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s",logbuf)); }
+  if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s\n",logbuf)); }
 
 }
 
