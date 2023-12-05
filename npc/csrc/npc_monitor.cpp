@@ -33,7 +33,6 @@ void init_log(const char *log_file) {
   }
   Log("Log is written to %s", log_file ? log_file : "stdout");
 }
-
 bool log_enable() {
   return MUXDEF(CONFIG_TRACE, (g_nr_guest_inst >= 0) &&
          (g_nr_guest_inst <= 10000), false); //限制log的输出数，最多输出10000条
