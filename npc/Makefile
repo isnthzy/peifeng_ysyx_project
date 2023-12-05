@@ -32,8 +32,8 @@ LDFLAGS += $(shell llvm-config --libs)
 $(info #building riscv32e-npc)
 $(info #IMG=$(IMG))
 
-com:$(VSRCS) $(CSRCS)
-	@rm -rf $(BIN)
+$(BIN): $(VSRCS) $(CSRCS)
+	@rm -rf ./build/SimTop
 	$(VERILATOR) $(VERILATOR_CFLAGS) \
 		--top-module $(TOPNAME) $^ \
 		$(addprefix -CFLAGS , $(CXXFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
@@ -75,7 +75,7 @@ count:
 	@echo $(cnt_s)--chisel--lines in npc/playground
 .PHONY: test verilog help compile bsp reformat checkformat clean count gdb sim
 
-sim:com
+sim:$(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@$^ $(ARGS) $(IMG)
 
