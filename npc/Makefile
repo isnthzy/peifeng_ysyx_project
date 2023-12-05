@@ -3,6 +3,7 @@ TOPNAME=SimTop
 export PATH := $(PATH):$(abspath ./utils)
 $(shell mkdir -p $(BUILD_DIR))
 IMG?=
+ARGS?= --log=$(BUILD_DIR)/npc-log.txt
 
 NXDC_FILES = constr/SimTop.nxdc
 
@@ -17,14 +18,13 @@ OBJ_DIR = $(BUILD_DIR)/obj_dirtop
 BIN = $(BUILD_DIR)/$(TOPNAME)
 
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.sv")
-CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cpp")
+CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cpp" -or -name "*.cc")
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\"" 
 CXXFLAGS += -Wall -Werror
 LDFLAGS += -lreadline
 
 ##分隔符 llvm用于反汇编itrace
-CSRCS += /home/wangxin/ysyx-workbench/npc/csrc/npc_emu/disasm.cc
 CXXFLAGS += $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config --cxxflags)) -fPIE
 LDFLAGS += $(shell llvm-config --libs)
 ##分隔符 llvm用于反汇编itrace
@@ -77,7 +77,7 @@ count:
 
 sim:$(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	@$^ $(IMG)
+	@$^ $(ARGS) $(IMG)
 
 gdb:$(BIN)
 	$(call git_commit, "gdb RTL") # DO NOT REMOVE THIS LINE!!!
