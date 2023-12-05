@@ -3,6 +3,7 @@ TOPNAME=SimTop
 export PATH := $(PATH):$(abspath ./utils)
 $(shell mkdir -p $(BUILD_DIR))
 IMG?=
+ARGS?= --log=$(BUILD_DIR)/npc-log.txt
 
 NXDC_FILES = constr/SimTop.nxdc
 
@@ -17,14 +18,13 @@ OBJ_DIR = $(BUILD_DIR)/obj_dirtop
 BIN = $(BUILD_DIR)/$(TOPNAME)
 
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.sv")
-CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cpp")
+CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cpp" -or -name "*.cc")
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\"" 
 CXXFLAGS += -Wall -Werror
 LDFLAGS += -lreadline
 
 ##分隔符 llvm用于反汇编itrace
-CSRCS += /home/wangxin/ysyx-workbench/npc/csrc/npc_emu/disasm.cc
 CXXFLAGS += $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config --cxxflags)) -fPIE
 LDFLAGS += $(shell llvm-config --libs)
 ##分隔符 llvm用于反汇编itrace
@@ -32,8 +32,8 @@ LDFLAGS += $(shell llvm-config --libs)
 $(info #building riscv32e-npc)
 $(info #IMG=$(IMG))
 
-$(BIN): $(VSRCS) $(CSRCS)
-	@rm -rf $(OBJ_DIR)
+com: $(VSRCS) $(CSRCS)
+	@rm -rf ./build/SimTop
 	$(VERILATOR) $(VERILATOR_CFLAGS) \
 		--top-module $(TOPNAME) $^ \
 		$(addprefix -CFLAGS , $(CXXFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
@@ -75,11 +75,11 @@ count:
 	@echo $(cnt_s)--chisel--lines in npc/playground
 .PHONY: test verilog help compile bsp reformat checkformat clean count gdb sim
 
-sim:$(BIN)
+sim:com
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	@$^ $(IMG)
+	$(BIN) $(ARGS) $(IMG)
 
-gdb:$(BIN)
+gdb:com
 	$(call git_commit, "gdb RTL") # DO NOT REMOVE THIS LINE!!!
-	gdb -ex "handle SIGSEGV noprint nostop" -ex "set print thread-events off" $^ $(IMG)
+	gdb -ex "handle SIGSEGV noprint nostop" -ex "set print thread-events off" $(BIN) $(ARGS) $(IMG)
 -include ../Makefile

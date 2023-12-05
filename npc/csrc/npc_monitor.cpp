@@ -20,13 +20,35 @@ static const uint32_t defaultImg [] = {
   0x0000006f, //34
 }; //defaultImg本质其实是个dummy
 
-void init_log(const char *log_file);
+//log模块
+extern uint64_t g_nr_guest_inst;
+FILE *log_fp = NULL;
+
+void init_log(const char *log_file) {
+  log_fp = stdout;
+  if (log_file != NULL) {
+    FILE *fp = fopen(log_file, "w");
+    Assert(fp, "Can not open '%s'", log_file);
+    log_fp = fp;
+  }
+  Log("Log is written to %s", log_file ? log_file : "stdout");
+}
+bool log_enable() {
+  return MUXDEF(CONFIG_TRACE, (g_nr_guest_inst >= 0) &&
+         (g_nr_guest_inst <= 10000), false); //限制log的输出数，最多输出10000条
+}
+//分割线
+
 // void init_elf(const char *elf_file);
 void init_sdb();
 void init_disasm(const char *triple);
 
 bool ftrace_flag=false;
 static void welcome() {
+  Log("Trace: %s", MUXDEF(CONFIG_TRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
+  IFDEF(CONFIG_TRACE, Log("If trace is enabled, a log file will be generated "
+        "to record the trace. This may lead to a large log file. "
+        "If it is not necessary, you can disable it in menuconfig"));
   Log("Build time: %s, %s", __TIME__, __DATE__);
   printf("Welcome to %s-NPC!\n", ANSI_FMT(str(riscv32e), ANSI_FG_YELLOW ANSI_BG_RED));
   printf("For help, type \"help\"\n");

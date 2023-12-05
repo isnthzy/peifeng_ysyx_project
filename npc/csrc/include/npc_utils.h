@@ -55,7 +55,7 @@ extern NPCState npc_state;
 
 #define ANSI_FMT(str, fmt) fmt str ANSI_NONE
 
-#define log_write(...) IFDEF(CONFIG_TARGET_NATIVE_ELF, \
+#define log_write(...)  \
   do { \
     extern FILE* log_fp; \
     extern bool log_enable(); \
@@ -64,7 +64,6 @@ extern NPCState npc_state;
       fflush(log_fp); \
     } \
   } while (0) \
-)
 
 #define _Log(...) \
   do { \
