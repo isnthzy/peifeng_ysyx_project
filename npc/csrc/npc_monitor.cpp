@@ -20,6 +20,7 @@ static const uint32_t defaultImg [] = {
   0x0000006f, //34
 }; //defaultImg本质其实是个dummy
 
+//log模块
 // extern uint64_t g_nr_guest_inst;
 FILE *log_fp = NULL;
 
@@ -37,7 +38,7 @@ void init_log(const char *log_file) {
 //   return MUXDEF(CONFIG_TRACE, (g_nr_guest_inst >= CONFIG_TRACE_START) &&
 //          (g_nr_guest_inst <= CONFIG_TRACE_END), false);
 // }
-
+//分割线
 
 // void init_elf(const char *elf_file);
 void init_sdb();
