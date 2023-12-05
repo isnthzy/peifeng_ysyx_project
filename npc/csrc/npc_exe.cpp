@@ -41,6 +41,7 @@ static void npc_execute(uint64_t n) {
     tmp_inst=top->io_inst;
     disassemble(tmp_dis, sizeof(tmp_dis),top->io_pc, (uint8_t*)&tmp_inst,4);
     sprintf(logbuf,"0x%08x: %08x\t%s\n",top->io_pc,tmp_inst,tmp_dis);
+    log_write("%s\n",logbuf);
     printf("%s",logbuf);
   #endif
 
