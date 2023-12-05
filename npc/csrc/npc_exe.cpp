@@ -1,5 +1,6 @@
 #include "include/npc_common.h"
 #include "include/npc_verilator.h"
+#include "include/iringbuf.h"
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 #define MAX_INST_TO_PRINT 21
 void reg_display();
@@ -7,6 +8,7 @@ uint64_t get_time();
 static bool g_print_step = false;
 static uint64_t g_timer = 0; // unit: us
 uint64_t g_nr_guest_inst;
+IRingBuffer iring_buffer;
 
 void step_and_dump_wave(){
   top->eval();
@@ -40,22 +42,37 @@ void assert_fail_msg() {
   statistic();
 }
 
+void putIringbuf(){
+  while(!isIRingBufferEmpty(&iring_buffer)){
+    char pop_iringbufdata[100];
+    dequeueIRingBuffer(&iring_buffer,pop_iringbufdata);
+    if(iring_buffer.size==0) Log("-->%s",pop_iringbufdata);
+    else Log("   %s",pop_iringbufdata);
+  }
+}
+
+static void trace_and_difftese(){
+  g_nr_guest_inst++; //记录总共执行了多少步
+  static char logbuf[128];
+  static char tmp_dis[64];
+  static word_t tmp_inst;
+  tmp_inst=top->io_inst;
+  disassemble(tmp_dis, sizeof(tmp_dis),top->io_pc, (uint8_t*)&tmp_inst,4);
+  sprintf(logbuf,"0x%08x: %08x\t%s\n",top->io_pc,tmp_inst,tmp_dis);
+  log_write("%s",logbuf);
+  enqueueIRingBuffer(&iring_buffer,logbuf); //入队环形缓冲区
+  if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s",logbuf)); }
+
+}
+
 static void npc_execute(uint64_t n) {
   for (;n > 0; n --) {
     top->clock=1;
     // printf("%x\n",top->io_pc);
     top->io_inst=paddr_read(top->io_pc,4);
-
+    
   #ifdef CONFIG_ITRACE
-    g_nr_guest_inst++; //记录总共执行了多少步
-    static char logbuf[128];
-    static char tmp_dis[64];
-    static word_t tmp_inst;
-    tmp_inst=top->io_inst;
-    disassemble(tmp_dis, sizeof(tmp_dis),top->io_pc, (uint8_t*)&tmp_inst,4);
-    sprintf(logbuf,"0x%08x: %08x\t%s\n",top->io_pc,tmp_inst,tmp_dis);
-    log_write("%s",logbuf);
-    printf("%s",logbuf);
+    trace_and_difftese();
   #endif
 
     step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
@@ -67,8 +84,12 @@ static void npc_execute(uint64_t n) {
   }
 }
 
-
+bool init_iringbuf_f=false;
 void npc_exev(int step){
+  if(!init_iringbuf_f){
+    init_iringbuf_f=true;
+    initializeIRingBuffer(&iring_buffer);
+  } //初始化iringbuffer,只初始化一次
   switch (npc_state.state) {
     case NPC_END: case NPC_ABORT:
       printf("Program execution has ended. To restart the program, exit NPC and run again.\n");
@@ -84,6 +105,7 @@ void npc_exev(int step){
   switch (npc_state.state) {
     case NPC_RUNNING: npc_state.state = NPC_STOP; break;
     case NPC_END: case NPC_ABORT:
+      if(npc_state.state==NPC_ABORT||npc_state.halt_ret!=0) putIringbuf();
       Log("npc: %s at pc = " FMT_WORD,
           (npc_state.state == NPC_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED):
            (npc_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN):
