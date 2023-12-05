@@ -19,8 +19,6 @@
 #include "npc_common.h"
 #include "npc_utils.h"
 
-#define LOG_FILE_PATH "build/npc-log.txt"
-
 #define Log(format, ...) \
     _Log(ANSI_FMT("[%s:%d %s] " format, ANSI_FG_BLUE) "\n", \
         __FILE__, __LINE__, __func__, ## __VA_ARGS__)

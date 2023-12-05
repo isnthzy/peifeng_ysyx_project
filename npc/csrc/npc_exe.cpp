@@ -4,6 +4,7 @@ void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 #define MAX_INST_TO_PRINT 21
 void reg_display();
 static bool g_print_step = false;
+uint64_t g_nr_guest_inst;
 
 void step_and_dump_wave(){
   top->eval();
@@ -32,13 +33,17 @@ static void npc_execute(uint64_t n) {
     // printf("%x\n",top->io_pc);
     top->io_inst=paddr_read(top->io_pc,4);
 
+  #ifdef CONFIG_ITRACE
+    g_nr_guest_inst++; //记录总共执行了多少步
     static char logbuf[64];
     static word_t tmp_inst;
     tmp_inst=top->io_inst;
     disassemble(logbuf, sizeof(logbuf),top->io_pc, (uint8_t*)&tmp_inst,4);
     printf("0x%08x: %08x\t%s\n",top->io_pc,tmp_inst,logbuf);
+  #endif
 
     step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
+
 
     top->clock=0;
     step_and_dump_wave();
