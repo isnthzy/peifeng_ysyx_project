@@ -32,7 +32,7 @@ LDFLAGS += $(shell llvm-config --libs)
 $(info #building riscv32e-npc)
 $(info #IMG=$(IMG))
 
-$(BIN): $(VSRCS) $(CSRCS)
+com: $(VSRCS) $(CSRCS)
 	@rm -rf ./build/SimTop
 	$(VERILATOR) $(VERILATOR_CFLAGS) \
 		--top-module $(TOPNAME) $^ \
@@ -75,11 +75,11 @@ count:
 	@echo $(cnt_s)--chisel--lines in npc/playground
 .PHONY: test verilog help compile bsp reformat checkformat clean count gdb sim
 
-sim:$(BIN)
+sim:com
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	@$^ $(ARGS) $(IMG)
+	@$(BIN) $(ARGS) $(IMG)
 
-gdb:$(BIN)
+gdb:com
 	$(call git_commit, "gdb RTL") # DO NOT REMOVE THIS LINE!!!
-	gdb -ex "handle SIGSEGV noprint nostop" -ex "set print thread-events off" $^ $(IMG)
+	gdb -ex "handle SIGSEGV noprint nostop" -ex "set print thread-events off" $(BIN) $(ARGS) $(IMG)
 -include ../Makefile
