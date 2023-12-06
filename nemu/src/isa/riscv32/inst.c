@@ -77,9 +77,10 @@ static int decode_exec(Decode *s) {
       func_ret(s->pc,s->dnpc);
     }else if(rd==1){ //jalr是跳转,jr不是(jr被编译器优化为尾调用)
       func_call(s->pc,s->dnpc,false);
-    }else if(rd==0&&imm==0){
-      func_call(s->pc,s->dnpc,true);
     }
+    // else if(rd==0&&imm==0){
+    //   func_call(s->pc,s->dnpc,true);
+    // }
   }));
   INSTPAT("??????? ????? ????? 010 ????? 00000 11", lw     , I, Reg(rd) = Mr(src1 + imm, 4));
   INSTPAT("??????? ????? ????? 101 ????? 00000 11", lhu    , I, Reg(rd) = Mr(src1 + imm, 2));
