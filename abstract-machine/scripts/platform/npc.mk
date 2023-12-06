@@ -14,7 +14,7 @@ LDFLAGS   += -T $(AM_HOME)/scripts/linker.ld \
 LDFLAGS   += --gc-sections -e _start
 CFLAGS += -DMAINARGS=\"$(mainargs)\"
 
-NPCFLAGS+=-l $(shell dirname $(IMAGE).elf)/nemu-log.txt
+NPCFLAGS+=-l $(shell dirname $(IMAGE).elf)/npc-log.txt
 NPCFLAGS+=-f $(IMAGE).elf
 #NPCFLAGS+=-b //批处理模式
 
