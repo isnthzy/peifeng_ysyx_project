@@ -9,8 +9,17 @@ char put_ftrace[128];
 ELF_Func elf_func[1024]; 
 int func_cnt=0;
 extern bool ftrace_flag;
+typedef struct tail_rec_node {
+	paddr_t pc;
+    paddr_t dnpc;
+	int depth;
+	struct tail_rec_node *next;
+} TailRecNode;
+TailRecNode *tail_rec_head = NULL; 
+static void init_tail_rec_list();
 // 解析elf文件代码
 void init_elf(const char *elf_file){
+    init_tail_rec_list(); //初始化尾调用处理数据结构
     if(ftrace_flag==false){Log("Ftrace: OFF");
         return ;
     }
@@ -73,6 +82,28 @@ void init_elf(const char *elf_file){
 }
 
 /*ftrace追踪内容*/
+static void init_tail_rec_list() {
+	tail_rec_head = (TailRecNode *)malloc(sizeof(TailRecNode));
+	tail_rec_head->pc  = 0;
+    tail_rec_head->dnpc= 0;
+	tail_rec_head->next = NULL;
+}
+
+static void insert_tail_rec(paddr_t pc,paddr_t dnpc,int depth) {
+	TailRecNode *node = (TailRecNode *)malloc(sizeof(TailRecNode));
+	node->pc  = pc;
+    node->dnpc=dnpc;
+	node->depth = depth;
+	node->next = tail_rec_head->next;
+	tail_rec_head->next = node;
+}
+
+static void remove_tail_rec() {
+	TailRecNode *node = tail_rec_head->next;
+	tail_rec_head->next = node->next;
+	free(node);
+}
+
 void generateSpaces(int length, char* spaces) {
     spaces[0] = '\0'; // 确保初始为空字符串
     char space[] = " "; // 单个空格字符
@@ -81,17 +112,29 @@ void generateSpaces(int length, char* spaces) {
         length--;
     }
 }
-void func_call(paddr_t pc,paddr_t dnpc){
+void func_call(paddr_t pc,paddr_t dnpc,bool is_tail){
     func_depth++;
-    if(func_depth<=1) return;
+    if(func_depth<=1) return; //忽略trm_init
     generateSpaces(func_depth,n_spaces);
     printf("0x%x:%s call[%s->%s@0x%x]\n",pc,n_spaces,find_funcname(pc),find_funcname(dnpc),dnpc);
+    if (is_tail) {
+		insert_tail_rec(pc,dnpc,func_depth-1);
+	}
     return;
 }
 void func_ret(paddr_t pc,paddr_t dnpc){
     generateSpaces(func_depth,n_spaces);
     printf("0x%x:%s ret [%s->%s@0x%x]\n",pc,n_spaces,find_funcname(pc),find_funcname(dnpc),dnpc);
     func_depth--;
+    TailRecNode *node = tail_rec_head->next;
+	if (node != NULL) {
+		if (node->depth == func_depth) {
+			paddr_t ret_end  = node->pc;
+            paddr_t ret_begin= node->dnpc;
+			remove_tail_rec();
+			func_ret(ret_end,ret_begin);
+		}
+	}
     return;
 }
 
