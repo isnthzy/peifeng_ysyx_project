@@ -1,8 +1,9 @@
 #include "../include/npc_common.h"
 #include <readline/readline.h>
 #include <readline/history.h>
+static int is_batch_mode = false;
 void reg_display();
-void npc_exev(int step);
+void npc_exev(uint64_t step);
 void sdb_mainloop();
 void init_regex();
 void init_wp_pool();
@@ -178,7 +179,17 @@ static char* rl_gets() {
   return line_read;
 }
 
+void sdb_set_batch_mode() {
+  is_batch_mode = true;
+}
+
+
 void sdb_mainloop() {
+  if (is_batch_mode) {
+    cmd_c(NULL);
+    return;
+  }
+
   for (char *str; (str = rl_gets()) != NULL; ) {
     char *str_end = str + strlen(str);
 

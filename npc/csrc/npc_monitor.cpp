@@ -3,6 +3,7 @@
 void step_and_dump_wave();
 uint8_t* guest_to_host(paddr_t paddr);
 paddr_t host_to_guest(uint8_t *haddr);
+bool ftrace_flag=false;
 static const uint32_t defaultImg [] = {
   0x00000413, //00
   0x00009117, //04
@@ -39,11 +40,11 @@ bool log_enable() {
 }
 //分割线
 
-// void init_elf(const char *elf_file);
+void init_elf(const char *elf_file);
 void init_sdb();
 void init_disasm(const char *triple);
 
-bool ftrace_flag=false;
+
 static void welcome() {
   Log("Trace: %s", MUXDEF(CONFIG_TRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
   IFDEF(CONFIG_TRACE, Log("If trace is enabled, a log file will be generated "
@@ -80,7 +81,7 @@ void init_sim(){
 
 #include <getopt.h>
 
-// void sdb_set_batch_mode();
+void sdb_set_batch_mode();
 
 static char *log_file = NULL;
 static char *diff_so_file = NULL;
@@ -119,7 +120,7 @@ static int parse_args(int argc, char *argv[]) {
   int o;
   while ( (o = getopt_long(argc, argv, "-bhl:d:p:f:", table, NULL)) != -1) {
     switch (o) {
-      // case 'b': sdb_set_batch_mode(); break;
+      case 'b': sdb_set_batch_mode(); break;
       case 'p': sscanf(optarg, "%d", &difftest_port); break;
       case 'l': log_file = optarg; break;
       case 'd': diff_so_file = optarg; break;
@@ -158,7 +159,7 @@ void init_monitor(int argc, char *argv[]) {
   init_log(log_file);
 
   // /* Open the ${IMAGE}.elf file */
-  // init_elf(elf_file);
+  IFDEF(CONFIG_FTRACE,init_elf(elf_file));
 
   /* Initialize the simple debugger. */
   init_sdb();

@@ -188,6 +188,11 @@ class SimTop extends Module {
   singal_dpi.io.clock:=clock
   singal_dpi.io.reset:=reset
   singal_dpi.io.pc:=REGpc
+  singal_dpi.io.nextpc:=nextpc
+  singal_dpi.io.inst:=io.inst
+  singal_dpi.io.rd:=Inst.rd
+  singal_dpi.io.is_jal:=IsaU.jal
+  singal_dpi.io.func_flag  :=IsaU.jal | IsaI.jalr
   singal_dpi.io.ebreak_flag:=IsaI.ebreak
   singal_dpi.io.inv_flag   :=Inst_inv
   singal_dpi.io.ret_reg    :=alu.io.result
@@ -200,6 +205,11 @@ class singal_dpi extends BlackBox with HasBlackBoxPath{
     val clock=Input(Clock())
     val reset=Input(Bool())
     val pc=Input(UInt(32.W))
+    val nextpc=Input(UInt(32.W))
+    val inst=Input(UInt(32.W))
+    val rd=Input(UInt(32.W))
+    val is_jal=Input(Bool())
+    val func_flag=Input(Bool())
     val ebreak_flag=Input(Bool())
     val inv_flag=Input(Bool()) //inv -> inst not vaild 无效的指令
     val ret_reg=Input(UInt(32.W))
