@@ -3,7 +3,7 @@
 #include <readline/history.h>
 static int is_batch_mode = false;
 void reg_display();
-void npc_exev(int step);
+void npc_exev(uint64_t step);
 void sdb_mainloop();
 void init_regex();
 void init_wp_pool();
