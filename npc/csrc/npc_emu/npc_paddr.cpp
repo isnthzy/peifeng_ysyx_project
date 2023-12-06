@@ -27,7 +27,7 @@ uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 static void out_of_bound(paddr_t addr) {
-  putIringbuf();
+  IFDEF(CONFIG_ITRACE,putIringbuf()); 
   panic("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
       addr, PMEM_LEFT, PMEM_RIGHT,top->io_pc);
 }

@@ -1,10 +1,12 @@
 #include "include/npc_common.h"
+#include "include/ftrace.h"
 #include "include/npc_verilator.h"
 #include "include/iringbuf.h"
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 #define MAX_INST_TO_PRINT 21
 void reg_display();
 uint64_t get_time();
+extern bool ftrace_flag;
 static bool g_print_step = false;
 static uint64_t g_timer = 0; // unit: us
 uint64_t g_nr_guest_inst;
@@ -25,6 +27,23 @@ extern void sim_break(int pc,int ret_reg){
 extern void inv_break(int pc){
   npc_state.halt_pc=pc;
   npc_state.state=NPC_ABORT;
+}
+
+extern void cpu_use_func(unsigned int pc,unsigned int nextpc,unsigned int inst,int is_jal,int rd){
+  //调用cpu_use_func后，is_jal=1 jal,is_jal=0 jalr
+  #ifdef CONFIG_FTRACE
+  if(ftrace_flag){
+    if(is_jal){ //jal指令
+      if(rd==1) func_call(pc,nextpc);
+    }else{   //jalr指令
+      if(inst==0x00008067){
+        func_ret(pc,nextpc);
+      }else if(rd==1){ //jalr是跳转,jr不是(jr被编译器优化为尾调用)
+        func_call(pc,nextpc);
+      }
+    }
+  }
+  #endif
 }
 //dpi-c
 
@@ -59,10 +78,11 @@ static void trace_and_difftese(){
   tmp_inst=top->io_inst;
   disassemble(tmp_dis, sizeof(tmp_dis),top->io_pc, (uint8_t*)&tmp_inst,4);
   sprintf(logbuf,"0x%08x: %08x\t%s",top->io_pc,tmp_inst,tmp_dis);
+  #ifdef CONFIG_ITRACE
   log_write("%s\n",logbuf);
   enqueueIRingBuffer(&iring_buffer,logbuf); //入队环形缓冲区
+  #endif
   if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s\n",logbuf)); }
-
 }
 
 static void npc_execute(uint64_t n) {
@@ -70,10 +90,7 @@ static void npc_execute(uint64_t n) {
     top->clock=1;
     // printf("%x\n",top->io_pc);
     top->io_inst=paddr_read(top->io_pc,4);
-    
-  #ifdef CONFIG_ITRACE
     trace_and_difftese();
-  #endif
 
     step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
     /*------------------------分割线每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次*/
@@ -106,7 +123,7 @@ void npc_exev(int step){
   switch (npc_state.state) {
     case NPC_RUNNING: npc_state.state = NPC_STOP; break;
     case NPC_END: case NPC_ABORT:
-      if(npc_state.state==NPC_ABORT||npc_state.halt_ret!=0) putIringbuf();
+      if(npc_state.state==NPC_ABORT||npc_state.halt_ret!=0) IFDEF(CONFIG_ITRACE,putIringbuf()); 
       Log("npc: %s at pc = " FMT_WORD,
           (npc_state.state == NPC_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED):
            (npc_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN):

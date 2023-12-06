@@ -31,6 +31,7 @@ LDFLAGS += $(shell llvm-config --libs)
 
 $(info #building riscv32e-npc)
 $(info #IMG=$(IMG))
+$(info #ARGS=$(ARGS))
 
 com: $(VSRCS) $(CSRCS)
 	@rm -rf ./build/SimTop
