@@ -3,7 +3,7 @@
 #include "include/npc_verilator.h"
 #include "include/iringbuf.h"
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
-#define MAX_INST_TO_PRINT 21
+#define MAX_INST_TO_PRINT 10
 void reg_display();
 uint64_t get_time();
 extern bool ftrace_flag;
