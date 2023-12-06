@@ -108,6 +108,7 @@ void npc_exev(int step){
     initializeIRingBuffer(&iring_buffer);
   } //初始化iringbuffer,只初始化一次
   g_print_step = (step<MAX_INST_TO_PRINT);
+  printf("%d\n",g_print_step);
   switch (npc_state.state) {
     case NPC_END: case NPC_ABORT:
       printf("Program execution has ended. To restart the program, exit NPC and run again.\n");
