@@ -16,7 +16,8 @@ CFLAGS += -DMAINARGS=\"$(mainargs)\"
 
 NPCFLAGS+=-l $(shell dirname $(IMAGE).elf)/npc-log.txt
 NPCFLAGS+=-f $(IMAGE).elf
-#NPCFLAGS+=-b //批处理模式
+NPCFLAGS+=-b 
+#批处理模式
 
 .PHONY: $(AM_HOME)/am/src/riscv/npc/trm.c
 
