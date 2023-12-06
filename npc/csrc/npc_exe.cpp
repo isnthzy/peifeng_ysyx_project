@@ -29,7 +29,7 @@ extern void inv_break(int pc){
   npc_state.state=NPC_ABORT;
 }
 
-extern void cpu_use_func(unsigned int pc,unsigned int nextpc,unsigned int inst,int is_jal,int rd){
+extern void cpu_use_func(int pc,int nextpc,int inst,int is_jal,int rd){
   //调用cpu_use_func后，is_jal=1 jal,is_jal=0 jalr
   #ifdef CONFIG_FTRACE
   if(ftrace_flag){
