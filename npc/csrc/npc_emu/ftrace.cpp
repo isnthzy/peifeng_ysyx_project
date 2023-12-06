@@ -4,8 +4,7 @@
 #include "../include/ftrace.h"
 
 int func_depth=0;
-char n_spaces[128];
-char put_ftrace[128];
+char n_spaces[64];
 ELF_Func elf_func[1024]; 
 int func_cnt=0;
 extern bool ftrace_flag;
@@ -82,14 +81,20 @@ void generateSpaces(int length, char* spaces) {
     }
 }
 void func_call(paddr_t pc,paddr_t dnpc){
+    static char func_log[128];
     func_depth++;
     generateSpaces(func_depth,n_spaces);
-    printf("0x%x:%s call[%s->%s@0x%x]\n",pc,n_spaces,find_funcname(pc),find_funcname(dnpc),dnpc);
+    sprintf(func_log,"0x%x:%s call[%s->%s@0x%x]\n",pc,n_spaces,find_funcname(pc),find_funcname(dnpc),dnpc);
+    log_write("%s",func_log);
+    printf("%s",func_log);
 }
 void func_ret(paddr_t pc,paddr_t dnpc){
+    static char func_log[128];
     generateSpaces(func_depth,n_spaces);
-    printf("0x%x:%s ret [%s->%s@0x%x]\n",pc,n_spaces,find_funcname(pc),find_funcname(dnpc),dnpc);
+    sprintf(func_log,"0x%x:%s ret [%s->%s@0x%x]\n",pc,n_spaces,find_funcname(pc),find_funcname(dnpc),dnpc);
     func_depth--;
+    log_write("%s",func_log);
+    printf("%s",func_log);
 }
 
 const char* find_funcname(paddr_t pc){
