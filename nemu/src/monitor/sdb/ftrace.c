@@ -121,7 +121,7 @@ void func_call(paddr_t pc,paddr_t dnpc,bool is_tail){
 }
 void func_ret(paddr_t pc){
     generateSpaces(func_depth,n_spaces);
-    printf("0x%x:%s ret [-%s-@0x%x]\n",pc,n_spaces,find_funcname(pc),pc);
+    printf("0x%x:%s ret [%s]\n",pc,n_spaces,find_funcname(pc));
     func_depth--;
     TailRecNode *node = tail_rec_head->next;
 	if (node != NULL) {
