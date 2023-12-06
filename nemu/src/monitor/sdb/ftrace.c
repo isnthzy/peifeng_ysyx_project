@@ -11,7 +11,6 @@ int func_cnt=0;
 extern bool ftrace_flag;
 typedef struct tail_rec_node {
 	paddr_t pc;
-    paddr_t dnpc;
 	int depth;
 	struct tail_rec_node *next;
 } TailRecNode;
@@ -85,14 +84,12 @@ void init_elf(const char *elf_file){
 static void init_tail_rec_list() {
 	tail_rec_head = (TailRecNode *)malloc(sizeof(TailRecNode));
 	tail_rec_head->pc  = 0;
-    tail_rec_head->dnpc= 0;
 	tail_rec_head->next = NULL;
 }
 
 static void insert_tail_rec(paddr_t pc,paddr_t dnpc,int depth) {
 	TailRecNode *node = (TailRecNode *)malloc(sizeof(TailRecNode));
 	node->pc  = pc;
-    node->dnpc=dnpc;
 	node->depth = depth;
 	node->next = tail_rec_head->next;
 	tail_rec_head->next = node;
@@ -122,17 +119,16 @@ void func_call(paddr_t pc,paddr_t dnpc,bool is_tail){
 	}
     return;
 }
-void func_ret(paddr_t pc,paddr_t dnpc){
+void func_ret(paddr_t pc){
     generateSpaces(func_depth,n_spaces);
-    printf("0x%x:%s ret [%s->%s@0x%x]\n",pc,n_spaces,find_funcname(pc),find_funcname(dnpc),dnpc);
+    printf("0x%x:%s ret [-%s-@0x%x]\n",pc,n_spaces,find_funcname(pc),pc);
     func_depth--;
     TailRecNode *node = tail_rec_head->next;
 	if (node != NULL) {
 		if (node->depth == func_depth) {
 			paddr_t ret_end  = node->pc;
-            paddr_t ret_begin= node->dnpc;
 			remove_tail_rec();
-			func_ret(ret_end,ret_begin);
+			func_ret(ret_end);
 		}
 	}
     return;
