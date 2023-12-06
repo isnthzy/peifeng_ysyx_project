@@ -132,7 +132,7 @@ void func_ret(paddr_t pc,paddr_t dnpc){
 			paddr_t ret_end  = node->pc;
             paddr_t ret_begin= node->dnpc;
 			remove_tail_rec();
-			func_ret(ret_begin,ret_end);
+			func_ret(ret_end,ret_begin);
 		}
 	}
     return;
