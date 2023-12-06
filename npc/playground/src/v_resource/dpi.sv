@@ -6,7 +6,7 @@ module singal_dpi(
     input        reset,
     input [31:0] pc,
     input [31:0] nextpc,
-    input        inst,
+    input [31:0] inst,
     input [31:0] rd,
     input        is_jal,
     input        func_flag,
