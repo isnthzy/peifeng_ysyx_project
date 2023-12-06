@@ -8,8 +8,16 @@ char n_spaces[64];
 ELF_Func elf_func[1024]; 
 int func_cnt=0;
 extern bool ftrace_flag;
+typedef struct tail_rec_node {
+	paddr_t pc;
+	int depth;
+	struct tail_rec_node *next;
+} TailRecNode;
+TailRecNode *tail_rec_head = NULL; 
+static void init_tail_rec_list();
 // 解析elf文件代码
 void init_elf(const char *elf_file){
+    init_tail_rec_list();
     if(ftrace_flag==false){Log("Ftrace: OFF");
         return ;
     }
@@ -75,6 +83,27 @@ void init_elf(const char *elf_file){
 }
 
 /*ftrace追踪内容*/
+/*ftrace追踪内容*/
+static void init_tail_rec_list() {
+	tail_rec_head = (TailRecNode *)malloc(sizeof(TailRecNode));
+	tail_rec_head->pc  = 0;
+	tail_rec_head->next = NULL;
+}
+
+static void insert_tail_rec(paddr_t pc,paddr_t dnpc,int depth) {
+	TailRecNode *node = (TailRecNode *)malloc(sizeof(TailRecNode));
+	node->pc  = pc;
+	node->depth = depth;
+	node->next = tail_rec_head->next;
+	tail_rec_head->next = node;
+}
+
+static void remove_tail_rec() {
+	TailRecNode *node = tail_rec_head->next;
+	tail_rec_head->next = node->next;
+	free(node);
+}
+
 void generateSpaces(int length, char* spaces) {
     spaces[0] = '\0'; // 确保初始为空字符串
     char space[] = " "; // 单个空格字符
@@ -83,21 +112,35 @@ void generateSpaces(int length, char* spaces) {
         length--;
     }
 }
-void func_call(paddr_t pc,paddr_t dnpc){
+void func_call(paddr_t pc,paddr_t dnpc,bool is_tail){
     static char func_log[128];
     func_depth++;
+    if(func_depth<=1) return; //忽略trm_init
     generateSpaces(func_depth,n_spaces);
     sprintf(func_log,"0x%x:%s call[%s->%s@0x%x]\n",pc,n_spaces,find_funcname(pc),find_funcname(dnpc),dnpc);
     log_write("%s",func_log);
     printf("%s",func_log);
+    if (is_tail) {
+		insert_tail_rec(pc,dnpc,func_depth-1);
+	}
+    return;
 }
-void func_ret(paddr_t pc,paddr_t dnpc){
-    static char func_log[128];
+void func_ret(paddr_t pc){
     generateSpaces(func_depth,n_spaces);
-    sprintf(func_log,"0x%x:%s ret [%s->%s@0x%x]\n",pc,n_spaces,find_funcname(pc),find_funcname(dnpc),dnpc);
     func_depth--;
+    static char func_log[128];
+    sprintf(func_log,"0x%x:%s ret [%s]\n",pc,n_spaces,find_funcname(pc));
     log_write("%s",func_log);
     printf("%s",func_log);
+    TailRecNode *node = tail_rec_head->next;
+	if (node != NULL) {
+		if (node->depth == func_depth) {
+			paddr_t ret_end  = node->pc;
+			remove_tail_rec();
+			func_ret(ret_end);
+		}
+	}
+    return;
 }
 
 const char* find_funcname(paddr_t pc){

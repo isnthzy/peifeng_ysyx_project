@@ -34,12 +34,14 @@ extern void cpu_use_func(int pc,int nextpc,int inst,svBit is_jal,int rd){
   #ifdef CONFIG_FTRACE
   if(ftrace_flag){
     if(is_jal){ //jal指令
-      if(rd==1) func_call(pc,nextpc);
+      if(rd==1) func_call(pc,nextpc,false);
     }else{   //jalr指令
       if(inst==0x00008067){
-        func_ret(pc,nextpc);
+        func_ret(pc);
       }else if(rd==1){ //jalr是跳转,jr不是(jr被编译器优化为尾调用)
-        func_call(pc,nextpc);
+        func_call(pc,nextpc,false);
+      }else if(rd==0){
+        func_call(pc,nextpc,true);
       }
     }
   }

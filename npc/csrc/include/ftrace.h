@@ -13,7 +13,7 @@ typedef struct {
     uint64_t value;      // 起始地址
     uint64_t size;        // 函数体大小
 }ELF_Func;              // [start, start+size)
-void func_call(paddr_t pc,paddr_t dnpc);
-void func_ret(paddr_t pc,paddr_t dnpc);
+void func_call(paddr_t pc,paddr_t dnpc,bool is_tail);
+void func_ret(paddr_t pc);
 const char* find_funcname(paddr_t target);
 #endif
