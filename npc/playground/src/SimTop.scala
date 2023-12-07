@@ -115,7 +115,7 @@ class SimTop extends Module {
   val result_is_snpc=IsaU.jal | IsaI.jalr
   val src_is_sign=IsaI.srai | IsaR.sra | IsaR.slt  | IsaB.blt | IsaB.bltu
   val src1_is_pc =IsaU.auipc
-  val src2_is_imm=IsaI.slti| IsaI.sltiu| IsaI.xori| IsaI.ori | IsaI.andi | IsaI.jalr
+  val src2_is_imm=IsaI.addi | IsaI.slti| IsaI.sltiu| IsaI.xori| IsaI.ori | IsaI.andi | IsaI.jalr
   val src2_is_shamt_imm=IsaI.slli | IsaI.srai | IsaI.srli
   val src2_is_shamt_src=IsaR.sll  | IsaR.sra  | IsaR.srl
   io.wen:=wen
