@@ -2,6 +2,7 @@
 #include "include/ftrace.h"
 #include "include/npc_verilator.h"
 #include "include/iringbuf.h"
+#include "include/difftest.h"
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 #define MAX_INST_TO_PRINT 10
 void reg_display();
@@ -9,6 +10,7 @@ void cpy_reg();
 uint64_t get_time();
 CPU_state cpu = {};
 extern bool ftrace_flag;
+extern bool difftest_flag;
 static bool g_print_step = false;
 static uint64_t g_timer = 0; // unit: us
 uint64_t g_nr_guest_inst;
@@ -74,8 +76,13 @@ void putIringbuf(){
   }
 }
 
-static void trace_and_difftese(){
+static void trace_and_difftest(){
   g_nr_guest_inst++; //记录总共执行了多少步
+
+  cpu.pc=top->io_pc;
+  cpy_reg();
+  if(difftest_flag) difftest_step(cpu.pc, dnpc);
+
   static char logbuf[128];
   static char tmp_dis[64];
   static word_t tmp_inst;
@@ -94,11 +101,8 @@ static void npc_execute(uint64_t n) {
     top->clock=1;
     // printf("%x\n",top->io_pc);
     top->io_inst=paddr_read(top->io_pc,4);
-    
-    cpu.pc=top->io_pc;
-    cpy_reg();
 
-    trace_and_difftese();
+    trace_and_difftest();
 
     step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
     /*------------------------分割线每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次*/

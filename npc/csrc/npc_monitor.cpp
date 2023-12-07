@@ -5,7 +5,7 @@ void init_difftest(char *ref_so_file, long img_size, int port);
 uint8_t* guest_to_host(paddr_t paddr);
 paddr_t host_to_guest(uint8_t *haddr);
 bool ftrace_flag=false;
-static bool difftest_flag=false;
+bool difftest_flag=false;
 static const uint32_t defaultImg [] = {
   0x00000413, //00
   0x00009117, //04
