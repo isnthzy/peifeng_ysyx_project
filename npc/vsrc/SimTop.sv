@@ -137,8 +137,8 @@ module SimTop(	// @[<stdin>:130:3]
         IsaI_ori | IsaR_or,
         IsaI_andi | IsaR_and,
         1'h0,
-        IsaR_sub | IsaI_addi,
-        IsaR_add | IsaI_ebreak | IsaI_jalr}),	// @[playground/src/SimTop.scala:23:26, :24:26, :26:26, :34:15, :116:29, :125:39, :127:25, :131:25, :133:25, :135:25, :137:25, :140:25, :142:25, :146:25, :164:23]
+        IsaI_addi | IsaR_sub,
+        IsaR_add | IsaI_ebreak | IsaI_jalr}),	// @[playground/src/SimTop.scala:23:26, :24:26, :26:26, :34:15, :116:29, :125:40, :127:26, :131:25, :133:25, :135:25, :137:25, :140:25, :142:25, :146:25, :164:23]
     .io_src1   (IsaU_auipc ? REGpc : _RegFile_io_rdata1),	// @[playground/src/SimTop.scala:27:26, :30:20, :150:21, :159:15]
     .io_src2
       (IsaI_addi | IsaI_slti | IsaI_sltiu | IsaI_xori | IsaI_ori | IsaI_andi | IsaI_jalr
