@@ -39,7 +39,8 @@
         "autoconf.h": "c",
         "isa-def.h": "c",
         "iomanip": "cpp",
-        "difftest-def.h": "c"
+        "difftest-def.h": "c",
+        "dlfcn.h": "c"
     },
     "C_Cpp.intelliSenseEngine": "default",  //  需要添加的
 

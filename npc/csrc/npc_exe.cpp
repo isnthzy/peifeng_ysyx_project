@@ -5,7 +5,9 @@
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 #define MAX_INST_TO_PRINT 10
 void reg_display();
+void cpy_reg();
 uint64_t get_time();
+CPU_state cpu = {};
 extern bool ftrace_flag;
 static bool g_print_step = false;
 static uint64_t g_timer = 0; // unit: us
@@ -92,6 +94,10 @@ static void npc_execute(uint64_t n) {
     top->clock=1;
     // printf("%x\n",top->io_pc);
     top->io_inst=paddr_read(top->io_pc,4);
+    
+    cpu.pc=top->io_pc;
+    cpy_reg();
+
     trace_and_difftese();
 
     step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
