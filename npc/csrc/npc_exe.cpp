@@ -81,7 +81,7 @@ static void trace_and_difftest(){
 
   cpu.pc=top->io_pc;
   cpy_reg();
-  if(difftest_flag) difftest_step(cpu.pc, dnpc);
+  if(difftest_flag) difftest_step(cpu.pc,top->io_nextpc);
 
   static char logbuf[128];
   static char tmp_dis[64];
