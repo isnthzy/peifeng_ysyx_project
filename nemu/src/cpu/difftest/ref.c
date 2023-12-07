@@ -20,10 +20,7 @@
 void cpu_exec(uint64_t n);
 __EXPORT void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
   if(direction == DIFFTEST_TO_REF){ //DIFFTEST_TO_REF,target is ref
-    // memcpy(guest_to_host(addr), buf, n);
-    for (size_t i = 0; i < n; i++) {
-      paddr_write(addr + i, 1, *((uint8_t*)buf + i));
-    }
+    memcpy(guest_to_host(addr), buf, n);
   }else{ //DIFFTEST_TO_DUT,target is dut
     assert(0);
   }
