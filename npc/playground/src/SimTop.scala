@@ -115,16 +115,16 @@ class SimTop extends Module {
   val result_is_snpc=IsaU.jal | IsaI.jalr
   val src_is_sign=IsaI.srai | IsaR.sra | IsaR.slt  | IsaB.blt | IsaB.bltu
   val src1_is_pc =IsaU.auipc
-  val src2_is_imm=IsaI.addi | IsaI.slti| IsaI.sltiu| IsaI.xori| IsaI.ori | IsaI.andi | IsaI.jalr
+  val src2_is_imm=IsaI.slti| IsaI.sltiu| IsaI.xori| IsaI.ori | IsaI.andi | IsaI.jalr
   val src2_is_shamt_imm=IsaI.slli | IsaI.srai | IsaI.srli
   val src2_is_shamt_src=IsaR.sll  | IsaR.sra  | IsaR.srl
   io.wen:=wen
 
 // EXU begin
   val alu_op=Wire(Vec(12, Bool()))
-  alu_op(0 ):= IsaR.add | IsaI.ebreak | IsaI.jalr
+  alu_op(0 ):= IsaI.addi | IsaR.add | IsaI.ebreak | IsaI.jalr
   //add加法
-  alu_op(1 ):= IsaR.sub | IsaI.addi
+  alu_op(1 ):= IsaR.sub
   //sub减法
   alu_op(2 ):= 0.U
   //neg取反
