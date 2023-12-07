@@ -30,14 +30,14 @@ __EXPORT void difftest_regcpy(void *dut, bool direction) {
   CPU_state* tmp=dut; 
   if (direction == DIFFTEST_TO_REF) {
     for(int i=0;i<32;i++){
-      tmp->gpr[i]=cpu.gpr[i];
-    }
-    tmp->pc=cpu.pc;
-  }else{
-    for(int i=0;i<32;i++){
       cpu.gpr[i]=tmp->gpr[i];
     }
     cpu.pc=tmp->pc;
+  }else{
+    for(int i=0;i<32;i++){
+      tmp->gpr[i]=cpu.gpr[i];
+    }
+    tmp->pc=cpu.pc;
   }
   // assert(0);
 }
