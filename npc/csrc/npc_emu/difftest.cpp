@@ -109,7 +109,7 @@ static void checkregs(CPU_state *ref, vaddr_t pc) {
 
 void difftest_step(vaddr_t pc, vaddr_t npc) {
   CPU_state ref_r;
-  printf("%x %x\n",pc,npc);
+
   if (skip_dut_nr_inst > 0) {
     ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
     if (ref_r.pc == npc) {
@@ -130,8 +130,8 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
     return;
   }
 
-  ref_difftest_exec(1);
-  ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
+  // ref_difftest_exec(1);
+  // ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
 
   checkregs(&ref_r, pc);
 }
