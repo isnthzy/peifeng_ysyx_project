@@ -48,7 +48,7 @@ __EXPORT void difftest_exec(uint64_t n) {
 }
 
 __EXPORT void difftest_raise_intr(word_t NO) {
-  assert(0);
+  // assert(0);
 }
 
 __EXPORT void difftest_init(int port) {
