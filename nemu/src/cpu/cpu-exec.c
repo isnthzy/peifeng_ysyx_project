@@ -122,7 +122,7 @@ void putIringbuf(){
 /* Simulate how the CPU works. */
 bool init_iringbuf_f=false;
 void cpu_exec(uint64_t n) {
-  printf("%d\n\n\n\n\n\n\n\n\n", n);
+  printf("%ld\n\n\n\n\n\n",n);
   if(!init_iringbuf_f){
     init_iringbuf_f=true;
     initializeIRingBuffer(&iring_buffer);
