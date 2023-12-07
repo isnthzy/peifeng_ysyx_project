@@ -40,8 +40,9 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #endif
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
+  
+#ifdef CONFIG_ITRACE_COND
   char decodelog[128];
-  // printf("0x%x\n",_this->pc);
   strcpy(decodelog,_this->logbuf);
   //环形缓冲区
   if(isIRingBufferEmpty(&iring_buffer)){
@@ -51,6 +52,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   enqueueIRingBuffer(&iring_buffer,decodelog);
   //环形缓冲区
   wp_trace(decodelog);
+#endif
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {
