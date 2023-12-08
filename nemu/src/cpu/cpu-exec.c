@@ -121,7 +121,7 @@ void putIringbuf(){
 
 /* Simulate how the CPU works. */
 bool init_iringbuf_f=false;
-void cpu_exec(uint64_t n) {
+void cpu_exec(uint64_t n,bool is_ref) {
   if(!init_iringbuf_f){
     init_iringbuf_f=true;
     initializeIRingBuffer(&iring_buffer);
@@ -146,12 +146,12 @@ void cpu_exec(uint64_t n) {
 
     case NEMU_END: case NEMU_ABORT:
       if(nemu_state.state==NEMU_ABORT||nemu_state.halt_ret!=0) putIringbuf();
-      Log("nemu: %s at pc = " FMT_WORD,
+      if(!is_ref) Log("nemu: %s at pc = " FMT_WORD,
           (nemu_state.state == NEMU_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED):
            (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN):
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
           nemu_state.halt_pc);
       // fall through
-    case NEMU_QUIT: statistic();
+    case NEMU_QUIT: if(!is_ref) statistic();
   }
 }

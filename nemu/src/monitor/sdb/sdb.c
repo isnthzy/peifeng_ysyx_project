@@ -48,7 +48,7 @@ static char* rl_gets() {
 }
 
 static int cmd_c(char *args) {
-  cpu_exec(-1);
+  cpu_exec(-1,0);
   return 0;
 }
 
@@ -65,7 +65,7 @@ static int cmd_si(char *args) {
   if(arg!=NULL){
     step=atoi(arg); 
   } 
-  cpu_exec(step);
+  cpu_exec(step,0);
   return 0;
 }
 
