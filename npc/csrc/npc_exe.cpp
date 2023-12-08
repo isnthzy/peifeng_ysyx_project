@@ -104,6 +104,7 @@ static void npc_execute(uint64_t n) {
     trace_and_difftest();
 
     step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
+    
     /*------------------------分割线每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次*/
 
     top->clock=0;
