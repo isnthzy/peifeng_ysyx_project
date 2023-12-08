@@ -100,8 +100,10 @@ static void npc_execute(uint64_t n) {
     top->clock=1;
     // printf("%x\n",top->io_pc);
     top->io_inst=paddr_read(top->io_pc,4);
-    static word_t this_pc=top->io_pc;
-    static word_t next_pc=top->io_nextpc;
+    static word_t this_pc;
+    static word_t next_pc;
+    this_pc=top->io_pc;
+    this_pc=top->io_nextpc;
     printf("this_pc:%x %x\n",this_pc,top->io_pc);
 
     step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
