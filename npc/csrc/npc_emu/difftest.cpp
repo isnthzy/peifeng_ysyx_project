@@ -19,7 +19,7 @@ uint8_t* guest_to_host(paddr_t paddr);
 void reg_display();
 int check_reg_idx(int idx);
 extern CPU_state cpu;
-extern const char *regs[];
+// extern const char *regs[];
 void (*ref_difftest_memcpy)(paddr_t addr, void *buf, size_t n, bool direction) = NULL;
 void (*ref_difftest_regcpy)(void *dut, bool direction) = NULL;
 void (*ref_difftest_exec)(uint64_t n) = NULL;
