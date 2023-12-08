@@ -71,8 +71,9 @@ void putIringbuf(){
   while(!isIRingBufferEmpty(&iring_buffer)){
     char pop_iringbufdata[100];
     dequeueIRingBuffer(&iring_buffer,pop_iringbufdata);
-    if(iring_buffer.size==0) Log("-->%s",pop_iringbufdata);
-    else Log("   %s",pop_iringbufdata);
+    if(iring_buffer.size==0) wLog("-->%s",pop_iringbufdata);
+    else wLog("   %s",pop_iringbufdata);
+
   }
 }
 
