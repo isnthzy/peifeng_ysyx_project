@@ -1,46 +1,46 @@
 #include "../include/npc_common.h"
 #include "../include/npc_verilator.h"
+extern CPU_state cpu;
 
-uint32_t read_reg_idx(int idx) {
-  uint32_t rf_tmp;
-  if(idx==0)       rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_0;
-  else if(idx==1)  rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_1;
-  else if(idx==2)  rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_2;
-  else if(idx==3)  rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_3;
-  else if(idx==4)  rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_4;
-  else if(idx==5)  rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_5;
-  else if(idx==6)  rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_6;
-  else if(idx==7)  rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_7;
-  else if(idx==8)  rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_8;
-  else if(idx==9)  rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_9;
-  else if(idx==10) rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_10;
-  else if(idx==11) rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_11;
-  else if(idx==12) rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_12;
-  else if(idx==13) rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_13;
-  else if(idx==14) rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_14;
-  else if(idx==15) rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_15;
-  else if(idx==16) rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_16;
-  else if(idx==17) rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_17;
-  else if(idx==18) rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_18;
-  else if(idx==19) rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_19;
-  else if(idx==20) rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_20;
-  else if(idx==21) rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_21;
-  else if(idx==22) rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_22;
-  else if(idx==23) rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_23;
-  else if(idx==24) rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_24;
-  else if(idx==25) rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_25;
-  else if(idx==26) rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_26;
-  else if(idx==27) rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_27;
-  else if(idx==28) rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_28;
-  else if(idx==29) rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_29;
-  else if(idx==30) rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_30;
-  else if(idx==31) rf_tmp=top->rootp->SimTop__DOT__RegFile__DOT__rf_31;
-  else panic("No valid reg");
-  return rf_tmp;
+void cpy_reg() {
+  
+  cpu.gpr[0]=top->rootp->SimTop__DOT__RegFile__DOT__rf_0;
+  cpu.gpr[1]=top->rootp->SimTop__DOT__RegFile__DOT__rf_1;
+  cpu.gpr[2]=top->rootp->SimTop__DOT__RegFile__DOT__rf_2;
+  cpu.gpr[3]=top->rootp->SimTop__DOT__RegFile__DOT__rf_3;
+  cpu.gpr[4]=top->rootp->SimTop__DOT__RegFile__DOT__rf_4;
+  cpu.gpr[5]=top->rootp->SimTop__DOT__RegFile__DOT__rf_5;
+  cpu.gpr[6]=top->rootp->SimTop__DOT__RegFile__DOT__rf_6;
+  cpu.gpr[7]=top->rootp->SimTop__DOT__RegFile__DOT__rf_7;
+  cpu.gpr[8]=top->rootp->SimTop__DOT__RegFile__DOT__rf_8;
+  cpu.gpr[9]=top->rootp->SimTop__DOT__RegFile__DOT__rf_9;
+  cpu.gpr[10]=top->rootp->SimTop__DOT__RegFile__DOT__rf_10;
+  cpu.gpr[11]=top->rootp->SimTop__DOT__RegFile__DOT__rf_11;
+  cpu.gpr[12]=top->rootp->SimTop__DOT__RegFile__DOT__rf_12;
+  cpu.gpr[13]=top->rootp->SimTop__DOT__RegFile__DOT__rf_13;
+  cpu.gpr[14]=top->rootp->SimTop__DOT__RegFile__DOT__rf_14;
+  cpu.gpr[15]=top->rootp->SimTop__DOT__RegFile__DOT__rf_15;
+  cpu.gpr[16]=top->rootp->SimTop__DOT__RegFile__DOT__rf_16;
+  cpu.gpr[17]=top->rootp->SimTop__DOT__RegFile__DOT__rf_17;
+  cpu.gpr[18]=top->rootp->SimTop__DOT__RegFile__DOT__rf_18;
+  cpu.gpr[19]=top->rootp->SimTop__DOT__RegFile__DOT__rf_19;
+  cpu.gpr[20]=top->rootp->SimTop__DOT__RegFile__DOT__rf_20;
+  cpu.gpr[21]=top->rootp->SimTop__DOT__RegFile__DOT__rf_21;
+  cpu.gpr[22]=top->rootp->SimTop__DOT__RegFile__DOT__rf_22;
+  cpu.gpr[23]=top->rootp->SimTop__DOT__RegFile__DOT__rf_23;
+  cpu.gpr[24]=top->rootp->SimTop__DOT__RegFile__DOT__rf_24;
+  cpu.gpr[25]=top->rootp->SimTop__DOT__RegFile__DOT__rf_25;
+  cpu.gpr[26]=top->rootp->SimTop__DOT__RegFile__DOT__rf_26;
+  cpu.gpr[27]=top->rootp->SimTop__DOT__RegFile__DOT__rf_27;
+  cpu.gpr[28]=top->rootp->SimTop__DOT__RegFile__DOT__rf_28;
+  cpu.gpr[29]=top->rootp->SimTop__DOT__RegFile__DOT__rf_29;
+  cpu.gpr[30]=top->rootp->SimTop__DOT__RegFile__DOT__rf_30;
+  cpu.gpr[31]=top->rootp->SimTop__DOT__RegFile__DOT__rf_31;
+
 }
 
 
-static inline int check_reg_idx(int idx) {
+int check_reg_idx(int idx) {
   assert(idx >= 0 && idx <32);
   return idx;
 }

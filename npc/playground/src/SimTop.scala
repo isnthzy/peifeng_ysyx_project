@@ -6,6 +6,7 @@ class SimTop extends Module {
   val io = IO(new Bundle {
     val inst=Input(UInt(32.W))
     val pc=Output(UInt(32.W))
+    val nextpc=Output(UInt(32.W))
     val result=Output(UInt(32.W))
     val wen=Output(Bool())
     val imm=Output(UInt(32.W))
@@ -33,6 +34,7 @@ class SimTop extends Module {
           Mux(IsaI.jalr,jalr_taget,snpc))
   nextpc:=Mux(!is_jump,snpc,dnpc)
   
+  io.nextpc:=nextpc
   REGpc:=nextpc
   io.pc:=REGpc
 // IDU begin
@@ -115,14 +117,14 @@ class SimTop extends Module {
   val result_is_snpc=IsaU.jal | IsaI.jalr
   val src_is_sign=IsaI.srai | IsaR.sra | IsaR.slt  | IsaB.blt | IsaB.bltu
   val src1_is_pc =IsaU.auipc
-  val src2_is_imm=IsaI.addi | IsaI.slti| IsaI.sltiu| IsaI.xori| IsaI.ori | IsaI.andi | IsaI.jalr
+  val src2_is_imm=IsaI.addi | IsaI.slti| IsaI.sltiu| IsaI.xori| IsaI.ori | IsaI.andi | IsaI.jalr | IsaU.auipc
   val src2_is_shamt_imm=IsaI.slli | IsaI.srai | IsaI.srli
   val src2_is_shamt_src=IsaR.sll  | IsaR.sra  | IsaR.srl
   io.wen:=wen
 
 // EXU begin
   val alu_op=Wire(Vec(12, Bool()))
-  alu_op(0 ):= IsaI.addi | IsaR.add | IsaI.ebreak | IsaI.jalr
+  alu_op(0 ):= IsaI.addi | IsaR.add | IsaI.ebreak | IsaI.jalr | IsaU.auipc
   //add加法
   alu_op(1 ):= IsaR.sub
   //sub减法

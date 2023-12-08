@@ -1,9 +1,11 @@
 #include "include/npc_common.h"
 #include "include/npc_verilator.h"
 void step_and_dump_wave();
+void init_difftest(char *ref_so_file, long img_size, int port);
 uint8_t* guest_to_host(paddr_t paddr);
 paddr_t host_to_guest(uint8_t *haddr);
 bool ftrace_flag=false;
+bool difftest_flag=false;
 static const uint32_t defaultImg [] = {
   0x00000413, //00
   0x00009117, //04
@@ -89,7 +91,7 @@ static char *img_file = NULL;
 static char *elf_file = NULL;
 static int difftest_port = 1234;
 
-static long load_img(char *img_file) {
+static long load_img() {
   if (img_file == NULL) {
     printf("\033[0m\033[1;31m img=NULL -> use init_img \033[0m\n");
     memcpy(guest_to_host(START_ADDR),defaultImg, sizeof(defaultImg));
@@ -123,7 +125,7 @@ static int parse_args(int argc, char *argv[]) {
       case 'b': sdb_set_batch_mode(); break;
       case 'p': sscanf(optarg, "%d", &difftest_port); break;
       case 'l': log_file = optarg; break;
-      case 'd': diff_so_file = optarg; break;
+      case 'd': diff_so_file = optarg; difftest_flag=true; break;
       case 'f': elf_file = optarg; ftrace_flag=true;  break;
       case 1: img_file = optarg; return 0;
       default:
@@ -146,7 +148,7 @@ void init_monitor(int argc, char *argv[]) {
   /* Parse arguments. */
   parse_args(argc, argv);
 
-  load_img(img_file);
+  long img_size=load_img();
   //读入镜像文件
 
   init_sim();
@@ -160,6 +162,9 @@ void init_monitor(int argc, char *argv[]) {
 
   // /* Open the ${IMAGE}.elf file */
   IFDEF(CONFIG_FTRACE,init_elf(elf_file));
+
+  /* Initialize differential testing. */
+  if(difftest_flag) init_difftest(diff_so_file, img_size, difftest_port);
 
   /* Initialize the simple debugger. */
   init_sdb();

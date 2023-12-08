@@ -2,11 +2,15 @@
 #include "include/ftrace.h"
 #include "include/npc_verilator.h"
 #include "include/iringbuf.h"
+#include "include/difftest.h"
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 #define MAX_INST_TO_PRINT 10
 void reg_display();
+void cpy_reg();
 uint64_t get_time();
+CPU_state cpu = { .pc=RESET_VECTOR};//解锁新用法
 extern bool ftrace_flag;
+extern bool difftest_flag;
 static bool g_print_step = false;
 static uint64_t g_timer = 0; // unit: us
 uint64_t g_nr_guest_inst;
@@ -72,14 +76,18 @@ void putIringbuf(){
   }
 }
 
-static void trace_and_difftese(){
+static void trace_and_difftest(word_t this_pc,word_t next_pc){
   g_nr_guest_inst++; //记录总共执行了多少步
+  cpy_reg();
+  cpu.pc=this_pc;
+  if(difftest_flag) difftest_step(cpu.pc,next_pc);
+
   static char logbuf[128];
   static char tmp_dis[64];
   static word_t tmp_inst;
   tmp_inst=top->io_inst;
-  disassemble(tmp_dis, sizeof(tmp_dis),top->io_pc, (uint8_t*)&tmp_inst,4);
-  sprintf(logbuf,"0x%08x: %08x\t%s",top->io_pc,tmp_inst,tmp_dis);
+  disassemble(tmp_dis, sizeof(tmp_dis),this_pc, (uint8_t*)&tmp_inst,4);
+  sprintf(logbuf,"0x%08x: %08x\t%s",this_pc,tmp_inst,tmp_dis);
   #ifdef CONFIG_ITRACE
   log_write("%s\n",logbuf);
   enqueueIRingBuffer(&iring_buffer,logbuf); //入队环形缓冲区
@@ -92,13 +100,18 @@ static void npc_execute(uint64_t n) {
     top->clock=1;
     // printf("%x\n",top->io_pc);
     top->io_inst=paddr_read(top->io_pc,4);
-    trace_and_difftese();
+    static word_t this_pc;
+    static word_t next_pc;
+    this_pc=top->io_pc;
+    next_pc=top->io_nextpc;
 
     step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
+    trace_and_difftest(this_pc,next_pc);
     /*------------------------分割线每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次*/
 
     top->clock=0;
     step_and_dump_wave();
+
     if (npc_state.state != NPC_RUNNING) break;
   }
 }
