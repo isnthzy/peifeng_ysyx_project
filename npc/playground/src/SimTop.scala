@@ -107,7 +107,7 @@ class SimTop extends Module {
     "b00011".U -> Sext(Inst.immJ,32),
   ))
   io.imm:=Imm
-  val wen=( IsaR.add  | IsaI.andi| IsaR.and  | IsaU.lui 
+  val wen=(IsaI.addi | IsaR.add  | IsaI.andi| IsaR.and  | IsaU.lui 
          | IsaR.slt  | IsaR.sltu | IsaR.sub | IsaI.ori  | IsaR.or
          | IsaI.xori | IsaR.xor  | IsaI.jalr| IsaU.jal  | IsaU.auipc
          | IsaI.slti | IsaI.sltiu| IsaI.slli| IsaI.srai | IsaI.srli
