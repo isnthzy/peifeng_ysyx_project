@@ -121,7 +121,7 @@ void putIringbuf(){
 
 /* Simulate how the CPU works. */
 bool init_iringbuf_f=false;
-void cpu_exec(uint64_t n) {
+void cpu_exec(uint64_t n,bool is_ref) {
   if(!init_iringbuf_f){
     init_iringbuf_f=true;
     initializeIRingBuffer(&iring_buffer);
@@ -152,6 +152,6 @@ void cpu_exec(uint64_t n) {
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
           nemu_state.halt_pc);
       // fall through
-    case NEMU_QUIT: statistic();
+    case NEMU_QUIT: if(!is_ref) statistic();
   }
 }

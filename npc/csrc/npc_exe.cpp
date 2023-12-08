@@ -71,8 +71,9 @@ void putIringbuf(){
   while(!isIRingBufferEmpty(&iring_buffer)){
     char pop_iringbufdata[100];
     dequeueIRingBuffer(&iring_buffer,pop_iringbufdata);
-    if(iring_buffer.size==0) Log("-->%s",pop_iringbufdata);
-    else Log("   %s",pop_iringbufdata);
+    if(iring_buffer.size==0) wLog("-->%s",pop_iringbufdata);
+    else wLog("   %s",pop_iringbufdata);
+
   }
 }
 
@@ -141,7 +142,7 @@ void npc_exev(uint64_t step){ //之所以不用int因为int是有符号的，批
       if(npc_state.state==NPC_ABORT||npc_state.halt_ret!=0) IFDEF(CONFIG_ITRACE,putIringbuf()); 
       Log("npc: %s at pc = " FMT_WORD,
           (npc_state.state == NPC_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED):
-           (npc_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN):
+           (npc_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_CYAN):
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
           npc_state.halt_pc);
     case NPC_QUIT: statistic();
