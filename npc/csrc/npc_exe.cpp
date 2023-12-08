@@ -104,7 +104,6 @@ static void npc_execute(uint64_t n) {
     static word_t next_pc;
     this_pc=top->io_pc;
     next_pc=top->io_nextpc;
-    printf("this_pc:%x %x\n",this_pc,top->io_pc);
 
     step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
     trace_and_difftest(this_pc,next_pc);
