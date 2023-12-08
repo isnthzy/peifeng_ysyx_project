@@ -26,6 +26,7 @@
 #define wLog(format, ...) \
   do { \
     printf(format, ## __VA_ARGS__); \
+    printf("\n"); \
     log_write(format, ## __VA_ARGS__); \
   } while (0)
 
