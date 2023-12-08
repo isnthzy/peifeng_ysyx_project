@@ -144,12 +144,13 @@ module SimTop(	// @[<stdin>:130:3]
     .io_src1   (IsaU_auipc ? REGpc : _RegFile_io_rdata1),	// @[playground/src/SimTop.scala:28:26, :31:20, :152:21, :161:15]
     .io_src2
       (IsaI_addi | IsaI_slti | IsaI_sltiu | IsaI_xori | IsaI_ori | IsaI_andi | IsaI_jalr
+       | IsaU_auipc
          ? Imm
          : IsaI_slli | IsaI_srai | IsaI_srli
              ? {26'h0, io_inst[25:20]}
              : IsaR_sll | IsaR_sra | IsaR_srl
                  ? {26'h0, _RegFile_io_rdata2[5:0]}
-                 : _RegFile_io_rdata2),	// @[playground/src/SimTop.scala:24:26, :25:26, :54:24, :102:39, :120:86, :121:47, :122:47, :152:21, :162:15, :163:{16,44}, :164:{18,46}]
+                 : _RegFile_io_rdata2),	// @[playground/src/SimTop.scala:24:26, :25:26, :28:26, :54:24, :102:39, :120:98, :121:47, :122:47, :152:21, :162:15, :163:{16,44}, :164:{18,46}]
     .io_sign   (alu_op_9 | IsaR_slt | IsaB_blt | IsaB_bltu),	// @[playground/src/SimTop.scala:24:26, :27:26, :118:{29,63}]
     .io_result (_alu_io_result)
   );
