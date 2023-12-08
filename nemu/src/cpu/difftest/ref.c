@@ -33,7 +33,6 @@ __EXPORT void difftest_regcpy(void *dut, bool direction) {
     for(int i=0;i<32;i++){
       cpu.gpr[i]=tmp->gpr[i];
     }
-    printf("%x %x\n",cpu.pc,tmp->pc); //好像找到罪灰祸首了
     cpu.pc=tmp->pc;
   }else{
     for(int i=0;i<32;i++){
