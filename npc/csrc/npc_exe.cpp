@@ -99,7 +99,6 @@ static void npc_execute(uint64_t n) {
   for (;n > 0; n --) {
     top->clock=1;
     // printf("%x\n",top->io_pc);
-    printf("io_inst:%x\n",top->io_inst);
     top->io_inst=paddr_read(top->io_pc,4);
 
     trace_and_difftest();
