@@ -9,6 +9,7 @@ void reg_display();
 void cpy_reg();
 uint64_t get_time();
 CPU_state cpu = {};
+cpu.pc=RESET_VECTOR; //pc初始化
 extern bool ftrace_flag;
 extern bool difftest_flag;
 static bool g_print_step = false;
