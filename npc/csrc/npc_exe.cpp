@@ -80,7 +80,6 @@ static void trace_and_difftest(){
   g_nr_guest_inst++; //记录总共执行了多少步
 
   cpu.pc=top->io_pc;
-  cpy_reg();
   if(difftest_flag) difftest_step(cpu.pc,top->io_nextpc);
 
   static char logbuf[128];
@@ -109,6 +108,8 @@ static void npc_execute(uint64_t n) {
 
     top->clock=0;
     step_and_dump_wave();
+
+    cpy_reg();
     if (npc_state.state != NPC_RUNNING) break;
   }
 }
