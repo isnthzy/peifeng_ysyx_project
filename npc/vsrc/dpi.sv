@@ -4,7 +4,7 @@ import "DPI-C" function void inv_break(input int pc);
 import "DPI-C" function void cpu_use_func(input int pc,input int nextpc,input int inst,input bit is_jal,input int rd);
 import "DPI-C" function void pmem_read(input int raddr, output int rdata);
 import "DPI-C" function void pmem_write(input int waddr, input int wdata, input byte wmask);
-import "DPI-C" function void get_pc(input int pc);
+import "DPI-C" function void get_pc(input int pc,input int nextpc);
 wire [63:0] rdata;
 module singal_dpi(
     input        clock,
@@ -21,7 +21,7 @@ module singal_dpi(
 );
 always @(posedge clock)begin
     if(~reset)begin
-        get_pc(pc);
+        get_pc(pc,nextpc);
         pmem_read(pc,inst);
         // $display(inv_flag);
         if(ebreak_flag) sim_break(pc,ret_reg);

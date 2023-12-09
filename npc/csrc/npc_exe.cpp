@@ -54,9 +54,10 @@ extern "C" void cpu_use_func(int pc,int nextpc,int inst,svBit is_jal,int rd){
   #endif
 }
 
-extern "C" void get_pc(int pc){
-  printf("pc: %x\n",pc);
+extern "C" void get_pc(int pc,int next_pc){
+  // printf("pc: %x\n",pc);
   cpu.pc=pc;
+  cpu.nextpc=next_pc;
 }
 
 //----------------------------dpi-c----------------------------
@@ -112,10 +113,11 @@ static void npc_execute(uint64_t n) {
     static word_t this_pc;
     static word_t next_pc;
 
-    next_pc=top->io_nextpc;
-
     step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
+
     this_pc=cpu.pc;
+    next_pc=top->io_nextpc;
+    
     trace_and_difftest(this_pc,next_pc);
     /*------------------------分割线每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次*/
 
