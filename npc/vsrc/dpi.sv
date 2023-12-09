@@ -22,8 +22,8 @@ always @(posedge clock)begin
         // get_pc(pc);
         // pmem_read(pc,inst);
         // $display(inv_flag);
-        if(ebreak_flag) sim_break(pc,ret_reg);
-        if(inv_flag) inv_break(pc);
+        if(ebreak_flag) sim_break(nextpc,ret_reg);
+        if(inv_flag) inv_break(nextpc);
         if(func_flag) cpu_use_func(pc,nextpc,inst,is_jal,rd);
         // if (valid) begin // 有读写请求时
         //     pmem_read(raddr, rdata);
