@@ -113,7 +113,8 @@ module SimTop(	// @[<stdin>:140:3]
     end
     else	// @[<stdin>:142:11]
       Inst_inv <=
-        {IsaB_beq, IsaB_bne, IsaB_blt, IsaB_bge, IsaB_bltu, IsaB_bgeu} == 6'h0
+        (|io_inst)
+        & {IsaB_beq, IsaB_bne, IsaB_blt, IsaB_bge, IsaB_bltu, IsaB_bgeu} == 6'h0
         & {IsaI_jalr,
            IsaI_lb,
            IsaI_lh,
@@ -140,7 +141,7 @@ module SimTop(	// @[<stdin>:140:3]
            IsaR_sra,
            IsaR_or,
            IsaR_and} == 10'h0 & {IsaS_sb, IsaS_sh, IsaS_sw} == 3'h0
-        & {IsaU_lui, IsaU_auipc, IsaU_jal} == 3'h0;	// @[playground/src/SimTop.scala:19:19, :22:26, :23:26, :24:26, :25:26, :26:26, :96:{21,27,41,47,61,67,81,87,94,101,107}]
+        & {IsaU_lui, IsaU_auipc, IsaU_jal} == 3'h0;	// @[playground/src/SimTop.scala:19:19, :22:26, :23:26, :24:26, :25:26, :26:26, :27:28, :96:{31,44,50,64,70,84,90,104,110,117,124,130}]
     io_inst <= _pmem_dpi_inst;	// @[playground/src/SimTop.scala:13:22, :27:28]
     if (reset)	// @[<stdin>:141:11]
       REGpc <= 32'h7FFFFFFC;	// @[playground/src/SimTop.scala:30:20]
