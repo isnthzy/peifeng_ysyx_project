@@ -25,7 +25,7 @@ class SimTop extends Module {
   val IsaS=dontTouch(Wire(new IsaS()))
   val IsaB=dontTouch(Wire(new IsaB()))
   val IsaU=dontTouch(Wire(new IsaU())) //避免取指代码被优化，出现波形找不到现象
-  val io_inst=dontTouch(Wire(UInt(32.W)))
+  val io_inst=dontTouch(Reg(UInt(32.W)))
 
 // IFU begin
   val REGpc=RegInit(START_ADDR)
