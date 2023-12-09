@@ -13,7 +13,7 @@ module pmem_dpi(
 always @(posedge clock) begin  
   if(~reset)begin
     get_pc(pc,nextpc);
-    pmem_read(pc,inst);
+    pmem_read(nextpc,inst);
     // if (valid) begin // 有读写请求时
     //     pmem_read(raddr, rdata);
     //     // if (wen) begin // 有写请求时
