@@ -45,7 +45,6 @@ void pmem_write(paddr_t addr, int len, word_t data) {
 //----------------------------dpi-c----------------------------
 extern "C" void pmem_read(int raddr, int *rdata) {
   *rdata=paddr_read(raddr,4);
-  printf("%x %x",raddr,*rdata);
   cpu.inst=paddr_read(raddr,4);
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
