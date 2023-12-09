@@ -12,17 +12,19 @@ module pmem_dpi(
 ); 
 always @(*) begin  Use /* verilator lint_off LATCH */
   if(~reset)begin
-        get_pc(pc,nextpc);
-        pmem_read(pc,inst);
-        // if (valid) begin // 有读写请求时
-        //     pmem_read(raddr, rdata);
-        //     // if (wen) begin // 有写请求时
-        //     // pmem_write(waddr, wdata, wmask);
-        //     // end
-        // end
-        // else begin
-        //     rdata = 0;
-        // end
+    get_pc(pc,nextpc);
+    pmem_read(pc,inst);
+    // if (valid) begin // 有读写请求时
+    //     pmem_read(raddr, rdata);
+    //     // if (wen) begin // 有写请求时
+    //     // pmem_write(waddr, wdata, wmask);
+    //     // end
+    // end
+    // else begin
+    //     rdata = 0;
+    // end
+  end
+  else begin
   end
 end
 endmodule //moduleName
