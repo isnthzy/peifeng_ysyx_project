@@ -22,18 +22,18 @@ void step_and_dump_wave(){
   tfp->dump(contextp->time()); //使用时间
 }
 
-//dpi-c
-extern void sim_break(int pc,int ret_reg){
+//----------------------------dpi-c----------------------------
+extern "C" void sim_break(int pc,int ret_reg){
   npc_state.halt_ret=ret_reg;
   npc_state.halt_pc=pc;
   npc_state.state=NPC_END;
 }
-extern void inv_break(int pc){
+extern "C" void inv_break(int pc){
   npc_state.halt_pc=pc;
   npc_state.state=NPC_ABORT;
 }
 
-extern void cpu_use_func(int pc,int nextpc,int inst,svBit is_jal,int rd){
+extern "C" void cpu_use_func(int pc,int nextpc,int inst,svBit is_jal,int rd){
   //调用cpu_use_func后，is_jal=1 jal,is_jal=0 jalr
   #ifdef CONFIG_FTRACE
   if(ftrace_flag){
@@ -51,7 +51,12 @@ extern void cpu_use_func(int pc,int nextpc,int inst,svBit is_jal,int rd){
   }
   #endif
 }
-//dpi-c
+
+extern "C" void get_pc(int pc){
+  cpu.pc=pc;
+}
+
+//----------------------------dpi-c----------------------------
 
 static void statistic() {
   IFNDEF(CONFIG_TARGET_AM, setlocale(LC_NUMERIC, ""));
@@ -80,7 +85,7 @@ void putIringbuf(){
 static void trace_and_difftest(word_t this_pc,word_t next_pc){
   g_nr_guest_inst++; //记录总共执行了多少步
   cpy_reg();
-  cpu.pc=this_pc;
+  // cpu.pc=this_pc;
   if(difftest_flag) difftest_step(cpu.pc,next_pc);
 
   static char logbuf[128];
@@ -100,10 +105,10 @@ static void npc_execute(uint64_t n) {
   for (;n > 0; n --) {
     top->clock=1;
     // printf("%x\n",top->io_pc);
-    top->io_inst=paddr_read(top->io_pc,4);
+    // top->io_inst=paddr_read(top->io_pc,4);
     static word_t this_pc;
     static word_t next_pc;
-    this_pc=top->io_pc;
+    this_pc=cpu.pc;
     next_pc=top->io_nextpc;
 
     step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时

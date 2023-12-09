@@ -20,7 +20,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
-
+#define NEMU_NOT_REF 0
 static int is_batch_mode = false;
 
 void init_regex();
@@ -48,7 +48,7 @@ static char* rl_gets() {
 }
 
 static int cmd_c(char *args) {
-  cpu_exec(-1,0);
+  cpu_exec(-1,NEMU_NOT_REF);
   return 0;
 }
 
@@ -65,7 +65,7 @@ static int cmd_si(char *args) {
   if(arg!=NULL){
     step=atoi(arg); 
   } 
-  cpu_exec(step,0);
+  cpu_exec(step,NEMU_NOT_REF);
   return 0;
 }
 
