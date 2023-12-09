@@ -1,6 +1,6 @@
 import "DPI-C" function void pmem_read(input int raddr, output int rdata);
 // import "DPI-C" function void pmem_write(input int waddr, input int wdata, input byte wmask);
-import "DPI-C" function void get_pc(input int pc,nextpc);
+import "DPI-C" function void get_pc(input nextpc);
 wire [63:0] rdata;
 module pmem_dpi(
     input        clock,
@@ -11,7 +11,7 @@ module pmem_dpi(
 ); 
 always @(posedge clock) begin  
   if(~reset)begin
-    get_pc(pc,nextpc);
+    get_pc(nextpc);
     pmem_read(nextpc,inst);
     // if (valid) begin // 有读写请求时
     //     pmem_read(raddr, rdata);
