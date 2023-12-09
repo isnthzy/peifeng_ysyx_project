@@ -1,5 +1,6 @@
 #include "../include/npc_common.h"
 #include "../include/npc_verilator.h"
+extern CPU_state cpu;
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN={};
 extern void putIringbuf();
 static inline uint32_t host_read(void *addr, int len) {
@@ -44,6 +45,7 @@ void pmem_write(paddr_t addr, int len, word_t data) {
 //----------------------------dpi-c----------------------------
 extern "C" void pmem_read(int raddr, int *rdata) {
   *rdata=paddr_read(raddr,4);
+  cpu.inst=paddr_read(raddr,4);
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 extern "C" void pmem_write(int waddr, int wdata, char wmask) {
