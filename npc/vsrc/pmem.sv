@@ -23,5 +23,6 @@ always_latch@(*) begin
     // else begin
     //     rdata = 0;
     // end
+  end
 end
 endmodule //moduleName
