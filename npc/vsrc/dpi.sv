@@ -3,7 +3,7 @@ import "DPI-C" function void sim_break(input int pc,input int ret_reg);
 import "DPI-C" function void inv_break(input int pc);
 import "DPI-C" function void cpu_use_func(input int pc,input int nextpc,input int inst,input bit is_jal,input int rd);
 // import "DPI-C" function void get_pc(input int pc);
-wire [63:0] rdata;
+// wire [63:0] rdata;
 module singal_dpi(
     input        clock,
     input        reset,
