@@ -123,9 +123,9 @@ module SimTop(	// @[<stdin>:132:3]
     .rd          ({27'h0, io_inst[11:7]}),	// @[playground/src/SimTop.scala:31:29, :46:42, :57:24, :196:19]
     .is_jal      (IsaU_jal),	// @[playground/src/SimTop.scala:27:26]
     .func_flag   (result_is_snpc),	// @[playground/src/SimTop.scala:119:31]
-    .ebreak_flag (IsaI_ebreak),	// @[playground/src/SimTop.scala:24:26]
+    .ebreak_flag (~reset & IsaI_ebreak),	// @[playground/src/SimTop.scala:24:26, :199:33]
     .inv_flag
-      ({IsaB_beq, IsaB_bne, IsaB_blt, IsaB_bge, IsaB_bltu, IsaB_bgeu} == 6'h0
+      (~reset & {IsaB_beq, IsaB_bne, IsaB_blt, IsaB_bge, IsaB_bltu, IsaB_bgeu} == 6'h0
        & {IsaI_jalr,
           IsaI_lb,
           IsaI_lh,
@@ -152,7 +152,7 @@ module SimTop(	// @[<stdin>:132:3]
           IsaR_sra,
           IsaR_or,
           IsaR_and} == 10'h0 & {IsaS_sb, IsaS_sh, IsaS_sw} == 3'h0
-       & {IsaU_lui, IsaU_auipc, IsaU_jal} == 3'h0),	// @[playground/src/SimTop.scala:23:26, :24:26, :25:26, :26:26, :27:26, :94:{22,28,42,48,62,68,82,88,95,102,108}]
+       & {IsaU_lui, IsaU_auipc, IsaU_jal} == 3'h0),	// @[playground/src/SimTop.scala:23:26, :24:26, :25:26, :26:26, :27:26, :94:{22,28,42,48,62,68,82,88,102,108}, :199:33, :200:33]
     .ret_reg     (_alu_io_result),	// @[playground/src/SimTop.scala:162:18]
     .inst        (io_inst)
   );
