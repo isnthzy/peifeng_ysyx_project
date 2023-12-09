@@ -10,7 +10,7 @@ module pmem_dpi(
     input [31:0] nextpc,
     output [31:0] inst
 ); 
-always @(*) begin  Use /* verilator lint_off LATCH */
+always @(*) begin  
   if(~reset)begin
     get_pc(pc,nextpc);
     pmem_read(pc,inst);
@@ -25,6 +25,7 @@ always @(*) begin  Use /* verilator lint_off LATCH */
     // end
   end
   else begin
+    get_pc(pc,nextpc);
   end
 end
 endmodule //moduleName

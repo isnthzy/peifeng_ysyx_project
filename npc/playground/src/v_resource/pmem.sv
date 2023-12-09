@@ -9,7 +9,7 @@ module pmem_dpi(
     input [31:0] nextpc,
     output [31:0] inst
 ); 
-always @(*) begin  
+always_latch@(*) begin  
   if(~reset)begin
     get_pc(pc,nextpc);
     pmem_read(pc,inst);
@@ -22,9 +22,5 @@ always @(*) begin
     // else begin
     //     rdata = 0;
     // end
-  end
-  else begin
-    get_pc(pc,nextpc);
-  end
 end
 endmodule //moduleName
