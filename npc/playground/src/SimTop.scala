@@ -11,6 +11,7 @@ class SimTop extends Module {
   })
 
 //定义变量 
+  val pmem_dpi=Module(new pmem_dpi())
   val jalr_taget=dontTouch(Wire(UInt(32.W)))
   val nextpc=dontTouch(Wire(UInt(32.W)))
   val snpc=dontTouch(Wire(UInt(32.W)))
@@ -24,12 +25,15 @@ class SimTop extends Module {
   val IsaS=dontTouch(Wire(new IsaS()))
   val IsaB=dontTouch(Wire(new IsaB()))
   val IsaU=dontTouch(Wire(new IsaU())) //避免取指代码被优化，出现波形找不到现象
+  val io_inst=dontTouch(Wire(UInt(32.W)))
 
 // IFU begin
-  val singal_dpi=Module(new singal_dpi())
-  val io_inst=dontTouch(Wire(UInt(32.W)))
-  io_inst:=singal_dpi.io.inst
   val REGpc=RegInit(START_ADDR)
+  pmem_dpi.io.clock:=clock
+  pmem_dpi.io.reset:=reset
+  pmem_dpi.io.pc:=REGpc
+  io_inst:=pmem_dpi.io.inst
+  
   snpc:=REGpc+4.U
   dnpc:=Mux(IsaU.jal,REGpc+Imm,
           Mux(IsaI.jalr,jalr_taget,snpc))
@@ -37,7 +41,6 @@ class SimTop extends Module {
   
   io.nextpc:=nextpc
   REGpc:=nextpc
-  singal_dpi.io.pc:=REGpc
 // IDU begin
 
 
@@ -187,7 +190,7 @@ class SimTop extends Module {
   jalr_taget:=Cat(jalr_tmp(31,1),0.U(1.W))
   RegFile.io.wdata:=io.result
 
-  
+  val singal_dpi=Module(new singal_dpi())
   singal_dpi.io.clock:=clock
   singal_dpi.io.reset:=reset
   
@@ -208,7 +211,6 @@ class singal_dpi extends BlackBox with HasBlackBoxPath{
     val reset=Input(Bool())
     val pc=Input(UInt(32.W))
     val nextpc=Input(UInt(32.W))
-    val inst=Output(UInt(32.W))
     val rd=Input(UInt(32.W))
     val is_jal=Input(Bool())
     val func_flag=Input(Bool())
@@ -219,3 +221,12 @@ class singal_dpi extends BlackBox with HasBlackBoxPath{
   addPath("playground/src/v_resource/dpi.sv")
 }
 
+class pmem_dpi extends BlackBox with HasBlackBoxPath{
+  val io=IO(new Bundle {
+    val clock=Input(Clock())
+    val reset=Input(Bool())
+    val pc=Input(UInt(32.W))
+    val inst=Output(UInt(32.W))
+  })
+  addPath("playground/src/v_resource/pmem.sv")
+}
