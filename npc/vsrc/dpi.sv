@@ -20,9 +20,9 @@ module singal_dpi(
     input [31:0] ret_reg
 );
 always @(posedge clock)begin
-    get_pc(pc);
-    pmem_read(pc,inst);
     if(~reset)begin
+        get_pc(pc);
+        pmem_read(pc,inst);
         if(ebreak_flag) sim_break(pc,ret_reg);
         if(inv_flag) inv_break(pc);
         if(func_flag) cpu_use_func(pc,nextpc,inst,is_jal,rd);
