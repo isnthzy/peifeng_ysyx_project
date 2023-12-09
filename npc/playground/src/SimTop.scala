@@ -27,6 +27,7 @@ class SimTop extends Module {
   val IsaU=dontTouch(Wire(new IsaU())) //避免取指代码被优化，出现波形找不到现象
 
 // IFU begin
+  val singal_dpi=Module(new singal_dpi())
   val io_inst=dontTouch(Wire(UInt(32.W)))
   io_inst:=singal_dpi.io.inst
   val REGpc=RegInit(START_ADDR)
@@ -187,7 +188,7 @@ class SimTop extends Module {
   jalr_taget:=Cat(jalr_tmp(31,1),0.U(1.W))
   RegFile.io.wdata:=io.result
 
-  val singal_dpi=Module(new singal_dpi())
+  
   singal_dpi.io.clock:=clock
   singal_dpi.io.reset:=reset
   singal_dpi.io.pc:=REGpc
