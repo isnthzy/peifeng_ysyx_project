@@ -9,6 +9,7 @@ module singal_dpi(
     input        reset,
     input [31:0] pc,
     input [31:0] nextpc,
+    input [31:0] inst,
     input [31:0] rd,
     input        is_jal,
     input        func_flag,
@@ -24,6 +25,15 @@ always @(posedge clock)begin
         if(ebreak_flag) sim_break(pc,ret_reg);
         // if(inv_flag) inv_break(pc);
         if(func_flag) cpu_use_func(pc,nextpc,inst,is_jal,rd);
+        // if (valid) begin // 有读写请求时
+        //     pmem_read(raddr, rdata);
+        //     // if (wen) begin // 有写请求时
+        //     // pmem_write(waddr, wdata, wmask);
+        //     // end
+        // end
+        // else begin
+        //     rdata = 0;
+        // end
     end
 end
 endmodule //moduleName

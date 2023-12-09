@@ -2,7 +2,7 @@
 import "DPI-C" function void pmem_write(input int pc, input int nextpc);
 import "DPI-C" function void pmem_read(input int raddr, output int rdata);
 import "DPI-C" function void pmem_write(input int waddr, input int wdata, input byte wmask);
-// import "DPI-C" function void get_pc(input int pc);
+import "DPI-C" function void get_pc(input int pc);
 wire [63:0] rdata;
 module pmem_dpi(
     input        clock,
