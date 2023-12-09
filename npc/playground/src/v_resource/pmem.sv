@@ -9,7 +9,7 @@ module pmem_dpi(
     input [31:0] nextpc,
     output [31:0] inst
 ); 
-always_latch@(*) begin  
+always @(posedge clk) begin  
   if(~reset)begin
     get_pc(pc,nextpc);
     pmem_read(pc,inst);
