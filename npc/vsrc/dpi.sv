@@ -4,7 +4,7 @@ import "DPI-C" function void inv_break(input int pc);
 import "DPI-C" function void cpu_use_func(input int pc,input int nextpc,input int inst,input bit is_jal,input int rd);
 import "DPI-C" function void pmem_read(input int raddr, output int rdata);
 import "DPI-C" function void pmem_write(input int waddr, input int wdata, input byte wmask);
-import "DPI-C" function void get_pc(input int pc);
+// import "DPI-C" function void get_pc(input int pc);
 wire [63:0] rdata;
 module singal_dpi(
     input        clock,
