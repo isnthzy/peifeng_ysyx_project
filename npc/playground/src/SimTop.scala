@@ -4,7 +4,6 @@ import config.Configs._
 
 class SimTop extends Module {
   val io = IO(new Bundle {
-    val pc=Output(UInt(32.W))
     val nextpc=Output(UInt(32.W))
     val result=Output(UInt(32.W))
     val wen=Output(Bool())
@@ -38,7 +37,7 @@ class SimTop extends Module {
   
   io.nextpc:=nextpc
   REGpc:=nextpc
-  io.pc:=REGpc
+  singal_dpi.io.pc:=REGpc
 // IDU begin
 
 
@@ -160,7 +159,7 @@ class SimTop extends Module {
   val rf_rdata2=RegFile.io.rdata2
 
   val alu =Module(new Alu())
-  val src1=Mux(src1_is_pc ,io.pc,rf_rdata1)
+  val src1=Mux(src1_is_pc ,REGpc,rf_rdata1)
   val src2=Mux(src2_is_imm,Imm,
             Mux(src2_is_shamt_imm,Inst.immI(5,0), //立即数(5,0)的位移量
               Mux(src2_is_shamt_src,rf_rdata2(5,0),rf_rdata2))) //src2(5,0)的位移量
@@ -191,7 +190,7 @@ class SimTop extends Module {
   
   singal_dpi.io.clock:=clock
   singal_dpi.io.reset:=reset
-  singal_dpi.io.pc:=REGpc
+  
   singal_dpi.io.nextpc:=nextpc
   singal_dpi.io.rd:=Inst.rd
   singal_dpi.io.is_jal:=IsaU.jal
