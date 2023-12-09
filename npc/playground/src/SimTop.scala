@@ -17,7 +17,7 @@ class SimTop extends Module {
   val snpc=dontTouch(Wire(UInt(32.W)))
   val dnpc=dontTouch(Wire(UInt(32.W)))
   val Imm=Wire(UInt(32.W))
-  val Inst_inv=Wire(Bool())
+  val Inst_inv=dontTouch(Reg(Bool())) //避免了wire不稳定问题
   val is_jump=dontTouch(Wire(Bool()))
   val Inst=Wire(new Inst())
   val IsaR=dontTouch(Wire(new IsaR()))
@@ -196,8 +196,8 @@ class SimTop extends Module {
   singal_dpi.io.rd:=Inst.rd
   singal_dpi.io.is_jal:=IsaU.jal
   singal_dpi.io.func_flag  :=IsaU.jal | IsaI.jalr
-  singal_dpi.io.ebreak_flag:=Mux(reset===true.B,0.U,IsaI.ebreak)
-  singal_dpi.io.inv_flag   :=Mux(reset===true.B,0.U,Inst_inv)
+  singal_dpi.io.ebreak_flag:=IsaI.ebreak
+  singal_dpi.io.inv_flag   :=Inst_inv
   singal_dpi.io.ret_reg    :=alu.io.result
 //WB begin
   
