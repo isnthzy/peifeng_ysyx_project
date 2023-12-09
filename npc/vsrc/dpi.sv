@@ -13,6 +13,7 @@ module singal_dpi(
     input [31:0] nextpc,
     output [31:0] inst,
     input [31:0] rd,
+    input        Inst_is_zero,
     input        is_jal,
     input        func_flag,
     input        ebreak_flag,
