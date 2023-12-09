@@ -17,7 +17,7 @@ class SimTop extends Module {
   val snpc=dontTouch(Wire(UInt(32.W)))
   val dnpc=dontTouch(Wire(UInt(32.W)))
   val Imm=Wire(UInt(32.W))
-  val Inst_inv=dontTouch(Reg(false.B)) //避免了wire不稳定问题
+  val Inst_inv=dontTouch(RegInit(false.B)) //避免了wire不稳定问题
   val is_jump=dontTouch(Wire(Bool()))
   val Inst=Wire(new Inst())
   val IsaR=dontTouch(Wire(new IsaR()))
