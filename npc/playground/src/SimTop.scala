@@ -38,10 +38,9 @@ class SimTop extends Module {
   snpc:=REGpc+4.U
   dnpc:=Mux(IsaU.jal,REGpc+Imm,
           Mux(IsaI.jalr,jalr_taget,snpc))
-  nextpc:=Mux(!is_jump,snpc,dnpc)
+  REGpc:=Mux(!is_jump,snpc,dnpc)
   
-  io.nextpc:=nextpc
-  REGpc:=nextpc
+  nextpc:=dnpc
 // IDU begin
 
 
