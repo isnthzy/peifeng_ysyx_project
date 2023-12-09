@@ -196,6 +196,7 @@ class SimTop extends Module {
   singal_dpi.io.reset:=reset
   singal_dpi.io.pc:=REGpc
   singal_dpi.io.nextpc:=nextpc
+  singal_dpi.io.inst:=io_inst
   singal_dpi.io.rd:=Inst.rd
   singal_dpi.io.is_jal:=IsaU.jal
   singal_dpi.io.func_flag  :=IsaU.jal | IsaI.jalr
@@ -212,6 +213,7 @@ class singal_dpi extends BlackBox with HasBlackBoxPath{
     val reset=Input(Bool())
     val pc=Input(UInt(32.W))
     val nextpc=Input(UInt(32.W))
+    val inst=Input(UInt(32.W))
     val rd=Input(UInt(32.W))
     val is_jal=Input(Bool())
     val func_flag=Input(Bool())
