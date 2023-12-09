@@ -91,8 +91,7 @@ class SimTop extends Module {
   IsaR.or    :=(io_inst===BitPat("b0000000 ????? ????? 110 ????? 01100 11"))
   IsaR.and   :=(io_inst===BitPat("b0000000 ????? ????? 111 ????? 01100 11"))
   
-  val Inst_is_zero=io_inst===0.U
-  Inst_inv   :=IsaB.asUInt===0.U & IsaI.asUInt===0.U & IsaR.asUInt===0.U & IsaS.asUInt===0.U & IsaU.asUInt===0.U//inv ->inst not valid
+  Inst_inv   := IsaB.asUInt===0.U & IsaI.asUInt===0.U & IsaR.asUInt===0.U & IsaS.asUInt===0.U & IsaU.asUInt===0.U//inv ->inst not valid
   IsaI.ebreak:=(io_inst===BitPat("b0000000 00001 00000 000 00000 11100 11"))
   //ebreak的过程->为达到取出a0 (reg[10])号寄存器的目的， 把rs1取10，rs2取0 加起来，交给regfile取
 
@@ -196,7 +195,6 @@ class SimTop extends Module {
   singal_dpi.io.nextpc:=nextpc
   singal_dpi.io.rd:=Inst.rd
   singal_dpi.io.is_jal:=IsaU.jal
-  singal_dpi.io.Inst_is_zero:=Inst_is_zero
   singal_dpi.io.func_flag  :=IsaU.jal | IsaI.jalr
   singal_dpi.io.ebreak_flag:=IsaI.ebreak
   singal_dpi.io.inv_flag   :=Inst_inv
@@ -213,7 +211,6 @@ class singal_dpi extends BlackBox with HasBlackBoxPath{
     val nextpc=Input(UInt(32.W))
     val inst=Output(UInt(32.W))
     val rd=Input(UInt(32.W))
-    val Inst_is_zero=Input(Bool())
     val is_jal=Input(Bool())
     val func_flag=Input(Bool())
     val ebreak_flag=Input(Bool())
