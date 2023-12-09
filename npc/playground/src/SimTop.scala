@@ -196,8 +196,8 @@ class SimTop extends Module {
   singal_dpi.io.rd:=Inst.rd
   singal_dpi.io.is_jal:=IsaU.jal
   singal_dpi.io.func_flag  :=IsaU.jal | IsaI.jalr
-  singal_dpi.io.ebreak_flag:=IsaI.ebreak
-  singal_dpi.io.inv_flag   :=Inst_inv
+  singal_dpi.io.ebreak_flag:=Mux(reset===true.B,0.U,IsaI.ebreak)
+  singal_dpi.io.inv_flag   :=Mux(reset===true.B,0.U,Inst_inv)
   singal_dpi.io.ret_reg    :=alu.io.result
 //WB begin
   
