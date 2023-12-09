@@ -21,8 +21,8 @@ module singal_dpi(
 );
 always @(posedge clock)begin
     if(~reset)begin
-        pmem_read(pc,inst);
         get_pc(pc);
+        pmem_read(pc,inst);
         // $display(inv_flag);
         if(ebreak_flag) sim_break(pc,ret_reg);
         // if(inv_flag) inv_break(pc);
