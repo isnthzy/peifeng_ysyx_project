@@ -8,8 +8,8 @@ module pmem_dpi(
     input [31:0] pc,
     input [31:0] nextpc,
     output [31:0] inst
-);
-always @(*) begin
+); 
+always @(*) begin  Use /* verilator lint_off LATCH */
   if(~reset)begin
         get_pc(pc,nextpc);
         pmem_read(pc,inst);

@@ -10,8 +10,8 @@ module pmem_dpi(
     input [31:0] nextpc,
     output [31:0] inst
 );
-always @(*)begin
-    if(~reset)begin
+always @(*) begin
+  if(~reset)begin
         get_pc(pc,nextpc);
         pmem_read(pc,inst);
         // if (valid) begin // 有读写请求时
@@ -23,6 +23,6 @@ always @(*)begin
         // else begin
         //     rdata = 0;
         // end
-    end
+  end
 end
 endmodule //moduleName
