@@ -54,9 +54,9 @@ extern "C" void cpu_use_func(int pc,int nextpc,int inst,svBit is_jal,int rd){
   #endif
 }
 
-extern "C" void get_pc(int next_pc){
+extern "C" void get_pc(int nextpc){
   // printf("pc: %x\n",pc);
-  cpu.pc=next_pc;
+  cpu.pc=nextpc;
 }
 
 //----------------------------dpi-c----------------------------
