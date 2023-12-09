@@ -32,6 +32,7 @@ class SimTop extends Module {
   pmem_dpi.io.clock:=clock
   pmem_dpi.io.reset:=reset
   pmem_dpi.io.pc:=REGpc
+  pmem_dpi.io.nextpc:=nextpc
   io_inst:=pmem_dpi.io.inst
   
   snpc:=REGpc+4.U
@@ -226,6 +227,7 @@ class pmem_dpi extends BlackBox with HasBlackBoxPath{
     val clock=Input(Clock())
     val reset=Input(Bool())
     val pc=Input(UInt(32.W))
+    val nextpcpc=Input(UInt(32.W))
     val inst=Output(UInt(32.W))
   })
   addPath("playground/src/v_resource/pmem.sv")

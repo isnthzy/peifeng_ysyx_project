@@ -7,6 +7,7 @@ module pmem_dpi(
     input        clock,
     input        reset,
     input [31:0] pc,
+    input [31:0] nextpc,
     output [31:0] inst,
 );
 always @(posedge clock)begin
