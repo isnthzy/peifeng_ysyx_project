@@ -8,8 +8,8 @@ void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 void reg_display();
 void cpy_reg();
 uint64_t get_time();
-CPU_state cpu;
-// CPU_state cpu = { .pc=RESET_VECTOR};//解锁新用法
+// CPU_state cpu;
+CPU_state cpu = { .pc=RESET_VECTOR};//解锁新用法
 extern bool ftrace_flag;
 extern bool difftest_flag;
 static bool g_print_step = false;
