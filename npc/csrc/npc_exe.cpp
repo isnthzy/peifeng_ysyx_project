@@ -95,8 +95,8 @@ static void trace_and_difftest(word_t this_pc,word_t next_pc){
   static char tmp_dis[64];
   static word_t tmp_inst;
   tmp_inst=cpu.inst;
-  disassemble(tmp_dis, sizeof(tmp_dis),this_pc, (uint8_t*)&tmp_inst,4);
-  sprintf(logbuf,"0x%08x: %08x\t%s",this_pc,tmp_inst,tmp_dis);
+  disassemble(tmp_dis, sizeof(tmp_dis),next_pc, (uint8_t*)&tmp_inst,4);
+  sprintf(logbuf,"0x%08x: %08x\t%s",next_pc,tmp_inst,tmp_dis);
   #ifdef CONFIG_ITRACE
   log_write("%s\n",logbuf);
   enqueueIRingBuffer(&iring_buffer,logbuf); //入队环形缓冲区
