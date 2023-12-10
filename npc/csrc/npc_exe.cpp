@@ -90,7 +90,6 @@ static void trace_and_difftest(word_t this_pc,word_t next_pc){
   
   // cpu.pc=this_pc;
   cpy_reg();
-  if(difftest_flag) difftest_step(cpu.pc,next_pc);
   
   static char logbuf[128];
   static char tmp_dis[64];
@@ -123,6 +122,7 @@ static void npc_execute(uint64_t n) {
 
     top->clock=0;
     step_and_dump_wave();
+    if(difftest_flag) difftest_step(cpu.pc,next_pc);
     if (npc_state.state != NPC_RUNNING) break;
   }
 }
