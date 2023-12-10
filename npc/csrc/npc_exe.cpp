@@ -54,9 +54,10 @@ extern "C" void cpu_use_func(int pc,int nextpc,int inst,svBit is_jal,int rd){
   #endif
 }
 
-extern "C" void get_pc(int nextpc){
+extern "C" void get_pc(int pc,int nextpc){
   // printf("pc: %x\n",pc);
-  cpu.pc=nextpc;
+  cpu.pc=pc;
+  cpu.nextpc=nextpc;
 }
 
 //----------------------------dpi-c----------------------------
@@ -107,24 +108,16 @@ static void npc_execute(uint64_t n) {
   for (;n > 0; n --) {
     top->clock=1;
 
-    static word_t this_pc;
-    static word_t next_pc;
-    if(difftest_flag) difftest_step(cpu.pc,next_pc);
-    printf("%x\n",top->rootp->SimTop__DOT__RegFile__DOT__rf_2);
     step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
-    printf("%x\n",top->rootp->SimTop__DOT__RegFile__DOT__rf_2);
-    this_pc=cpu.pc;
-    next_pc=cpu.nextpc;
+    cpy_reg();
+    if(difftest_flag) difftest_step(cpu.pc,cpu.nextpc);
     
-    
-    trace_and_difftest(this_pc,next_pc);
+    trace_and_difftest(cpu.pc,cpu.nextpc);
     /*------------------------分割线每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次*/
 
     top->clock=0;
-    printf("%x\n",top->rootp->SimTop__DOT__RegFile__DOT__rf_2);
     step_and_dump_wave();
-    printf("%x\n",top->rootp->SimTop__DOT__RegFile__DOT__rf_2);
-    // cpy_reg();
+    cpy_reg();
     if (npc_state.state != NPC_RUNNING) break;
   }
 }
