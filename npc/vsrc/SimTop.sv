@@ -95,7 +95,7 @@ module SimTop(	// @[<stdin>:140:3]
                   : _Imm_T == 5'h10 ? {{20{io_inst[31]}}, io_inst[31:20]} : 32'h0;	// @[playground/src/Bundle.scala:76:{10,15,37}, playground/src/SimTop.scala:19:19, :27:28, :46:23, :47:{27,42}, :48:{39,50,65}, :49:{19,27}, :50:{39,54,66}, :108:{28,39}]
   wire        _alu_op_0_T = IsaI_addi | IsaR_add;	// @[playground/src/SimTop.scala:22:26, :23:26, :116:22]
   wire        wen =
-    _alu_op_0_T | IsaI_andi | IsaR_and | IsaU_lui | IsaR_slt | IsaR_sltu | IsaR_sub
+    _alu_op_0_T | IsaR_and | IsaU_lui | IsaR_slt | IsaR_sltu | IsaR_sub
     | IsaI_ori | IsaR_or | IsaI_xori | IsaR_xor | IsaI_jalr | IsaU_jal | IsaU_auipc
     | IsaI_slti | IsaI_sltiu | IsaI_slli | IsaI_srai | IsaI_srli | IsaR_sll | IsaR_sra
     | IsaR_srl;	// @[playground/src/SimTop.scala:22:26, :23:26, :26:26, :116:22, :120:57]
