@@ -92,7 +92,6 @@ static void trace_and_difftest(word_t this_pc,word_t next_pc){
   if(difftest_flag){
     /*第一次不进行diff,因为nemu的寄存器写入是瞬间写，npc是延迟一拍后写
     因此diff时机是npc执行结束了，进入下一排执行了，reg能取出来了，进行diff*/
-    printf("%d\n",first_diff);
     if(!first_diff) difftest_step(cpu.pc,cpu.nextpc);
     first_diff=false;
   }
