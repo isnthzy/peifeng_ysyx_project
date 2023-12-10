@@ -26,12 +26,12 @@ void step_and_dump_wave(){
 //----------------------------dpi-c----------------------------
 extern "C" void sim_break(int nextpc,int ret_reg){
   npc_state.halt_ret=ret_reg;
-  npc_state.halt_pc=cpu.nextpc;
+  npc_state.halt_pc=nextpc;
   npc_state.state=NPC_END;
 }
 extern "C" void inv_break(int nextpc){
   printf("????");
-  npc_state.halt_pc=cpu.nextpc;
+  npc_state.halt_pc=nextpc;
   npc_state.state=NPC_ABORT;
 }
 
@@ -104,14 +104,18 @@ static void trace_and_difftest(word_t this_pc,word_t next_pc){
   if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s\n",logbuf)); }
 }
 
+static bool first_diff=true;
 static void npc_execute(uint64_t n) {
   for (;n > 0; n --) {
     top->clock=1;
 
     step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
     cpy_reg();
-    if(difftest_flag) difftest_step(cpu.pc,cpu.nextpc);
     
+    if(difftest_flag){
+      if(!first_diff)difftest_step(cpu.pc,cpu.nextpc);
+      first_diff=false;
+    }
     trace_and_difftest(cpu.pc,cpu.nextpc);
     /*------------------------分割线每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次*/
 
