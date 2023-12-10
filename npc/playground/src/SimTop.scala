@@ -130,9 +130,9 @@ class SimTop extends Module {
 
 // EXU begin
   val alu_op=Wire(Vec(12, Bool()))
-  alu_op(0 ):= IsaI.addi | IsaR.add | IsaI.ebreak | IsaI.jalr | IsaU.auipc
+  alu_op(0 ):=  IsaI.ebreak | IsaI.jalr | IsaU.auipc
   //add加法
-  alu_op(1 ):= IsaR.sub
+  alu_op(1 ):= IsaR.add |IsaR.sub
   //sub减法
   alu_op(2 ):= 0.U
   //neg取反
