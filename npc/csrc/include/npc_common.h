@@ -13,7 +13,7 @@ typedef word_t vaddr_t;
 typedef word_t paddr_t;
 #define CONFIG_MSIZE 0x8000000
 #define START_ADDR   0x80000000
-#define CONFIG_MBASE 0x80000000
+#define CONFIG_MBASE 0x7ffffffc
 #define PG_ALIGN __attribute__((aligned(4096)))
 #define FMT_WORD MUXDEF(CONFIG_ISA64, "0x%016" PRIx64, "0x%08" PRIx32)
 #define FMT_PADDR MUXDEF(PMEM64, "0x%016" PRIx64, "0x%08" PRIx32)
@@ -34,6 +34,8 @@ void sdb_mainloop();
 typedef struct {
   word_t gpr[MUXDEF(CONFIG_RVE, 16, 32)];
   vaddr_t pc;
+  vaddr_t nextpc;
+  word_t inst;
 }CPU_state;
 
 #include "npc_debug.h"

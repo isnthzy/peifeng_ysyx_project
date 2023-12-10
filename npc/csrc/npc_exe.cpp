@@ -8,6 +8,7 @@ void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 void reg_display();
 void cpy_reg();
 uint64_t get_time();
+// CPU_state cpu;
 CPU_state cpu = { .pc=RESET_VECTOR};//解锁新用法
 extern bool ftrace_flag;
 extern bool difftest_flag;
@@ -22,18 +23,19 @@ void step_and_dump_wave(){
   tfp->dump(contextp->time()); //使用时间
 }
 
-//dpi-c
-extern void sim_break(int pc,int ret_reg){
+//----------------------------dpi-c----------------------------
+extern "C" void sim_break(int pc,int ret_reg){
   npc_state.halt_ret=ret_reg;
   npc_state.halt_pc=pc;
   npc_state.state=NPC_END;
 }
-extern void inv_break(int pc){
-  npc_state.halt_pc=pc;
+extern "C" void inv_break(int nextpc){
+  printf("????");
+  npc_state.halt_pc=nextpc;
   npc_state.state=NPC_ABORT;
 }
 
-extern void cpu_use_func(int pc,int nextpc,int inst,svBit is_jal,int rd){
+extern "C" void cpu_use_func(int pc,int nextpc,int inst,svBit is_jal,int rd){
   //调用cpu_use_func后，is_jal=1 jal,is_jal=0 jalr
   #ifdef CONFIG_FTRACE
   if(ftrace_flag){
@@ -51,7 +53,14 @@ extern void cpu_use_func(int pc,int nextpc,int inst,svBit is_jal,int rd){
   }
   #endif
 }
-//dpi-c
+
+extern "C" void get_pc(int pc,int nextpc){
+  // printf("pc: %x\n",pc);
+  cpu.pc=pc;
+  cpu.nextpc=nextpc;
+}
+
+//----------------------------dpi-c----------------------------
 
 static void statistic() {
   IFNDEF(CONFIG_TARGET_AM, setlocale(LC_NUMERIC, ""));
@@ -71,24 +80,29 @@ void putIringbuf(){
   while(!isIRingBufferEmpty(&iring_buffer)){
     char pop_iringbufdata[100];
     dequeueIRingBuffer(&iring_buffer,pop_iringbufdata);
-    if(iring_buffer.size==0) wLog("-->%s",pop_iringbufdata);
-    else wLog("   %s",pop_iringbufdata);
+    if(iring_buffer.size==0) wLog("[itrace]-->%s",pop_iringbufdata);
+    else wLog("[itrace]   %s",pop_iringbufdata);
 
   }
 }
 
+static bool first_diff=true;
 static void trace_and_difftest(word_t this_pc,word_t next_pc){
   g_nr_guest_inst++; //记录总共执行了多少步
-  cpy_reg();
-  cpu.pc=this_pc;
-  if(difftest_flag) difftest_step(cpu.pc,next_pc);
-
+  if(difftest_flag){
+    /*第一次不进行diff,因为nemu的寄存器写入是瞬间写，npc是延迟一拍后写
+    因此diff时机是npc执行结束了，进入下一排执行了，reg能取出来了，进行diff*/
+    if(!first_diff) difftest_step(cpu.pc,cpu.nextpc);
+    first_diff=false;
+  }
+  // cpu.pc=this_pc;
+  
   static char logbuf[128];
   static char tmp_dis[64];
   static word_t tmp_inst;
-  tmp_inst=top->io_inst;
-  disassemble(tmp_dis, sizeof(tmp_dis),this_pc, (uint8_t*)&tmp_inst,4);
-  sprintf(logbuf,"0x%08x: %08x\t%s",this_pc,tmp_inst,tmp_dis);
+  tmp_inst=cpu.inst;
+  disassemble(tmp_dis, sizeof(tmp_dis),next_pc, (uint8_t*)&tmp_inst,4);
+  sprintf(logbuf,"0x%08x: %08x\t%s",next_pc,tmp_inst,tmp_dis);
   #ifdef CONFIG_ITRACE
   log_write("%s\n",logbuf);
   enqueueIRingBuffer(&iring_buffer,logbuf); //入队环形缓冲区
@@ -96,23 +110,19 @@ static void trace_and_difftest(word_t this_pc,word_t next_pc){
   if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s\n",logbuf)); }
 }
 
+
 static void npc_execute(uint64_t n) {
   for (;n > 0; n --) {
     top->clock=1;
-    // printf("%x\n",top->io_pc);
-    top->io_inst=paddr_read(top->io_pc,4);
-    static word_t this_pc;
-    static word_t next_pc;
-    this_pc=top->io_pc;
-    next_pc=top->io_nextpc;
 
     step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
-    trace_and_difftest(this_pc,next_pc);
+    cpy_reg();
+    trace_and_difftest(cpu.pc,cpu.nextpc);
     /*------------------------分割线每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次*/
 
     top->clock=0;
     step_and_dump_wave();
-
+    cpy_reg();
     if (npc_state.state != NPC_RUNNING) break;
   }
 }

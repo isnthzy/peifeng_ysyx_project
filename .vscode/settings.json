@@ -41,7 +41,9 @@
         "iomanip": "cpp",
         "difftest-def.h": "c",
         "dlfcn.h": "c",
-        "difftest.h": "c"
+        "difftest.h": "c",
+        "atomic": "cpp",
+        "cstdint": "cpp"
     },
     "C_Cpp.intelliSenseEngine": "default",  //  需要添加的
 
