@@ -112,7 +112,7 @@ static void npc_execute(uint64_t n) {
     cpy_reg();
     if(difftest_flag) difftest_step(cpu.pc,cpu.nextpc);
     
-    trace_and_difftest(cpu.pc,cpu.nextpc);
+    trace_and_difftest(cpu.nextpc,cpu.nextpc);
     /*------------------------分割线每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次*/
 
     top->clock=0;
