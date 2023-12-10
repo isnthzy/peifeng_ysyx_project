@@ -93,12 +93,11 @@ module SimTop(	// @[<stdin>:140:3]
               : _Imm_T == 5'h8
                   ? {{20{io_inst[31]}}, io_inst[31:25], io_inst[11:7]}
                   : _Imm_T == 5'h10 ? {{20{io_inst[31]}}, io_inst[31:20]} : 32'h0;	// @[playground/src/Bundle.scala:76:{10,15,37}, playground/src/SimTop.scala:19:19, :27:28, :46:23, :47:{27,42}, :48:{39,50,65}, :49:{19,27}, :50:{39,54,66}, :108:{28,39}]
-  wire        _alu_op_0_T = IsaI_addi | IsaR_add;	// @[playground/src/SimTop.scala:22:26, :23:26, :116:22]
   wire        wen =
-    _alu_op_0_T | IsaR_and | IsaU_lui | IsaR_slt | IsaR_sltu | IsaR_sub
-    | IsaI_ori | IsaR_or | IsaI_xori | IsaR_xor | IsaI_jalr | IsaU_jal | IsaU_auipc
-    | IsaI_slti | IsaI_sltiu | IsaI_slli | IsaI_srai | IsaI_srli | IsaR_sll | IsaR_sra
-    | IsaR_srl;	// @[playground/src/SimTop.scala:22:26, :23:26, :26:26, :116:22, :120:57]
+    IsaI_addi | IsaR_add | IsaI_andi | IsaR_and | IsaU_lui | IsaR_slt | IsaR_sltu
+    | IsaR_sub | IsaI_ori | IsaR_or | IsaI_xori | IsaR_xor | IsaI_jalr | IsaU_jal
+    | IsaU_auipc | IsaI_slti | IsaI_sltiu | IsaI_slli | IsaI_srai | IsaI_srli | IsaR_sll
+    | IsaR_sra | IsaR_srl;	// @[playground/src/SimTop.scala:22:26, :23:26, :26:26, :120:57]
   wire        result_is_snpc = IsaU_jal | IsaI_jalr;	// @[playground/src/SimTop.scala:23:26, :26:26, :123:31]
   wire        alu_op_9 = IsaI_srai | IsaR_sra;	// @[playground/src/SimTop.scala:22:26, :23:26, :124:29]
   wire        is_jump =
@@ -181,8 +180,8 @@ module SimTop(	// @[<stdin>:140:3]
         IsaI_ori | IsaR_or,
         IsaI_andi | IsaR_and,
         1'h0,
-        IsaR_sub,
-        _alu_op_0_T | IsaI_ebreak | IsaI_jalr | IsaU_auipc}),	// @[playground/src/SimTop.scala:19:19, :22:26, :23:26, :25:26, :26:26, :116:22, :124:29, :133:63, :139:25, :141:25, :143:25, :145:25, :148:25, :150:25, :154:25, :172:23]
+        IsaR_add | IsaR_sub,
+        IsaI_ebreak | IsaI_jalr | IsaU_auipc}),	// @[playground/src/SimTop.scala:19:19, :22:26, :23:26, :25:26, :26:26, :124:29, :133:41, :135:25, :139:25, :141:25, :143:25, :145:25, :148:25, :150:25, :154:25, :172:23]
     .io_src1   (IsaU_auipc ? REGpc : _RegFile_io_rdata1),	// @[playground/src/SimTop.scala:26:26, :30:20, :158:21, :167:15]
     .io_src2
       (IsaI_addi | IsaI_slti | IsaI_sltiu | IsaI_xori | IsaI_ori | IsaI_andi | IsaI_jalr
