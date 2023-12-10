@@ -122,8 +122,8 @@ static void npc_execute(uint64_t n) {
     /*------------------------分割线每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次*/
 
     top->clock=0;
-    step_and_dump_wave();
     cpy_reg();
+    step_and_dump_wave();
     if(difftest_flag) difftest_step(cpu.pc,next_pc);
     if (npc_state.state != NPC_RUNNING) break;
   }
