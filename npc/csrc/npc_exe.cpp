@@ -110,9 +110,10 @@ static void npc_execute(uint64_t n) {
     // top->io_inst=paddr_read(top->io_pc,4);
     static word_t this_pc;
     static word_t next_pc;
+    cpy_reg();
     if(difftest_flag) difftest_step(cpu.pc,next_pc);
     step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
-    cpy_reg();
+    
     this_pc=cpu.pc;
     next_pc=cpu.nextpc;
     
