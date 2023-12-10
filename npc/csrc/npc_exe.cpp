@@ -106,14 +106,13 @@ static void trace_and_difftest(word_t this_pc,word_t next_pc){
 static void npc_execute(uint64_t n) {
   for (;n > 0; n --) {
     top->clock=1;
-    // printf("%x\n",top->io_pc);
-    // top->io_inst=paddr_read(top->io_pc,4);
+
     static word_t this_pc;
     static word_t next_pc;
     if(difftest_flag) difftest_step(cpu.pc,next_pc);
-    
+    printf("%x\n",top->rootp->SimTop__DOT__RegFile__DOT__rf_2);
     step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
-    
+    printf("%x\n",top->rootp->SimTop__DOT__RegFile__DOT__rf_2);
     this_pc=cpu.pc;
     next_pc=cpu.nextpc;
     
@@ -122,9 +121,10 @@ static void npc_execute(uint64_t n) {
     /*------------------------分割线每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次*/
 
     top->clock=0;
-    
+    printf("%x\n",top->rootp->SimTop__DOT__RegFile__DOT__rf_2);
     step_and_dump_wave();
-    cpy_reg();
+    printf("%x\n",top->rootp->SimTop__DOT__RegFile__DOT__rf_2);
+    // cpy_reg();
     if (npc_state.state != NPC_RUNNING) break;
   }
 }
