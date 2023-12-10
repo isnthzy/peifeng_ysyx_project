@@ -90,7 +90,7 @@ static void trace_and_difftest(word_t this_pc,word_t next_pc){
   
   // cpu.pc=this_pc;
   if(difftest_flag) difftest_step(cpu.pc,next_pc);
-
+  cpy_reg();
   static char logbuf[128];
   static char tmp_dis[64];
   static word_t tmp_inst;
@@ -116,7 +116,7 @@ static void npc_execute(uint64_t n) {
 
     this_pc=cpu.pc;
     next_pc=cpu.nextpc;
-    cpy_reg();
+   
     trace_and_difftest(this_pc,next_pc);
     /*------------------------分割线每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次*/
 
