@@ -87,7 +87,7 @@ void putIringbuf(){
 
 static void trace_and_difftest(word_t this_pc,word_t next_pc){
   g_nr_guest_inst++; //记录总共执行了多少步
-  cpy_reg();
+  
   // cpu.pc=this_pc;
   if(difftest_flag) difftest_step(cpu.pc,next_pc);
 
@@ -111,7 +111,7 @@ static void npc_execute(uint64_t n) {
     // top->io_inst=paddr_read(top->io_pc,4);
     static word_t this_pc;
     static word_t next_pc;
-
+    cpy_reg();
     step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
 
     this_pc=cpu.pc;
