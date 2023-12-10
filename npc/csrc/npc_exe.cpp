@@ -79,8 +79,8 @@ void putIringbuf(){
   while(!isIRingBufferEmpty(&iring_buffer)){
     char pop_iringbufdata[100];
     dequeueIRingBuffer(&iring_buffer,pop_iringbufdata);
-    if(iring_buffer.size==0) wLog("-->%s",pop_iringbufdata);
-    else wLog("   %s",pop_iringbufdata);
+    if(iring_buffer.size==0) wLog("[itrace]-->%s",pop_iringbufdata);
+    else wLog("[itrace]   %s",pop_iringbufdata);
 
   }
 }
@@ -116,13 +116,12 @@ static void npc_execute(uint64_t n) {
 
     this_pc=cpu.pc;
     next_pc=cpu.nextpc;
-
+    cpy_reg();
     trace_and_difftest(this_pc,next_pc);
     /*------------------------分割线每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次*/
 
     top->clock=0;
     step_and_dump_wave();
-    cpy_reg();
     if (npc_state.state != NPC_RUNNING) break;
   }
 }
