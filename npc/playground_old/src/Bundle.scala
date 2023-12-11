@@ -69,30 +69,6 @@ class ImmType extends Bundle{
   val ImmJType=Bool()
 }
 
-class if_to_id_bus extends Bundle{
-  val snpc=UInt(32.W) 
-}
-
-class id_to_es_bus extends Bundle{
-  val date_wen=Bool()
-  val result_is_imm=Bool()
-  val result_is_snpc=Bool()
-  val src_is_sign=Bool()
-  val src1_is_pc=Bool()
-  val src2_is_imm=Bool()
-  val src2_is_shamt_imm=Bool()
-  val src2_is_shamt_src1=Bool()
-  val sram_valid=Bool()
-  val sram_wen=Bool()
-  val wmask=UInt(4.W)
-  val snpc=UInt(32.W) 
-  val imm=UInt(32.W) 
-  val src1=UInt(5.W)
-  val src2=UInt(5.W)
-  val rd=UInt(5.W)
-  val alu_op=UInt(12.W)
-}
-
 object Sext{ //有符号位宽扩展
   def apply(num:UInt,e_width:Int) = {
     val num_width=num.getWidth
