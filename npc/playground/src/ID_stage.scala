@@ -122,7 +122,7 @@ class ID_stage extends Module{
   io.d_ebus.rd:=Inst.rd
   io.d_ebus.snpc:=io.f_dbus.snpc
 
-  val is_not_jalr=IsaU.jal|IsaB.beq|IsaB.bne|IsaB.blt|IsaB.bltu|IsaB.bge|IsaB.bgeu
+  io.is_not_jalr:=IsaU.jal|IsaB.beq|IsaB.bne|IsaB.blt|IsaB.bltu|IsaB.bge|IsaB.bgeu
 
   io.d_ebus.alu_op(0 ):= (IsaI.addi | IsaR.add | IsaI.ebreak | IsaI.jalr | IsaU.auipc
               | io.d_ebus.sram_valid)
