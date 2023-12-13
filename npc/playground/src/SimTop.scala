@@ -54,6 +54,7 @@ class SimTop extends Module {
   pmem_dpi.io.clock:=clock
   pmem_dpi.io.reset:=reset
   pmem_dpi.io.pc:=pc
+  pmem_dpi.io.nextpc:=nextpc
   inst:=pmem_dpi.io.inst
   pmem_dpi.io.sram_valid:=EXE_stage.io.sram_valid
   pmem_dpi.io.sram_wen:=EXE_stage.io.sram_wen
