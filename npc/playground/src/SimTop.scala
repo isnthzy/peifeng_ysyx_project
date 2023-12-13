@@ -8,6 +8,7 @@ class SimTop extends Module {
   })
 
 //定义变量 
+  val Imm   =dontTouch(Wire(UInt(32.W)))
   val pc    =dontTouch(Wire(UInt(32.W)))
   val nextpc=dontTouch(Wire(UInt(32.W)))
   val inst  =dontTouch(Wire(UInt(32.W)))
@@ -19,6 +20,7 @@ class SimTop extends Module {
   pc:=IF_stage.io.pc
   nextpc:=IF_stage.io.nextpc
   inst:=IF_stage.io.inst
+  IF_stage.io.Imm:=Imm
   IF_stage.io.jalr_taget:=jalr_taget
   IF_stage.io.is_not_jalr:=is_not_jalr
   IF_stage.io.is_jump:=is_jump
@@ -28,7 +30,7 @@ class SimTop extends Module {
   ID_stage.io.pc:=pc
   ID_stage.io.nextpc:=nextpc
   ID_stage.io.result:=io.result
-  
+  Imm:=ID_stage.io.Imm
   is_jump:=ID_stage.io.is_jump
   is_not_jalr:=ID_stage.io.is_not_jalr
 

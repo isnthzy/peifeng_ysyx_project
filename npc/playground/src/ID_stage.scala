@@ -8,10 +8,10 @@ class ID_stage extends Module{
     val nextpc=Input(UInt(32.W))
     val inst=Input(UInt(32.W))
     val result=Input(UInt(32.W))
-    val f_dbus=Input(new if_to_id_bus())
     val Imm=Output(UInt(32.W))
     val is_not_jalr=Output(Bool())
     val is_jump=Output(Bool())
+    val f_dbus=Input(new if_to_id_bus())
     val d_ebus=Output(new id_to_es_bus())
   })
   //定义
