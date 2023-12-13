@@ -77,7 +77,7 @@ class pmem_dpi extends BlackBox with HasBlackBoxPath{
     val rdata=Output(UInt(32.W))
     val waddr=Input(UInt(32.W))
     val wdata=Input(UInt(32.W))
-    val wmask=Input(UInt(5.W))
+    val wmask=Input(UInt(4.W))
   })
   addPath("playground/src/v_resource/pmem.sv")
 }

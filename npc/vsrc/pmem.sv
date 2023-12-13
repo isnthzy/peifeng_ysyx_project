@@ -24,7 +24,7 @@ always @(posedge clock) begin
     if (sram_valid) begin // 有读写请求时
       pmem_read(raddr, rdata);
       if (sram_wen) begin // 有写请求时
-      pmem_write(waddr, wdata, wmask);
+      // pmem_write(waddr, wdata, wmask);
       end
     end
     else begin

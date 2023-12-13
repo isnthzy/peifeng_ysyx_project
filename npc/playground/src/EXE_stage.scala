@@ -9,7 +9,7 @@ class EXE_stage extends Module{
     val sram_valid=Output(Bool())
     val sram_wen=Output(Bool())
     val sram_wdata=Output(UInt(32.W))
-    val sram_wmask=Output(UInt(5.W))
+    val sram_wmask=Output(UInt(4.W))
   })
   io.result:=0.U
   io.jalr_taget:=0.U
