@@ -1,7 +1,6 @@
 import chisel3._
 import chisel3.util._  
 import config.Configs._
-import org.yaml.snakeyaml.events.Event.ID
 
 class SimTop extends Module {
   val io = IO(new Bundle {
