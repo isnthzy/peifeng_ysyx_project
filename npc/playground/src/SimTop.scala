@@ -15,7 +15,7 @@ class SimTop extends Module {
   val is_not_jalr=dontTouch(Wire(Bool()))
   val is_jump=dontTouch(Wire(Bool()))
   val jalr_taget=dontTouch(Wire(UInt(32.W)))
-  val d_ebus=WireInit(new id_to_es_bus())
+  val d_ebus=Wire(new id_to_es_bus())
 // IFU begin
   val IF_stage=Module(new IF_stage())
   pc:=IF_stage.io.pc
@@ -36,12 +36,13 @@ class SimTop extends Module {
   is_not_jalr:=ID_stage.io.is_not_jalr
 
   ID_stage.io.f_dbus:=IF_stage.io.f_dbus
+  d_ebus:=ID_stage.io.d_ebus
 // EXU begin
   val EXE_stage=Module(new EXE_stage())
   EXE_stage.io.pc:=pc
   jalr_taget:=EXE_stage.io.jalr_taget
   io.result:=EXE_stage.io.result
-  EXE_stage.io.d_ebus:=d_ebus
+
   // EXE_stage.io.d_ebus:=ID_stage.io.d_ebus
   
 // WB begin
