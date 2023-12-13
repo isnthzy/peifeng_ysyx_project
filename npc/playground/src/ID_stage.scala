@@ -72,9 +72,11 @@ class ID_stage extends Module {
   IsaR.sra   := (io.inst === BitPat("b0100000 ????? ????? 101 ????? 01100 11"))
   IsaR.or    := (io.inst === BitPat("b0000000 ????? ????? 110 ????? 01100 11"))
   IsaR.and   := (io.inst === BitPat("b0000000 ????? ????? 111 ????? 01100 11"))
-
-  val Inst_inv = io.inst.asUInt =/= 0.U & IsaB.asUInt === 0.U & IsaI.asUInt === 0.U & IsaR.asUInt === 0.U & IsaS.asUInt === 0.U & IsaU.asUInt === 0.U //inv ->inst not valid
-  //这句话有问题
+  
+  val Inst_inv=Reg(Bool())
+  // when(reset === false.B) {
+    Inst_inv := io.inst.asUInt =/= 0.U & IsaB.asUInt === 0.U & IsaI.asUInt === 0.U & IsaR.asUInt === 0.U & IsaS.asUInt === 0.U & IsaU.asUInt === 0.U //inv ->inst not valid
+  // } //这句话有问题
 
   IsaI.ebreak := (io.inst === BitPat("b0000000 00001 00000 000 00000 11100 11"))
   // ebreak的过程->为达到取出a0 (reg[10])号寄存器的目的， 把rs1取10，rs2取0 加起来，交给regfile取
