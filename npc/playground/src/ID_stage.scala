@@ -135,16 +135,19 @@ class ID_stage extends Module{
   //or  ||
   io.d_ebus.alu_op(4 ):= IsaI.xori| IsaR.xor
   //xor ^
-  io.d_ebus.alu_op(6 ):=(IsaR.slt | IsaR.sltu | IsaI.slti| IsaI.sltiu)
+  io.d_ebus.alu_op(5 ):=(IsaR.slt | IsaR.sltu | IsaI.slti| IsaI.sltiu)
   //tha <  结果取反就是判断 >=
-  io.d_ebus.alu_op(7 ):= IsaI.slli| IsaR.sll
+  io.d_ebus.alu_op(6 ):= IsaI.slli| IsaR.sll
   //sll << 左移
-  io.d_ebus.alu_op(8 ):= IsaI.srai| IsaR.sra
+  io.d_ebus.alu_op(7 ):= IsaI.srai| IsaR.sra
   //sra >> 无符号右移
-  io.d_ebus.alu_op(9 ):= IsaI.srli| IsaR.srl 
+  io.d_ebus.alu_op(8 ):= IsaI.srli| IsaR.srl 
   //srl >> 有符号右移 
+  io.d_ebus.alu_op(9 ):= 0.U
+  
   io.d_ebus.alu_op(10):= 0.U
 
+  io.d_ebus.alu_op(11):= 0.U
   // val rs1_eq_rs2=Inst.rs1===Inst.rs2
   // val rs1_lt_rs2_s=Inst.rs1.asSInt<Inst.rs2.asSInt
   // val rs1_lt_rs2_u=Inst.rs1<Inst.rs2
