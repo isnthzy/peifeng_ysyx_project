@@ -15,7 +15,7 @@ module pmem_dpi(
     output [31:0] rdata,
     input  [31:0] waddr,
     input  [31:0] wdata,
-    input  [ 5:0] wmask
+    input  [ 3:0] wmask
 ); 
 always @(posedge clock) begin  
   if(~reset)begin

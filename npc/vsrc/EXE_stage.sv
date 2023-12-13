@@ -34,7 +34,7 @@ module EXE_stage(	// @[<stdin>:580:3]
   output        io_sram_valid,	// @[playground/src/EXE_stage.scala:4:12]
                 io_sram_wen,	// @[playground/src/EXE_stage.scala:4:12]
   output [31:0] io_sram_wdata,	// @[playground/src/EXE_stage.scala:4:12]
-  output [4:0]  io_sram_wmask	// @[playground/src/EXE_stage.scala:4:12]
+  output [3:0]  io_sram_wmask	// @[playground/src/EXE_stage.scala:4:12]
 );
 
   wire [31:0] _alu_io_result;	// @[playground/src/EXE_stage.scala:25:18]
@@ -85,6 +85,6 @@ module EXE_stage(	// @[<stdin>:580:3]
   assign io_sram_valid = io_d_ebus_sram_valid;	// @[<stdin>:580:3]
   assign io_sram_wen = io_d_ebus_sram_wen;	// @[<stdin>:580:3]
   assign io_sram_wdata = {27'h0, io_d_ebus_src2};	// @[<stdin>:580:3, playground/src/EXE_stage.scala:43:16]
-  assign io_sram_wmask = {1'h0, io_d_ebus_wmask};	// @[<stdin>:580:3, playground/src/EXE_stage.scala:14:12, :44:16]
+  assign io_sram_wmask = io_d_ebus_wmask;	// @[<stdin>:580:3]
 endmodule
 
