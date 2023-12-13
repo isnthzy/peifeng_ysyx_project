@@ -23,7 +23,7 @@ module IF_stage(	// @[<stdin>:3:3]
       REGpc <= snpc;	// @[playground/src/IF_stage.scala:15:27, :16:34]
   end // always @(posedge)
   assign io_pc = REGpc;	// @[<stdin>:3:3, playground/src/IF_stage.scala:15:27]
-  assign io_nextpc = io_is_jump ? dnpc : snpc;	// @[<stdin>:3:3, playground/src/IF_stage.scala:16:34, :17:34, :21:15]
+  assign io_nextpc = io_is_jump ? dnpc : snpc;	// @[<stdin>:3:3, playground/src/IF_stage.scala:16:34, :17:34, :21:24]
   assign io_f_dbus_snpc = snpc;	// @[<stdin>:3:3, playground/src/IF_stage.scala:16:34]
 endmodule
 
