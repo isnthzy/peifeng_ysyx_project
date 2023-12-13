@@ -47,9 +47,6 @@ class SimTop extends Module {
 
 // WB begin
 
-
-  printf("%x ",nextpc)
-
   val pmem_dpi=Module(new pmem_dpi())
   pmem_dpi.io.clock:=clock
   pmem_dpi.io.reset:=reset
