@@ -4,10 +4,10 @@ import config.Configs._
 
 class IF_stage extends Module{
   val io=IO(new Bundle {
-    // val jalr_taget=Input(UInt(32.W))
-    // val is_not_jalr=Input(Bool())
-    // val is_jump=Input(Bool())
-    // val Imm=Input(UInt(32.W))
+    val jalr_taget=Input(UInt(32.W))
+    val is_not_jalr=Input(Bool())
+    val is_jump=Input(Bool())
+    val Imm=Input(UInt(32.W))
     val pc=Output(UInt(ADDR_WIDTH.W))
     val nextpc=Output(UInt(ADDR_WIDTH.W))
     val inst=Output(UInt(32.W))
