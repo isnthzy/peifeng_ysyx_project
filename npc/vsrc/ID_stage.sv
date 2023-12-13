@@ -78,6 +78,7 @@ module ID_stage(	// @[<stdin>:61:3]
   wire        IsaR_sra = _GEN_0 == 17'h82B3;	// @[playground/src/ID_stage.scala:20:32, :62:26, :72:26]
   wire        IsaR_or = _GEN_0 == 17'h333;	// @[playground/src/ID_stage.scala:20:32, :62:26, :73:26]
   wire        IsaR_and = _GEN_0 == 17'h3B3;	// @[playground/src/ID_stage.scala:20:32, :62:26, :74:26]
+  reg         Inst_inv;	// @[playground/src/ID_stage.scala:76:19]
   wire [4:0]  _io_Imm_T =
     {|{IsaI_jalr,
        IsaI_lb,
@@ -98,7 +99,7 @@ module ID_stage(	// @[<stdin>:61:3]
      |{IsaS_sb, IsaS_sh, IsaS_sw},
      |{IsaB_beq, IsaB_bne, IsaB_blt, IsaB_bge, IsaB_bltu, IsaB_bgeu},
      |{IsaU_lui, IsaU_auipc, IsaU_jal},
-     IsaU_jal};	// @[playground/src/ID_stage.scala:21:32, :22:32, :23:32, :24:32, :84:{32,39}, :85:{32,39}, :86:{32,39}, :87:{32,39}, :89:31]
+     IsaU_jal};	// @[playground/src/ID_stage.scala:21:32, :22:32, :23:32, :24:32, :86:{32,39}, :87:{32,39}, :88:{32,39}, :89:{32,39}, :91:31]
   wire [31:0] _io_Imm_output =
     _io_Imm_T == 5'h3
       ? {{12{io_inst[19]}}, io_inst[19:12], io_inst[20], io_inst[30:21], 1'h0}
@@ -108,97 +109,99 @@ module ID_stage(	// @[<stdin>:61:3]
               ? {{21{io_inst[7]}}, io_inst[30:25], io_inst[11:8], 1'h0}
               : _io_Imm_T == 5'h8
                   ? {{20{io_inst[31]}}, io_inst[31:25], io_inst[11:7]}
-                  : _io_Imm_T == 5'h10 ? {{20{io_inst[31]}}, io_inst[31:20]} : 32'h0;	// @[playground/src/Bundle.scala:101:{10,15,37}, playground/src/ID_stage.scala:27:25, :28:{29,46}, :29:{21,42,54,71}, :30:{21,29}, :31:{42,59,72}, :89:{31,43}]
-  wire        _io_d_ebus_alu_op_0_T = IsaI_addi | IsaR_add;	// @[playground/src/ID_stage.scala:20:32, :21:32, :99:36]
-  wire        _singal_dpi_io_func_flag_T = IsaU_jal | IsaI_jalr;	// @[playground/src/ID_stage.scala:21:32, :24:32, :105:40]
-  wire        _io_d_ebus_alu_op_7_T = IsaI_srai | IsaR_sra;	// @[playground/src/ID_stage.scala:20:32, :21:32, :106:41]
+                  : _io_Imm_T == 5'h10 ? {{20{io_inst[31]}}, io_inst[31:20]} : 32'h0;	// @[playground/src/Bundle.scala:101:{10,15,37}, playground/src/ID_stage.scala:27:25, :28:{29,46}, :29:{21,42,54,71}, :30:{21,29}, :31:{42,59,72}, :91:{31,43}]
+  wire        _io_d_ebus_alu_op_0_T = IsaI_addi | IsaR_add;	// @[playground/src/ID_stage.scala:20:32, :21:32, :101:36]
+  wire        _singal_dpi_io_func_flag_T = IsaU_jal | IsaI_jalr;	// @[playground/src/ID_stage.scala:21:32, :24:32, :107:40]
+  wire        _io_d_ebus_alu_op_7_T = IsaI_srai | IsaR_sra;	// @[playground/src/ID_stage.scala:20:32, :21:32, :108:41]
   wire        _io_d_ebus_sram_valid_output =
-    IsaI_lb | IsaI_lh | IsaI_lw | IsaI_lbu | IsaI_lhu | IsaS_sb | IsaS_sh | IsaS_sw;	// @[playground/src/ID_stage.scala:21:32, :22:32, :113:104]
-  wire        rs1_eq_rs2 = io_inst[19:15] == io_inst[24:20];	// @[playground/src/ID_stage.scala:32:25, :33:25, :150:31]
-  wire        rs1_lt_rs2_s = $signed(io_inst[19:15]) < $signed(io_inst[24:20]);	// @[playground/src/ID_stage.scala:32:25, :33:25, :151:38]
-  wire        rs1_lt_rs2_u = io_inst[19:15] < io_inst[24:20];	// @[playground/src/ID_stage.scala:32:25, :33:25, :152:31]
-  singal_dpi singal_dpi (	// @[playground/src/ID_stage.scala:162:26]
+    IsaI_lb | IsaI_lh | IsaI_lw | IsaI_lbu | IsaI_lhu | IsaS_sb | IsaS_sh | IsaS_sw;	// @[playground/src/ID_stage.scala:21:32, :22:32, :115:104]
+  wire        rs1_eq_rs2 = io_inst[19:15] == io_inst[24:20];	// @[playground/src/ID_stage.scala:32:25, :33:25, :152:31]
+  wire        rs1_lt_rs2_s = $signed(io_inst[19:15]) < $signed(io_inst[24:20]);	// @[playground/src/ID_stage.scala:32:25, :33:25, :153:38]
+  wire        rs1_lt_rs2_u = io_inst[19:15] < io_inst[24:20];	// @[playground/src/ID_stage.scala:32:25, :33:25, :154:31]
+  always @(posedge clock)	// @[<stdin>:62:11]
+    Inst_inv <=
+      (|io_inst) & {IsaB_beq, IsaB_bne, IsaB_blt, IsaB_bge, IsaB_bltu, IsaB_bgeu} == 6'h0
+      & {IsaI_jalr,
+         IsaI_lb,
+         IsaI_lh,
+         IsaI_lw,
+         IsaI_lbu,
+         IsaI_lhu,
+         IsaI_addi,
+         IsaI_slti,
+         IsaI_sltiu,
+         IsaI_xori,
+         IsaI_ori,
+         IsaI_andi,
+         IsaI_slli,
+         IsaI_srli,
+         IsaI_srai,
+         IsaI_ebreak} == 16'h0
+      & {IsaR_add,
+         IsaR_sub,
+         IsaR_sll,
+         IsaR_slt,
+         IsaR_sltu,
+         IsaR_xor,
+         IsaR_srl,
+         IsaR_sra,
+         IsaR_or,
+         IsaR_and} == 10'h0 & {IsaS_sb, IsaS_sh, IsaS_sw} == 3'h0
+      & {IsaU_lui, IsaU_auipc, IsaU_jal} == 3'h0;	// @[playground/src/ID_stage.scala:20:32, :21:32, :22:32, :23:32, :24:32, :76:19, :78:{32,47,54,69,76,91,98,113,120,128,135,142}]
+  singal_dpi singal_dpi (	// @[playground/src/ID_stage.scala:164:26]
     .clock       (clock),
     .reset       (reset),
     .pc          (io_pc),
     .nextpc      (io_nextpc),
     .inst        (io_inst),
-    .rd          ({27'h0, io_inst[11:7]}),	// @[playground/src/ID_stage.scala:28:46, :39:26, :168:29]
+    .rd          ({27'h0, io_inst[11:7]}),	// @[playground/src/ID_stage.scala:28:46, :39:26, :170:29]
     .is_jal      (IsaU_jal),	// @[playground/src/ID_stage.scala:24:32]
-    .func_flag   (_singal_dpi_io_func_flag_T),	// @[playground/src/ID_stage.scala:105:40]
+    .func_flag   (_singal_dpi_io_func_flag_T),	// @[playground/src/ID_stage.scala:107:40]
     .ebreak_flag (IsaI_ebreak),	// @[playground/src/ID_stage.scala:21:32]
-    .inv_flag
-      ((|io_inst) & {IsaB_beq, IsaB_bne, IsaB_blt, IsaB_bge, IsaB_bltu, IsaB_bgeu} == 6'h0
-       & {IsaI_jalr,
-          IsaI_lb,
-          IsaI_lh,
-          IsaI_lw,
-          IsaI_lbu,
-          IsaI_lhu,
-          IsaI_addi,
-          IsaI_slti,
-          IsaI_sltiu,
-          IsaI_xori,
-          IsaI_ori,
-          IsaI_andi,
-          IsaI_slli,
-          IsaI_srli,
-          IsaI_srai,
-          IsaI_ebreak} == 16'h0
-       & {IsaR_add,
-          IsaR_sub,
-          IsaR_sll,
-          IsaR_slt,
-          IsaR_sltu,
-          IsaR_xor,
-          IsaR_srl,
-          IsaR_sra,
-          IsaR_or,
-          IsaR_and} == 10'h0 & {IsaS_sb, IsaS_sh, IsaS_sw} == 3'h0
-       & {IsaU_lui, IsaU_auipc, IsaU_jal} == 3'h0),	// @[playground/src/ID_stage.scala:20:32, :21:32, :22:32, :23:32, :24:32, :76:{33,48,55,70,77,92,99,114,121,129,136,143}]
+    .inv_flag    (Inst_inv),	// @[playground/src/ID_stage.scala:76:19]
     .ret_reg     (io_result)
   );
-  assign io_Imm = _io_Imm_output;	// @[<stdin>:61:3, playground/src/ID_stage.scala:89:43]
+  assign io_Imm = _io_Imm_output;	// @[<stdin>:61:3, playground/src/ID_stage.scala:91:43]
   assign io_is_not_jalr =
-    IsaU_jal | IsaB_beq | IsaB_bne | IsaB_blt | IsaB_bltu | IsaB_bge | IsaB_bgeu;	// @[<stdin>:61:3, playground/src/ID_stage.scala:23:32, :24:32, :124:86]
+    IsaU_jal | IsaB_beq | IsaB_bne | IsaB_blt | IsaB_bltu | IsaB_bge | IsaB_bgeu;	// @[<stdin>:61:3, playground/src/ID_stage.scala:23:32, :24:32, :126:86]
   assign io_is_jump =
     _singal_dpi_io_func_flag_T | IsaB_beq & rs1_eq_rs2 | IsaB_bne & ~rs1_eq_rs2 | IsaB_blt
     & rs1_lt_rs2_s | IsaB_bltu & rs1_lt_rs2_u | IsaB_bge & ~rs1_lt_rs2_s | IsaB_bgeu
-    & ~rs1_lt_rs2_u;	// @[<stdin>:61:3, playground/src/ID_stage.scala:23:32, :105:40, :150:31, :151:38, :152:31, :155:26, :156:{26,29}, :157:26, :158:27, :159:{26,29}, :160:{15,27,30}]
+    & ~rs1_lt_rs2_u;	// @[<stdin>:61:3, playground/src/ID_stage.scala:23:32, :107:40, :152:31, :153:38, :154:31, :157:26, :158:{26,29}, :159:26, :160:27, :161:{26,29}, :162:{15,27,30}]
   assign io_d_ebus_is_ebreak = IsaI_ebreak;	// @[<stdin>:61:3, playground/src/ID_stage.scala:21:32]
   assign io_d_ebus_data_wen =
     _io_d_ebus_alu_op_0_T | IsaI_andi | IsaR_and | IsaU_lui | IsaR_slt | IsaR_sltu
     | IsaR_sub | IsaI_ori | IsaR_or | IsaI_xori | IsaR_xor | IsaI_jalr | IsaU_jal
     | IsaU_auipc | IsaI_slti | IsaI_sltiu | IsaI_slli | IsaI_srai | IsaI_srli | IsaR_sll
-    | IsaR_sra | IsaR_srl;	// @[<stdin>:61:3, playground/src/ID_stage.scala:20:32, :21:32, :24:32, :99:36, :103:50]
+    | IsaR_sra | IsaR_srl;	// @[<stdin>:61:3, playground/src/ID_stage.scala:20:32, :21:32, :24:32, :101:36, :105:50]
   assign io_d_ebus_result_is_imm = IsaU_lui;	// @[<stdin>:61:3, playground/src/ID_stage.scala:24:32]
-  assign io_d_ebus_result_is_snpc = _singal_dpi_io_func_flag_T;	// @[<stdin>:61:3, playground/src/ID_stage.scala:105:40]
-  assign io_d_ebus_src_is_sign = _io_d_ebus_alu_op_7_T | IsaR_slt | IsaB_blt | IsaB_bltu;	// @[<stdin>:61:3, playground/src/ID_stage.scala:20:32, :23:32, :106:{41,74}]
+  assign io_d_ebus_result_is_snpc = _singal_dpi_io_func_flag_T;	// @[<stdin>:61:3, playground/src/ID_stage.scala:107:40]
+  assign io_d_ebus_src_is_sign = _io_d_ebus_alu_op_7_T | IsaR_slt | IsaB_blt | IsaB_bltu;	// @[<stdin>:61:3, playground/src/ID_stage.scala:20:32, :23:32, :108:{41,74}]
   assign io_d_ebus_src1_is_pc = IsaU_auipc;	// @[<stdin>:61:3, playground/src/ID_stage.scala:24:32]
   assign io_d_ebus_src2_is_imm =
     IsaI_addi | IsaI_slti | IsaI_sltiu | IsaI_xori | IsaI_ori | IsaI_andi | IsaI_jalr
-    | IsaU_auipc | IsaI_lb | IsaI_lh | IsaI_lw | IsaI_lbu | IsaI_lhu;	// @[<stdin>:61:3, playground/src/ID_stage.scala:21:32, :24:32, :110:46]
-  assign io_d_ebus_src2_is_shamt_imm = IsaI_slli | IsaI_srai | IsaI_srli;	// @[<stdin>:61:3, playground/src/ID_stage.scala:21:32, :111:56]
-  assign io_d_ebus_src2_is_shamt_src = IsaR_sll | IsaR_sra | IsaR_srl;	// @[<stdin>:61:3, playground/src/ID_stage.scala:20:32, :112:54]
-  assign io_d_ebus_sram_valid = _io_d_ebus_sram_valid_output;	// @[<stdin>:61:3, playground/src/ID_stage.scala:113:104]
-  assign io_d_ebus_sram_wen = IsaS_sb | IsaS_sh | IsaS_sw;	// @[<stdin>:61:3, playground/src/ID_stage.scala:22:32, :114:52]
+    | IsaU_auipc | IsaI_lb | IsaI_lh | IsaI_lw | IsaI_lbu | IsaI_lhu;	// @[<stdin>:61:3, playground/src/ID_stage.scala:21:32, :24:32, :112:46]
+  assign io_d_ebus_src2_is_shamt_imm = IsaI_slli | IsaI_srai | IsaI_srli;	// @[<stdin>:61:3, playground/src/ID_stage.scala:21:32, :113:56]
+  assign io_d_ebus_src2_is_shamt_src = IsaR_sll | IsaR_sra | IsaR_srl;	// @[<stdin>:61:3, playground/src/ID_stage.scala:20:32, :114:54]
+  assign io_d_ebus_sram_valid = _io_d_ebus_sram_valid_output;	// @[<stdin>:61:3, playground/src/ID_stage.scala:115:104]
+  assign io_d_ebus_sram_wen = IsaS_sb | IsaS_sh | IsaS_sw;	// @[<stdin>:61:3, playground/src/ID_stage.scala:22:32, :116:52]
   assign io_d_ebus_wmask =
-    IsaI_lb | IsaI_lbu ? 4'h1 : IsaI_lh | IsaI_lhu ? 4'h3 : {4{IsaI_lw}};	// @[<stdin>:61:3, playground/src/ID_stage.scala:21:32, :115:{37,46}, :116:{38,47}, :117:40]
+    IsaI_lb | IsaI_lbu ? 4'h1 : IsaI_lh | IsaI_lhu ? 4'h3 : {4{IsaI_lw}};	// @[<stdin>:61:3, playground/src/ID_stage.scala:21:32, :117:{37,46}, :118:{38,47}, :119:40]
   assign io_d_ebus_snpc = io_f_dbus_snpc;	// @[<stdin>:61:3]
-  assign io_d_ebus_imm = _io_Imm_output;	// @[<stdin>:61:3, playground/src/ID_stage.scala:89:43]
+  assign io_d_ebus_imm = _io_Imm_output;	// @[<stdin>:61:3, playground/src/ID_stage.scala:91:43]
   assign io_d_ebus_src1 = io_inst[19:15];	// @[<stdin>:61:3, playground/src/ID_stage.scala:33:25]
   assign io_d_ebus_src2 = io_inst[24:20];	// @[<stdin>:61:3, playground/src/ID_stage.scala:32:25]
   assign io_d_ebus_rd = io_inst[11:7];	// @[<stdin>:61:3, playground/src/ID_stage.scala:28:46]
   assign io_d_ebus_alu_op_0 =
     _io_d_ebus_alu_op_0_T | IsaI_ebreak | IsaI_jalr | IsaU_auipc
-    | _io_d_ebus_sram_valid_output;	// @[<stdin>:61:3, playground/src/ID_stage.scala:21:32, :24:32, :99:36, :113:104, :127:5]
+    | _io_d_ebus_sram_valid_output;	// @[<stdin>:61:3, playground/src/ID_stage.scala:21:32, :24:32, :101:36, :115:104, :129:5]
   assign io_d_ebus_alu_op_1 = IsaR_sub;	// @[<stdin>:61:3, playground/src/ID_stage.scala:20:32]
-  assign io_d_ebus_alu_op_2 = IsaI_andi | IsaR_and;	// @[<stdin>:61:3, playground/src/ID_stage.scala:20:32, :21:32, :131:36]
-  assign io_d_ebus_alu_op_3 = IsaI_ori | IsaR_or;	// @[<stdin>:61:3, playground/src/ID_stage.scala:20:32, :21:32, :133:35]
-  assign io_d_ebus_alu_op_4 = IsaI_xori | IsaR_xor;	// @[<stdin>:61:3, playground/src/ID_stage.scala:20:32, :21:32, :135:36]
-  assign io_d_ebus_alu_op_5 = IsaR_slt | IsaR_sltu | IsaI_slti | IsaI_sltiu;	// @[<stdin>:61:3, playground/src/ID_stage.scala:20:32, :21:32, :137:60]
-  assign io_d_ebus_alu_op_6 = IsaI_slli | IsaR_sll;	// @[<stdin>:61:3, playground/src/ID_stage.scala:20:32, :21:32, :139:36]
-  assign io_d_ebus_alu_op_7 = _io_d_ebus_alu_op_7_T;	// @[<stdin>:61:3, playground/src/ID_stage.scala:106:41]
-  assign io_d_ebus_alu_op_8 = IsaI_srli | IsaR_srl;	// @[<stdin>:61:3, playground/src/ID_stage.scala:20:32, :21:32, :143:36]
+  assign io_d_ebus_alu_op_2 = IsaI_andi | IsaR_and;	// @[<stdin>:61:3, playground/src/ID_stage.scala:20:32, :21:32, :133:36]
+  assign io_d_ebus_alu_op_3 = IsaI_ori | IsaR_or;	// @[<stdin>:61:3, playground/src/ID_stage.scala:20:32, :21:32, :135:35]
+  assign io_d_ebus_alu_op_4 = IsaI_xori | IsaR_xor;	// @[<stdin>:61:3, playground/src/ID_stage.scala:20:32, :21:32, :137:36]
+  assign io_d_ebus_alu_op_5 = IsaR_slt | IsaR_sltu | IsaI_slti | IsaI_sltiu;	// @[<stdin>:61:3, playground/src/ID_stage.scala:20:32, :21:32, :139:60]
+  assign io_d_ebus_alu_op_6 = IsaI_slli | IsaR_sll;	// @[<stdin>:61:3, playground/src/ID_stage.scala:20:32, :21:32, :141:36]
+  assign io_d_ebus_alu_op_7 = _io_d_ebus_alu_op_7_T;	// @[<stdin>:61:3, playground/src/ID_stage.scala:108:41]
+  assign io_d_ebus_alu_op_8 = IsaI_srli | IsaR_srl;	// @[<stdin>:61:3, playground/src/ID_stage.scala:20:32, :21:32, :145:36]
 endmodule
 
