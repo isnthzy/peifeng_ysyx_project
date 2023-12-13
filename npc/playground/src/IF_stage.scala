@@ -18,10 +18,10 @@ class IF_stage extends Module {
 
   snpc  := REGpc + 4.U
   dnpc  := Mux(io.is_not_jalr, REGpc + io.Imm, io.jalr_taget) //不是jalr就是jal和IsaB
-  REGpc := Mux(io.is_jump, dnpc, snpc)
+  REGpc := Mux(io.is_jump, dnpc, snpc) //reg类型，更新慢一拍
 
+  io.nextpc      := Mux(io.is_jump, dnpc, snpc)
   io.f_dbus.snpc := snpc
-  io.nextpc      := dnpc
   io.pc          := REGpc
 }
 
