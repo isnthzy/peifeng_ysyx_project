@@ -148,19 +148,18 @@ class ID_stage extends Module{
   io.d_ebus.alu_op(10):= 0.U
 
   io.d_ebus.alu_op(11):= 0.U
-  // val rs1_eq_rs2=Inst.rs1===Inst.rs2
-  // val rs1_lt_rs2_s=Inst.rs1.asSInt<Inst.rs2.asSInt
-  // val rs1_lt_rs2_u=Inst.rs1<Inst.rs2
-  // io.is_jump:= (IsaU.jal 
-  //             | IsaI.jalr
-  //             | IsaB.beq &&  rs1_eq_rs2
-  //             | IsaB.bne && !rs1_eq_rs2
-  //             | IsaB.blt &&  rs1_lt_rs2_s
-  //             | IsaB.bltu&&  rs1_lt_rs2_u
-  //             | IsaB.bge && !rs1_lt_rs2_s
-  //             | IsaB.bgeu&& !rs1_lt_rs2_u
-  //             )
-  io.is_jump:=0.U
+  val rs1_eq_rs2=Inst.rs1===Inst.rs2
+  val rs1_lt_rs2_s=Inst.rs1.asSInt<Inst.rs2.asSInt
+  val rs1_lt_rs2_u=Inst.rs1<Inst.rs2
+  io.is_jump:= (IsaU.jal 
+              | IsaI.jalr
+              | IsaB.beq &&  rs1_eq_rs2
+              | IsaB.bne && !rs1_eq_rs2
+              | IsaB.blt &&  rs1_lt_rs2_s
+              | IsaB.bltu&&  rs1_lt_rs2_u
+              | IsaB.bge && !rs1_lt_rs2_s
+              | IsaB.bgeu&& !rs1_lt_rs2_u
+              )
 
   val singal_dpi=Module(new singal_dpi())
   singal_dpi.io.clock:=clock
