@@ -34,7 +34,6 @@ class SimTop extends Module {
   Imm:=ID_stage.io.Imm
   is_jump:=ID_stage.io.is_jump
   is_not_jalr:=ID_stage.io.is_not_jalr
-  d_ebus:=ID_stage.io.d_ebus
 
   ID_stage.io.f_dbus:=IF_stage.io.f_dbus
 // EXU begin
@@ -42,6 +41,7 @@ class SimTop extends Module {
   EXE_stage.io.pc:=pc
   jalr_taget:=EXE_stage.io.jalr_taget
   io.result:=EXE_stage.io.result
+  EXE_stage.io.d_ebus:=d_ebus
   // EXE_stage.io.d_ebus:=ID_stage.io.d_ebus
   
 // WB begin
