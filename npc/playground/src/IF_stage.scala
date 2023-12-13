@@ -14,14 +14,8 @@ class IF_stage extends Module {
     val f_dbus      = Output(new if_to_id_bus())
   })
   val REGpc      = RegInit(START_ADDR)
-  val fetch_inst = Module(new fetch_inst())
   val snpc       = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
   val dnpc       = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
-  fetch_inst.io.clock  := clock
-  fetch_inst.io.reset  := reset
-  fetch_inst.io.pc     := REGpc
-  fetch_inst.io.nextpc := io.nextpc
-  io.inst              := fetch_inst.io.inst
 
   val Imm         = WireInit(0.U(32.W))
   val is_not_jalr = WireInit(true.B)
@@ -36,13 +30,3 @@ class IF_stage extends Module {
   io.pc          := REGpc
 }
 
-class fetch_inst extends BlackBox with HasBlackBoxPath {
-  val io = IO(new Bundle {
-    val clock  = Input(Clock())
-    val reset  = Input(Bool())
-    val pc     = Input(UInt(32.W))
-    val nextpc = Input(UInt(32.W))
-    val inst   = Output(UInt(32.W))
-  })
-  addPath("playground/src/v_resource/fetch_inst.sv")
-}

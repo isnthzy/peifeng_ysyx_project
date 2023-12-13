@@ -6,6 +6,10 @@ class EXE_stage extends Module{
     val pc=Input(UInt(32.W))
     val result=Output(UInt(32.W))
     val jalr_taget=Output(UInt(32.W))
+    val sram_valid=Output(Bool())
+    val sram_wen=Output(Bool())
+    val sram_wdata=Output(UInt(32.W))
+    val sram_wmask=Output(UInt(5.W))
   })
   io.result:=0.U
   io.jalr_taget:=0.U
@@ -35,33 +39,9 @@ class EXE_stage extends Module{
   val jalr_tmp=alu.io.result+io.d_ebus.imm
   io.jalr_taget:=Cat(jalr_tmp(31,1),0.U(1.W))
   RegFile.io.wdata:=io.result
-
-  val pmem_dpi=Module(new pmem_dpi())
-  pmem_dpi.io.clock:=clock
-  pmem_dpi.io.reset:=reset
-  pmem_dpi.io.sram_valid:=io.d_ebus.sram_valid
-  pmem_dpi.io.sram_wen:=io.d_ebus.sram_wen
-  pmem_dpi.io.raddr:=alu.io.result
-  sram_rdata:=pmem_dpi.io.rdata
-  pmem_dpi.io.waddr:=alu.io.result
-  pmem_dpi.io.wdata:=io.d_ebus.src2
-  pmem_dpi.io.wmask:=io.d_ebus.wmask
-
+  io.sram_wdata:=io.d_ebus.src2
+  io.sram_wmask:=io.d_ebus.wmask
 }
 
-class pmem_dpi extends BlackBox with HasBlackBoxPath{
-  val io=IO(new Bundle {
-    val clock=Input(Clock())
-    val reset=Input(Bool())
-    val sram_valid=Input(Bool())
-    val sram_wen=Input(Bool())
-    val raddr=Input(UInt(32.W))
-    val rdata=Output(UInt(32.W))
-    val waddr=Input(UInt(32.W))
-    val wdata=Input(UInt(32.W))
-    val wmask=Input(UInt(5.W))
-  })
-  addPath("playground/src/v_resource/pmem.sv")
-}
 
 

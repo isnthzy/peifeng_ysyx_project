@@ -16,11 +16,12 @@ class SimTop extends Module {
   val is_jump     = dontTouch(Wire(Bool()))
   val jalr_taget  = dontTouch(Wire(UInt(32.W)))
   val d_ebus      = Wire(new id_to_es_bus())
+  val sram_rdata  = dontTouch(Wire(UInt(32.W)))
 // IFU begin
   val IF_stage = Module(new IF_stage())
   pc                      := IF_stage.io.pc
-  nextpc                  := IF_stage.io.nextpc
-  inst                    := IF_stage.io.inst
+  nextpc                  := IF_stage.io.nextpc      
+  IF_stage.io.inst        := inst
   IF_stage.io.Imm         := Imm
   IF_stage.io.jalr_taget  := jalr_taget
   IF_stage.io.is_not_jalr := is_not_jalr
@@ -46,4 +47,37 @@ class SimTop extends Module {
   EXE_stage.io.d_ebus := ID_stage.io.d_ebus
 
 // WB begin
+
+
+
+
+  val pmem_dpi=Module(new pmem_dpi())
+  pmem_dpi.io.clock:=clock
+  pmem_dpi.io.reset:=reset
+  pmem_dpi.io.pc:=pc
+  inst:=pmem_dpi.io.inst
+  pmem_dpi.io.sram_valid:=EXE_stage.io.sram_valid
+  pmem_dpi.io.sram_wen:=EXE_stage.io.sram_wen
+  pmem_dpi.io.raddr:=EXE_stage.io.result
+  sram_rdata:=pmem_dpi.io.rdata
+  pmem_dpi.io.waddr:=EXE_stage.io.result
+  pmem_dpi.io.wdata:=EXE_stage.io.sram_wdata
+  pmem_dpi.io.wmask:=EXE_stage.io.sram_wmask
+}
+class pmem_dpi extends BlackBox with HasBlackBoxPath{
+  val io=IO(new Bundle {
+    val clock=Input(Clock())
+    val reset=Input(Bool())
+    val pc=Input(UInt(ADDR_WIDTH.W))
+    val nextpc=Input(UInt(ADDR_WIDTH.W))
+    val inst=Output(UInt(32.W))
+    val sram_valid=Input(Bool())
+    val sram_wen=Input(Bool())
+    val raddr=Input(UInt(32.W))
+    val rdata=Output(UInt(32.W))
+    val waddr=Input(UInt(32.W))
+    val wdata=Input(UInt(32.W))
+    val wmask=Input(UInt(5.W))
+  })
+  addPath("playground/src/v_resource/pmem.sv")
 }
