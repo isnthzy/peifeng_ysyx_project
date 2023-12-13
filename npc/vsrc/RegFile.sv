@@ -10,9 +10,9 @@
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
 
-module RegFile(	// @[<stdin>:466:3]
-  input         clock,	// @[<stdin>:467:11]
-                reset,	// @[<stdin>:468:11]
+module RegFile(	// @[<stdin>:467:3]
+  input         clock,	// @[<stdin>:468:11]
+                reset,	// @[<stdin>:469:11]
   input  [4:0]  io_waddr,	// @[playground/src/RegFile.scala:5:12]
   input  [31:0] io_wdata,	// @[playground/src/RegFile.scala:5:12]
   input  [4:0]  io_raddr1,	// @[playground/src/RegFile.scala:5:12]
@@ -192,8 +192,8 @@ module RegFile(	// @[<stdin>:466:3]
         casez_tmp_0 = rf_31;	// @[playground/src/RegFile.scala:14:17, :17:17]
     endcase	// @[playground/src/RegFile.scala:17:17]
   end // always_comb
-  always @(posedge clock) begin	// @[<stdin>:467:11]
-    if (reset) begin	// @[<stdin>:467:11]
+  always @(posedge clock) begin	// @[<stdin>:468:11]
+    if (reset) begin	// @[<stdin>:468:11]
       rf_0 <= 32'h0;	// @[playground/src/RegFile.scala:14:{17,25}]
       rf_1 <= 32'h0;	// @[playground/src/RegFile.scala:14:{17,25}]
       rf_2 <= 32'h0;	// @[playground/src/RegFile.scala:14:{17,25}]
@@ -227,7 +227,7 @@ module RegFile(	// @[<stdin>:466:3]
       rf_30 <= 32'h0;	// @[playground/src/RegFile.scala:14:{17,25}]
       rf_31 <= 32'h0;	// @[playground/src/RegFile.scala:14:{17,25}]
     end
-    else begin	// @[<stdin>:467:11]
+    else begin	// @[<stdin>:468:11]
       if (io_wen & ~(|io_waddr)) begin	// @[playground/src/RegFile.scala:14:17, :15:25, :16:{15,29}]
         if (|io_waddr)	// @[playground/src/RegFile.scala:15:25]
           rf_0 <= io_wdata;	// @[playground/src/RegFile.scala:14:17]
@@ -422,7 +422,7 @@ module RegFile(	// @[<stdin>:466:3]
       end
     end
   end // always @(posedge)
-  assign io_rdata1 = (|io_raddr1) ? casez_tmp : 32'h0;	// @[<stdin>:466:3, playground/src/RegFile.scala:14:25, :17:{17,27}]
-  assign io_rdata2 = (|io_raddr2) ? casez_tmp_0 : 32'h0;	// @[<stdin>:466:3, playground/src/RegFile.scala:14:25, :18:{17,27}]
+  assign io_rdata1 = (|io_raddr1) ? casez_tmp : 32'h0;	// @[<stdin>:467:3, playground/src/RegFile.scala:14:25, :17:{17,27}]
+  assign io_rdata2 = (|io_raddr2) ? casez_tmp_0 : 32'h0;	// @[<stdin>:467:3, playground/src/RegFile.scala:14:25, :18:{17,27}]
 endmodule
 

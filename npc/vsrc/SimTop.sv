@@ -10,9 +10,9 @@
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
 
-module SimTop(	// @[<stdin>:639:3]
-  input         clock,	// @[<stdin>:640:11]
-                reset,	// @[<stdin>:641:11]
+module SimTop(	// @[<stdin>:640:3]
+  input         clock,	// @[<stdin>:641:11]
+                reset,	// @[<stdin>:642:11]
   output [31:0] io_result	// @[playground/src/SimTop.scala:6:14]
 );
 
@@ -162,6 +162,6 @@ module SimTop(	// @[<stdin>:639:3]
     .inst       (inst),
     .rdata      (sram_rdata)
   );
-  assign io_result = _EXE_stage_io_result;	// @[<stdin>:639:3, playground/src/SimTop.scala:41:25]
+  assign io_result = _EXE_stage_io_result;	// @[<stdin>:640:3, playground/src/SimTop.scala:41:25]
 endmodule
 
