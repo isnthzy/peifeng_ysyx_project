@@ -11,8 +11,6 @@ class EXE_stage extends Module{
     val sram_wdata=Output(UInt(32.W))
     val sram_wmask=Output(UInt(4.W))
   })
-  io.result:=0.U
-  io.jalr_taget:=0.U
   val RegFile=Module(new RegFile())
 
   RegFile.io.raddr1:=Mux(io.d_ebus.is_ebreak,10.U,io.d_ebus.src1)
