@@ -7,7 +7,7 @@ class IF_stage extends Module{
     // val jalr_taget=Input(UInt(32.W))
     // val is_not_jalr=Input(Bool())
     // val is_jump=Input(Bool())
-    val Imm=Input(UInt(32.W))
+    // val Imm=Input(UInt(32.W))
     val pc=Output(UInt(ADDR_WIDTH.W))
     val nextpc=Output(UInt(ADDR_WIDTH.W))
     val inst=Output(UInt(32.W))
@@ -22,12 +22,13 @@ class IF_stage extends Module{
   fetch_inst.io.pc:=REGpc
   fetch_inst.io.nextpc:=io.nextpc
   io.inst:=fetch_inst.io.inst
-            
+  
+  val Imm=WireInit(0.U(32.W))
   val is_not_jalr=WireInit(true.B)
   val jalr_taget=WireInit(0.U(32.W))
   val is_jump=WireInit(true.B)
   snpc:=REGpc+4.U
-  dnpc:=Mux(is_not_jalr,REGpc+io.Imm,jalr_taget) //不是jalr就是jal和IsaB
+  dnpc:=Mux(is_not_jalr,REGpc+Imm,jalr_taget) //不是jalr就是jal和IsaB
   REGpc:=Mux(is_jump,dnpc,snpc)
   
   io.f_dbus.snpc:=snpc
