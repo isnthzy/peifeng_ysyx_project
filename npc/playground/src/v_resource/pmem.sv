@@ -11,7 +11,7 @@ module pmem_dpi(
     input         sram_valid,
     input         sram_wen,
     input  [31:0] raddr,
-    output reg[31:0] rdata,
+    output reg [31:0] rdata,
     input  [31:0] waddr,
     input  [31:0] wdata,
     input  [ 3:0] wmask
