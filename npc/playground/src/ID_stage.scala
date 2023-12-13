@@ -75,7 +75,7 @@ class ID_stage extends Module {
   IsaR.and   := (io.inst === BitPat("b0000000 ????? ????? 111 ????? 01100 11"))
 
   when(reset === false.B) {
-    Inst_inv := IsaB.asUInt === 0.U & IsaI.asUInt === 0.U & IsaR.asUInt === 0.U & IsaS.asUInt === 0.U & IsaU.asUInt === 0.U //inv ->inst not valid
+    Inst_inv := io.inst.asUInt =/= 0.U //inv ->inst not valid
   } //这句话有问题
 
   IsaI.ebreak := (io.inst === BitPat("b0000000 00001 00000 000 00000 11100 11"))
