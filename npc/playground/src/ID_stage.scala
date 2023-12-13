@@ -174,20 +174,20 @@ class ID_stage extends Module{
   // singal_dpi.io.ret_reg    :=io.result
 }
 
-// class singal_dpi extends BlackBox with HasBlackBoxPath{
-//   val io=IO(new Bundle {
-//     val clock=Input(Clock())
-//     val reset=Input(Bool())
-//     val pc=Input(UInt(32.W))
-//     val nextpc=Input(UInt(32.W))
-//     val inst=Input(UInt(32.W))
-//     val rd=Input(UInt(32.W))
-//     val is_jal=Input(Bool())
-//     val func_flag=Input(Bool())
-//     val ebreak_flag=Input(Bool())
-//     val inv_flag=Input(Bool()) //inv -> inst not vaild 无效的指令
-//     val ret_reg=Input(UInt(32.W))
-//   })
-//   addPath("playground/src/v_resource/dpi.sv")
-// }
+class singal_dpi extends BlackBox with HasBlackBoxPath{
+  val io=IO(new Bundle {
+    val clock=Input(Clock())
+    val reset=Input(Bool())
+    val pc=Input(UInt(32.W))
+    val nextpc=Input(UInt(32.W))
+    val inst=Input(UInt(32.W))
+    val rd=Input(UInt(32.W))
+    val is_jal=Input(Bool())
+    val func_flag=Input(Bool())
+    val ebreak_flag=Input(Bool())
+    val inv_flag=Input(Bool()) //inv -> inst not vaild 无效的指令
+    val ret_reg=Input(UInt(32.W))
+  })
+  addPath("playground/src/v_resource/dpi.sv")
+}
 
