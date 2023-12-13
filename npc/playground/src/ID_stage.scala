@@ -14,7 +14,6 @@ class ID_stage extends Module{
     val is_jump=Output(Bool())
     val d_ebus=Output(new id_to_es_bus())
   })
-  io.Imm:=0.U
   io.is_not_jalr:=0.U
   io.is_jump:=0.U
 
