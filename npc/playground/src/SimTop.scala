@@ -21,9 +21,9 @@ class SimTop extends Module {
   nextpc:=IF_stage.io.nextpc
   inst:=IF_stage.io.inst
   IF_stage.io.Imm:=Imm
-  IF_stage.io.jalr_taget:=jalr_taget
-  IF_stage.io.is_not_jalr:=is_not_jalr
-  IF_stage.io.is_jump:=is_jump
+  // IF_stage.io.jalr_taget:=jalr_taget
+  // IF_stage.io.is_not_jalr:=is_not_jalr
+  // IF_stage.io.is_jump:=is_jump
 // IDU begin
   val ID_stage=Module(new ID_stage())
   ID_stage.io.inst:=inst

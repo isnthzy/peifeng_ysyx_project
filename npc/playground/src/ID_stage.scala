@@ -8,10 +8,10 @@ class ID_stage extends Module{
     val nextpc=Input(UInt(32.W))
     val inst=Input(UInt(32.W))
     val result=Input(UInt(32.W))
+    val f_dbus=Input(new if_to_id_bus())
     val Imm=Output(UInt(32.W))
     val is_not_jalr=Output(Bool())
     val is_jump=Output(Bool())
-    val f_dbus=Input(new if_to_id_bus())
     val d_ebus=Output(new id_to_es_bus())
   })
   //定义
@@ -24,6 +24,7 @@ class ID_stage extends Module{
   val IsaU=dontTouch(Wire(new IsaU())) //避免取指代码被优化，出现波形找不到现象
   //初始化
   
+
   Inst.immI  :=io.inst(31,20)
   Inst.immS  :=Cat(io.inst(31,25),io.inst(11,7))
   Inst.immB  :=Cat(io.inst(31),io.inst(7),io.inst(30,25),io.inst(11,8),0.U(1.W))
