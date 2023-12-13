@@ -121,27 +121,26 @@ class ID_stage extends Module{
 
   val is_not_jalr=IsaU.jal|IsaB.beq|IsaB.bne|IsaB.blt|IsaB.bltu|IsaB.bge|IsaB.bgeu
 
-  val alu_op=Wire(Vec(12, Bool()))
-  alu_op(0 ):= (IsaI.addi | IsaR.add | IsaI.ebreak | IsaI.jalr | IsaU.auipc
+  io.d_ebus.alu_op(0 ):= (IsaI.addi | IsaR.add | IsaI.ebreak | IsaI.jalr | IsaU.auipc
               | io.d_ebus.sram_valid)
   //add加法
-  alu_op(1 ):= IsaR.sub
+  io.d_ebus.alu_op(1 ):= IsaR.sub
   //sub减法
-  alu_op(2 ):= IsaI.andi| IsaR.and
+  io.d_ebus.alu_op(2 ):= IsaI.andi| IsaR.and
   //and &&
-  alu_op(3 ):= IsaI.ori | IsaR.or
+  io.d_ebus.alu_op(3 ):= IsaI.ori | IsaR.or
   //or  ||
-  alu_op(4 ):= IsaI.xori| IsaR.xor
+  io.d_ebus.alu_op(4 ):= IsaI.xori| IsaR.xor
   //xor ^
-  alu_op(6 ):=(IsaR.slt | IsaR.sltu | IsaI.slti| IsaI.sltiu)
+  io.d_ebus.alu_op(6 ):=(IsaR.slt | IsaR.sltu | IsaI.slti| IsaI.sltiu)
   //tha <  结果取反就是判断 >=
-  alu_op(7 ):= IsaI.slli| IsaR.sll
+  io.d_ebus.alu_op(7 ):= IsaI.slli| IsaR.sll
   //sll << 左移
-  alu_op(8 ):= IsaI.srai| IsaR.sra
+  io.d_ebus.alu_op(8 ):= IsaI.srai| IsaR.sra
   //sra >> 无符号右移
-  alu_op(9 ):= IsaI.srli| IsaR.srl 
+  io.d_ebus.alu_op(9 ):= IsaI.srli| IsaR.srl 
   //srl >> 有符号右移 
-  alu_op(10):= 0.U
+  io.d_ebus.alu_op(10):= 0.U
 
   val rs1_eq_rs2=Inst.rs1===Inst.rs2
   val rs1_lt_rs2_s=Inst.rs1.asSInt<Inst.rs2.asSInt
