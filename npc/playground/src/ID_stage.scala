@@ -14,8 +14,6 @@ class ID_stage extends Module{
     val is_jump=Output(Bool())
     val d_ebus=Output(new id_to_es_bus())
   })
-  io.is_not_jalr:=0.U
-  io.is_jump:=0.U
 
   //定义
   val Inst=Wire(new Inst())
@@ -98,7 +96,7 @@ class ID_stage extends Module{
     "b00010".U -> Sext(Inst.immU,32),
     "b00011".U -> Sext(Inst.immJ,32),
   ))
-  
+  io.d_ebus.imm:=io.Imm
   io.d_ebus.data_wen:=(IsaI.addi | IsaR.add  | IsaI.andi| IsaR.and  | IsaU.lui 
          | IsaR.slt  | IsaR.sltu | IsaR.sub | IsaI.ori  | IsaR.or
          | IsaI.xori | IsaR.xor  | IsaI.jalr| IsaU.jal  | IsaU.auipc
