@@ -17,7 +17,7 @@ class ID_stage extends Module{
 
   //定义
   val Inst=Wire(new Inst())
-  val Inst_inv=Wire(Bool())
+  val Inst_inv=Reg(Bool())
   val IsaR=dontTouch(Wire(new IsaR()))
   val IsaI=dontTouch(Wire(new IsaI()))
   val IsaS=dontTouch(Wire(new IsaS()))
