@@ -49,19 +49,19 @@ class EXE_stage extends Module{
 
 }
 
-class pmem_dpi extends BlackBox with HasBlackBoxPath{
-  val io=IO(new Bundle {
-    val clock=Input(Clock())
-    val reset=Input(Bool())
-    val sram_valid=Input(Bool())
-    val sram_wen=Input(Bool())
-    val raddr=Input(UInt(32.W))
-    val rdata=Output(UInt(32.W))
-    val waddr=Input(UInt(32.W))
-    val wdata=Input(UInt(32.W))
-    val wmask=Input(UInt(5.W))
-  })
-  addPath("playground/src/v_resource/pmem.sv")
-}
+// class pmem_dpi extends BlackBox with HasBlackBoxPath{
+//   val io=IO(new Bundle {
+//     val clock=Input(Clock())
+//     val reset=Input(Bool())
+//     val sram_valid=Input(Bool())
+//     val sram_wen=Input(Bool())
+//     val raddr=Input(UInt(32.W))
+//     val rdata=Output(UInt(32.W))
+//     val waddr=Input(UInt(32.W))
+//     val wdata=Input(UInt(32.W))
+//     val wmask=Input(UInt(5.W))
+//   })
+//   addPath("playground/src/v_resource/pmem.sv")
+// }
 
 
