@@ -30,7 +30,7 @@ class SimTop extends Module {
   ID_stage.io.inst:=0.U
   ID_stage.io.pc:=0.U
   ID_stage.io.nextpc:=0.U
-  ID_stage.io.result:=io.result
+  ID_stage.io.result:=0.U
   Imm:=ID_stage.io.Imm
   is_jump:=ID_stage.io.is_jump
   is_not_jalr:=ID_stage.io.is_not_jalr
