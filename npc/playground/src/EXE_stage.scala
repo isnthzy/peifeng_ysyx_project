@@ -14,7 +14,6 @@ class EXE_stage extends Module{
   io.result:=0.U
   io.jalr_taget:=0.U
   val RegFile=Module(new RegFile())
-  val sram_rdata=Wire(UInt(32.W))
 
   RegFile.io.raddr1:=Mux(io.d_ebus.is_ebreak,10.U,io.d_ebus.src1)
   RegFile.io.raddr2:=Mux(io.d_ebus.is_ebreak, 0.U,io.d_ebus.src2)
@@ -39,6 +38,8 @@ class EXE_stage extends Module{
   val jalr_tmp=alu.io.result+io.d_ebus.imm
   io.jalr_taget:=Cat(jalr_tmp(31,1),0.U(1.W))
   RegFile.io.wdata:=io.result
+  io.sram_valid:=io.d_ebus.sram_valid
+  io.sram_wen  :=io.d_ebus.sram_wen
   io.sram_wdata:=io.d_ebus.src2
   io.sram_wmask:=io.d_ebus.wmask
 }
