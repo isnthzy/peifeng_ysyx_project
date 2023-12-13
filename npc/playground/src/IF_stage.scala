@@ -10,7 +10,6 @@ class IF_stage extends Module {
     val Imm         = Input(UInt(32.W))
     val pc          = Output(UInt(ADDR_WIDTH.W))
     val nextpc      = Output(UInt(ADDR_WIDTH.W))
-    val inst        = Output(UInt(32.W))
     val f_dbus      = Output(new if_to_id_bus())
   })
   val REGpc      = RegInit(START_ADDR)

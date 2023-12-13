@@ -11,17 +11,16 @@ class SimTop extends Module {
   val Imm         = dontTouch(Wire(UInt(32.W)))
   val pc          = dontTouch(Wire(UInt(32.W)))
   val nextpc      = dontTouch(Wire(UInt(32.W)))
-  val inst        = dontTouch(Wire(UInt(32.W)))
   val is_not_jalr = dontTouch(Wire(Bool()))
   val is_jump     = dontTouch(Wire(Bool()))
   val jalr_taget  = dontTouch(Wire(UInt(32.W)))
   val d_ebus      = Wire(new id_to_es_bus())
   val sram_rdata  = dontTouch(Wire(UInt(32.W)))
+  val inst        = dontTouch(Wire(UInt(32.W)))
 // IFU begin
   val IF_stage = Module(new IF_stage())
   pc                      := IF_stage.io.pc
   nextpc                  := IF_stage.io.nextpc      
-  IF_stage.io.inst        := inst
   IF_stage.io.Imm         := Imm
   IF_stage.io.jalr_taget  := jalr_taget
   IF_stage.io.is_not_jalr := is_not_jalr
