@@ -10,7 +10,7 @@
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
 
-module Alu(	// @[<stdin>:525:3]
+module Alu(	// @[<stdin>:517:3]
   input  [11:0] io_op,	// @[playground/src/Alu.scala:5:14]
   input  [31:0] io_src1,	// @[playground/src/Alu.scala:5:14]
                 io_src2,	// @[playground/src/Alu.scala:5:14]
@@ -40,6 +40,6 @@ module Alu(	// @[<stdin>:525:3]
                                   ? io_src1 & io_src2
                                   : io_op == 12'h2
                                       ? io_src1 - io_src2
-                                      : io_op == 12'h1 ? io_src1 + io_src2 : 32'h0;	// @[<stdin>:525:3, playground/src/Alu.scala:14:29, :15:36, :18:18, :20:24, :22:24, :26:25, :28:25, :30:25, :32:28, :34:20, :36:20, :38:32, :40:25, :42:37]
+                                      : io_op == 12'h1 ? io_src1 + io_src2 : 32'h0;	// @[<stdin>:517:3, playground/src/Alu.scala:14:29, :15:36, :18:18, :20:24, :22:24, :26:25, :28:25, :30:25, :32:28, :34:20, :36:20, :38:32, :40:25, :42:37]
 endmodule
 

@@ -10,17 +10,13 @@
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
 
-module SimTop(	// @[<stdin>:649:3]
-  input         clock,	// @[<stdin>:650:11]
-                reset,	// @[<stdin>:651:11]
+module SimTop(	// @[<stdin>:641:3]
+  input         clock,	// @[<stdin>:642:11]
+                reset,	// @[<stdin>:643:11]
   output [31:0] io_result	// @[playground/src/SimTop.scala:6:14]
 );
 
   wire [31:0] sram_rdata;	// @[playground/src/SimTop.scala:18:35]
-  wire [31:0] jalr_taget;	// @[playground/src/SimTop.scala:16:35]
-  wire        is_jump;	// @[playground/src/SimTop.scala:15:35]
-  wire        is_not_jalr;	// @[playground/src/SimTop.scala:14:35]
-  wire [31:0] Imm;	// @[playground/src/SimTop.scala:11:35]
   wire [31:0] pc;	// @[playground/src/SimTop.scala:12:35]
   wire [31:0] _EXE_stage_io_result;	// @[playground/src/SimTop.scala:41:25]
   wire        _EXE_stage_io_sram_valid;	// @[playground/src/SimTop.scala:41:25]
@@ -61,9 +57,17 @@ module SimTop(	// @[<stdin>:649:3]
         $fwrite(32'h80000002, "%x ", nextpc);	// @[playground/src/SimTop.scala:13:35, :51:9]
     end // always @(posedge)
   `endif // not def SYNTHESIS
+  wire [31:0] Imm;	// @[playground/src/SimTop.scala:11:35]
+  wire        is_not_jalr;	// @[playground/src/SimTop.scala:14:35]
+  wire        is_jump;	// @[playground/src/SimTop.scala:15:35]
+  wire [31:0] jalr_taget;	// @[playground/src/SimTop.scala:16:35]
   IF_stage IF_stage (	// @[playground/src/SimTop.scala:21:24]
     .clock          (clock),
     .reset          (reset),
+    .io_jalr_taget  (jalr_taget),	// @[playground/src/SimTop.scala:16:35]
+    .io_is_not_jalr (is_not_jalr),	// @[playground/src/SimTop.scala:14:35]
+    .io_is_jump     (is_jump),	// @[playground/src/SimTop.scala:15:35]
+    .io_Imm         (Imm),	// @[playground/src/SimTop.scala:11:35]
     .io_pc          (pc),
     .io_nextpc      (nextpc),
     .io_f_dbus_snpc (_IF_stage_io_f_dbus_snpc)
@@ -158,6 +162,6 @@ module SimTop(	// @[<stdin>:649:3]
     .inst       (inst),
     .rdata      (sram_rdata)
   );
-  assign io_result = _EXE_stage_io_result;	// @[<stdin>:649:3, playground/src/SimTop.scala:41:25]
+  assign io_result = _EXE_stage_io_result;	// @[<stdin>:641:3, playground/src/SimTop.scala:41:25]
 endmodule
 

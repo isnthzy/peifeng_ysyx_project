@@ -10,9 +10,9 @@
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
 
-module EXE_stage(	// @[<stdin>:580:3]
-  input         clock,	// @[<stdin>:581:11]
-                reset,	// @[<stdin>:582:11]
+module EXE_stage(	// @[<stdin>:572:3]
+  input         clock,	// @[<stdin>:573:11]
+                reset,	// @[<stdin>:574:11]
                 io_d_ebus_is_ebreak,	// @[playground/src/EXE_stage.scala:4:12]
                 io_d_ebus_data_wen,	// @[playground/src/EXE_stage.scala:4:12]
                 io_d_ebus_result_is_imm,	// @[playground/src/EXE_stage.scala:4:12]
@@ -91,11 +91,11 @@ module EXE_stage(	// @[<stdin>:580:3]
     .io_sign   (io_d_ebus_src_is_sign),
     .io_result (_alu_io_result)
   );
-  assign io_result = _io_result_output;	// @[<stdin>:580:3, playground/src/EXE_stage.scala:36:17]
-  assign io_jalr_taget = {_jalr_tmp_T[31:1], 1'h0};	// @[<stdin>:580:3, playground/src/EXE_stage.scala:14:12, :38:29, :39:{21,30}]
-  assign io_sram_valid = io_d_ebus_sram_valid;	// @[<stdin>:580:3]
-  assign io_sram_wen = io_d_ebus_sram_wen;	// @[<stdin>:580:3]
-  assign io_sram_wdata = {27'h0, io_d_ebus_src2};	// @[<stdin>:580:3, playground/src/EXE_stage.scala:43:16]
-  assign io_sram_wmask = io_d_ebus_wmask;	// @[<stdin>:580:3]
+  assign io_result = _io_result_output;	// @[<stdin>:572:3, playground/src/EXE_stage.scala:36:17]
+  assign io_jalr_taget = {_jalr_tmp_T[31:1], 1'h0};	// @[<stdin>:572:3, playground/src/EXE_stage.scala:14:12, :38:29, :39:{21,30}]
+  assign io_sram_valid = io_d_ebus_sram_valid;	// @[<stdin>:572:3]
+  assign io_sram_wen = io_d_ebus_sram_wen;	// @[<stdin>:572:3]
+  assign io_sram_wdata = {27'h0, io_d_ebus_src2};	// @[<stdin>:572:3, playground/src/EXE_stage.scala:43:16]
+  assign io_sram_wmask = io_d_ebus_wmask;	// @[<stdin>:572:3]
 endmodule
 
