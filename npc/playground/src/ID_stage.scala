@@ -82,7 +82,7 @@ class ID_stage extends Module{
   //   Inst_inv :=io.inst.asUInt =/=0.U &IsaB.asUInt===0.U & IsaI.asUInt===0.U & IsaR.asUInt===0.U & IsaS.asUInt===0.U & IsaU.asUInt===0.U//inv ->inst not valid
   // }
   Inst_inv:=0.U
-  IsaI.ebreak:=(io.inst===BitPat("b0000000 00001 00000 000 00000 11100 11"))
+  // IsaI.ebreak:=(io.inst===BitPat("b0000000 00001 00000 000 00000 11100 11"))
   //ebreak的过程->为达到取出a0 (reg[10])号寄存器的目的， 把rs1取10，rs2取0 加起来，交给regfile取
   IsaI.ebreak:=0.U
 

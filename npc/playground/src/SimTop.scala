@@ -43,7 +43,7 @@ class SimTop extends Module {
   jalr_taget:=EXE_stage.io.jalr_taget
   io.result:=EXE_stage.io.result
 
-  // EXE_stage.io.d_ebus:=ID_stage.io.d_ebus
+  EXE_stage.io.d_ebus:=ID_stage.io.d_ebus
   
 // WB begin
 }
