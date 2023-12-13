@@ -91,8 +91,7 @@ class id_to_es_bus extends Bundle{
   val src1=UInt(5.W)
   val src2=UInt(5.W)
   val rd=UInt(5.W)
-  val alu_op=UInt(12.W)
-  // val alu_op=Vec(12, Bool())
+  val alu_op=Vec(12, Bool())
 }
 
 object Sext{ //有符号位宽扩展
