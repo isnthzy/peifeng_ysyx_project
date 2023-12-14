@@ -29,7 +29,6 @@ paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 static void out_of_bound(paddr_t addr) {
   IFDEF(CONFIG_ITRACE,putIringbuf()); 
-  printf("131312313123");
   panic("(npc)address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
       addr, PMEM_LEFT, PMEM_RIGHT,cpu.pc);
 }
@@ -74,6 +73,7 @@ void paddr_write(paddr_t addr, int len, word_t data) {
   Log("w: 0x%x data:0x%08x",addr,data);
   #endif
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
+  printf("131312313123");
   // IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
   out_of_bound(addr);
 }
