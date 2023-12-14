@@ -59,8 +59,8 @@ module RegFile(	// @[<stdin>:469:3]
   `ifndef SYNTHESIS	// @[playground/src/RegFile.scala:17:9]
     always @(posedge clock) begin	// @[playground/src/RegFile.scala:17:9]
       if ((`PRINTF_COND_) & ~reset) begin	// @[playground/src/RegFile.scala:17:9, :18:9]
-        $fwrite(32'h80000002, "%x %x", io_waddr, (|io_waddr) ? io_wdata : 32'h0);	// @[playground/src/RegFile.scala:14:25, :15:{16,25}, :17:9]
-        $fwrite(32'h80000002, "rf_1 %x ,rf_2 %x", rf_1, rf_2);	// @[playground/src/RegFile.scala:14:17, :17:9, :18:9]
+        $fwrite(32'h80000002, "%x %x\n", io_waddr, (|io_waddr) ? io_wdata : 32'h0);	// @[playground/src/RegFile.scala:14:25, :15:{16,25}, :17:9]
+        $fwrite(32'h80000002, "rf_1 %x ,rf_2 %x\n", rf_1, rf_2);	// @[playground/src/RegFile.scala:14:17, :17:9, :18:9]
       end
     end // always @(posedge)
   `endif // not def SYNTHESIS
