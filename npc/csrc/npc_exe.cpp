@@ -60,9 +60,9 @@ extern "C" void get_pc(int pc,int nextpc){
 }
 
 //----------------------------dpi-c----------------------------
-void npc_abort(){
+void npc_end(){
   npc_state.halt_pc=cpu.pc;
-  npc_state.state=NPC_ABORT;
+  npc_state.state=NPC_END;
 }
 
 
