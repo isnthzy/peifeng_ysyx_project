@@ -15,9 +15,10 @@ module RegFile(	// @[<stdin>:469:3]
     reg [31:0] rf [31:0];
 
     always @(posedge clock) begin
+
         if (io_wen) begin
             rf[io_waddr] <= io_wdata;
-            //$display("waddr = %h, wdata = %h", waddr, wdata);
+            $display("waddr = %h, wdata = %h", io_waddr, io_wdata);
         end
     end
     
