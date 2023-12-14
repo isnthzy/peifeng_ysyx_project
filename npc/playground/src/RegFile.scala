@@ -13,19 +13,7 @@ class RegFile extends Module{
   })
   val rf=RegInit(VecInit(Seq.fill(32)(0.U(32.W))))
   val wdata=Mux(io.waddr===0.U,0.U,io.wdata)
-  when(io.waddr===1.U){
-    printf("is 1?")
-    rf(1):=wdata 
-  }
-  when(io.waddr===2.U){
-    rf(3):=wdata 
-  }
-  when(io.wen){ 
-    // rf(io.waddr):=wdata 
-    printf("waddr= %x wdata= %x\n",io.waddr,wdata)
-    printf("rf_1 %x ,rf_2 %x,rf_3 %x\n",rf(1),rf(2),rf(3))
-  }
-  
+  when(io.wen){ rf(io.waddr):=wdata }
   io.rdata1:=Mux(io.raddr1=/=0.U,rf(io.raddr1),0.U)
   io.rdata2:=Mux(io.raddr2=/=0.U,rf(io.raddr2),0.U)
 }
