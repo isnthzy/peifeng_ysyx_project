@@ -14,6 +14,6 @@ class RegFile extends Module{
   val rf=RegInit(VecInit(Seq.fill(32)(0.U(32.W))))
   val wdata=Mux(io.waddr===0.U,0.U,io.wdata)
   when(io.wen){ rf(io.waddr):=wdata }
-  io.rdata1:=Mux(io.raddr1=/=0.U,rf(io.raddr1),0.U)
-  io.rdata2:=Mux(io.raddr2=/=0.U,rf(io.raddr2),0.U)
+  io.rdata1:=rf(io.raddr1)
+  io.rdata2:=rf(io.raddr2)
 }
