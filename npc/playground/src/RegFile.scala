@@ -15,7 +15,7 @@ class RegFile extends Module{
   val wdata=Mux(io.waddr===0.U,0.U,io.wdata)
   when(io.wen){ rf(io.waddr):=wdata }
   printf("%x %x\n",io.waddr,wdata)
-  printf("rf_1 %x ,rf_2 %x\n",rf(1),rf(2))
+  printf("wen %x rf_1 %x ,rf_2 %x\n",io.wen,rf(1),rf(2))
   io.rdata1:=Mux(io.raddr1=/=0.U,rf(io.raddr1),0.U)
   io.rdata2:=Mux(io.raddr2=/=0.U,rf(io.raddr2),0.U)
 }
