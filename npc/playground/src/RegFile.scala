@@ -17,7 +17,7 @@ class RegFile extends Module{
     rf(1):=wdata 
   }
   when(io.waddr===2.U){
-    rf(2):=wdata 
+    rf(3):=wdata 
   }
   when(io.wen){ 
     // rf(io.waddr):=wdata 
