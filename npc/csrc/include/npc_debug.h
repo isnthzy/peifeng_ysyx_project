@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include "npc_common.h"
 #include "npc_utils.h"
-extern void npc_end();
+extern void npc_quit();
 
 #define Log(format, ...) \
     _Log(ANSI_FMT("[%s:%d %s] " format, ANSI_FG_BLUE) "\n", \
@@ -36,7 +36,7 @@ extern void npc_end();
       MUXDEF(CONFIG_TARGET_AM, printf(ANSI_FMT(format, ANSI_FG_RED) "\n", ## __VA_ARGS__), \
         (fflush(stdout), fprintf(stderr, ANSI_FMT(format, ANSI_FG_RED) "\n", ##  __VA_ARGS__))); \
       IFNDEF(CONFIG_TARGET_AM, extern FILE* log_fp; fflush(log_fp)); \
-      npc_end(); \
+      npc_quit(); \
       /* assert(cond); */ \
     } \
   } while (0)
