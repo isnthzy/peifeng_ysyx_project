@@ -14,7 +14,7 @@ class RegFile extends Module{
   val rf=RegInit(VecInit(Seq.fill(32)(0.U(32.W))))
   val wdata=Mux(io.waddr===0.U,0.U,io.wdata)
   when(io.wen){ rf(io.waddr):=wdata 
-    printf("waddr=%x wdata=%x\n",io.wen,io.waddr,wdata)
+    printf("waddr= %x wdata= %x\n",io.wen,io.waddr,wdata)
     printf("rf_1 %x ,rf_2 %x\n",rf(1),rf(2))
   }
   
