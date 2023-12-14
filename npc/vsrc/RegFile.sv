@@ -22,155 +22,158 @@ module RegFile(	// @[<stdin>:469:3]
                 io_rdata2	// @[playground/src/RegFile.scala:5:12]
 );
 
-  reg  [31:0] casez_tmp;	// @[playground/src/RegFile.scala:28:17]
-  reg  [31:0] casez_tmp_0;	// @[playground/src/RegFile.scala:29:17]
+  reg  [31:0] casez_tmp;	// @[playground/src/RegFile.scala:29:17]
+  reg  [31:0] casez_tmp_0;	// @[playground/src/RegFile.scala:30:17]
   reg  [31:0] rf_1;	// @[playground/src/RegFile.scala:14:17]
   reg  [31:0] rf_3;	// @[playground/src/RegFile.scala:14:17]
   wire        _wdata_T = io_waddr == 5'h0;	// @[playground/src/RegFile.scala:15:25]
-  `ifndef SYNTHESIS	// @[playground/src/RegFile.scala:24:11]
-    always @(posedge clock) begin	// @[playground/src/RegFile.scala:24:11]
-      if ((`PRINTF_COND_) & io_wen & ~reset) begin	// @[playground/src/RegFile.scala:24:11, :25:11]
+  wire        _GEN = io_waddr == 5'h1;	// @[playground/src/RegFile.scala:16:16]
+  `ifndef SYNTHESIS	// @[playground/src/RegFile.scala:17:11]
+    always @(posedge clock) begin	// @[playground/src/RegFile.scala:17:11]
+      if ((`PRINTF_COND_) & _GEN & ~reset)	// @[playground/src/RegFile.scala:16:16, :17:11]
+        $fwrite(32'h80000002, "is 1?");	// @[playground/src/RegFile.scala:17:11]
+      if ((`PRINTF_COND_) & io_wen & ~reset) begin	// @[playground/src/RegFile.scala:17:11, :25:11, :26:11]
         $fwrite(32'h80000002, "waddr= %x wdata= %x\n", io_waddr,
-                _wdata_T ? 32'h0 : io_wdata);	// @[playground/src/RegFile.scala:14:25, :15:{16,25}, :24:11]
-        $fwrite(32'h80000002, "rf_1 %x ,rf_2 %x,rf_3 %x\n", rf_1, 32'h0, rf_3);	// @[playground/src/RegFile.scala:14:{17,25}, :24:11, :25:11]
+                _wdata_T ? 32'h0 : io_wdata);	// @[playground/src/RegFile.scala:14:25, :15:{16,25}, :17:11, :25:11]
+        $fwrite(32'h80000002, "rf_1 %x ,rf_2 %x,rf_3 %x\n", rf_1, 32'h0, rf_3);	// @[playground/src/RegFile.scala:14:{17,25}, :17:11, :26:11]
       end
     end // always @(posedge)
   `endif // not def SYNTHESIS
-  always_comb begin	// @[playground/src/RegFile.scala:28:17]
-    casez (io_raddr1)	// @[playground/src/RegFile.scala:28:17]
+  always_comb begin	// @[playground/src/RegFile.scala:29:17]
+    casez (io_raddr1)	// @[playground/src/RegFile.scala:29:17]
       5'b00000:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b00001:
-        casez_tmp = rf_1;	// @[playground/src/RegFile.scala:14:17, :28:17]
+        casez_tmp = rf_1;	// @[playground/src/RegFile.scala:14:17, :29:17]
       5'b00010:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b00011:
-        casez_tmp = rf_3;	// @[playground/src/RegFile.scala:14:17, :28:17]
+        casez_tmp = rf_3;	// @[playground/src/RegFile.scala:14:17, :29:17]
       5'b00100:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b00101:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b00110:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b00111:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b01000:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b01001:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b01010:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b01011:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b01100:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b01101:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b01110:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b01111:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b10000:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b10001:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b10010:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b10011:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b10100:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b10101:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b10110:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b10111:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b11000:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b11001:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b11010:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b11011:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b11100:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b11101:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b11110:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       default:
-        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
-    endcase	// @[playground/src/RegFile.scala:28:17]
+        casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
+    endcase	// @[playground/src/RegFile.scala:29:17]
   end // always_comb
-  always_comb begin	// @[playground/src/RegFile.scala:28:17]
-    casez (io_raddr2)	// @[playground/src/RegFile.scala:28:17]
+  always_comb begin	// @[playground/src/RegFile.scala:29:17]
+    casez (io_raddr2)	// @[playground/src/RegFile.scala:29:17]
       5'b00000:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b00001:
-        casez_tmp_0 = rf_1;	// @[playground/src/RegFile.scala:14:17, :28:17]
+        casez_tmp_0 = rf_1;	// @[playground/src/RegFile.scala:14:17, :29:17]
       5'b00010:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b00011:
-        casez_tmp_0 = rf_3;	// @[playground/src/RegFile.scala:14:17, :28:17]
+        casez_tmp_0 = rf_3;	// @[playground/src/RegFile.scala:14:17, :29:17]
       5'b00100:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b00101:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b00110:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b00111:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b01000:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b01001:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b01010:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b01011:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b01100:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b01101:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b01110:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b01111:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b10000:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b10001:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b10010:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b10011:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b10100:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b10101:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b10110:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b10111:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b11000:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b11001:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b11010:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b11011:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b11100:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b11101:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       5'b11110:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
       default:
-        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
-    endcase	// @[playground/src/RegFile.scala:28:17]
+        casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :29:17]
+    endcase	// @[playground/src/RegFile.scala:29:17]
   end // always_comb
   always @(posedge clock) begin	// @[<stdin>:470:11]
     if (reset) begin	// @[<stdin>:470:11]
@@ -178,13 +181,13 @@ module RegFile(	// @[<stdin>:469:3]
       rf_3 <= 32'h0;	// @[playground/src/RegFile.scala:14:{17,25}]
     end
     else begin	// @[<stdin>:470:11]
-      if (io_waddr == 5'h1) begin	// @[playground/src/RegFile.scala:16:16]
+      if (_GEN) begin	// @[playground/src/RegFile.scala:16:16]
         if (_wdata_T)	// @[playground/src/RegFile.scala:15:25]
           rf_1 <= 32'h0;	// @[playground/src/RegFile.scala:14:{17,25}]
         else	// @[playground/src/RegFile.scala:15:25]
           rf_1 <= io_wdata;	// @[playground/src/RegFile.scala:14:17]
       end
-      if (io_waddr == 5'h2) begin	// @[playground/src/RegFile.scala:19:16]
+      if (io_waddr == 5'h2) begin	// @[playground/src/RegFile.scala:20:16]
         if (_wdata_T)	// @[playground/src/RegFile.scala:15:25]
           rf_3 <= 32'h0;	// @[playground/src/RegFile.scala:14:{17,25}]
         else	// @[playground/src/RegFile.scala:15:25]
@@ -192,7 +195,7 @@ module RegFile(	// @[<stdin>:469:3]
       end
     end
   end // always @(posedge)
-  assign io_rdata1 = (|io_raddr1) ? casez_tmp : 32'h0;	// @[<stdin>:469:3, playground/src/RegFile.scala:14:25, :28:{17,27}]
-  assign io_rdata2 = (|io_raddr2) ? casez_tmp_0 : 32'h0;	// @[<stdin>:469:3, playground/src/RegFile.scala:14:25, :29:{17,27}]
+  assign io_rdata1 = (|io_raddr1) ? casez_tmp : 32'h0;	// @[<stdin>:469:3, playground/src/RegFile.scala:14:25, :29:{17,27}]
+  assign io_rdata2 = (|io_raddr2) ? casez_tmp_0 : 32'h0;	// @[<stdin>:469:3, playground/src/RegFile.scala:14:25, :30:{17,27}]
 endmodule
 
