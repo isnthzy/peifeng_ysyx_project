@@ -59,6 +59,7 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
 //----------------------------dpi-c----------------------------
 
 word_t paddr_read(paddr_t addr, int len) {
+  printf("paddr_read");
   #ifdef CONFIG_MTRACE
   // if(model==1) Log(" r: 0x%x data:0x%08x",addr,pmem_read(addr, len));
   #endif
@@ -69,6 +70,7 @@ word_t paddr_read(paddr_t addr, int len) {
 }
 
 void paddr_write(paddr_t addr, int len, word_t data) {
+  printf("paddr_write");
   #ifdef CONFIG_MTRACE
   Log("w: 0x%x data:0x%08x",addr,data);
   #endif
