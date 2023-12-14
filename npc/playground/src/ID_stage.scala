@@ -130,7 +130,7 @@ class ID_stage extends Module {
   //sub减法
   io.d_ebus.alu_op(2) := IsaI.andi | IsaR.and
   //and &&
-  io.d_ebus.alu_op(3) := IsaI.ori | IsaR.or
+  io.d_ebus.alu_op(3) := IsaI.ori  | IsaR.or
   //or  ||
   io.d_ebus.alu_op(4) := IsaI.xori | IsaR.xor
   //xor ^
