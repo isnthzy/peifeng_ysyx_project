@@ -17,8 +17,8 @@ module RegFile(	// @[<stdin>:469:3]
   assign wdata_muxed = (io_waddr == 5'b00000) ? 32'h00000000 : io_wdata;
   
   always @(posedge clock or posedge reset) begin
+    $display("%d waddr = %h, wdata = %h",io_wen,io_waddr,io_wdata);
     if (io_wen)
-     $display("waddr = %h, wdata = %h",io_waddr,io_wdata);
       rf[io_waddr] <= wdata_muxed;
   end
   
