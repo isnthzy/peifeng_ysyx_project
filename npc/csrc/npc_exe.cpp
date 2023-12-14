@@ -30,7 +30,6 @@ extern "C" void sim_break(int pc,int ret_reg){
   npc_state.state=NPC_END;
 }
 extern "C" void inv_break(int nextpc){
-  printf("????");
   npc_state.halt_pc=nextpc;
   npc_state.state=NPC_ABORT;
 }
@@ -61,6 +60,12 @@ extern "C" void get_pc(int pc,int nextpc){
 }
 
 //----------------------------dpi-c----------------------------
+void npc_abort(){
+  npc_state.halt_pc=cpu.pc;
+  npc_state.state=NPC_ABORT;
+}
+
+
 
 static void statistic() {
   IFNDEF(CONFIG_TARGET_AM, setlocale(LC_NUMERIC, ""));

@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include "npc_common.h"
 #include "npc_utils.h"
+extern void npc_abort();
 
 #define Log(format, ...) \
     _Log(ANSI_FMT("[%s:%d %s] " format, ANSI_FG_BLUE) "\n", \
@@ -37,7 +38,8 @@
       IFNDEF(CONFIG_TARGET_AM, extern FILE* log_fp; fflush(log_fp)); \
       extern void assert_fail_msg(); \
       assert_fail_msg(); \
-      assert(cond); \
+      npc_abort(); \
+      /* assert(cond); */ \
     } \
   } while (0)
 
