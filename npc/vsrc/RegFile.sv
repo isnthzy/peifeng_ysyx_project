@@ -25,14 +25,14 @@ module RegFile(	// @[<stdin>:469:3]
   reg  [31:0] casez_tmp;	// @[playground/src/RegFile.scala:28:17]
   reg  [31:0] casez_tmp_0;	// @[playground/src/RegFile.scala:29:17]
   reg  [31:0] rf_1;	// @[playground/src/RegFile.scala:14:17]
-  reg  [31:0] rf_2;	// @[playground/src/RegFile.scala:14:17]
+  reg  [31:0] rf_3;	// @[playground/src/RegFile.scala:14:17]
   wire        _wdata_T = io_waddr == 5'h0;	// @[playground/src/RegFile.scala:15:25]
   `ifndef SYNTHESIS	// @[playground/src/RegFile.scala:24:11]
     always @(posedge clock) begin	// @[playground/src/RegFile.scala:24:11]
       if ((`PRINTF_COND_) & io_wen & ~reset) begin	// @[playground/src/RegFile.scala:24:11, :25:11]
         $fwrite(32'h80000002, "waddr= %x wdata= %x\n", io_waddr,
                 _wdata_T ? 32'h0 : io_wdata);	// @[playground/src/RegFile.scala:14:25, :15:{16,25}, :24:11]
-        $fwrite(32'h80000002, "rf_1 %x ,rf_2 %x\n", rf_1, rf_2);	// @[playground/src/RegFile.scala:14:17, :24:11, :25:11]
+        $fwrite(32'h80000002, "rf_1 %x ,rf_2 %x,rf_3 %x\n", rf_1, 32'h0, rf_3);	// @[playground/src/RegFile.scala:14:{17,25}, :24:11, :25:11]
       end
     end // always @(posedge)
   `endif // not def SYNTHESIS
@@ -43,9 +43,9 @@ module RegFile(	// @[<stdin>:469:3]
       5'b00001:
         casez_tmp = rf_1;	// @[playground/src/RegFile.scala:14:17, :28:17]
       5'b00010:
-        casez_tmp = rf_2;	// @[playground/src/RegFile.scala:14:17, :28:17]
-      5'b00011:
         casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+      5'b00011:
+        casez_tmp = rf_3;	// @[playground/src/RegFile.scala:14:17, :28:17]
       5'b00100:
         casez_tmp = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
       5'b00101:
@@ -111,9 +111,9 @@ module RegFile(	// @[<stdin>:469:3]
       5'b00001:
         casez_tmp_0 = rf_1;	// @[playground/src/RegFile.scala:14:17, :28:17]
       5'b00010:
-        casez_tmp_0 = rf_2;	// @[playground/src/RegFile.scala:14:17, :28:17]
-      5'b00011:
         casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
+      5'b00011:
+        casez_tmp_0 = rf_3;	// @[playground/src/RegFile.scala:14:17, :28:17]
       5'b00100:
         casez_tmp_0 = 32'h0;	// @[playground/src/RegFile.scala:14:25, :28:17]
       5'b00101:
@@ -175,7 +175,7 @@ module RegFile(	// @[<stdin>:469:3]
   always @(posedge clock) begin	// @[<stdin>:470:11]
     if (reset) begin	// @[<stdin>:470:11]
       rf_1 <= 32'h0;	// @[playground/src/RegFile.scala:14:{17,25}]
-      rf_2 <= 32'h0;	// @[playground/src/RegFile.scala:14:{17,25}]
+      rf_3 <= 32'h0;	// @[playground/src/RegFile.scala:14:{17,25}]
     end
     else begin	// @[<stdin>:470:11]
       if (io_waddr == 5'h1) begin	// @[playground/src/RegFile.scala:16:16]
@@ -186,9 +186,9 @@ module RegFile(	// @[<stdin>:469:3]
       end
       if (io_waddr == 5'h2) begin	// @[playground/src/RegFile.scala:19:16]
         if (_wdata_T)	// @[playground/src/RegFile.scala:15:25]
-          rf_2 <= 32'h0;	// @[playground/src/RegFile.scala:14:{17,25}]
+          rf_3 <= 32'h0;	// @[playground/src/RegFile.scala:14:{17,25}]
         else	// @[playground/src/RegFile.scala:15:25]
-          rf_2 <= io_wdata;	// @[playground/src/RegFile.scala:14:17]
+          rf_3 <= io_wdata;	// @[playground/src/RegFile.scala:14:17]
       end
     end
   end // always @(posedge)
