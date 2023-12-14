@@ -22,7 +22,7 @@ class RegFile extends Module{
   when(io.wen){ 
     // rf(io.waddr):=wdata 
     printf("waddr= %x wdata= %x\n",io.waddr,wdata)
-    printf("rf_1 %x ,rf_2 %x\n",rf(1),rf(2))
+    printf("rf_1 %x ,rf_2 %x,rf_3 %x\n",rf(1),rf(2),rf(3))
   }
   
   io.rdata1:=Mux(io.raddr1=/=0.U,rf(io.raddr1),0.U)
