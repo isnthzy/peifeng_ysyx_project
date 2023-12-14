@@ -11,8 +11,8 @@ module RegFile(	// @[<stdin>:469:3]
                 io_rdata2	// @[playground/src/RegFile.scala:5:12]
 );
 
-  reg [31:0] casez_tmp;	// @[playground/src/RegFile.scala:17:12]
-  reg [31:0] casez_tmp_0;	// @[playground/src/RegFile.scala:18:12]
+  reg [31:0] casez_tmp;	// @[playground/src/RegFile.scala:17:17]
+  reg [31:0] casez_tmp_0;	// @[playground/src/RegFile.scala:18:17]
   reg [31:0] rf_0;	// @[playground/src/RegFile.scala:14:17]
   reg [31:0] rf_1;	// @[playground/src/RegFile.scala:14:17]
   reg [31:0] rf_2;	// @[playground/src/RegFile.scala:14:17]
@@ -45,141 +45,141 @@ module RegFile(	// @[<stdin>:469:3]
   reg [31:0] rf_29;	// @[playground/src/RegFile.scala:14:17]
   reg [31:0] rf_30;	// @[playground/src/RegFile.scala:14:17]
   reg [31:0] rf_31;	// @[playground/src/RegFile.scala:14:17]
-  always_comb begin	// @[playground/src/RegFile.scala:17:12]
-    casez (io_raddr1)	// @[playground/src/RegFile.scala:17:12]
+  always_comb begin	// @[playground/src/RegFile.scala:17:17]
+    casez (io_raddr1)	// @[playground/src/RegFile.scala:17:17]
       5'b00000:
-        casez_tmp = rf_0;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_0;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b00001:
-        casez_tmp = rf_1;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_1;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b00010:
-        casez_tmp = rf_2;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_2;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b00011:
-        casez_tmp = rf_3;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_3;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b00100:
-        casez_tmp = rf_4;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_4;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b00101:
-        casez_tmp = rf_5;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_5;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b00110:
-        casez_tmp = rf_6;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_6;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b00111:
-        casez_tmp = rf_7;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_7;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b01000:
-        casez_tmp = rf_8;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_8;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b01001:
-        casez_tmp = rf_9;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_9;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b01010:
-        casez_tmp = rf_10;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_10;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b01011:
-        casez_tmp = rf_11;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_11;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b01100:
-        casez_tmp = rf_12;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_12;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b01101:
-        casez_tmp = rf_13;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_13;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b01110:
-        casez_tmp = rf_14;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_14;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b01111:
-        casez_tmp = rf_15;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_15;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b10000:
-        casez_tmp = rf_16;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_16;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b10001:
-        casez_tmp = rf_17;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_17;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b10010:
-        casez_tmp = rf_18;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_18;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b10011:
-        casez_tmp = rf_19;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_19;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b10100:
-        casez_tmp = rf_20;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_20;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b10101:
-        casez_tmp = rf_21;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_21;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b10110:
-        casez_tmp = rf_22;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_22;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b10111:
-        casez_tmp = rf_23;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_23;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b11000:
-        casez_tmp = rf_24;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_24;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b11001:
-        casez_tmp = rf_25;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_25;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b11010:
-        casez_tmp = rf_26;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_26;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b11011:
-        casez_tmp = rf_27;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_27;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b11100:
-        casez_tmp = rf_28;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_28;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b11101:
-        casez_tmp = rf_29;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_29;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b11110:
-        casez_tmp = rf_30;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp = rf_30;	// @[playground/src/RegFile.scala:14:17, :17:17]
       default:
-        casez_tmp = rf_31;	// @[playground/src/RegFile.scala:14:17, :17:12]
-    endcase	// @[playground/src/RegFile.scala:17:12]
+        casez_tmp = rf_31;	// @[playground/src/RegFile.scala:14:17, :17:17]
+    endcase	// @[playground/src/RegFile.scala:17:17]
   end // always_comb
-  always_comb begin	// @[playground/src/RegFile.scala:17:12]
-    casez (io_raddr2)	// @[playground/src/RegFile.scala:17:12]
+  always_comb begin	// @[playground/src/RegFile.scala:17:17]
+    casez (io_raddr2)	// @[playground/src/RegFile.scala:17:17]
       5'b00000:
-        casez_tmp_0 = rf_0;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_0;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b00001:
-        casez_tmp_0 = rf_1;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_1;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b00010:
-        casez_tmp_0 = rf_2;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_2;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b00011:
-        casez_tmp_0 = rf_3;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_3;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b00100:
-        casez_tmp_0 = rf_4;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_4;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b00101:
-        casez_tmp_0 = rf_5;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_5;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b00110:
-        casez_tmp_0 = rf_6;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_6;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b00111:
-        casez_tmp_0 = rf_7;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_7;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b01000:
-        casez_tmp_0 = rf_8;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_8;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b01001:
-        casez_tmp_0 = rf_9;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_9;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b01010:
-        casez_tmp_0 = rf_10;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_10;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b01011:
-        casez_tmp_0 = rf_11;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_11;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b01100:
-        casez_tmp_0 = rf_12;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_12;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b01101:
-        casez_tmp_0 = rf_13;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_13;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b01110:
-        casez_tmp_0 = rf_14;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_14;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b01111:
-        casez_tmp_0 = rf_15;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_15;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b10000:
-        casez_tmp_0 = rf_16;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_16;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b10001:
-        casez_tmp_0 = rf_17;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_17;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b10010:
-        casez_tmp_0 = rf_18;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_18;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b10011:
-        casez_tmp_0 = rf_19;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_19;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b10100:
-        casez_tmp_0 = rf_20;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_20;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b10101:
-        casez_tmp_0 = rf_21;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_21;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b10110:
-        casez_tmp_0 = rf_22;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_22;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b10111:
-        casez_tmp_0 = rf_23;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_23;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b11000:
-        casez_tmp_0 = rf_24;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_24;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b11001:
-        casez_tmp_0 = rf_25;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_25;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b11010:
-        casez_tmp_0 = rf_26;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_26;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b11011:
-        casez_tmp_0 = rf_27;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_27;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b11100:
-        casez_tmp_0 = rf_28;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_28;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b11101:
-        casez_tmp_0 = rf_29;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_29;	// @[playground/src/RegFile.scala:14:17, :17:17]
       5'b11110:
-        casez_tmp_0 = rf_30;	// @[playground/src/RegFile.scala:14:17, :17:12]
+        casez_tmp_0 = rf_30;	// @[playground/src/RegFile.scala:14:17, :17:17]
       default:
-        casez_tmp_0 = rf_31;	// @[playground/src/RegFile.scala:14:17, :17:12]
-    endcase	// @[playground/src/RegFile.scala:17:12]
+        casez_tmp_0 = rf_31;	// @[playground/src/RegFile.scala:14:17, :17:17]
+    endcase	// @[playground/src/RegFile.scala:17:17]
   end // always_comb
   always @(posedge clock) begin	// @[<stdin>:470:11]
     if (reset) begin	// @[<stdin>:470:11]
@@ -411,7 +411,7 @@ module RegFile(	// @[<stdin>:469:3]
       end
     end
   end // always @(posedge)
-  assign io_rdata1 = casez_tmp;	// @[<stdin>:469:3, playground/src/RegFile.scala:17:12]
-  assign io_rdata2 = casez_tmp_0;	// @[<stdin>:469:3, playground/src/RegFile.scala:18:12]
+  assign io_rdata1 = (|io_raddr1) ? casez_tmp : 32'h0;	// @[<stdin>:469:3, playground/src/RegFile.scala:14:25, :17:{17,27}]
+  assign io_rdata2 = (|io_raddr2) ? casez_tmp_0 : 32'h0;	// @[<stdin>:469:3, playground/src/RegFile.scala:14:25, :18:{17,27}]
 endmodule
 
