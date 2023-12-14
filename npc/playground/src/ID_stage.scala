@@ -96,11 +96,11 @@ class ID_stage extends Module {
     )
   )
   io.d_ebus.imm := io.Imm
-  io.d_ebus.data_wen := (IsaI.addi | IsaR.add | IsaI.andi | IsaR.and | IsaU.lui
-    | IsaR.slt | IsaR.sltu | IsaR.sub | IsaI.ori | IsaR.or
-    | IsaI.xori | IsaR.xor | IsaI.jalr | IsaU.jal | IsaU.auipc
-    | IsaI.slti | IsaI.sltiu | IsaI.slli | IsaI.srai | IsaI.srli
-    | IsaR.slt | IsaR.sltu | IsaR.sll | IsaR.sra | IsaR.srl)
+  io.d_ebus.data_wen :=(IsaI.addi | IsaR.add | IsaI.andi | IsaR.and | IsaU.lui
+                      | IsaR.slt | IsaR.sltu | IsaR.sub | IsaI.ori | IsaR.or
+                      | IsaI.xori | IsaR.xor | IsaI.jalr | IsaU.jal | IsaU.auipc
+                      | IsaI.slti | IsaI.sltiu | IsaI.slli | IsaI.srai | IsaI.srli
+                      | IsaR.slt  | IsaR.sltu | IsaR.sll | IsaR.sra | IsaR.srl)
   io.d_ebus.result_is_imm  := IsaU.lui
   io.d_ebus.result_is_snpc := IsaU.jal | IsaI.jalr
   io.d_ebus.src_is_sign    := IsaI.srai | IsaR.sra | IsaR.slt | IsaB.blt | IsaB.bltu
