@@ -11,18 +11,18 @@ module RegFile(	// @[<stdin>:469:3]
   output [31:0] io_rdata1,	// @[playground/src/RegFile.scala:5:12]
                 io_rdata2	// @[playground/src/RegFile.scala:5:12]
 );
-
-    reg [31:0] rf [31:0];
-
-    always @(posedge clock) begin
-
-        if (io_wen) begin
-            rf[io_waddr] <= io_wdata;
-            $display("waddr = %h, wdata = %h", io_waddr, io_wdata);
-        end
-    end
-    
-    assign io_rdata1 = rf[io_raddr1];
-    assign io_rdata2 = rf[io_raddr2];    
-
+  reg [31:0] rf [0:31];
+  wire [31:0] wdata_muxed;
+  
+  assign wdata_muxed = (io_waddr == 5'b00000) ? 32'h00000000 : io_wdata;
+  
+  always @(posedge clock or posedge reset) begin
+    if (io_wen)
+     $display("waddr = %h, wdata = %h",io_waddr,io_wdata);
+      rf[io_waddr] <= wdata_muxed;
+  end
+  
+  assign io_rdata1 = (io_raddr1 != 5'b00000) ? rf[io_raddr1] : 32'h00000000;
+  assign io_rdata2 = (io_raddr2 != 5'b00000) ? rf[io_raddr2] : 32'h00000000;
+  
 endmodule
