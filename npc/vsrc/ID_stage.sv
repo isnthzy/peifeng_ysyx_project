@@ -109,7 +109,7 @@ module ID_stage(	// @[<stdin>:39:3]
               : _io_Imm_T == 5'h8
                   ? {{20{io_inst[31]}}, io_inst[31:25], io_inst[11:7]}
                   : _io_Imm_T == 5'h10 ? {{20{io_inst[31]}}, io_inst[31:20]} : 32'h0;	// @[playground/src/Bundle.scala:101:{10,15,37}, playground/src/ID_stage.scala:27:25, :28:{29,46}, :29:{21,42,54,71}, :30:{21,29}, :31:{42,59,72}, :89:{31,43}]
-  wire        _io_d_ebus_alu_op_0_T = IsaI_addi | IsaR_add;	// @[playground/src/ID_stage.scala:20:32, :21:32, :99:36]
+  wire        _io_d_ebus_alu_op_0_T = IsaI_addi | IsaR_add;	// @[playground/src/ID_stage.scala:20:32, :21:32, :99:35]
   wire        _singal_dpi_io_func_flag_T = IsaU_jal | IsaI_jalr;	// @[playground/src/ID_stage.scala:21:32, :24:32, :105:40]
   wire        _io_d_ebus_alu_op_7_T = IsaI_srai | IsaR_sra;	// @[playground/src/ID_stage.scala:20:32, :21:32, :106:41]
   wire        _io_d_ebus_sram_valid_output =
@@ -170,7 +170,7 @@ module ID_stage(	// @[<stdin>:39:3]
     _io_d_ebus_alu_op_0_T | IsaI_andi | IsaR_and | IsaU_lui | IsaR_slt | IsaR_sltu
     | IsaR_sub | IsaI_ori | IsaR_or | IsaI_xori | IsaR_xor | IsaI_jalr | IsaU_jal
     | IsaU_auipc | IsaI_slti | IsaI_sltiu | IsaI_slli | IsaI_srai | IsaI_srli | IsaR_sll
-    | IsaR_sra | IsaR_srl;	// @[<stdin>:39:3, playground/src/ID_stage.scala:20:32, :21:32, :24:32, :99:36, :103:50]
+    | IsaR_sra | IsaR_srl;	// @[<stdin>:39:3, playground/src/ID_stage.scala:20:32, :21:32, :24:32, :99:35, :103:69]
   assign io_d_ebus_result_is_imm = IsaU_lui;	// @[<stdin>:39:3, playground/src/ID_stage.scala:24:32]
   assign io_d_ebus_result_is_snpc = _singal_dpi_io_func_flag_T;	// @[<stdin>:39:3, playground/src/ID_stage.scala:105:40]
   assign io_d_ebus_src_is_sign = _io_d_ebus_alu_op_7_T | IsaR_slt | IsaB_blt | IsaB_bltu;	// @[<stdin>:39:3, playground/src/ID_stage.scala:20:32, :23:32, :106:{41,74}]
@@ -192,7 +192,7 @@ module ID_stage(	// @[<stdin>:39:3]
   assign io_d_ebus_rd = io_inst[11:7];	// @[<stdin>:39:3, playground/src/ID_stage.scala:28:46]
   assign io_d_ebus_alu_op_0 =
     _io_d_ebus_alu_op_0_T | IsaI_ebreak | IsaI_jalr | IsaU_auipc
-    | _io_d_ebus_sram_valid_output;	// @[<stdin>:39:3, playground/src/ID_stage.scala:21:32, :24:32, :99:36, :113:104, :127:25]
+    | _io_d_ebus_sram_valid_output;	// @[<stdin>:39:3, playground/src/ID_stage.scala:21:32, :24:32, :99:35, :113:104, :127:25]
   assign io_d_ebus_alu_op_1 = IsaR_sub;	// @[<stdin>:39:3, playground/src/ID_stage.scala:20:32]
   assign io_d_ebus_alu_op_2 = IsaI_andi | IsaR_and;	// @[<stdin>:39:3, playground/src/ID_stage.scala:20:32, :21:32, :131:36]
   assign io_d_ebus_alu_op_3 = IsaI_ori | IsaR_or;	// @[<stdin>:39:3, playground/src/ID_stage.scala:20:32, :21:32, :133:36]
