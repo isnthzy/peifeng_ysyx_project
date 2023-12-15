@@ -16,4 +16,17 @@ class RegFile extends Module{
   when(io.wen){ rf(io.waddr):=wdata }
   io.rdata1:=Mux(io.raddr1=/=0.U,rf(io.raddr1),0.U)
   io.rdata2:=Mux(io.raddr2=/=0.U,rf(io.raddr2),0.U)
+  val debug = Module(new debug())
+  debug.io.debug_1:=wdata
+  debug.io.debug_2:=io.waddr
+} 
+
+class debug extends BlackBox with HasBlackBoxPath {
+  val io = IO(new Bundle {
+    val clock       = Input(Clock())
+    val reset       = Input(Bool())
+    val debug_1     = Input(UInt(32.W))
+    val debug_2     = Input(UInt(32.W))
+  })
+  addPath("playground/src/v_resource/dpi.sv")
 }
