@@ -12,23 +12,26 @@ class RegFile extends Module{
     val wen=Input(Bool())
   })
   val rf=RegInit(VecInit(Seq.fill(32)(0.U(32.W))))
-  val wdata=Mux(io.waddr===0.U,0.U,io.wdata)
-  when(io.wen){ rf(io.waddr):=wdata }
-  io.rdata1:=Mux(io.raddr1=/=0.U,rf(io.raddr1),0.U)
-  io.rdata2:=Mux(io.raddr2=/=0.U,rf(io.raddr2),0.U)
-  val debug = Module(new debug())
-  debug.io.clock:=clock
-  debug.io.reset:=reset
-  debug.io.debug_1:=io.waddr
-  debug.io.debug_2:=wdata
+  when(io.wen){ 
+    when(io.waddr=/=0.U){
+      rf(io.waddr):=wdata 
+    }
+  }
+  io.rdata1:=rf(io.raddr1)
+  io.rdata2:=rf(io.raddr2)
+  // val debug = Module(new debug())
+  // debug.io.clock:=clock
+  // debug.io.reset:=reset
+  // debug.io.debug_1:=io.waddr
+  // debug.io.debug_2:=wdata
 } 
 
-class debug extends BlackBox with HasBlackBoxPath {
-  val io = IO(new Bundle {
-    val clock       = Input(Clock())
-    val reset       = Input(Bool())
-    val debug_1     = Input(UInt(5.W))
-    val debug_2     = Input(UInt(32.W))
-  })
-  addPath("playground/src/v_resource/debug.sv")
-}
+// class debug extends BlackBox with HasBlackBoxPath {
+//   val io = IO(new Bundle {
+//     val clock       = Input(Clock())
+//     val reset       = Input(Bool())
+//     val debug_1     = Input(UInt(5.W))
+//     val debug_2     = Input(UInt(32.W))
+//   })
+//   addPath("playground/src/v_resource/debug.sv")
+// }
