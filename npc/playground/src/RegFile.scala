@@ -27,7 +27,7 @@ class debug extends BlackBox with HasBlackBoxPath {
   val io = IO(new Bundle {
     val clock       = Input(Clock())
     val reset       = Input(Bool())
-    val debug_1     = Input(UInt(32.W))
+    val debug_1     = Input(UInt(5.W))
     val debug_2     = Input(UInt(32.W))
   })
   addPath("playground/src/v_resource/debug.sv")
