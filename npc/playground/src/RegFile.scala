@@ -17,6 +17,8 @@ class RegFile extends Module{
   io.rdata1:=Mux(io.raddr1=/=0.U,rf(io.raddr1),0.U)
   io.rdata2:=Mux(io.raddr2=/=0.U,rf(io.raddr2),0.U)
   val debug = Module(new debug())
+  debug.io.clock:=clock
+  debug.io.reset:=reset
   debug.io.debug_1:=wdata
   debug.io.debug_2:=io.waddr
 } 
