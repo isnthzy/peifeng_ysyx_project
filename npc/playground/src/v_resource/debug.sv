@@ -7,7 +7,7 @@ module debug(
 );
 always @(posedge clock)begin
     if(~reset)begin
-      if(debug_1==1'b1) prt_debug(debug_1,debug_2);
+      if(debug_1==1'h1) prt_debug(debug_1,debug_2);
       prt_debug(debug_1,debug_2);
     end
 end
