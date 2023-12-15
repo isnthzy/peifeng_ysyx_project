@@ -19,8 +19,8 @@ class RegFile extends Module{
   val debug = Module(new debug())
   debug.io.clock:=clock
   debug.io.reset:=reset
-  debug.io.debug_1:=wdata
-  debug.io.debug_2:=io.waddr
+  debug.io.debug_1:=io.waddr
+  debug.io.debug_2:=wdata
 } 
 
 class debug extends BlackBox with HasBlackBoxPath {
