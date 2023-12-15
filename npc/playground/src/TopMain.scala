@@ -4,7 +4,7 @@ object TopMain extends App {
   def top = new SimTop()
   val ChiselStageOptions=Seq(
     chisel3.stage.ChiselGeneratorAnnotation(() => top),
-    CIRCTTargetAnnotation(CIRCTTarget.Verilog)
+    CIRCTTargetAnnotation(CIRCTTarget.SystemVerilog)
   )
   // (new ChiselStage).execute(args, generator :+ CIRCTTargetAnnotation(CIRCTTarget.Verilog))
 
@@ -12,12 +12,12 @@ object TopMain extends App {
     FirtoolOption(
       "--lowering-options=disallowLocalVariables,disallowPackedArrays,locationInfoStyle=wrapInAtSquareBracket"
     ), //香山firtool参数
-    // FirtoolOption("--split-verilog"), //分离生成的verilog文件
-    // FirtoolOption("-o=vsrc"), //设置分离后verilog文件的路径
+    FirtoolOption("--split-verilog"), //分离生成的verilog文件
+    FirtoolOption("-o=vsrc"), //设置分离后verilog文件的路径
     FirtoolOption("--disable-all-randomization") //禁止随机数
   )
   val executeOptions=ChiselStageOptions++firtoolOptions
-  val executeArgs=Array("-td","vsrc")
+  val executeArgs=Array("-td","build")
   // (new ChiselStage).execute(args,executeOptions)
   (new ChiselStage).execute(executeArgs,executeOptions)
 }
