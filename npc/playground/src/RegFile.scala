@@ -30,5 +30,5 @@ class debug extends BlackBox with HasBlackBoxPath {
     val debug_1     = Input(UInt(32.W))
     val debug_2     = Input(UInt(32.W))
   })
-  addPath("playground/src/v_resource/dpi.sv")
+  addPath("playground/src/v_resource/debug.sv")
 }
