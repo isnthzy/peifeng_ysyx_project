@@ -59,7 +59,7 @@ extern "C" void get_pc(int pc,int nextpc){
   cpu.nextpc=nextpc;
 }
 
-extern "C" void prt_debug(int debug_1,int debug_2){
+extern "C" void prt_debug(const svBitVecVal* debug_1,int debug_2){
   printf("debug_1: %x debug_2: %x\n",debug_1,debug_2);
 }
 
