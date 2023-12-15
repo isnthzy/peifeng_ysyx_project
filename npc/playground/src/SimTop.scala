@@ -14,7 +14,6 @@ class SimTop extends Module {
   val is_not_jalr = dontTouch(Wire(Bool()))
   val is_jump     = dontTouch(Wire(Bool()))
   val jalr_taget  = dontTouch(Wire(UInt(32.W)))
-  val d_ebus      = Wire(new id_to_es_bus())
   val sram_rdata  = dontTouch(Wire(UInt(32.W)))
   val inst        = dontTouch(Wire(UInt(32.W)))
 // IFU begin
@@ -36,7 +35,6 @@ class SimTop extends Module {
   is_not_jalr        := ID_stage.io.is_not_jalr
 
   ID_stage.io.f_dbus := IF_stage.io.f_dbus
-  d_ebus             := ID_stage.io.d_ebus
 // EXU begin
   val EXE_stage = Module(new EXE_stage())
   EXE_stage.io.pc := pc
