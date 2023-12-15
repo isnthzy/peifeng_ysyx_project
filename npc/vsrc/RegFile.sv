@@ -414,7 +414,7 @@ module RegFile(	// @[<stdin>:476:3]
   debug debug (	// @[playground/src/RegFile.scala:19:21]
     .clock   (clock),
     .reset   (reset),
-    .debug_1 ((|io_waddr) ? io_wdata : 32'h0),	// @[playground/src/RegFile.scala:14:25, :15:{16,25}]
+    .debug_1 ((|io_waddr) ? io_wdata[4:0] : 5'h0),	// @[playground/src/RegFile.scala:5:12, :15:{16,25}]
     .debug_2 ({27'h0, io_waddr})	// @[playground/src/RegFile.scala:23:19]
   );
   assign io_rdata1 = (|io_raddr1) ? casez_tmp : 32'h0;	// @[<stdin>:476:3, playground/src/RegFile.scala:14:25, :17:{17,27}]
