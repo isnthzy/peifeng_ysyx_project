@@ -40,12 +40,16 @@ module EXE_stage(	// @[<stdin>:573:3]
   wire [31:0] _alu_io_result;	// @[playground/src/EXE_stage.scala:23:18]
   wire [31:0] _RegFile_io_rdata1;	// @[playground/src/EXE_stage.scala:14:21]
   wire [31:0] _RegFile_io_rdata2;	// @[playground/src/EXE_stage.scala:14:21]
+  wire [31:0] result =
+    io_d_ebus_result_is_imm
+      ? io_d_ebus_imm
+      : io_d_ebus_result_is_snpc ? io_d_ebus_snpc : _alu_io_result;	// @[playground/src/EXE_stage.scala:23:18, :34:17, :35:18]
   wire [31:0] _jalr_tmp_T = _alu_io_result + io_d_ebus_imm;	// @[playground/src/EXE_stage.scala:23:18, :36:29]
   RegFile RegFile (	// @[playground/src/EXE_stage.scala:14:21]
     .clock     (clock),
     .reset     (reset),
     .io_waddr  (io_d_ebus_rd),
-    .io_wdata  ({27'h0, io_d_ebus_rd}),	// @[playground/src/EXE_stage.scala:39:19]
+    .io_wdata  (result),	// @[playground/src/EXE_stage.scala:34:17]
     .io_raddr1 (io_d_ebus_is_ebreak ? 5'hA : io_d_ebus_src1),	// @[playground/src/EXE_stage.scala:16:25]
     .io_raddr2 (io_d_ebus_is_ebreak ? 5'h0 : io_d_ebus_src2),	// @[playground/src/EXE_stage.scala:17:25]
     .io_wen    (io_d_ebus_data_wen),
@@ -76,14 +80,11 @@ module EXE_stage(	// @[<stdin>:573:3]
     .io_sign   (io_d_ebus_src_is_sign),
     .io_result (_alu_io_result)
   );
-  assign io_result =
-    io_d_ebus_result_is_imm
-      ? io_d_ebus_imm
-      : io_d_ebus_result_is_snpc ? io_d_ebus_snpc : _alu_io_result;	// @[<stdin>:573:3, playground/src/EXE_stage.scala:23:18, :34:17, :35:18]
+  assign io_result = result;	// @[<stdin>:573:3, playground/src/EXE_stage.scala:34:17]
   assign io_jalr_taget = {_jalr_tmp_T[31:1], 1'h0};	// @[<stdin>:573:3, playground/src/EXE_stage.scala:17:25, :36:29, :37:{21,30}]
   assign io_sram_valid = io_d_ebus_sram_valid;	// @[<stdin>:573:3]
   assign io_sram_wen = io_d_ebus_sram_wen;	// @[<stdin>:573:3]
-  assign io_sram_wdata = {27'h0, io_d_ebus_src2};	// @[<stdin>:573:3, playground/src/EXE_stage.scala:39:19, :42:16]
+  assign io_sram_wdata = {27'h0, io_d_ebus_src2};	// @[<stdin>:573:3, playground/src/EXE_stage.scala:43:16]
   assign io_sram_wmask = io_d_ebus_wmask;	// @[<stdin>:573:3]
 endmodule
 
