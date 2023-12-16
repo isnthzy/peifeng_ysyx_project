@@ -24,9 +24,9 @@ void step_and_dump_wave(){
 }
 
 //----------------------------dpi-c----------------------------
-extern "C" void sim_break(int pc,int ret_reg){
+extern "C" void sim_break(int nextpc,int ret_reg){
   npc_state.halt_ret=ret_reg;
-  npc_state.halt_pc=pc;
+  npc_state.halt_pc=nextpc;
   npc_state.state=NPC_END;
 }
 extern "C" void inv_break(int nextpc){
@@ -57,6 +57,10 @@ extern "C" void get_pc(int pc,int nextpc){
   // printf("pc: %x\n",pc);
   cpu.pc=pc;
   cpu.nextpc=nextpc;
+}
+
+extern "C" void prt_debug(const svBitVecVal* debug_1,int debug_2){
+  printf("debug_1: %x debug_2: %x\n",*debug_1,debug_2);
 }
 
 //----------------------------dpi-c----------------------------

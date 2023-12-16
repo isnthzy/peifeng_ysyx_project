@@ -19,7 +19,7 @@ module singal_dpi(
 );
 always @(posedge clock)begin
     if(~reset)begin
-        if(ebreak_flag) sim_break(pc,ret_reg);
+        if(ebreak_flag) sim_break(nextpc,ret_reg);
         if(inv_flag) inv_break(nextpc);
         if(func_flag) cpu_use_func(pc,nextpc,inst,is_jal,rd);
     end

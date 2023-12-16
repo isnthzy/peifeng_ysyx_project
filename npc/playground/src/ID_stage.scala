@@ -97,17 +97,17 @@ class ID_stage extends Module {
   )
   io.d_ebus.imm := io.Imm
   io.d_ebus.data_wen := (IsaI.addi | IsaR.add | IsaI.andi | IsaR.and | IsaU.lui
-    | IsaR.slt | IsaR.sltu | IsaR.sub | IsaI.ori | IsaR.or
-    | IsaI.xori | IsaR.xor | IsaI.jalr | IsaU.jal | IsaU.auipc
-    | IsaI.slti | IsaI.sltiu | IsaI.slli | IsaI.srai | IsaI.srli
-    | IsaR.slt | IsaR.sltu | IsaR.sll | IsaR.sra | IsaR.srl)
+                        | IsaR.slt | IsaR.sltu | IsaR.sub | IsaI.ori | IsaR.or
+                        | IsaI.xori | IsaR.xor | IsaI.jalr | IsaU.jal | IsaU.auipc
+                        | IsaI.slti | IsaI.sltiu | IsaI.slli | IsaI.srai | IsaI.srli
+                        | IsaR.slt  | IsaR.sltu | IsaR.sll | IsaR.sra | IsaR.srl)
   io.d_ebus.result_is_imm  := IsaU.lui
   io.d_ebus.result_is_snpc := IsaU.jal | IsaI.jalr
   io.d_ebus.src_is_sign    := IsaI.srai | IsaR.sra | IsaR.slt | IsaB.blt | IsaB.bltu
   io.d_ebus.src1_is_pc     := IsaU.auipc
   io.d_ebus.src2_is_imm := (IsaI.addi | IsaI.slti | IsaI.sltiu | IsaI.xori | IsaI.ori
-    | IsaI.andi | IsaI.jalr | IsaU.auipc
-    | IsaI.lb | IsaI.lh | IsaI.lw | IsaI.lbu | IsaI.lhu)
+                          | IsaI.andi | IsaI.jalr | IsaU.auipc | IsaS.sb   | IsaS.sh | IsaS.sw
+                          | IsaI.lb   | IsaI.lh   | IsaI.lw    | IsaI.lbu  | IsaI.lhu)
   io.d_ebus.src2_is_shamt_imm := IsaI.slli | IsaI.srai | IsaI.srli
   io.d_ebus.src2_is_shamt_src := IsaR.sll | IsaR.sra | IsaR.srl
   io.d_ebus.sram_valid        := IsaI.lb | IsaI.lh | IsaI.lw | IsaI.lbu | IsaI.lhu | IsaS.sb | IsaS.sh | IsaS.sw
@@ -124,13 +124,13 @@ class ID_stage extends Module {
   io.is_not_jalr := IsaU.jal | IsaB.beq | IsaB.bne | IsaB.blt | IsaB.bltu | IsaB.bge | IsaB.bgeu
 
   io.d_ebus.alu_op(0) := (IsaI.addi | IsaR.add | IsaI.ebreak | IsaI.jalr | IsaU.auipc
-    | io.d_ebus.sram_valid)
+                        | io.d_ebus.sram_valid)
   //add加法
   io.d_ebus.alu_op(1) := IsaR.sub
   //sub减法
   io.d_ebus.alu_op(2) := IsaI.andi | IsaR.and
   //and &&
-  io.d_ebus.alu_op(3) := IsaI.ori | IsaR.or
+  io.d_ebus.alu_op(3) := IsaI.ori  | IsaR.or
   //or  ||
   io.d_ebus.alu_op(4) := IsaI.xori | IsaR.xor
   //xor ^
