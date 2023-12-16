@@ -30,14 +30,13 @@ class EXE_stage extends Module{
   alu.io.src1:=alu_src1
   alu.io.src2:=alu_src2
   alu.io.sign:=io.d_ebus.src_is_sign 
-  val result=Reg(UInt(32.W))
-  result:=Mux(io.d_ebus.result_is_imm , io.d_ebus.imm,
+
+  io.result:=Mux(io.d_ebus.result_is_imm , io.d_ebus.imm,
               Mux(io.d_ebus.result_is_snpc , io.d_ebus.snpc, alu.io.result)) //要往rd中写入snpc
   val jalr_tmp=alu.io.result+io.d_ebus.imm
   io.jalr_taget:=Cat(jalr_tmp(31,1),0.U(1.W))
   // RegFile.io.wdata:=io.result
-  io.result:=result
-  RegFile.io.wdata:=result
+  RegFile.io.wdata:=io.d_ebus.rd
   io.sram_valid:=io.d_ebus.sram_valid
   io.sram_wen  :=io.d_ebus.sram_wen
   io.sram_wdata:=io.d_ebus.src2
