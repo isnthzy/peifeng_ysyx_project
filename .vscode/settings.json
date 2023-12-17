@@ -43,7 +43,8 @@
         "dlfcn.h": "c",
         "difftest.h": "c",
         "atomic": "cpp",
-        "cstdint": "cpp"
+        "cstdint": "cpp",
+        "stop_token": "c"
     },
     "C_Cpp.intelliSenseEngine": "default",  //  需要添加的
 

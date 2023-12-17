@@ -12,7 +12,7 @@
                 "/usr/include/c++/11/**",
                 "/usr/local/share/verilator/include/vltstd/**",
                 "/usr/include/**",
-                "${workspaceFolder}/nemu/include"
+                "${workspaceFolder}/nemu/include/**"
             ],
             "defines": [
                 "MYSYMBOL",
