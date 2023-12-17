@@ -54,7 +54,8 @@
         "nemu.h": "c",
         "klib-macros.h": "c",
         "amdev.h": "c",
-        "elf.h": "c"
+        "elf.h": "c",
+        "klib.h": "c"
     },
     "C_Cpp.intelliSenseEngine": "default",  //  需要添加的
 
