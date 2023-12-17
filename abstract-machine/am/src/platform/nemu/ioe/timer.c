@@ -1,10 +1,11 @@
 #include <am.h>
 #include <nemu.h>
-
+#include <stdio.h>
 void __am_timer_init() {
 }
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
+  printf("%d \n\n\n\n",inl(RTC_ADDR));
   uptime->us = 0;
 }
 

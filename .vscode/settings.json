@@ -50,7 +50,10 @@
         "string": "c",
         "unordered_map": "c",
         "unordered_set": "c",
-        "vector": "c"
+        "vector": "c",
+        "nemu.h": "c",
+        "klib-macros.h": "c",
+        "amdev.h": "c"
     },
     "C_Cpp.intelliSenseEngine": "default",  //  需要添加的
 
