@@ -6,7 +6,7 @@
 int func_depth=0;
 char n_spaces[128];
 char put_ftrace[128];
-ELF_Func elf_func[10240]; 
+ELF_Func elf_func[102400]; 
 int func_cnt=0;
 extern bool ftrace_flag;
 typedef struct tail_rec_node {
