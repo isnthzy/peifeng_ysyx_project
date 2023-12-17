@@ -29,9 +29,9 @@ void init_elf(const char *elf_file){
         return ;
     }
 
-    Elf64_Ehdr elf_header;
+    Elf32_Ehdr elf_header;
     size_t result;
-    result=fread(&elf_header, sizeof(Elf64_Ehdr), 1, file);
+    result=fread(&elf_header, sizeof(Elf32_Ehdr), 1, file);
     if(result==0) assert(0);
     if (memcmp(elf_header.e_ident, ELFMAG, SELFMAG) != 0) {
         printf("Invalid ELF file: %s\n", elf_file);
@@ -40,16 +40,16 @@ void init_elf(const char *elf_file){
     }
 
     fseek(file, elf_header.e_shoff, SEEK_SET);
-    Elf64_Shdr* section_headers = (Elf64_Shdr*)malloc(elf_header.e_shentsize * elf_header.e_shnum);
+    Elf32_Shdr* section_headers = (Elf32_Shdr*)malloc(elf_header.e_shentsize * elf_header.e_shnum);
     result=fread(section_headers, elf_header.e_shentsize, elf_header.e_shnum, file);
 
-    Elf64_Shdr* string_table_header = &section_headers[elf_header.e_shstrndx];
+    Elf32_Shdr* string_table_header = &section_headers[elf_header.e_shstrndx];
     char* string_table = (char*)malloc(string_table_header->sh_size);
     fseek(file, string_table_header->sh_offset, SEEK_SET);
     result=fread(string_table, string_table_header->sh_size, 1, file);
 
-    Elf64_Shdr* symbol_table_header = NULL;
-    Elf64_Shdr* text_section_header = NULL;
+    Elf32_Shdr* symbol_table_header = NULL;
+    Elf32_Shdr* text_section_header = NULL;
 
     for (int i = 0; i < elf_header.e_shnum; ++i) {
         if (section_headers[i].sh_type == SHT_SYMTAB) {
@@ -81,14 +81,14 @@ void init_elf(const char *elf_file){
     //     return ;
     // }
 
-    Elf64_Sym* symbols = (Elf64_Sym*)malloc(symbol_table_header->sh_size);
+    Elf32_Sym* symbols = (Elf32_Sym*)malloc(symbol_table_header->sh_size);
     fseek(file, symbol_table_header->sh_offset, SEEK_SET);
     result=fread(symbols, symbol_table_header->sh_size, 1, file);
 
-    int symbol_count = symbol_table_header->sh_size / sizeof(Elf64_Sym);
+    int symbol_count = symbol_table_header->sh_size / sizeof(Elf32_Sym);
 
     for (int i = 0; i < symbol_count; ++i) {
-        Elf64_Sym* symbol = &symbols[i];
+        Elf32_Sym* symbol = &symbols[i];
         if (ELF32_ST_TYPE(symbol->st_info) == STT_FUNC) {
             const char* function_name = string_table + symbol->st_name;
             strcpy(elf_func[func_cnt].func_name,function_name);
