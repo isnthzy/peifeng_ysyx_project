@@ -41,7 +41,7 @@ void init_elf(const char *elf_file){
     fseek(file, section_header_offset, SEEK_SET);
     // 读取节头表
     Elf_Shdr section_headers[section_header_entry_count];
-    result=fread(section_headers, sizeof(Elf64_Shdr), section_header_entry_count, file);
+    result=fread(section_headers, sizeof(Elf_Shdr), section_header_entry_count, file);
     // 定位到字符串表节
     Elf_Shdr string_table_header = section_headers[elf_header.e_shstrndx];
     fseek(file, string_table_header.sh_offset, SEEK_SET);
@@ -62,7 +62,7 @@ void init_elf(const char *elf_file){
     size_t symbol_count = symtab_header.sh_size / symtab_header.sh_entsize;
     // 读取符号表
     Elf_Sym symbols[symbol_count];
-    result=fread(symbols, sizeof(Elf64_Sym), symbol_count, file);
+    result=fread(symbols, sizeof(Elf_Sym), symbol_count, file);
     // 遍历符号表，筛选出类型为FUNC的符号
     for (size_t i = 0; i < symbol_count; ++i) {
         if (ELF32_ST_TYPE(symbols[i].st_info) == STT_FUNC) {
