@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "ftrace.h"
-
+int max_length=-128;
 int func_depth=0;
 char n_spaces[128];
 char put_ftrace[128];
@@ -69,8 +69,9 @@ void init_elf(const char *elf_file){
             if(symbols[i].st_size==0) continue; //不符合的大小直接略过
             // 获取符号的名称
             char* symbol_name=string_table + symbols[i].st_name;
-            printf("symbol_name_size: %ld",strlen(symbol_name));
-            strcpy(elf_func[func_cnt].func_name,symbol_name);
+            // printf("symbol_name_size: %ld",strlen(symbol_name));
+            strncpy(elf_func[func_cnt].func_name,symbol_name,max_length);
+            elf_func[func_cnt].func_name[max_length] = '\0'; 
             // 获取符号的地址
             elf_func[func_cnt].value=symbols[i].st_value;
             elf_func[func_cnt].size =symbols[i].st_size;

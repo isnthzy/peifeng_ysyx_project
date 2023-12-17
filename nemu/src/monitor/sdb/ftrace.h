@@ -9,7 +9,7 @@ typedef MUXDEF(CONFIG_ISA64, Elf64_Off , Elf32_Off ) Elf_Off ;
 typedef MUXDEF(CONFIG_ISA64, Elf64_Sym , Elf32_Sym ) Elf_Sym ;
 typedef MUXDEF(CONFIG_ISA64, Elf64_Addr, Elf32_Addr) Elf_Addr;
 typedef struct {
-    char func_name[1024]; // 函数名
+    char func_name[128]; // 函数名
     size_t value;      // 起始地址
     size_t size;        // 函数体大小
 }ELF_Func;              // [start, start+size)
