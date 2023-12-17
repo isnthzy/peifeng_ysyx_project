@@ -44,7 +44,13 @@
         "difftest.h": "c",
         "atomic": "cpp",
         "cstdint": "cpp",
-        "stop_token": "c"
+        "stop_token": "c",
+        "deque": "c",
+        "list": "c",
+        "string": "c",
+        "unordered_map": "c",
+        "unordered_set": "c",
+        "vector": "c"
     },
     "C_Cpp.intelliSenseEngine": "default",  //  需要添加的
 
