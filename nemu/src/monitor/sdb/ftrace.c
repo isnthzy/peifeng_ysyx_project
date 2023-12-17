@@ -32,54 +32,42 @@ void init_elf(const char *elf_file){
     Elf32_Ehdr ehdr;
     result=fread(&ehdr, sizeof(Elf32_Ehdr), 1, file);
 
-    // 定位到符号表的偏移量和数量
-    Elf32_Shdr shdr;
+    // 定位到字符串表节头部
+    Elf32_Shdr strtab_shdr;
     fseek(file, ehdr.e_shoff + (ehdr.e_shstrndx * sizeof(Elf32_Shdr)), SEEK_SET);
-    result=fread(&shdr, sizeof(Elf32_Shdr), 1, file);
+    result=fread(&strtab_shdr, sizeof(Elf32_Shdr), 1, file);
 
-    // 读取字符串表的偏移量和大小
-    Elf32_Off strtab_offset = shdr.sh_offset;
-    Elf32_Word strtab_size = shdr.sh_size;
+    // 读取字符串表
+    char* strtab = (char*)malloc(strtab_shdr.sh_size);
+    fseek(file, strtab_shdr.sh_offset, SEEK_SET);
+    result=fread(strtab, strtab_shdr.sh_size, 1, file);
 
-    // 定位到符号表的偏移量和数量
-    fseek(file, ehdr.e_shoff, SEEK_SET);
+    // 遍历节头部，寻找符号表节
     for (int i = 0; i < ehdr.e_shnum; i++) {
+        Elf32_Shdr shdr;
+        fseek(file, ehdr.e_shoff + (i * sizeof(Elf32_Shdr)), SEEK_SET);
         result=fread(&shdr, sizeof(Elf32_Shdr), 1, file);
+
         if (shdr.sh_type == SHT_SYMTAB) {
+            // 读取符号表
+            Elf32_Sym* symtab = (Elf32_Sym*)malloc(shdr.sh_size);
+            fseek(file, shdr.sh_offset, SEEK_SET);
+            result=fread(symtab, shdr.sh_size, 1, file);
+            if(result==0) assert(0);
+            // 访问符号表中的符号名称
+            for (int j = 0; j < shdr.sh_size / sizeof(Elf32_Sym); j++) {
+                Elf32_Sym* sym = &symtab[j];
+                const char* symbol_name = strtab + sym->st_name;
+                printf("Symbol Name: %s\n", symbol_name);
+            }
+
+            free(symtab);
             break;
         }
     }
 
-    // 读取符号表的偏移量和数量
-    Elf32_Off symtab_offset = shdr.sh_offset;
-    Elf32_Word symtab_size = shdr.sh_size;
-
-    // 读取字符串表
-    char* strtab = (char*)malloc(strtab_size);
-    fseek(file, strtab_offset, SEEK_SET);
-    result=fread(strtab, strtab_size, 1, file);
-
-    // 读取符号表
-    Elf32_Sym* symtab = (Elf32_Sym*)malloc(symtab_size);
-    fseek(file, symtab_offset, SEEK_SET);
-    result=fread(symtab, symtab_size, 1, file);
-    if(result==0) assert(0);
-    // 访问符号表中的符号名称
-    for (int i = 0; i < symtab_size / sizeof(Elf32_Sym); i++) {
-        Elf32_Sym* sym = &symtab[i];
-        const char* symbol_name = strtab + sym->st_name;
-        strcpy(elf_func[func_cnt].func_name,symbol_name);
-        // 获取符号的地址
-        elf_func[func_cnt].value=sym->st_value;
-        elf_func[func_cnt].size =sym->st_size;
-        printf("Function: %s\nAddress: 0x%lx %ld(Dec) %lx(Hec)\n",elf_func[func_cnt].func_name,elf_func[func_cnt].value,elf_func[func_cnt].size,elf_func[func_cnt].size);
-        func_cnt++; //func_cnt用于只筛出来符合要求的函数
-        // printf("Symbol Name: %s\n", symbol_name);
-    }
-
     // 释放内存并关闭文件
     free(strtab);
-    free(symtab);
     fclose(file);
 
     return ;
