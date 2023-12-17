@@ -6,7 +6,7 @@
 int func_depth=0;
 char n_spaces[128];
 char put_ftrace[128];
-ELF_Func elf_func[2048]; 
+ELF_Func elf_func[1024]; 
 int func_cnt=0;
 extern bool ftrace_flag;
 typedef struct tail_rec_node {
@@ -69,10 +69,11 @@ void init_elf(const char *elf_file){
             if(symbols[i].st_size==0) continue; //不符合的大小直接略过
             // 获取符号的名称
             char* symbol_name=string_table + symbols[i].st_name;
+            printf("symbol_name_size: %ld",strlen(symbol_name));
+            strcpy(elf_func[func_cnt].func_name,symbol_name);
             // 获取符号的地址
             elf_func[func_cnt].value=symbols[i].st_value;
             elf_func[func_cnt].size =symbols[i].st_size;
-            strcpy(elf_func[func_cnt].func_name,symbol_name);
             printf("Function: %s\nAddress: 0x%lx %ld(Dec) %lx(Hec)\n",elf_func[func_cnt].func_name,elf_func[func_cnt].value,elf_func[func_cnt].size,elf_func[func_cnt].size);
             func_cnt++; //func_cnt用于只筛出来符合要求的函数
         }
