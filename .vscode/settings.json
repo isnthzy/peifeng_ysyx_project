@@ -55,7 +55,9 @@
         "klib-macros.h": "c",
         "amdev.h": "c",
         "elf.h": "c",
-        "klib.h": "c"
+        "klib.h": "c",
+        "typeindex": "c",
+        "typeinfo": "c"
     },
     "C_Cpp.intelliSenseEngine": "default",  //  需要添加的
 
