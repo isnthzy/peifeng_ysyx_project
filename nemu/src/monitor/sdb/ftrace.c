@@ -29,48 +29,55 @@ void init_elf(const char *elf_file){
         assert(0);
     }
     size_t result;
-    Elf64_Ehdr ehdr;
-    result=fread(&ehdr, sizeof(Elf64_Ehdr), 1, file);
-
-    // 定位到字符串表节头部
-    Elf64_Shdr strtab_shdr;
-    fseek(file, ehdr.e_shoff + (ehdr.e_shstrndx * sizeof(Elf64_Shdr)), SEEK_SET);
-    result=fread(&strtab_shdr, sizeof(Elf64_Shdr), 1, file);
-
-    // 读取字符串表
-    char* strtab = (char*)malloc(strtab_shdr.sh_size);
-    fseek(file, strtab_shdr.sh_offset, SEEK_SET);
-    result=fread(strtab, strtab_shdr.sh_size, 1, file);
-
-    // 遍历节头部，寻找符号表节
-    for (int i = 0; i < ehdr.e_shnum; i++) {
-        Elf64_Shdr shdr;
-        fseek(file, ehdr.e_shoff + (i * sizeof(Elf64_Shdr)), SEEK_SET);
-        result=fread(&shdr, sizeof(Elf64_Shdr), 1, file);
-
-        if (shdr.sh_type == SHT_SYMTAB) {
-            // 读取符号表
-            Elf64_Sym* symtab = (Elf64_Sym*)malloc(shdr.sh_size);
-            fseek(file, shdr.sh_offset, SEEK_SET);
-            result=fread(symtab, shdr.sh_size, 1, file);
-            if(result==0) assert(0);
-            // 访问符号表中的符号名称
-            for (int j = 0; j < shdr.sh_size / sizeof(Elf64_Sym); j++) {
-                Elf64_Sym* sym = &symtab[j];
-                const char* symbol_name = strtab + sym->st_name;
-                printf("Symbol Name: %s\n", symbol_name);
-            }
-
-            free(symtab);
+    
+    // 读取 ELF 文件的头部信息
+    Elf_Ehdr elf_header;
+    result=fread(&elf_header, sizeof(Elf_Ehdr), 1, file);
+    if (result== 0) assert(0);
+    // 获取节头表的偏移量和条目数量
+    Elf_Off section_header_offset = elf_header.e_shoff;
+    Elf_Half section_header_entry_count = elf_header.e_shnum;
+    // 定位到节头表
+    fseek(file, section_header_offset, SEEK_SET);
+    // 读取节头表
+    Elf_Shdr section_headers[section_header_entry_count];
+    result=fread(section_headers, sizeof(Elf_Shdr), section_header_entry_count, file);
+    // 定位到字符串表节
+    Elf_Shdr string_table_header = section_headers[elf_header.e_shstrndx];
+    fseek(file, string_table_header.sh_offset, SEEK_SET);
+    // 读取字符串表内容
+    char string_table[string_table_header.sh_size];
+    result=fread(string_table, string_table_header.sh_size, 1, file);
+    // 查找符号表节和字符串表节
+    Elf_Shdr symtab_header;
+    for (int i = 0; i < section_header_entry_count; ++i) {
+        if (section_headers[i].sh_type == SHT_SYMTAB) {
+            symtab_header = section_headers[i];
             break;
         }
     }
-
-    // 释放内存并关闭文件
-    free(strtab);
+    // 定位到符号表节
+    fseek(file, symtab_header.sh_offset, SEEK_SET);
+    // 计算符号表中的符号数量
+    size_t symbol_count = symtab_header.sh_size / symtab_header.sh_entsize;
+    // 读取符号表
+    Elf32_Sym symbols[symbol_count];
+    result=fread(symbols, sizeof(Elf64_Sym), symbol_count, file);
+    // 遍历符号表，筛选出类型为FUNC的符号
+    for (size_t i = 0; i < symbol_count; ++i) {
+        if (ELF32_ST_TYPE(symbols[i].st_info) == STT_FUNC) {
+            if(symbols[i].st_size==0) continue; //不符合的大小直接略过
+            // 获取符号的名称
+            char* symbol_name=string_table + symbols[i].st_name;
+            strcpy(elf_func[func_cnt].func_name,symbol_name);
+            // 获取符号的地址
+            elf_func[func_cnt].value=symbols[i].st_value;
+            elf_func[func_cnt].size =symbols[i].st_size;
+            printf("Function: %s\nAddress: 0x%lx %ld(Dec) %lx(Hec)\n",elf_func[func_cnt].func_name,elf_func[func_cnt].value,elf_func[func_cnt].size,elf_func[func_cnt].size);
+            func_cnt++; //func_cnt用于只筛出来符合要求的函数
+        }
+    }
     fclose(file);
-
-    return ;
 }
 
 /*ftrace追踪内容*/
