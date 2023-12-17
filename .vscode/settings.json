@@ -53,7 +53,8 @@
         "vector": "c",
         "nemu.h": "c",
         "klib-macros.h": "c",
-        "amdev.h": "c"
+        "amdev.h": "c",
+        "elf.h": "c"
     },
     "C_Cpp.intelliSenseEngine": "default",  //  需要添加的
 
