@@ -15,9 +15,9 @@ LDFLAGS   += --gc-sections -e _start
 CFLAGS += -DMAINARGS=\"$(mainargs)\"
 
 NPCFLAGS+=-l $(shell dirname $(IMAGE).elf)/npc-log.txt
-NPCFLAGS+=-f $(IMAGE).elf
+# NPCFLAGS+=-f $(IMAGE).elf
 NPCFLAGS+=--diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so
-NPCFLAGS+=-b 
+# NPCFLAGS+=-b 
 #批处理模式
 
 .PHONY: $(AM_HOME)/am/src/riscv/npc/trm.c
