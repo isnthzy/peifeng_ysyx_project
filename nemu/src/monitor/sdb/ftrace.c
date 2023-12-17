@@ -31,27 +31,27 @@ void init_elf(const char *elf_file){
     size_t result;
     
     // 读取 ELF 文件的头部信息
-    Elf64_Ehdr elf_header;
-    result=fread(&elf_header, sizeof(Elf64_Ehdr), 1, file);
+    Elf_Ehdr elf_header;
+    result=fread(&elf_header, sizeof(Elf_Ehdr), 1, file);
     if (result== 0) assert(0);
     // 获取节头表的偏移量和条目数量
-    Elf64_Off section_header_offset = elf_header.e_shoff;
-    Elf64_Half section_header_entry_count = elf_header.e_shnum;
+    Elf_Off section_header_offset = elf_header.e_shoff;
+    Elf_Half section_header_entry_count = elf_header.e_shnum;
     // 定位到节头表
     fseek(file, section_header_offset, SEEK_SET);
     // 读取节头表
-    Elf64_Shdr section_headers[section_header_entry_count];
-    result=fread(section_headers, sizeof(Elf64_Shdr), section_header_entry_count, file);
+    Elf_Shdr section_headers[section_header_entry_count];
+    result=fread(section_headers, sizeof(Elf_Shdr), section_header_entry_count, file);
     // 定位到字符串表节
-    Elf64_Shdr string_table_header = section_headers[elf_header.e_shstrndx];
+    Elf_Shdr string_table_header = section_headers[elf_header.e_shstrndx];
     fseek(file, string_table_header.sh_offset, SEEK_SET);
     // 读取字符串表内容
     char string_table[string_table_header.sh_size];
     result=fread(string_table, string_table_header.sh_size, 1, file);
     // 查找符号表节和字符串表节
-    Elf64_Shdr symtab_header;
+    Elf_Shdr symtab_header;
     for (int i = 0; i < section_header_entry_count; ++i) {
-        if (section_headers[i].sh_type == SHT_SYMTAB ||section_headers[i].sh_type == SHT_DYNSYM) {
+        if (section_headers[i].sh_type == SHT_SYMTAB) {
             symtab_header = section_headers[i];
             break;
         }
@@ -61,11 +61,11 @@ void init_elf(const char *elf_file){
     // 计算符号表中的符号数量
     size_t symbol_count = symtab_header.sh_size / symtab_header.sh_entsize;
     // 读取符号表
-    Elf64_Sym symbols[symbol_count];
+    Elf32_Sym symbols[symbol_count];
     result=fread(symbols, sizeof(Elf64_Sym), symbol_count, file);
     // 遍历符号表，筛选出类型为FUNC的符号
     for (size_t i = 0; i < symbol_count; ++i) {
-        if (ELF64_ST_TYPE(symbols[i].st_info) == STT_FUNC) {
+        if (ELF32_ST_TYPE(symbols[i].st_info) == STT_FUNC) {
             if(symbols[i].st_size==0) continue; //不符合的大小直接略过
             // 获取符号的名称
             char* symbol_name=string_table + symbols[i].st_name;
