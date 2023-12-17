@@ -5,7 +5,9 @@ void __am_timer_init() {
 }
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
-  printf("%d \n\n\n\n",inl(RTC_ADDR));
+  for(int i=1;i<=10;i++){
+    printf("%x",inl(RTC_ADDR));
+  }
   uptime->us = 0;
 }
 
