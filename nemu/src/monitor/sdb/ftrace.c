@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "ftrace.h"
-int max_length=-128;
+int max_length=127;
 int func_depth=0;
 char n_spaces[128];
 char put_ftrace[128];
