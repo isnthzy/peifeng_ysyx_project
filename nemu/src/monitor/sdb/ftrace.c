@@ -29,13 +29,13 @@ void init_elf(const char *elf_file){
         assert(0);
     }
     size_t result;
-    Elf32_Ehdr ehdr;
-    result=fread(&ehdr, sizeof(Elf32_Ehdr), 1, file);
+    Elf64_Ehdr ehdr;
+    result=fread(&ehdr, sizeof(Elf64_Ehdr), 1, file);
 
     // 定位到字符串表节头部
-    Elf32_Shdr strtab_shdr;
-    fseek(file, ehdr.e_shoff + (ehdr.e_shstrndx * sizeof(Elf32_Shdr)), SEEK_SET);
-    result=fread(&strtab_shdr, sizeof(Elf32_Shdr), 1, file);
+    Elf64_Shdr strtab_shdr;
+    fseek(file, ehdr.e_shoff + (ehdr.e_shstrndx * sizeof(Elf64_Shdr)), SEEK_SET);
+    result=fread(&strtab_shdr, sizeof(Elf64_Shdr), 1, file);
 
     // 读取字符串表
     char* strtab = (char*)malloc(strtab_shdr.sh_size);
@@ -44,19 +44,19 @@ void init_elf(const char *elf_file){
 
     // 遍历节头部，寻找符号表节
     for (int i = 0; i < ehdr.e_shnum; i++) {
-        Elf32_Shdr shdr;
-        fseek(file, ehdr.e_shoff + (i * sizeof(Elf32_Shdr)), SEEK_SET);
-        result=fread(&shdr, sizeof(Elf32_Shdr), 1, file);
+        Elf64_Shdr shdr;
+        fseek(file, ehdr.e_shoff + (i * sizeof(Elf64_Shdr)), SEEK_SET);
+        result=fread(&shdr, sizeof(Elf64_Shdr), 1, file);
 
         if (shdr.sh_type == SHT_SYMTAB) {
             // 读取符号表
-            Elf32_Sym* symtab = (Elf32_Sym*)malloc(shdr.sh_size);
+            Elf64_Sym* symtab = (Elf64_Sym*)malloc(shdr.sh_size);
             fseek(file, shdr.sh_offset, SEEK_SET);
             result=fread(symtab, shdr.sh_size, 1, file);
             if(result==0) assert(0);
             // 访问符号表中的符号名称
-            for (int j = 0; j < shdr.sh_size / sizeof(Elf32_Sym); j++) {
-                Elf32_Sym* sym = &symtab[j];
+            for (int j = 0; j < shdr.sh_size / sizeof(Elf64_Sym); j++) {
+                Elf64_Sym* sym = &symtab[j];
                 const char* symbol_name = strtab + sym->st_name;
                 printf("Symbol Name: %s\n", symbol_name);
             }
