@@ -2,7 +2,7 @@
 #define _FTRACE_H__
 #include <elf.h>
 #include <common.h>
-
+#define CONFIG_ISA64 1
 typedef MUXDEF(CONFIG_ISA64, Elf64_Ehdr, Elf32_Ehdr) Elf_Ehdr;
 typedef MUXDEF(CONFIG_ISA64, Elf64_Half, Elf32_Half) Elf_Half;
 typedef MUXDEF(CONFIG_ISA64, Elf64_Shdr, Elf32_Shdr) Elf_Shdr;

@@ -61,11 +61,11 @@ void init_elf(const char *elf_file){
     // 计算符号表中的符号数量
     size_t symbol_count = symtab_header.sh_size / symtab_header.sh_entsize;
     // 读取符号表
-    Elf32_Sym symbols[symbol_count];
-    result=fread(symbols, sizeof(Elf32_Sym), symbol_count, file);
+    Elf_Sym symbols[symbol_count];
+    result=fread(symbols, sizeof(Elf_Sym), symbol_count, file);
     // 遍历符号表，筛选出类型为FUNC的符号
     for (size_t i = 0; i < symbol_count; ++i) {
-        if (ELF32_ST_TYPE(symbols[i].st_info) == STT_FUNC) {
+        if (ELF64_ST_TYPE(symbols[i].st_info) == STT_FUNC) {
             if(symbols[i].st_size==0) continue; //不符合的大小直接略过
             // 获取符号的名称
             char* symbol_name=string_table + symbols[i].st_name;
