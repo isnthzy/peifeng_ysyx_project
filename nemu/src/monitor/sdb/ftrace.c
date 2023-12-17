@@ -23,7 +23,7 @@ void init_elf(const char *elf_file){
         return ;
     }
     else Log("Ftrace: ON");
-   FILE* file = fopen(elf_file, "rb");
+    FILE* file = fopen(elf_file, "rb");
     if (!file) {
         printf("Failed to open file: %s\n", elf_file);
         return ;
@@ -72,14 +72,14 @@ void init_elf(const char *elf_file){
             break;
         }
     }
-
-    if (!text_section_header) {
-        printf("No associated text section found for the symbol table.\n");
-        free(section_headers);
-        free(string_table);
-        fclose(file);
-        return ;
-    }
+    if (!text_section_header) {}
+    // if (!text_section_header) {
+    //     printf("No associated text section found for the symbol table.\n");
+    //     free(section_headers);
+    //     free(string_table);
+    //     fclose(file);
+    //     return ;
+    // }
 
     Elf32_Sym* symbols = (Elf32_Sym*)malloc(symbol_table_header->sh_size);
     fseek(file, symbol_table_header->sh_offset, SEEK_SET);
