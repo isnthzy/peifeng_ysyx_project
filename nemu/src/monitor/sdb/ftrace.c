@@ -73,16 +73,16 @@ void init_elf(const char *elf_file){
         }
     }
     if (!text_section_header) {}
-    // if (!text_section_header) {
-    //     printf("No associated text section found for the symbol table.\n");
-    //     free(section_headers);
-    //     free(string_table);
-    //     fclose(file);
-    //     return ;
-    // }
+    if (!text_section_header) {
+        printf("No associated text section found for the symbol table.\n");
+        free(section_headers);
+        free(string_table);
+        fclose(file);
+        return ;
+    }
 
     Elf32_Sym* symbols = (Elf32_Sym*)malloc(symbol_table_header->sh_size);
-    fseek(file, symbol_table_header->sh_offset, SEEK_SET);
+    fseek(file, symbol_table_header->sh_addr, SEEK_SET);
     result=fread(symbols, symbol_table_header->sh_size, 1, file);
 
     int symbol_count = symbol_table_header->sh_size / sizeof(Elf32_Sym);
