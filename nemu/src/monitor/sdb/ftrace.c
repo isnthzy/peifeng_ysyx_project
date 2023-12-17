@@ -23,6 +23,7 @@ void init_elf(const char *elf_file){
         return ;
     }
     else Log("Ftrace: ON");
+
     FILE* file = fopen(elf_file, "rb");//以只读的形式打开elf_file
     if(!file){
         Log("文件打开失败!\n");
@@ -62,7 +63,7 @@ void init_elf(const char *elf_file){
     size_t symbol_count = symtab_header.sh_size / symtab_header.sh_entsize;
     // 读取符号表
     Elf32_Sym symbols[symbol_count];
-    result=fread(symbols, sizeof(Elf64_Sym), symbol_count, file);
+    result=fread(symbols, symtab_header.sh_size, symbol_count, file);
     // 遍历符号表，筛选出类型为FUNC的符号
     for (size_t i = 0; i < symbol_count; ++i) {
         if (ELF32_ST_TYPE(symbols[i].st_info) == STT_FUNC) {
