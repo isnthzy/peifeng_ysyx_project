@@ -60,7 +60,6 @@ void init_elf(const char *elf_file){
     fseek(file, symtab_header.sh_offset, SEEK_SET);
     // 计算符号表中的符号数量
     size_t symbol_count = symtab_header.sh_size / symtab_header.sh_entsize;
-    printf("symbol_name_size: %ld\n\n\n\n\n\n",symbol_count);
     // 读取符号表
     Elf_Sym symbols[symbol_count];
     result=fread(symbols, sizeof(Elf64_Sym), symbol_count, file);
