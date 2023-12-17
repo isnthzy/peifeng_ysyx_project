@@ -7,16 +7,18 @@
                 "/home/wangxin/ysyx-workbench/npc/csrc/**",
                 "${workspaceFolder}/**",
                 "/usr/local/share/verilator/include/**",
-                "/usr/lib/gcc/x86_64-linux-gnu/11/include/",
+                "/usr/lib/gcc/x86_64-linux-gnu/11/include/**",
                 "/usr/include/llvm-11/llvm/**",
                 "/usr/include/c++/11/**",
                 "/usr/local/share/verilator/include/vltstd/**",
                 "/usr/include/**",
-                "${workspaceFolder}/nemu/include/**"
+                "${workspaceFolder}/nemu/include/**",
+                "/usr/include/x86_64-linux-gnu/bits/**"
             ],
             "defines": [
-                "MYSYMBOL",
-                "MYVALUE=1"
+                "__linux__",
+                "__x86_64__",
+                "_GNU_SOURCE"
             ],
             "cStandard": "c17",
             "cppStandard": "gnu++17",
