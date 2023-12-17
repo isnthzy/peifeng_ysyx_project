@@ -69,7 +69,7 @@ void init_elf(const char *elf_file){
             if(symbols[i].st_size==0) continue; //不符合的大小直接略过
             // 获取符号的名称
             char* symbol_name=string_table + symbols[i].st_name;
-            // printf("symbol_name_size: %ld",strlen(symbol_name));
+            printf("symbol_name_size: %ld",symbol_count);
             strncpy(elf_func[func_cnt].func_name,symbol_name,max_length);
             elf_func[func_cnt].func_name[max_length] = '\0'; 
             // 获取符号的地址
