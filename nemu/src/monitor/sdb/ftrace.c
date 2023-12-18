@@ -51,7 +51,7 @@ void init_elf(const char *elf_file){
     // 查找符号表节和字符串表节
     Elf_Shdr symtab_header;
     for (int i = 0; i < section_header_entry_count; ++i) {
-        if (section_headers[i].sh_type == SHT_SYMTAB ||section_headers[i].sh_type == SHT_DYNSYM) {
+        if (section_headers[i].sh_type == SHT_SYMTAB) {
             symtab_header = section_headers[i];
         }
     }
@@ -61,7 +61,7 @@ void init_elf(const char *elf_file){
     size_t symbol_count = symtab_header.sh_size / symtab_header.sh_entsize;
     // 读取符号表
     Elf32_Sym symbols[symbol_count];
-    result=fread(symbols, sizeof(Elf32_Sym), symbol_count, file);
+    result=fread(symbols, sizeof(Elf64_Sym), symbol_count, file);
     // 遍历符号表，筛选出类型为FUNC的符号
     for (size_t i = 0; i < symbol_count; ++i) {
         if (ELF32_ST_TYPE(symbols[i].st_info) == STT_FUNC) {
