@@ -51,9 +51,8 @@ void init_elf(const char *elf_file){
     // 查找符号表节和字符串表节
     Elf_Shdr symtab_header;
     for (int i = 0; i < section_header_entry_count; ++i) {
-        if (section_headers[i].sh_type == SHT_SYMTAB) {
+        if (section_headers[i].sh_type == SHT_SYMTAB ||section_headers[i].sh_type == SHT_DYNSYM) {
             symtab_header = section_headers[i];
-            break;
         }
     }
     // 定位到符号表节
