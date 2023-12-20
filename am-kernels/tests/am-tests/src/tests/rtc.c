@@ -9,7 +9,7 @@ void rtc_test() {
     char buffer[1024];
     sprintf(buffer,"%d-%d-%d %02d:%02d:%02d GMT (", rtc.year, rtc.month, rtc.day, rtc.hour, rtc.minute, rtc.second);
     putstr(buffer);
-    printf("%s",buffer);
+    printf("%s adad",buffer);
     if (sec == 1) {
       printf("%d second).\n", sec);
     } else {
