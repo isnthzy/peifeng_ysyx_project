@@ -9,9 +9,7 @@ int printf(const char *fmt, ...) {
   char out_buffer[1024];
   va_list args;
   va_start(args,fmt);
-  int len=sprintf(out_buffer,fmt,args);
-  putstr(fmt);
-  putstr(args);
+  int len=vsprintf(out_buffer,fmt,args);
   putstr(out_buffer);
   va_end(args);
   return len;
@@ -19,14 +17,6 @@ int printf(const char *fmt, ...) {
 }
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
-  return 0;
-  // panic("Not implemented");
-}
-
-int sprintf(char *out, const char *fmt, ...) { //fmt可以当个字符串处理
-  va_list ap;
-  va_start(ap, fmt);
-//   printf("%s\n",out);
   *out='\0';
   char *s,c;
   int d,i;
@@ -53,8 +43,16 @@ int sprintf(char *out, const char *fmt, ...) { //fmt可以当个字符串处理
       break;
     }
   }
-  va_end(ap);
   return 0;
+  // panic("Not implemented");
+}
+
+int sprintf(char *out, const char *fmt, ...) { //fmt可以当个字符串处理
+  va_list ap;
+  va_start(ap, fmt);
+  int len = vsprintf(out, fmt, ap);
+  va_end(ap);
+  return len;
   // panic("Not implemented");
 }
 
