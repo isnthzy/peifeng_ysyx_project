@@ -57,7 +57,8 @@
         "elf.h": "c",
         "klib.h": "c",
         "typeindex": "c",
-        "typeinfo": "c"
+        "typeinfo": "c",
+        "sstream": "c"
     },
     "C_Cpp.intelliSenseEngine": "default",  //  需要添加的
 
