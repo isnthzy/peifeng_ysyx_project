@@ -10,12 +10,7 @@ int printf(const char *fmt, ...) {
   va_list args;
   va_start(args,fmt);
   int len=sprintf(out_buffer,fmt,args);
-  char *tmp = out_buffer;
-  while (*tmp != 0) {
-      putch(*tmp);
-      tmp++;
-  }
-  // putstr(out_buffer);
+  putstr(out_buffer);
   va_end(args);
   return len;
   // panic("Not implemented");
