@@ -17,6 +17,20 @@ int printf(const char *fmt, ...) {
   // panic("Not implemented");
 }
 
+#include <stdlib.h>
+
+char* gSpaces(int length) { //空格生成器
+  if (length < 0) {
+    return NULL;
+  }
+  char* spaces=(char*)malloc((length + 1)*sizeof(char)); 
+  for (int i=0;i<length;i++) {
+    spaces[i]=' ';
+  }
+  spaces[length] = '\0'; // Null-terminate the string
+  return spaces;
+}
+
 int vsprintf(char *out, const char *fmt, va_list ap) {
   *out='\0';
   char *s,c;
@@ -27,7 +41,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       continue;
     }
     i++;
-    int width;
+    int width=-1;
     while (fmt[i]>='0'&&fmt[i]<='9') {
       width=width*10+(fmt[i]-'0');
       i++;
@@ -35,13 +49,25 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
     switch(fmt[i]){
     case 's':
 	    s=va_arg(ap,char*);
+      int s_len=strlen(s);
+      if(width>s_len){
+        s=strcat(gSpaces(width-s_len),s);
+      }
 	    strcat(out,s);
 	    break;
     case 'd':
       d=va_arg(ap,int);
-      char tmp[30];
-      itoa(d,tmp,10);
-      strcat(out,tmp);
+      char d_tmp[32];
+      itoa(d,d_tmp,10);
+      int d_len=strlen(d_tmp);
+      if (width > d_len) {
+        char d_out[64];
+        strcpy(d_out, gSpaces(width - d_len));
+        strcat(d_out, d_tmp);
+        strcat(out, d_out);
+      } else {
+        strcat(out, d_tmp);
+      }
       break;
     case 'c':
       c=(char)va_arg(ap,int);
@@ -49,6 +75,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       break;
     }
   }
+  free(gSpaces);
   return 0;
   // panic("Not implemented");
 }
