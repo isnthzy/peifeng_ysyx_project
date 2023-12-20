@@ -19,6 +19,7 @@
 #include <isa.h>
 #include "../cpu/iringbuf.h"
 extern IRingBuffer iring_buffer;
+extern IRingBuffer mtrace_buffer;
 #if   defined(CONFIG_PMEM_MALLOC)
 static uint8_t *pmem = NULL;
 #else // CONFIG_PMEM_GARRAY
@@ -37,16 +38,19 @@ static void pmem_write(paddr_t addr, int len, word_t data) {
   host_write(guest_to_host(addr), len, data);
 }
 
-static void putIringbuf(){
-  while(!isIRingBufferEmpty(&iring_buffer)){
+extern void iputIringbuf();
+void mputIringbuf(){
+  while(!isIRingBufferEmpty(&mtrace_buffer)){
     char pop_iringbufdata[100];
-    dequeueIRingBuffer(&iring_buffer,pop_iringbufdata);
-    printf("%s\n",pop_iringbufdata);
+    dequeueIRingBuffer(&mtrace_buffer,pop_iringbufdata);
+    if(mtrace_buffer.size==0) Log("[mtrace]-->%s",pop_iringbufdata);
+    else Log("[mtrace]   %s",pop_iringbufdata);
   }
 }
 
 static void out_of_bound(paddr_t addr) {
-  putIringbuf();
+  iputIringbuf();
+  mputIringbuf();
   panic("(nemu)address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
       addr, PMEM_LEFT, PMEM_RIGHT, cpu.pc);
 }
@@ -62,7 +66,11 @@ void init_mem() {
 
 word_t paddr_read(paddr_t addr, int len,int model) {
   #ifdef CONFIG_MTRACE
-  if(model==1) Log(" r: 0x%x data:0x%08x",addr,pmem_read(addr, len));
+  if(model==1){
+    char mtrace_logbuf[120];
+    sprintf(mtrace_logbuf,"[mtrace]r: 0x%x data:0x%08x",addr,pmem_read(addr, len));
+    enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
+  }
   #endif
   if (likely(in_pmem(addr))) return pmem_read(addr, len);
   IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
@@ -72,7 +80,9 @@ word_t paddr_read(paddr_t addr, int len,int model) {
 
 void paddr_write(paddr_t addr, int len, word_t data) {
   #ifdef CONFIG_MTRACE
-  Log("w: 0x%x data:0x%08x",addr,data);
+  char mtrace_logbuf[120];
+  sprintf(mtrace_logbuf,"[mtrace]w: 0x%x data:0x%08x",addr,data);
+  enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
   #endif
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
   IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
