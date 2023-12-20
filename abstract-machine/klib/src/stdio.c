@@ -27,6 +27,11 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       continue;
     }
     i++;
+    int width;
+    while (fmt[i]>='0'&&fmt[i]<='9') {
+      width=width*10+(fmt[i]-'0');
+      i++;
+    }
     switch(fmt[i]){
     case 's':
 	    s=va_arg(ap,char*);
