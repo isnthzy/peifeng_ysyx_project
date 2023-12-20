@@ -68,7 +68,7 @@ word_t paddr_read(paddr_t addr, int len,int model) {
   #ifdef CONFIG_MTRACE
   if(model==1){
     char mtrace_logbuf[120];
-    sprintf(mtrace_logbuf,"[mtrace]r: 0x%x data:0x%08x",addr,pmem_read(addr, len));
+    sprintf(mtrace_logbuf,"r: 0x%x data:0x%08x",addr,pmem_read(addr, len));
     enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
   }
   #endif
@@ -81,7 +81,7 @@ word_t paddr_read(paddr_t addr, int len,int model) {
 void paddr_write(paddr_t addr, int len, word_t data) {
   #ifdef CONFIG_MTRACE
   char mtrace_logbuf[120];
-  sprintf(mtrace_logbuf,"[mtrace]w: 0x%x data:0x%08x",addr,data);
+  sprintf(mtrace_logbuf,"w: 0x%x data:0x%08x",addr,data);
   enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
   #endif
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
