@@ -8,7 +8,7 @@
 int printf(const char *fmt, ...) {
   char out_buffer[1024];
   va_list args;
-  va_start(args, fmt);
+  va_start(args,*fmt);
   int len=sprintf(out_buffer,fmt,args);
   putstr(out_buffer);
   va_end(args);
