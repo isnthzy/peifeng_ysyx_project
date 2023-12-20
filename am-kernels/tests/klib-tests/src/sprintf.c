@@ -7,7 +7,7 @@ int data[] = {0, INT_MAX / 17, INT_MAX, INT_MIN, INT_MIN + 1,
 int main() {
     for(int i=0;i<sizeof(data)/sizeof(data[0]);i++){
         sprintf(src1, "%d", data[i]);
-        putstr(src1);
+        // putstr(src1);
         // putch(' ');
         if(strcmp(src1,src2[i])!= 0){
             assert(0);

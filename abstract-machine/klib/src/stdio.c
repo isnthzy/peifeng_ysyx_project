@@ -10,8 +10,8 @@ int printf(const char *fmt, ...) {
   va_list args;
   va_start(args, fmt);
   int len=sprintf(out_buffer,fmt,args);
-  va_end(args);
   putstr(out_buffer);
+  va_end(args);
   return len;
   // panic("Not implemented");
 }
