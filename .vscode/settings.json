@@ -43,7 +43,21 @@
         "dlfcn.h": "c",
         "difftest.h": "c",
         "atomic": "cpp",
-        "cstdint": "cpp"
+        "cstdint": "cpp",
+        "stop_token": "c",
+        "deque": "c",
+        "list": "c",
+        "string": "c",
+        "unordered_map": "c",
+        "unordered_set": "c",
+        "vector": "c",
+        "nemu.h": "c",
+        "klib-macros.h": "c",
+        "amdev.h": "c",
+        "elf.h": "c",
+        "klib.h": "c",
+        "typeindex": "c",
+        "typeinfo": "c"
     },
     "C_Cpp.intelliSenseEngine": "default",  //  需要添加的
 

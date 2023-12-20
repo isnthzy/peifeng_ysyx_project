@@ -41,7 +41,7 @@ void init_elf(const char *elf_file){
     fseek(file, section_header_offset, SEEK_SET);
     // 读取节头表
     Elf_Shdr section_headers[section_header_entry_count];
-    result=fread(section_headers, sizeof(Elf64_Shdr), section_header_entry_count, file);
+    result=fread(section_headers, sizeof(Elf_Shdr), section_header_entry_count, file);
     // 定位到字符串表节
     Elf_Shdr string_table_header = section_headers[elf_header.e_shstrndx];
     fseek(file, string_table_header.sh_offset, SEEK_SET);
@@ -53,7 +53,6 @@ void init_elf(const char *elf_file){
     for (int i = 0; i < section_header_entry_count; ++i) {
         if (section_headers[i].sh_type == SHT_SYMTAB) {
             symtab_header = section_headers[i];
-            break;
         }
     }
     // 定位到符号表节

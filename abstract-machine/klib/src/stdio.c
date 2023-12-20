@@ -6,7 +6,13 @@
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 int printf(const char *fmt, ...) {
-  return 0;
+  char out_buffer[1024];
+  va_list args;
+  va_start(args, fmt);
+  int len=sprintf(out_buffer,fmt,args);
+  va_end(args);
+  putstr(out_buffer);
+  return len;
   // panic("Not implemented");
 }
 
