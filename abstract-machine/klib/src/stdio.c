@@ -60,7 +60,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       char d_tmp[32];
       itoa(d,d_tmp,10);
       int d_len=strlen(d_tmp);
-      printf("d_len %d  width%d",d_len,width);
+      printf("d_len %d  width %d",d_len,width);
       if (width > d_len) {
         char d_out[64];
         strcpy(d_out, gSpaces(width - d_len));
