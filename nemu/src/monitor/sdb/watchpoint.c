@@ -88,6 +88,7 @@ void remove_watch(int num){
   printf("Delete watchpoint %d: %s\n", n->NO, n->expr);
 }
 void wp_trace(char *decodelog){
+  #ifdef CONFIG_WP_TRACE
   WP* h=head;
   bool flag=false;
   bool flagput=false;
@@ -108,6 +109,7 @@ void wp_trace(char *decodelog){
     h=h->next;
   }
   if(flag) nemu_state.state=NEMU_STOP;
+  #endif
 }
 
 
