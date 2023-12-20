@@ -20,7 +20,7 @@ extern const char *regs[];
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   for(int i=0;i<32;i++){
     if(ref_r->gpr[i]!=gpr(i)){
-      Log("The reg:%s(rf_%d) is different\ntrue:0x%08x false:0x%08x",regs[i],i,ref_r->gpr[i],gpr(i));
+      wLog("The reg:%s(rf_%d) is different\ntrue:0x%08x false:0x%08x",regs[i],i,ref_r->gpr[i],gpr(i));
       pc=ref_r->pc;
       return false;
     }
