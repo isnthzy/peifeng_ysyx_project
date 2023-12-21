@@ -43,7 +43,7 @@ void mputIringbuf(){
   while(!isIRingBufferEmpty(&mtrace_buffer)){
     char pop_iringbufdata[100];
     dequeueIRingBuffer(&mtrace_buffer,pop_iringbufdata);
-    if(mtrace_buffer.size==0) wLog("[mtrace]-->%s",pop_iringbufdata);
+    if(mtrace_buffer.num==0) wLog("[mtrace]-->%s",pop_iringbufdata);
     else wLog("[mtrace]   %s",pop_iringbufdata);
   }
 }
