@@ -68,15 +68,32 @@ char *itoa(int value,char * str,int radix){
   return str;
 }
 
+static char *hbrk;
 
+static void malloc_reset(){
+  hbrk = (void *)ROUNDUP(heap.start, 8);
+}
+static bool malloc_reset_flag=false;
 void *malloc(size_t size) {
   // On native, malloc() will be called during initializaion of C runtime.
   // Therefore do not call panic() here, else it will yield a dead recursion:
-  //   panic() -> putchar() -> (glibc) -> malloc() -> panic()
-#if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
-  // panic("Not implemented");
-#endif
-  return NULL;
+    // panic() -> putchar() -> (glibc) -> malloc() -> panic()
+// #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
+  if(!malloc_reset_flag){
+    malloc_reset();
+    malloc_reset_flag=true;
+  }
+  size=(size_t)ROUNDUP(size, 8);
+  char *old = hbrk;
+  hbrk += size;
+  assert((uintptr_t)heap.start <= (uintptr_t)hbrk && (uintptr_t)hbrk < (uintptr_t)heap.end);
+  for (uint64_t *p = (uint64_t *)old; p != (uint64_t *)hbrk; p ++) {
+    *p = 0;
+  }
+  assert((uintptr_t)hbrk-(uintptr_t)heap.start<=0);
+// #endif
+  return old;
+  // return NULL;
 }
 
 void free(void *ptr) {
