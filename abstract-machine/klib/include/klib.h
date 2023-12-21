@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-// #define __NATIVE_USE_KLIB__
+#define __NATIVE_USE_KLIB__
 
 // string.h
 char  *stpcpy    (char *dst, const char *src);
