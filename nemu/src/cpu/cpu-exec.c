@@ -108,6 +108,7 @@ static void statistic() {
   else Log("Finish running in less than 1 us and can not calculate the simulation frequency");
 }
 
+
 void iputIringbuf(){
   while(!isIRingBufferEmpty(&iring_buffer)){
     char pop_iringbufdata[100];
@@ -121,6 +122,7 @@ void assert_fail_msg() {
   isa_reg_display();
   statistic();
 }
+
 /* Simulate how the CPU works. */
 bool init_iringbuf_f=false;
 void cpu_exec(uint64_t n,bool is_ref) {
@@ -148,7 +150,7 @@ void cpu_exec(uint64_t n,bool is_ref) {
     case NEMU_RUNNING: nemu_state.state = NEMU_STOP; break;
 
     case NEMU_END: case NEMU_ABORT:
-      if(nemu_state.state==NEMU_ABORT||nemu_state.halt_ret!=0){iputIringbuf(); mputIringbuf();};
+      if(nemu_state.state==NEMU_ABORT||nemu_state.halt_ret!=0){iputIringbuf();  mputIringbuf();};
       Log("nemu: %s at pc = " FMT_WORD,
           (nemu_state.state == NEMU_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED):
            (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN):

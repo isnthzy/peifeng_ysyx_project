@@ -14,38 +14,33 @@ int printf(const char *fmt, ...) {
   putstr(out_buffer);
   va_end(args);
   return len;
-  // panic("Not implemented");
 }
 
-#include <stdlib.h>
-
-// char* gSpaces(int length) { //空格生成器
-//   if (length < 0) {
-//     return NULL;
-//   }
-//   char* spaces=(char*)malloc((length + 1)*sizeof(char)); 
-//   for (int i=0;i<length;i++) {
-//     spaces[i]=' ';
-//   }
-//   spaces[length] = '\0'; // Null-terminate the string
-//   return spaces;
-// }
+char* gSpaces(int glength) { //空格生成器
+  if (glength < 0) {
+    return NULL;
+  }
+  static char spaces[128]; // 假设最大长度为 1000
+  for (int i=0;i<glength;i++) {
+    spaces[i]=' ';
+  }
+  spaces[glength]='\0'; // 字符串以 null 结尾
+  return spaces;
+}
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
-  *out = '\0';
-  char *s, c;
-  int d, i, width;
-
-  for (i = 0; fmt[i] != '\0'; i++) {
-    if (fmt[i] != '%') {
-        strncat(out, &fmt[i], 1);
-        continue;
+  *out='\0';
+  char *s,c;
+  int d,i;
+  for (i=0;fmt[i]!='\0';i++) {
+    if (fmt[i]!='%') {
+      strncat(out,&fmt[i],1);
+      continue;
     }
     i++;
-    width = 0;
-    // 解析宽度字段
-    while (fmt[i] >= '0' && fmt[i] <= '9') {
-      width = width * 10 + (fmt[i] - '0');
+    int width=-1;
+    while (fmt[i]>='0'&&fmt[i]<='9') {
+      width=width*10+(fmt[i]-'0');
       i++;
     }
     switch (fmt[i]) {
@@ -56,7 +51,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       case 'd':
         d = va_arg(ap, int);
         char tmp[30];
-        itoa(d, tmp,10);
+        itoa(d,tmp,10);
         strcat(out, tmp);
         break;
       case 'c':
@@ -66,7 +61,6 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
     }
   }
   return 0;
-  // panic("Not implemented");
 }
 
 int sprintf(char *out, const char *fmt, ...) { //fmt可以当个字符串处理
@@ -75,17 +69,14 @@ int sprintf(char *out, const char *fmt, ...) { //fmt可以当个字符串处理
   int len = vsprintf(out, fmt, ap);
   va_end(ap);
   return len;
-  // panic("Not implemented");
 }
 
 int snprintf(char *out, size_t n, const char *fmt, ...) {
   return 0;
-  // panic("Not implemented");
 }
 
 int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
   return 0;
-  // panic("Not implemented");
 }
 
 #endif

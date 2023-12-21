@@ -30,6 +30,7 @@
     log_write(format "\n", ## __VA_ARGS__); \
   } while (0)
 
+
 #define Assert(cond, format, ...) \
   do { \
     if (!(cond)) { \
