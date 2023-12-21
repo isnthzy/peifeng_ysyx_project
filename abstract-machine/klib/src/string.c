@@ -10,6 +10,7 @@ size_t strlen(const char *s) {
     i++;
   }
   return i;
+  // panic("Not implemented");
 }
 
 char *stpcpy(char *restrict dst, const char *restrict src){
@@ -21,6 +22,7 @@ char *stpcpy(char *restrict dst, const char *restrict src){
 char *strcpy(char *dst, const char *src) {
   stpcpy(dst, src);
   return dst;
+  // panic("Not implemented");
 }
 
 char *strncpy(char *dst, const char *src, size_t n) {
@@ -32,11 +34,13 @@ char *strncpy(char *dst, const char *src, size_t n) {
   //   if(src[i+1]=='\0') dst[i+1]=src[i+1];
   // }
   return dst;
+  // panic("Not implemented");
 }
 
 char *strcat(char *dst, const char *src) {
   stpcpy(dst + strlen(dst), src);
   return dst;
+  // panic("Not implemented");
 }
 char *strncat(char *dst, const char *src, size_t n){
   size_t dst_len = strlen(dst);
@@ -48,7 +52,9 @@ char *strncat(char *dst, const char *src, size_t n){
   dst[dst_len + i] = '\0';
 
   return dst;
-
+  // stpcpy(dst + n, src);
+  // return dst;
+  // panic("Not implemented");
 }
 
 int strcmp(const char *s1, const char *s2) {
@@ -65,6 +71,7 @@ int strcmp(const char *s1, const char *s2) {
   }else{
     return retn;
   }
+  // panic("Not implemented");
 }
 
 int strncmp(const char *s1, const char *s2, size_t n) {
@@ -79,6 +86,7 @@ int strncmp(const char *s1, const char *s2, size_t n) {
     }
   }
   return 0;
+  // panic("Not implemented");
 }
 
 void *memset(void *s, int c, size_t n) {
@@ -90,11 +98,12 @@ void *memset(void *s, int c, size_t n) {
     *set++=c;
   }
   return s;
+  // panic("Not implemented");
 }
 
-// void *memmove(void *dst, const void *src, size_t n) {
-//   return;
-// }
+void *memmove(void *dst, const void *src, size_t n) {
+  panic("Not implemented");
+}
 
 void *memcpy(void *out, const void *in, size_t n) {
   if(out==NULL||in==NULL){
@@ -112,12 +121,13 @@ void *memcpy(void *out, const void *in, size_t n) {
     }
   }
   return ret;
+  // panic("Not implemented");
 }
 
 int memcmp(const void *s1, const void *s2, size_t n) {
   if(s1==NULL||s2==NULL){
-    return -1;
-    // assert(0);
+    // return NULL;
+    assert(0);
   }
   size_t i=0;
   for(i=0;i<n;i++){
@@ -130,6 +140,7 @@ int memcmp(const void *s1, const void *s2, size_t n) {
     }
   }
   return 0;
+  // panic("Not implemented");
 }
 
 #endif
