@@ -58,8 +58,7 @@
         "klib.h": "c",
         "typeindex": "c",
         "typeinfo": "c",
-        "sstream": "c",
-        "iringbuf.h": "c"
+        "sstream": "c"
     },
     "C_Cpp.intelliSenseEngine": "default",  //  需要添加的
 

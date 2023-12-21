@@ -49,7 +49,7 @@ void init_elf(const char *elf_file){
     char string_table[string_table_header.sh_size];
     result=fread(string_table, string_table_header.sh_size, 1, file);
     // 查找符号表节和字符串表节
-    Elf_Shdr symtab_header={};
+    Elf_Shdr symtab_header;
     for (int i = 0; i < section_header_entry_count; ++i) {
         if (section_headers[i].sh_type == SHT_SYMTAB) {
             symtab_header = section_headers[i];
@@ -101,10 +101,11 @@ static void remove_tail_rec() {
 }
 
 void generateSpaces(int length, char* spaces) {
-    spaces[0] = '\0'; 
+    spaces[0] = '\0'; // 确保初始为空字符串
     char space[] = " "; // 单个空格字符
-    while (--length > 0) {
-        strcat(spaces, space);
+    while (length>0) {
+        strncat(spaces, space, sizeof(space) - 1);
+        length--;
     }
 }
 void func_call(paddr_t pc,paddr_t dnpc,bool is_tail){

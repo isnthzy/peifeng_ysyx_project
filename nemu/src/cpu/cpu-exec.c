@@ -31,8 +31,6 @@ uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 IRingBuffer iring_buffer;
-IRingBuffer mtrace_buffer;
-extern void mputIringbuf();
 void device_update();
 void wp_trace();
 
@@ -108,19 +106,17 @@ static void statistic() {
   else Log("Finish running in less than 1 us and can not calculate the simulation frequency");
 }
 
-
-void iputIringbuf(){
-  while(!isIRingBufferEmpty(&iring_buffer)){
-    char pop_iringbufdata[100];
-    dequeueIRingBuffer(&iring_buffer,pop_iringbufdata);
-    if(iring_buffer.size==0) wLog("[itrace]-->%s",pop_iringbufdata);
-    else wLog("[itrace]   %s",pop_iringbufdata);
-  }
-}
-
 void assert_fail_msg() {
   isa_reg_display();
   statistic();
+}
+void putIringbuf(){
+  while(!isIRingBufferEmpty(&iring_buffer)){
+    char pop_iringbufdata[100];
+    dequeueIRingBuffer(&iring_buffer,pop_iringbufdata);
+    if(iring_buffer.size==0) Log("-->%s",pop_iringbufdata);
+    else Log("   %s",pop_iringbufdata);
+  }
 }
 
 /* Simulate how the CPU works. */
@@ -129,7 +125,6 @@ void cpu_exec(uint64_t n,bool is_ref) {
   if(!init_iringbuf_f){
     init_iringbuf_f=true;
     initializeIRingBuffer(&iring_buffer);
-    initializeIRingBuffer(&mtrace_buffer);
   } //初始化iringbuffer,只初始化一次
   g_print_step = (n < MAX_INST_TO_PRINT);
   switch (nemu_state.state) {
@@ -150,7 +145,7 @@ void cpu_exec(uint64_t n,bool is_ref) {
     case NEMU_RUNNING: nemu_state.state = NEMU_STOP; break;
 
     case NEMU_END: case NEMU_ABORT:
-      if(nemu_state.state==NEMU_ABORT||nemu_state.halt_ret!=0){iputIringbuf();  mputIringbuf();};
+      if(nemu_state.state==NEMU_ABORT||nemu_state.halt_ret!=0) putIringbuf();
       Log("nemu: %s at pc = " FMT_WORD,
           (nemu_state.state == NEMU_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED):
            (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN):

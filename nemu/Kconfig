@@ -162,11 +162,6 @@ config FTRACE
   bool "Enable function tracer"
   default n
 
-config WP_TRACE
-  depends on TRACE
-  bool "Enable watchpoint tracer"
-  default n
-
 config DIFFTEST
   depends on TARGET_NATIVE_ELF
   bool "Enable differential testing"

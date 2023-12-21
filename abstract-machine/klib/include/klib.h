@@ -9,10 +9,10 @@
 extern "C" {
 #endif
 
-// #define __NATIVE_USE_KLIB__
+#define __NATIVE_USE_KLIB__
 
 // string.h
-char  *stpcpy    (char *dst, const char *src);
+char  *stpcpy    (char *restrict dst, const char *restrict src);
 void  *memset    (void *s, int c, size_t n);
 void  *memcpy    (void *dst, const void *src, size_t n);
 void  *memmove   (void *dst, const void *src, size_t n);
