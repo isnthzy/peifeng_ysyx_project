@@ -65,15 +65,19 @@ void init_mem() {
 }
 
 word_t paddr_read(paddr_t addr, int len,int model) {
+  word_t tmp_rdata; //警惕切换riscv64会造成的段错误
+  if (likely(in_pmem(addr))){
+    tmp_rdata=pmem_read(addr, len);
+    return tmp_rdata;
+  }
+  IFDEF(CONFIG_DEVICE, tmp_rdata=mmio_read(addr, len); return tmp_rdata;);
   #ifdef CONFIG_MTRACE
-  // if(model==1){
-  //   char mtrace_logbuf[120];
-  //   sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",cpu.pc,addr,pmem_read(addr, len));
-  //   enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
-  // }
+  if(model==1){
+    char mtrace_logbuf[120];
+    sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",cpu.pc,addr,tmp_rdata);
+    enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
+  }
   #endif
-  if (likely(in_pmem(addr))) return pmem_read(addr, len);
-  IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
   out_of_bound(addr);
   return 0;
 }
