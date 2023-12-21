@@ -61,7 +61,8 @@
         "sstream": "c",
         "iringbuf.h": "c",
         "stdlib.h": "c",
-        "amtest.h": "c"
+        "amtest.h": "c",
+        "stdarg.h": "c"
     },
     "C_Cpp.intelliSenseEngine": "default",  //  需要添加的
 
