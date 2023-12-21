@@ -128,8 +128,8 @@ bool init_iringbuf_f=false;
 void cpu_exec(uint64_t n,bool is_ref) {
   if(!init_iringbuf_f){
     init_iringbuf_f=true;
-    initializeIRingBuffer(&iring_buffer);
-    initializeIRingBuffer(&mtrace_buffer);
+    initializeIRingBuffer(&iring_buffer,ITRACE_LOGBUF_SIZE);
+    initializeIRingBuffer(&mtrace_buffer,MTRACE_LOGBUF_SIZE);
   } //初始化iringbuffer,只初始化一次
   g_print_step = (n < MAX_INST_TO_PRINT);
   switch (nemu_state.state) {

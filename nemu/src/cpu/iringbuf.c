@@ -2,9 +2,10 @@
 #include <stdbool.h>
 #include <string.h>
 #include "iringbuf.h"
-
+int iring_buffer_size=0;
 // 初始化缓冲区
-void initializeIRingBuffer(IRingBuffer* buffer) {
+void initializeIRingBuffer(IRingBuffer* buffer,int size) {
+    iring_buffer_size=size;
     memset(buffer->buffer, 0, sizeof(buffer->buffer));
     buffer->head = 0;
     buffer->tail = 0;
@@ -29,12 +30,12 @@ bool enqueueIRingBuffer(IRingBuffer* buffer, const char* data) {
     }
     if (isIRingBufferFull(buffer)) {
         // 缓冲区已满，需要先出队一个字符串
-        buffer->tail = (buffer->tail + 1) % BUFFER_SIZE;
+        buffer->tail = (buffer->tail + 1) % iring_buffer_size;
         buffer->size--;
     }
     buffer->size++;
     strcpy(buffer->buffer[buffer->head], data);
-    buffer->head = (buffer->head + 1) % BUFFER_SIZE;
+    buffer->head = (buffer->head + 1) % iring_buffer_size;
     buffer->full = (buffer->head == buffer->tail);
 
     return true;
@@ -47,7 +48,7 @@ bool dequeueIRingBuffer(IRingBuffer* buffer, char* data) {
     }
     buffer->size--;
     strcpy(data, buffer->buffer[buffer->tail]);
-    buffer->tail = (buffer->tail + 1) % BUFFER_SIZE;
+    buffer->tail = (buffer->tail + 1) % iring_buffer_size;
     buffer->full = false;
 
     return true;
