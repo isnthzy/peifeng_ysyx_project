@@ -91,9 +91,9 @@ void *malloc(size_t size) {
     *p = 0;
   }
   assert((uintptr_t)hbrk-(uintptr_t)heap.start<=0);
-// #endif
   return old;
-  // return NULL;
+// #endif  
+  return NULL;
 }
 
 void free(void *ptr) {
