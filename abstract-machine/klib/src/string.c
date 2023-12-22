@@ -92,9 +92,23 @@ void *memset(void *s, int c, size_t n) {
   return s;
 }
 
-// void *memmove(void *dst, const void *src, size_t n) {
-//   return;
-// }
+void *memmove(void *dst, const void *src, size_t n) {
+  if(dst==NULL||src==NULL){
+    return NULL;
+  }
+  void *ret=dst;
+  size_t i=0;
+  if(dst<=src||(char*)dst>=(char*)src+n){
+    for(i=0;i<n;i++){
+      *((char *)dst+i)= *((char *)src+i);
+    }
+  }else{
+    for(i=n-1;i>0;i--){
+      *((char *)dst+i)= *((char *)src+i);
+    }
+  }
+  return ret;
+}
 
 void *memcpy(void *out, const void *in, size_t n) {
   if(out==NULL||in==NULL){
