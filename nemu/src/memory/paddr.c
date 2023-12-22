@@ -39,6 +39,7 @@ static void pmem_write(paddr_t addr, int len, word_t data) {
 }
 
 extern void iputIringbuf();
+extern void dputIringbuf();
 void mputIringbuf(){
   while(!isIRingBufferEmpty(&mtrace_buffer)){
     char pop_iringbufdata[100];
@@ -51,6 +52,7 @@ void mputIringbuf(){
 static void out_of_bound(paddr_t addr) {
   iputIringbuf();
   mputIringbuf();
+  dputIringbuf();
   panic("(nemu)address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
       addr, PMEM_LEFT, PMEM_RIGHT, cpu.pc);
 }
@@ -67,12 +69,11 @@ void init_mem() {
 word_t paddr_read(paddr_t addr, int len,int model) {
   #ifdef CONFIG_MTRACE //警惕切换riscv64会造成的段错误
   if(model==1){
-    word_t tmp_rdata;
-    if(likely(in_pmem(addr))) tmp_rdata=pmem_read(addr, len);
-    else if(CONFIG_DEVICE) tmp_rdata=mmio_read(addr, len);
-    char mtrace_logbuf[120];
-    sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",cpu.pc,addr,tmp_rdata);
-    enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
+    if(likely(in_pmem(addr))){
+      char mtrace_logbuf[120];
+      sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",cpu.pc,addr,pmem_read(addr, len));
+      enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
+    }
   }
   #endif
   if (likely(in_pmem(addr))) return pmem_read(addr, len);
