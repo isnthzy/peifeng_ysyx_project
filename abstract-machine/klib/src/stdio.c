@@ -16,13 +16,13 @@ int printf(const char *fmt, ...) {
   return len;
 }
 
-char* gSpaces(int glength) { //空格生成器
+char* gSpaces(int glength,char g_char) { //空格生成器
   if (glength < 0) {
     return NULL;
   }
-  static char spaces[128]; // 假设最大长度为 1000
+  static char spaces[128]; // 假设最大长度为 128
   for (int i=0;i<glength;i++) {
-    spaces[i]=' ';
+    spaces[i]=g_char;
   }
   spaces[glength]='\0'; // 字符串以 null 结尾
   return spaces;
@@ -38,20 +38,29 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       continue;
     }
     i++;
-    int width=-1;
-    while (fmt[i]>='0'&&fmt[i]<='9') {
+    int width=0;
+    char g_char=' ';
+    if(fmt[i]=='0'){
+      g_char='0';
+      i++;
+    }
+    while (fmt[i]>='1'&&fmt[i]<='9') {
       width=width*10+(fmt[i]-'0');
       i++;
     }
     switch (fmt[i]) {
       case 's':
         s = va_arg(ap, char*);
+        int s_length=strlen(s);
+        if(s_length<width) strcat(out,gSpaces(width-s_length,g_char));
         strcat(out, s);
         break;
       case 'd':
         d = va_arg(ap, int);
         char tmp[30];
         itoa(d,tmp,10);
+        int d_length=strlen(tmp);
+        if(d_length<width) strcat(out,gSpaces(width-d_length,g_char));
         strcat(out, tmp);
         break;
       case 'c':

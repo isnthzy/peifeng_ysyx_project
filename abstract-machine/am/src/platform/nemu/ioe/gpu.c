@@ -7,6 +7,9 @@ void __am_gpu_init() {
 }
 
 void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
+  uint32_t tmp_gpu_config=inl(VGACTL_ADDR);
+  int tmp_config_low=(int)(tmp_gpu_config&0xFFFF);
+  int tmp_config_high=(int)((tmp_gpu_config>>16)&0xFFFF);
   *cfg = (AM_GPU_CONFIG_T) {
     .present = true, .has_accel = false,
     .width = 0, .height = 0,
