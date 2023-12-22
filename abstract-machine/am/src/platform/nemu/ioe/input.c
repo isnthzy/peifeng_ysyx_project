@@ -5,6 +5,6 @@
 
 void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
   uint32_t tmp_key=inl(KBD_ADDR);
-  kbd->keydown = tmp_key>>31;
+  kbd->keydown = (bool)((tmp_key>>31)&1);
   kbd->keycode = tmp_key;
 }
