@@ -21,7 +21,10 @@ static uint32_t *rtc_port_base = NULL;
 
 static void rtc_io_handler(uint32_t offset, int len, bool is_write) {
   assert(offset == 0 || offset == 4);
-  if (!is_write && offset == 4) {
+  //写入的地址分别为addr+0-4和addr+4-8.
+  //!is_write && offset == 4时，低位是4-8位，高位是0-3位
+  //同样offset == 0是，低位是0-3位，高位是4-8位
+  if (!is_write && offset == 0) {
     uint64_t us = get_time();
     rtc_port_base[0] = (uint32_t)us;
     rtc_port_base[1] = us >> 32;
