@@ -32,7 +32,9 @@ static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 IRingBuffer iring_buffer;
 IRingBuffer mtrace_buffer;
+IRingBuffer dtrace_buffer;
 extern void mputIringbuf();
+extern void dputIringbuf();
 void device_update();
 void wp_trace();
 
@@ -130,6 +132,7 @@ void cpu_exec(uint64_t n,bool is_ref) {
     init_iringbuf_f=true;
     initializeIRingBuffer(&iring_buffer,ITRACE_LOGBUF_SIZE);
     initializeIRingBuffer(&mtrace_buffer,MTRACE_LOGBUF_SIZE);
+    initializeIRingBuffer(&dtrace_buffer,DTRACE_LOGBUF_SIZE);
   } //初始化iringbuffer,只初始化一次
   g_print_step = (n < MAX_INST_TO_PRINT);
   switch (nemu_state.state) {
@@ -150,7 +153,7 @@ void cpu_exec(uint64_t n,bool is_ref) {
     case NEMU_RUNNING: nemu_state.state = NEMU_STOP; break;
 
     case NEMU_END: case NEMU_ABORT:
-      if(nemu_state.state==NEMU_ABORT||nemu_state.halt_ret!=0){iputIringbuf();  mputIringbuf();};
+      if(nemu_state.state==NEMU_ABORT||nemu_state.halt_ret!=0){iputIringbuf();  mputIringbuf(); dputIringbuf();};
       Log("nemu: %s at pc = " FMT_WORD,
           (nemu_state.state == NEMU_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED):
            (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN):

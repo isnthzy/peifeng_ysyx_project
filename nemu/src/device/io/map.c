@@ -17,7 +17,8 @@
 #include <memory/host.h>
 #include <memory/vaddr.h>
 #include <device/map.h>
-
+#include "../../cpu/iringbuf.h"
+extern IRingBuffer dtrace_buffer;
 #define IO_SPACE_MAX (2 * 1024 * 1024)
 
 static uint8_t *io_space = NULL;
@@ -52,12 +53,26 @@ void init_map() {
   p_space = io_space;
 }
 
+void dputIringbuf(){
+  while(!isIRingBufferEmpty(&dtrace_buffer)){
+    char pop_iringbufdata[100];
+    dequeueIRingBuffer(&dtrace_buffer,pop_iringbufdata);
+    if(dtrace_buffer.num==0) wLog("[dtrace]-->%s",pop_iringbufdata);
+    else wLog("[dtrace]   %s",pop_iringbufdata);
+  }
+}
+
 word_t map_read(paddr_t addr, int len, IOMap *map) {
   assert(len >= 1 && len <= 8);
   check_bound(map, addr);
   paddr_t offset = addr - map->low;
   invoke_callback(map->callback, offset, len, false); // prepare data to read
   word_t ret = host_read(map->space + offset, len);
+  #ifdef CONFIG_DTRACE
+    char dtrace_logbuf[120];
+    sprintf(dtrace_logbuf,"pc:0x%08x name:%s addr:0x%x rdata:0x%08x offset:%d",cpu.pc,map->name,addr,ret,offset);
+    enqueueIRingBuffer(&dtrace_buffer,dtrace_logbuf);
+  #endif
   return ret;
 }
 
@@ -66,5 +81,10 @@ void map_write(paddr_t addr, int len, word_t data, IOMap *map) {
   check_bound(map, addr);
   paddr_t offset = addr - map->low;
   host_write(map->space + offset, len, data);
+  #ifdef CONFIG_DTRACE
+    char dtrace_logbuf[120];
+    sprintf(dtrace_logbuf,"pc:0x%08x name:%s addr:0x%x wdata:0x%08x offset:%d",cpu.pc,map->name,addr,data,offset);
+    enqueueIRingBuffer(&dtrace_buffer,dtrace_logbuf);
+  #endif
   invoke_callback(map->callback, offset, len, true);
 }
