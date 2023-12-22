@@ -121,6 +121,9 @@ void iputIringbuf(){
 }
 
 void assert_fail_msg() {
+  iputIringbuf();
+  mputIringbuf();
+  dputIringbuf();
   isa_reg_display();
   statistic();
 }
