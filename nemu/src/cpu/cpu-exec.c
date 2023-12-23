@@ -121,9 +121,11 @@ void iputIringbuf(){
 }
 
 void assert_fail_msg() {
+  #ifdef CONFIG_TRACE
   iputIringbuf();
   mputIringbuf();
   dputIringbuf();
+  #endif
   isa_reg_display();
   statistic();
 }
@@ -131,12 +133,14 @@ void assert_fail_msg() {
 /* Simulate how the CPU works. */
 bool init_iringbuf_f=false;
 void cpu_exec(uint64_t n,bool is_ref) {
+  #ifdef CONFIG_TRACE
   if(!init_iringbuf_f){
     init_iringbuf_f=true;
     initializeIRingBuffer(&iring_buffer,ITRACE_LOGBUF_SIZE);
     initializeIRingBuffer(&mtrace_buffer,MTRACE_LOGBUF_SIZE);
     initializeIRingBuffer(&dtrace_buffer,DTRACE_LOGBUF_SIZE);
   } //初始化iringbuffer,只初始化一次
+  #endif
   g_print_step = (n < MAX_INST_TO_PRINT);
   switch (nemu_state.state) {
     case NEMU_END: case NEMU_ABORT:
