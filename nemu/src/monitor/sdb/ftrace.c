@@ -23,48 +23,110 @@ void init_elf(const char *elf_file){
         return ;
     }
     else Log("Ftrace: ON");
-    FILE* file = fopen(elf_file, "rb");//以只读的形式打开elf_file
-    if(!file){
-        Log("文件打开失败!\n");
-        assert(0);
-    }
-    size_t result;
+    // FILE* file = fopen(elf_file, "rb");//以只读的形式打开elf_file
+    // if(!file){
+    //     Log("文件打开失败!\n");
+    //     assert(0);
+    // }
+    // size_t result;
     
-    // 读取 ELF 文件的头部信息
-    Elf_Ehdr elf_header;
-    result=fread(&elf_header, sizeof(Elf_Ehdr), 1, file);
-    if (result== 0) assert(0);
-    // 获取节头表的偏移量和条目数量
-    Elf_Off section_header_offset = elf_header.e_shoff;
-    Elf_Half section_header_entry_count = elf_header.e_shnum;
-    // 定位到节头表
-    fseek(file, section_header_offset, SEEK_SET);
-    // 读取节头表
-    Elf_Shdr section_headers[section_header_entry_count];
-    result=fread(section_headers, sizeof(Elf_Shdr), section_header_entry_count, file);
-    // 定位到字符串表节
-    Elf_Shdr string_table_header = section_headers[elf_header.e_shstrndx];
-    fseek(file, string_table_header.sh_offset, SEEK_SET);
-    // 读取字符串表内容
-    char string_table[string_table_header.sh_size];
-    result=fread(string_table, string_table_header.sh_size, 1, file);
-    // 查找符号表节和字符串表节
-    Elf_Shdr symtab_header={};
-    for (int i = 0; i < section_header_entry_count; ++i) {
-        if (section_headers[i].sh_type == SHT_SYMTAB) {
-            symtab_header = section_headers[i];
+    // // 读取 ELF 文件的头部信息
+    // Elf_Ehdr elf_header;
+    // result=fread(&elf_header, sizeof(Elf_Ehdr), 1, file);
+    // if (result== 0) assert(0);
+    // // 获取节头表的偏移量和条目数量
+    // Elf_Off section_header_offset = elf_header.e_shoff;
+    // Elf_Half section_header_entry_count = elf_header.e_shnum;
+    // // 定位到节头表
+    // fseek(file, section_header_offset, SEEK_SET);
+    // // 读取节头表
+    // Elf_Shdr section_headers[section_header_entry_count];
+    // result=fread(section_headers, sizeof(Elf_Shdr), section_header_entry_count, file);
+    // // 定位到字符串表节
+    // Elf_Shdr string_table_header = section_headers[elf_header.e_shstrndx];
+    // fseek(file, string_table_header.sh_offset, SEEK_SET);
+    // // 读取字符串表内容
+    // char string_table[string_table_header.sh_size];
+    // result=fread(string_table, string_table_header.sh_size, 1, file);
+    // // 查找符号表节和字符串表节
+    // Elf_Shdr symtab_header={};
+    // for (int i = 0; i < section_header_entry_count; ++i) {
+    //     if (section_headers[i].sh_type == SHT_SYMTAB) {
+    //         symtab_header = section_headers[i];
+    //     }
+    // }
+    // // 定位到符号表节
+    // fseek(file, symtab_header.sh_offset, SEEK_SET);
+    // // 计算符号表中的符号数量
+    // size_t symbol_count = symtab_header.sh_size / symtab_header.sh_entsize;
+
+    // if (elf_file == NULL)
+    //     return;
+    // // 打开ELF文件
+    // FILE *fp = fopen(elf_file, "rb");
+    // Assert(fp, "Can not open '%s'", elf_file);
+
+    if (elf_file == NULL)
+        return;
+    // 打开ELF文件
+    FILE *fp = fopen(elf_file, "rb");
+    Assert(fp, "Can not open '%s'", elf_file);
+
+    // 读取ELF header
+    Elf32_Ehdr elf_header;
+    if (fread(&elf_header, sizeof(Elf32_Ehdr), 1, fp) <= 0) {
+        fclose(fp);
+        exit(EXIT_FAILURE);
+    }
+
+    // 检查文件是否为ELF文件
+    if (memcmp(elf_header.e_ident, ELFMAG, SELFMAG) != 0) {
+        fprintf(stderr, "Not an ELF file\n");
+        fclose(fp);
+        exit(EXIT_FAILURE);
+    }
+
+    // 移动到Section header table,寻找字符表节
+    fseek(fp, elf_header.e_shoff, SEEK_SET);
+    Elf32_Shdr strtab_header;
+    while (1) {
+        if (fread(&strtab_header, sizeof(Elf32_Shdr), 1, fp) <= 0) {
+            fclose(fp);
+            exit(EXIT_FAILURE);
+        }
+        if (strtab_header.sh_type == SHT_STRTAB) {
+            break;
         }
     }
-    // 定位到符号表节
-    fseek(file, symtab_header.sh_offset, SEEK_SET);
-    // 计算符号表中的符号数量
+
+    // 读取字符串表内容
+    char *string_table = malloc(strtab_header.sh_size);
+    fseek(fp, strtab_header.sh_offset, SEEK_SET);
+    if (fread(string_table, strtab_header.sh_size, 1, fp) <= 0) {
+        fclose(fp);
+        exit(EXIT_FAILURE);
+    }
+
+    // 寻找符号表节
+    Elf32_Shdr symtab_header;
+    fseek(fp, elf_header.e_shoff, SEEK_SET);
+    while (1) {
+        if (fread(&symtab_header, sizeof(Elf32_Shdr), 1, fp) <= 0) {
+            fclose(fp);
+            exit(EXIT_FAILURE);
+        }
+        if (symtab_header.sh_type == SHT_SYMTAB) {
+            break;
+        }
+    }
     size_t symbol_count = symtab_header.sh_size / symtab_header.sh_entsize;
+    /* 读取符号表中的每个符号项 */ 
 
-
+    fseek(fp, symtab_header.sh_offset, SEEK_SET);
     Elf32_Sym symbol;
     for (size_t i = 0; i < symbol_count; ++i) {
-        if (fread(&symbol, sizeof(Elf32_Sym), 1,file) <= 0 ) {
-            fclose(file);
+        if (fread(&symbol, sizeof(Elf32_Sym), 1,fp) <= 0 ) {
+            fclose(fp);
             exit(EXIT_FAILURE);
         }
         // 判断符号是否为函数，并且函数的大小不为零
@@ -80,7 +142,7 @@ void init_elf(const char *elf_file){
             func_cnt++; //func_cnt用于只筛出来符合要求的函数
         }
     }
-
+    fclose(fp);
     // // 读取符号表
     // Elf_Sym symbols[symbol_count];
     // result=fread(symbols, sizeof(Elf64_Sym), symbol_count, file);
@@ -98,7 +160,7 @@ void init_elf(const char *elf_file){
     //         func_cnt++; //func_cnt用于只筛出来符合要求的函数
     //     }
     // }
-    fclose(file);
+    // fclose(file);
 }
 
 /*ftrace追踪内容*/
