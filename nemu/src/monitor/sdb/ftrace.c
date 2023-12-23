@@ -23,62 +23,19 @@ void init_elf(const char *elf_file){
         return ;
     }
     else Log("Ftrace: ON");
-    // FILE* file = fopen(elf_file, "rb");//以只读的形式打开elf_file
-    // if(!file){
-    //     Log("文件打开失败!\n");
-    //     assert(0);
-    // }
-    // size_t result;
-    
-    // // 读取 ELF 文件的头部信息
-    // Elf_Ehdr elf_header;
-    // result=fread(&elf_header, sizeof(Elf_Ehdr), 1, file);
-    // if (result== 0) assert(0);
-    // // 获取节头表的偏移量和条目数量
-    // Elf_Off section_header_offset = elf_header.e_shoff;
-    // Elf_Half section_header_entry_count = elf_header.e_shnum;
-    // // 定位到节头表
-    // fseek(file, section_header_offset, SEEK_SET);
-    // // 读取节头表
-    // Elf_Shdr section_headers[section_header_entry_count];
-    // result=fread(section_headers, sizeof(Elf_Shdr), section_header_entry_count, file);
-    // // 定位到字符串表节
-    // Elf_Shdr string_table_header = section_headers[elf_header.e_shstrndx];
-    // fseek(file, string_table_header.sh_offset, SEEK_SET);
-    // // 读取字符串表内容
-    // char string_table[string_table_header.sh_size];
-    // result=fread(string_table, string_table_header.sh_size, 1, file);
-    // // 查找符号表节和字符串表节
-    // Elf_Shdr symtab_header={};
-    // for (int i = 0; i < section_header_entry_count; ++i) {
-    //     if (section_headers[i].sh_type == SHT_SYMTAB) {
-    //         symtab_header = section_headers[i];
-    //     }
-    // }
-    // // 定位到符号表节
-    // fseek(file, symtab_header.sh_offset, SEEK_SET);
-    // // 计算符号表中的符号数量
-    // size_t symbol_count = symtab_header.sh_size / symtab_header.sh_entsize;
-
-
     if (elf_file == NULL)
         return;
     // 打开ELF文件
     FILE *file = fopen(elf_file, "rb");
-    Assert(file, "Can not open '%s'", elf_file);
-
-    // 读取ELF header
+    if(!file){
+        Log("文件打开失败!\n");
+        assert(0);
+    }
+    // 读取 ELF 文件的头部信息
     Elf32_Ehdr elf_header;
     if (fread(&elf_header, sizeof(Elf32_Ehdr), 1, file) <= 0) {
         fclose(file);
-        exit(EXIT_FAILURE);
-    }
-
-    // 检查文件是否为ELF文件
-    if (memcmp(elf_header.e_ident, ELFMAG, SELFMAG) != 0) {
-        fprintf(stderr, "Not an ELF file\n");
-        fclose(file);
-        exit(EXIT_FAILURE);
+        assert(0);
     }
 
     // 移动到Section header table,寻找字符表节
@@ -87,15 +44,13 @@ void init_elf(const char *elf_file){
     while (1) {
         if (fread(&strtab_header, sizeof(Elf32_Shdr), 1, file) <= 0) {
             fclose(file);
-            exit(EXIT_FAILURE);
+            assert(0);
         }
-        if (strtab_header.sh_type == SHT_STRTAB) {
-            break;
-        }
+        if (strtab_header.sh_type == SHT_STRTAB) break;
     }
 
     // 读取字符串表内容
-    char *string_table = malloc(strtab_header.sh_size);
+    char string_table[strtab_header.sh_size];
     fseek(file, strtab_header.sh_offset, SEEK_SET);
     if (fread(string_table, strtab_header.sh_size, 1, file) <= 0) {
         fclose(file);
@@ -103,27 +58,14 @@ void init_elf(const char *elf_file){
     }
 
     // 寻找符号表节
-    // Elf32_Shdr symtab_header;
-    // fseek(file, elf_header.e_shoff, SEEK_SET);
-    // while (1) {
-    //     if (fread(&symtab_header, sizeof(Elf32_Shdr), 1, file) <= 0) {
-    //         fclose(file);
-    //         exit(EXIT_FAILURE);
-    //     }
-    //     if (symtab_header.sh_type == SHT_SYMTAB) {
-    //         break;
-    //     }
-    // }
-    Elf_Shdr section_headers[elf_header.e_shoff];
-    if(fread(section_headers, sizeof(Elf32_Shdr),elf_header.e_shnum, file)<=0){
-        assert(0);
-    }
-    Elf_Shdr symtab_header={};
-    for (int i = 0; i < elf_header.e_shnum; ++i) {
-        if (section_headers[i].sh_type == SHT_SYMTAB) {
-            symtab_header = section_headers[i];
-            break;
+    Elf32_Shdr symtab_header;
+    fseek(file, elf_header.e_shoff, SEEK_SET);
+    while (1) {
+        if (fread(&symtab_header, sizeof(Elf32_Shdr), 1, file) <= 0) {
+            fclose(file);
+            assert(0);
         }
+        if (symtab_header.sh_type == SHT_SYMTAB) break;
     }
 
     // 计算符号表中的符号数量
