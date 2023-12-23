@@ -142,7 +142,7 @@ void init_elf(const char *elf_file){
     fseek(fp, symtab_header.sh_offset, SEEK_SET);
     Elf_Sym symbols[symbol_count];
     
-    size_t result=fread(symbols, sizeof(Elf64_Sym), symbol_count, fp);
+    size_t result=fread(symbols, sizeof(Elf32_Sym), symbol_count, fp);
     if(result<=0) assert(0);
     // 遍历符号表，筛选出类型为FUNC的符号
     for (size_t i = 0; i < symbol_count; ++i) {
