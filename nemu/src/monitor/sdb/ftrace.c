@@ -32,17 +32,17 @@ void init_elf(const char *elf_file){
         assert(0);
     }
     // 读取 ELF 文件的头部信息
-    Elf32_Ehdr elf_header;
-    if (fread(&elf_header, sizeof(Elf32_Ehdr), 1, file) <= 0) {
+    Elf_Ehdr elf_header;
+    if (fread(&elf_header, sizeof(Elf_Ehdr), 1, file) <= 0) {
         fclose(file);
         assert(0);
     }
 
     // 移动到Section header table,寻找字符表节
     fseek(file, elf_header.e_shoff, SEEK_SET);
-    Elf32_Shdr strtab_header;
+    Elf_Shdr strtab_header;
     while (1) {
-        if (fread(&strtab_header, sizeof(Elf32_Shdr), 1, file) <= 0) {
+        if (fread(&strtab_header, sizeof(Elf_Shdr), 1, file) <= 0) {
             fclose(file);
             assert(0);
         }
@@ -54,14 +54,14 @@ void init_elf(const char *elf_file){
     fseek(file, strtab_header.sh_offset, SEEK_SET);
     if (fread(string_table, strtab_header.sh_size, 1, file) <= 0) {
         fclose(file);
-        exit(EXIT_FAILURE);
+        assert(0);
     }
 
     // 寻找符号表节
-    Elf32_Shdr symtab_header;
+    Elf_Shdr symtab_header;
     fseek(file, elf_header.e_shoff, SEEK_SET);
     while (1) {
-        if (fread(&symtab_header, sizeof(Elf32_Shdr), 1, file) <= 0) {
+        if (fread(&symtab_header, sizeof(Elf_Shdr), 1, file) <= 0) {
             fclose(file);
             assert(0);
         }
@@ -74,7 +74,7 @@ void init_elf(const char *elf_file){
     fseek(file, symtab_header.sh_offset, SEEK_SET);
     Elf_Sym symbols[symbol_count];
     // 读取符号表
-    if(fread(symbols, sizeof(Elf32_Sym), symbol_count, file)<=0){
+    if(fread(symbols, sizeof(Elf_Sym), symbol_count, file)<=0){
         fclose(file);
         assert(0);
     }
