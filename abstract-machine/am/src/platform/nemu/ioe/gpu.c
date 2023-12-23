@@ -17,7 +17,7 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
   // int tmp_config_low=(int)(tmp_gpu_config&0xFFFF);
   // int tmp_config_high=(int)((tmp_gpu_config>>16)&0xFFFF);
   uint32_t tmp_config_low=tmp_gpu_config&0xFFFF;
-  uint32_t tmp_config_high=(tmp_gpu_config>>16)&0xFFFF;
+  uint32_t tmp_config_high=tmp_gpu_config>>16;
   *cfg = (AM_GPU_CONFIG_T) {
     .present = true, .has_accel = false,
     .width = tmp_config_low, .height = tmp_config_high,
