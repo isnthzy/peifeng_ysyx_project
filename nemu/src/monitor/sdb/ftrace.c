@@ -38,14 +38,16 @@ void init_elf(const char *elf_file){
         assert(0);
     }
 
-    // 移动到Section header table,寻找字符表节
+    // 定位到节头表
     fseek(file, elf_header.e_shoff, SEEK_SET);
     Elf_Shdr strtab_header;
+    // 读取节头表并寻找字符串表节
     while (1) {
         if (fread(&strtab_header, sizeof(Elf_Shdr), 1, file) <= 0) {
             fclose(file);
             assert(0);
         }
+        // 找到到字符串表节
         if (strtab_header.sh_type == SHT_STRTAB) break;
     }
 
@@ -57,7 +59,7 @@ void init_elf(const char *elf_file){
         assert(0);
     }
 
-    // 寻找符号表节
+    // 读取节头表并寻找符号表表节
     Elf_Shdr symtab_header;
     fseek(file, elf_header.e_shoff, SEEK_SET);
     while (1) {
@@ -65,6 +67,7 @@ void init_elf(const char *elf_file){
             fclose(file);
             assert(0);
         }
+        //找到符号表表节
         if (symtab_header.sh_type == SHT_SYMTAB) break;
     }
 
