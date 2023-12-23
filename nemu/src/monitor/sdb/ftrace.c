@@ -23,6 +23,7 @@ void init_elf(const char *elf_file){
         return ;
     }
     else Log("Ftrace: ON");
+#ifdef CONFIG_FTRACE
     if (elf_file == NULL)
         return;
     // 打开ELF文件
@@ -96,6 +97,7 @@ void init_elf(const char *elf_file){
         }
     }
     fclose(file);
+#endif
 }
 
 /*ftrace追踪内容*/
