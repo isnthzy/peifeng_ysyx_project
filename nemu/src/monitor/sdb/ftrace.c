@@ -122,45 +122,47 @@ void init_elf(const char *elf_file){
     size_t symbol_count = symtab_header.sh_size / symtab_header.sh_entsize;
     /* 读取符号表中的每个符号项 */ 
 
-    fseek(fp, symtab_header.sh_offset, SEEK_SET);
-    Elf32_Sym symbol;
+    // fseek(fp, symtab_header.sh_offset, SEEK_SET);
+    // Elf32_Sym symbol;
+    // for (size_t i = 0; i < symbol_count; ++i) {
+    //     if (fread(&symbol, sizeof(Elf32_Sym), 1,fp) <= 0 ) {
+    //         fclose(fp);
+    //         exit(EXIT_FAILURE);
+    //     }
+    //     // 判断符号是否为函数，并且函数的大小不为零
+    //     if (ELF64_ST_TYPE(symbol.st_info) == STT_FUNC && symbol.st_size != 0) {
+    //         if(symbol.st_size==0) continue; //不符合的大小直接略过
+    //         // 获取符号的名称
+    //         char* symbol_name=string_table + symbol.st_name;
+    //         strcpy(elf_func[func_cnt].func_name,symbol_name);
+    //         // 获取符号的地址
+    //         elf_func[func_cnt].value=symbol.st_value;
+    //         elf_func[func_cnt].size =symbol.st_size;
+    //         printf("Function: %s\nAddress: 0x%lx %ld(Dec) %lx(Hec)\n",elf_func[func_cnt].func_name,elf_func[func_cnt].value,elf_func[func_cnt].size,elf_func[func_cnt].size);
+    //         func_cnt++; //func_cnt用于只筛出来符合要求的函数
+    //     }
+    // }
+    // fclose(fp);
+    // 读取符号表
+    Elf_Sym symbols[symbol_count];
+    
+    size_t result=fread(symbols, sizeof(Elf64_Sym), symbol_count, fp);
+    if(result<=0) assert(0);
+    // 遍历符号表，筛选出类型为FUNC的符号
     for (size_t i = 0; i < symbol_count; ++i) {
-        if (fread(&symbol, sizeof(Elf32_Sym), 1,fp) <= 0 ) {
-            fclose(fp);
-            exit(EXIT_FAILURE);
-        }
-        // 判断符号是否为函数，并且函数的大小不为零
-        if (ELF64_ST_TYPE(symbol.st_info) == STT_FUNC && symbol.st_size != 0) {
-            if(symbol.st_size==0) continue; //不符合的大小直接略过
+        if (ELF32_ST_TYPE(symbols[i].st_info) == STT_FUNC) {
+            if(symbols[i].st_size==0) continue; //不符合的大小直接略过
             // 获取符号的名称
-            char* symbol_name=string_table + symbol.st_name;
+            char* symbol_name=string_table + symbols[i].st_name;
             strcpy(elf_func[func_cnt].func_name,symbol_name);
             // 获取符号的地址
-            elf_func[func_cnt].value=symbol.st_value;
-            elf_func[func_cnt].size =symbol.st_size;
+            elf_func[func_cnt].value=symbols[i].st_value;
+            elf_func[func_cnt].size =symbols[i].st_size;
             printf("Function: %s\nAddress: 0x%lx %ld(Dec) %lx(Hec)\n",elf_func[func_cnt].func_name,elf_func[func_cnt].value,elf_func[func_cnt].size,elf_func[func_cnt].size);
             func_cnt++; //func_cnt用于只筛出来符合要求的函数
         }
     }
     fclose(fp);
-    // // 读取符号表
-    // Elf_Sym symbols[symbol_count];
-    // result=fread(symbols, sizeof(Elf64_Sym), symbol_count, file);
-    // // 遍历符号表，筛选出类型为FUNC的符号
-    // for (size_t i = 0; i < symbol_count; ++i) {
-    //     if (ELF32_ST_TYPE(symbols[i].st_info) == STT_FUNC) {
-    //         if(symbols[i].st_size==0) continue; //不符合的大小直接略过
-    //         // 获取符号的名称
-    //         char* symbol_name=string_table + symbols[i].st_name;
-    //         strcpy(elf_func[func_cnt].func_name,symbol_name);
-    //         // 获取符号的地址
-    //         elf_func[func_cnt].value=symbols[i].st_value;
-    //         elf_func[func_cnt].size =symbols[i].st_size;
-    //         printf("Function: %s\nAddress: 0x%lx %ld(Dec) %lx(Hec)\n",elf_func[func_cnt].func_name,elf_func[func_cnt].value,elf_func[func_cnt].size,elf_func[func_cnt].size);
-    //         func_cnt++; //func_cnt用于只筛出来符合要求的函数
-    //     }
-    // }
-    // fclose(file);
 }
 
 /*ftrace追踪内容*/
@@ -195,7 +197,7 @@ void func_call(paddr_t pc,paddr_t dnpc,bool is_tail){
     func_depth++;
     if(func_depth<=1) return; //忽略trm_init
     generateSpaces(func_depth,n_spaces);
-    printf("\n0x%x:%s call[%s->%s@0x%x]",pc,n_spaces,find_funcname(pc),find_funcname(dnpc),dnpc);
+    printf("0x%x:%s call[%s->%s@0x%x]",pc,n_spaces,find_funcname(pc),find_funcname(dnpc),dnpc);
     if (is_tail) {
 		insert_tail_rec(pc,dnpc,func_depth-1);
 	}
@@ -203,7 +205,7 @@ void func_call(paddr_t pc,paddr_t dnpc,bool is_tail){
 }
 void func_ret(paddr_t pc){
     generateSpaces(func_depth,n_spaces);
-    printf("\n0x%x:%s ret [%s]\n",pc,n_spaces,find_funcname(pc));
+    printf("0x%x:%s ret [%s]\n",pc,n_spaces,find_funcname(pc));
     func_depth--;
     TailRecNode *node = tail_rec_head->next;
 	if (node != NULL) {
