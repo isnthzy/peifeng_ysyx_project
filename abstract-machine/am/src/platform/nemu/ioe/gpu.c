@@ -24,14 +24,13 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
-  int x = ctl->x, y = ctl->y, w = ctl->w, h = ctl->h;
-  if (!ctl->sync && (w == 0 || h == 0)) return;
-  uint32_t *pixels = ctl->pixels;
+  if (!ctl->sync && (ctl->h== 0 ||ctl->w== 0)) return;
   uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
-  uint32_t screen_w = inl(VGACTL_ADDR) >> 16;
-  for (int i = y; i < y+h; i++) {
-    for (int j = x; j < x+w; j++) {
-      fb[screen_w*i+j] = pixels[w*(i-y)+(j-x)];
+  uint32_t vag_begin=inl(VGACTL_ADDR)>>16;
+  uint32_t *pixels=ctl->pixels;
+  for(int y=ctl->y;y<=ctl->y+ctl->h;y++){
+    for(int x=ctl->x;x<=ctl->x+ctl->w;x++){
+      fb[vag_begin*y+x]=pixels[(y-ctl->y)*ctl->w+(x-ctl->x)];
     }
   }
   if (ctl->sync) {
