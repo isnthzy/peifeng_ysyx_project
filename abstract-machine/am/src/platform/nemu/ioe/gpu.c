@@ -32,9 +32,9 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   //原理就是行优先存储，那么写入也是从行写
   //
   uint32_t *pixels=ctl->pixels;
-  for(int y=ctl->y;y<=ctl->y+ctl->h;y++){
-    for(int x=ctl->x;x<=ctl->x+ctl->w;x++){
-      fb[vag_begin*(y-ctl->y)+(x-ctl->x)]=pixels[(y-ctl->y)*ctl->w+(x-ctl->x)];
+  for(int y=ctl->y;y<ctl->y+ctl->h;y++){
+    for(int x=ctl->x;x<ctl->x+ctl->w;x++){
+      fb[vag_begin*y+x]=pixels[(y-ctl->y)*ctl->w+(x-ctl->x)];
     }
   }
   if (ctl->sync) {
