@@ -24,13 +24,17 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
-  if (!ctl->sync && (ctl->h== 0 ||ctl->w== 0)) return;
-  uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
+  if (!ctl->sync&&(ctl->h==0||ctl->w==0)) return;
+  //如果刷新内容为空，直接返回
+
+  uint32_t *fb =(uint32_t *)(uintptr_t)FB_ADDR;
   uint32_t vag_begin=inl(VGACTL_ADDR)>>16;
+  //原理就是行优先存储，那么写入也是从行写
+  //
   uint32_t *pixels=ctl->pixels;
   for(int y=ctl->y;y<=ctl->y+ctl->h;y++){
     for(int x=ctl->x;x<=ctl->x+ctl->w;x++){
-      fb[vag_begin*y+x]=pixels[(y-ctl->y)*ctl->w+(x-ctl->x)];
+      fb[vag_begin*(y-ctl->y)+(x-ctl->x)]=pixels[(y-ctl->y)*ctl->w+(x-ctl->x)];
     }
   }
   if (ctl->sync) {
