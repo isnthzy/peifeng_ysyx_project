@@ -103,22 +103,39 @@ void init_elf(const char *elf_file){
     }
 
     // 寻找符号表节
-    Elf32_Shdr symtab_header;
-    fseek(file, elf_header.e_shoff, SEEK_SET);
-    while (1) {
-        if (fread(&symtab_header, sizeof(Elf32_Shdr), 1, file) <= 0) {
-            fclose(file);
-            exit(EXIT_FAILURE);
-        }
-        if (symtab_header.sh_type == SHT_SYMTAB) {
+    // Elf32_Shdr symtab_header;
+    // fseek(file, elf_header.e_shoff, SEEK_SET);
+    // while (1) {
+    //     if (fread(&symtab_header, sizeof(Elf32_Shdr), 1, file) <= 0) {
+    //         fclose(file);
+    //         exit(EXIT_FAILURE);
+    //     }
+    //     if (symtab_header.sh_type == SHT_SYMTAB) {
+    //         break;
+    //     }
+    // }
+    Elf_Shdr section_headers[elf_header.e_shoff];
+    if(fread(section_headers, sizeof(Elf64_Shdr),elf_header.e_shnum, file)<=0){
+        assert(0);
+    }
+    Elf_Shdr symtab_header={};
+    for (int i = 0; i < elf_header.e_shnum; ++i) {
+        if (section_headers[i].sh_type == SHT_SYMTAB) {
+            symtab_header = section_headers[i];
             break;
         }
     }
+
+    // 计算符号表中的符号数量
     size_t symbol_count = symtab_header.sh_size / symtab_header.sh_entsize;
+    // 定位到符号表节
     fseek(file, symtab_header.sh_offset, SEEK_SET);
     Elf_Sym symbols[symbol_count];
-    size_t result=fread(symbols, sizeof(Elf32_Sym), symbol_count, file);
-    if(result<=0) assert(0);
+    // 读取符号表
+    if(fread(symbols, sizeof(Elf32_Sym), symbol_count, file)<=0){
+        fclose(file);
+        assert(0);
+    }
     // 遍历符号表，筛选出类型为FUNC的符号
     for (size_t i = 0; i < symbol_count; ++i) {
         if (ELF32_ST_TYPE(symbols[i].st_info) == STT_FUNC) {
