@@ -64,29 +64,29 @@ void init_elf(const char *elf_file){
     if (elf_file == NULL)
         return;
     // 打开ELF文件
-    FILE *fp = fopen(elf_file, "rb");
-    Assert(fp, "Can not open '%s'", elf_file);
+    FILE *file = fopen(elf_file, "rb");
+    Assert(file, "Can not open '%s'", elf_file);
 
     // 读取ELF header
     Elf32_Ehdr elf_header;
-    if (fread(&elf_header, sizeof(Elf32_Ehdr), 1, fp) <= 0) {
-        fclose(fp);
+    if (fread(&elf_header, sizeof(Elf32_Ehdr), 1, file) <= 0) {
+        fclose(file);
         exit(EXIT_FAILURE);
     }
 
     // 检查文件是否为ELF文件
     if (memcmp(elf_header.e_ident, ELFMAG, SELFMAG) != 0) {
         fprintf(stderr, "Not an ELF file\n");
-        fclose(fp);
+        fclose(file);
         exit(EXIT_FAILURE);
     }
 
     // 移动到Section header table,寻找字符表节
-    fseek(fp, elf_header.e_shoff, SEEK_SET);
+    fseek(file, elf_header.e_shoff, SEEK_SET);
     Elf32_Shdr strtab_header;
     while (1) {
-        if (fread(&strtab_header, sizeof(Elf32_Shdr), 1, fp) <= 0) {
-            fclose(fp);
+        if (fread(&strtab_header, sizeof(Elf32_Shdr), 1, file) <= 0) {
+            fclose(file);
             exit(EXIT_FAILURE);
         }
         if (strtab_header.sh_type == SHT_STRTAB) {
@@ -96,18 +96,18 @@ void init_elf(const char *elf_file){
 
     // 读取字符串表内容
     char *string_table = malloc(strtab_header.sh_size);
-    fseek(fp, strtab_header.sh_offset, SEEK_SET);
-    if (fread(string_table, strtab_header.sh_size, 1, fp) <= 0) {
-        fclose(fp);
+    fseek(file, strtab_header.sh_offset, SEEK_SET);
+    if (fread(string_table, strtab_header.sh_size, 1, file) <= 0) {
+        fclose(file);
         exit(EXIT_FAILURE);
     }
 
     // 寻找符号表节
     Elf32_Shdr symtab_header;
-    fseek(fp, elf_header.e_shoff, SEEK_SET);
+    fseek(file, elf_header.e_shoff, SEEK_SET);
     while (1) {
-        if (fread(&symtab_header, sizeof(Elf32_Shdr), 1, fp) <= 0) {
-            fclose(fp);
+        if (fread(&symtab_header, sizeof(Elf32_Shdr), 1, file) <= 0) {
+            fclose(file);
             exit(EXIT_FAILURE);
         }
         if (symtab_header.sh_type == SHT_SYMTAB) {
@@ -115,34 +115,9 @@ void init_elf(const char *elf_file){
         }
     }
     size_t symbol_count = symtab_header.sh_size / symtab_header.sh_entsize;
-    /* 读取符号表中的每个符号项 */ 
-
-    // fseek(fp, symtab_header.sh_offset, SEEK_SET);
-    // Elf32_Sym symbol;
-    // for (size_t i = 0; i < symbol_count; ++i) {
-    //     if (fread(&symbol, sizeof(Elf32_Sym), 1,fp) <= 0 ) {
-    //         fclose(fp);
-    //         exit(EXIT_FAILURE);
-    //     }
-    //     // 判断符号是否为函数，并且函数的大小不为零
-    //     if (ELF64_ST_TYPE(symbol.st_info) == STT_FUNC && symbol.st_size != 0) {
-    //         if(symbol.st_size==0) continue; //不符合的大小直接略过
-    //         // 获取符号的名称
-    //         char* symbol_name=string_table + symbol.st_name;
-    //         strcpy(elf_func[func_cnt].func_name,symbol_name);
-    //         // 获取符号的地址
-    //         elf_func[func_cnt].value=symbol.st_value;
-    //         elf_func[func_cnt].size =symbol.st_size;
-    //         printf("Function: %s\nAddress: 0x%lx %ld(Dec) %lx(Hec)\n",elf_func[func_cnt].func_name,elf_func[func_cnt].value,elf_func[func_cnt].size,elf_func[func_cnt].size);
-    //         func_cnt++; //func_cnt用于只筛出来符合要求的函数
-    //     }
-    // }
-    // fclose(fp);
-    // 读取符号表
-    fseek(fp, symtab_header.sh_offset, SEEK_SET);
+    fseek(file, symtab_header.sh_offset, SEEK_SET);
     Elf_Sym symbols[symbol_count];
-    
-    size_t result=fread(symbols, sizeof(Elf32_Sym), symbol_count, fp);
+    size_t result=fread(symbols, sizeof(Elf32_Sym), symbol_count, file);
     if(result<=0) assert(0);
     // 遍历符号表，筛选出类型为FUNC的符号
     for (size_t i = 0; i < symbol_count; ++i) {
@@ -158,7 +133,7 @@ void init_elf(const char *elf_file){
             func_cnt++; //func_cnt用于只筛出来符合要求的函数
         }
     }
-    fclose(fp);
+    fclose(file);
 }
 
 /*ftrace追踪内容*/
@@ -193,7 +168,7 @@ void func_call(paddr_t pc,paddr_t dnpc,bool is_tail){
     func_depth++;
     if(func_depth<=1) return; //忽略trm_init
     generateSpaces(func_depth,n_spaces);
-    printf("0x%x:%s call[%s->%s@0x%x]",pc,n_spaces,find_funcname(pc),find_funcname(dnpc),dnpc);
+    printf("0x%x:%s call[%s->%s@0x%x]\n",pc,n_spaces,find_funcname(pc),find_funcname(dnpc),dnpc);
     if (is_tail) {
 		insert_tail_rec(pc,dnpc,func_depth-1);
 	}
