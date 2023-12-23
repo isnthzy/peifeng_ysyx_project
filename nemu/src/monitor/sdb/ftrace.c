@@ -60,11 +60,6 @@ void init_elf(const char *elf_file){
     // // 计算符号表中的符号数量
     // size_t symbol_count = symtab_header.sh_size / symtab_header.sh_entsize;
 
-    // if (elf_file == NULL)
-    //     return;
-    // // 打开ELF文件
-    // FILE *fp = fopen(elf_file, "rb");
-    // Assert(fp, "Can not open '%s'", elf_file);
 
     if (elf_file == NULL)
         return;
@@ -144,6 +139,7 @@ void init_elf(const char *elf_file){
     // }
     // fclose(fp);
     // 读取符号表
+    fseek(fp, symtab_header.sh_offset, SEEK_SET);
     Elf_Sym symbols[symbol_count];
     
     size_t result=fread(symbols, sizeof(Elf64_Sym), symbol_count, fp);
