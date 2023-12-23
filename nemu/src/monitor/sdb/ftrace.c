@@ -115,7 +115,7 @@ void init_elf(const char *elf_file){
     //     }
     // }
     Elf_Shdr section_headers[elf_header.e_shoff];
-    if(fread(section_headers, sizeof(Elf64_Shdr),elf_header.e_shnum, file)<=0){
+    if(fread(section_headers, sizeof(Elf32_Shdr),elf_header.e_shnum, file)<=0){
         assert(0);
     }
     Elf_Shdr symtab_header={};
