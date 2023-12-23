@@ -60,8 +60,8 @@ void init_elf(const char *elf_file){
     // 计算符号表中的符号数量
     size_t symbol_count = symtab_header.sh_size / symtab_header.sh_entsize;
     // 读取符号表
-    Elf_Sym symbols[symbol_count];
-    result=fread(symbols, sizeof(Elf64_Sym), symbol_count, file);
+    // Elf_Sym symbols[symbol_count];
+    // result=fread(symbols, sizeof(Elf32_Sym), symbol_count, file);
 
     Elf32_Sym symbol;
     for (size_t i = 0; i < symbol_count; ++i) {
@@ -71,13 +71,13 @@ void init_elf(const char *elf_file){
         }
         // 判断符号是否为函数，并且函数的大小不为零
         if (ELF64_ST_TYPE(symbol.st_info) == STT_FUNC && symbol.st_size != 0) {
-            if(symbols[i].st_size==0) continue; //不符合的大小直接略过
+            if(symbol.st_size==0) continue; //不符合的大小直接略过
             // 获取符号的名称
-            char* symbol_name=string_table + symbols[i].st_name;
+            char* symbol_name=string_table + symbol.st_name;
             strcpy(elf_func[func_cnt].func_name,symbol_name);
             // 获取符号的地址
-            elf_func[func_cnt].value=symbols[i].st_value;
-            elf_func[func_cnt].size =symbols[i].st_size;
+            elf_func[func_cnt].value=symbol.st_value;
+            elf_func[func_cnt].size =symbol.st_size;
             printf("Function: %s\nAddress: 0x%lx %ld(Dec) %lx(Hec)\n",elf_func[func_cnt].func_name,elf_func[func_cnt].value,elf_func[func_cnt].size,elf_func[func_cnt].size);
             func_cnt++; //func_cnt用于只筛出来符合要求的函数
         }
