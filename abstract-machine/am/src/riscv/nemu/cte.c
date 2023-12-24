@@ -23,7 +23,7 @@ extern void __am_asm_trap(void);
 bool cte_init(Context*(*handler)(Event, Context*)) {
   // initialize exception entry
   asm volatile("csrw mtvec, %0" : : "r"(__am_asm_trap));
-
+  //将异常入口地址设置到mtvec寄存器
   // register event handler
   user_handler = handler;
 
@@ -37,6 +37,7 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
 void yield() {
 #ifdef __riscv_e
   asm volatile("li a5, -1; ecall");
+  //将 -1 load到寄存器 a5 中，然后触发一个异常调用。
 #else
   asm volatile("li a7, -1; ecall");
 #endif
