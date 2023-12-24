@@ -23,6 +23,7 @@ void init_elf(const char *elf_file){
         return ;
     }
     else Log("Ftrace: ON");
+#ifdef CONFIG_FTRACE
     if (elf_file == NULL)
         return;
     // 打开ELF文件
@@ -38,14 +39,16 @@ void init_elf(const char *elf_file){
         assert(0);
     }
 
-    // 移动到Section header table,寻找字符表节
+    // 定位到节头表
     fseek(file, elf_header.e_shoff, SEEK_SET);
     Elf_Shdr strtab_header;
+    // 读取节头表并寻找字符串表节
     while (1) {
         if (fread(&strtab_header, sizeof(Elf_Shdr), 1, file) <= 0) {
             fclose(file);
             assert(0);
         }
+        // 找到到字符串表节
         if (strtab_header.sh_type == SHT_STRTAB) break;
     }
 
@@ -57,7 +60,7 @@ void init_elf(const char *elf_file){
         assert(0);
     }
 
-    // 寻找符号表节
+    // 读取节头表并寻找符号表表节
     Elf_Shdr symtab_header;
     fseek(file, elf_header.e_shoff, SEEK_SET);
     while (1) {
@@ -65,6 +68,7 @@ void init_elf(const char *elf_file){
             fclose(file);
             assert(0);
         }
+        //找到符号表表节
         if (symtab_header.sh_type == SHT_SYMTAB) break;
     }
 
@@ -93,6 +97,7 @@ void init_elf(const char *elf_file){
         }
     }
     fclose(file);
+#endif
 }
 
 /*ftrace追踪内容*/
@@ -127,7 +132,7 @@ void func_call(paddr_t pc,paddr_t dnpc,bool is_tail){
     func_depth++;
     if(func_depth<=1) return; //忽略trm_init
     generateSpaces(func_depth,n_spaces);
-    printf("0x%x:%s call[%s->%s@0x%x]\n",pc,n_spaces,find_funcname(pc),find_funcname(dnpc),dnpc);
+    printf("\t0x%x:%s call[%s->%s@0x%x]\n",pc,n_spaces,find_funcname(pc),find_funcname(dnpc),dnpc);
     if (is_tail) {
 		insert_tail_rec(pc,dnpc,func_depth-1);
 	}
@@ -135,7 +140,7 @@ void func_call(paddr_t pc,paddr_t dnpc,bool is_tail){
 }
 void func_ret(paddr_t pc){
     generateSpaces(func_depth,n_spaces);
-    printf("0x%x:%s ret [%s]\n",pc,n_spaces,find_funcname(pc));
+    printf("\t0x%x:%s ret [%s]\n",pc,n_spaces,find_funcname(pc));
     func_depth--;
     TailRecNode *node = tail_rec_head->next;
 	if (node != NULL) {

@@ -133,7 +133,7 @@ void init_monitor(int argc, char *argv[]) {
   init_difftest(diff_so_file, img_size, difftest_port);
 
   /* Initialize the simple debugger. */
-  init_sdb();
+  IFDEF(CONFIG_SDB, init_sdb());
 
 #ifndef CONFIG_ISA_loongarch32r
   IFDEF(CONFIG_ITRACE, init_disasm(

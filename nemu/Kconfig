@@ -126,6 +126,9 @@ endmenu
 
 menu "Testing and Debugging"
 
+config SDB
+  bool "Enable sdb"
+  default y
 
 config TRACE
   bool "Enable tracer"
