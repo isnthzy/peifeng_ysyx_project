@@ -38,13 +38,13 @@ static debug_module_config_t difftest_dm_config = {
 
 struct diff_context_t {
   word_t gpr[MUXDEF(CONFIG_RVE, 16, 32)];
+  word_t pc;
   word_t mstatus;
   word_t mstatush;
   word_t mepc;
   word_t mtval;
   word_t mtvec;
   word_t mcause;
-  word_t pc;
 };
 
 static sim_t* s = NULL;
