@@ -75,7 +75,7 @@ word_t Rcsr(word_t csr_addr){
 }
 
 void Wcsr(word_t csr_addr,word_t data){
-  tran_csr(csr_addr,data,0);
+  tran_csr(csr_addr,data,1);
 }
 
 static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_t *imm, int type,word_t *csr) {
