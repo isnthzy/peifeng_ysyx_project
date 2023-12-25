@@ -55,8 +55,8 @@ static word_t tran_csr(word_t csr_addr,word_t data,bool is_write){
       if(is_write) cpu.mepc=data;
       break;    
     case 0x342:
-      tmp_csr=cpu.mcause;
-      if(is_write) cpu.mcause=data;
+      tmp_csr=0xb;
+      if(is_write) cpu.mcause=0xb;
       break; 
     case 0x343:
       tmp_csr=cpu.mtval;
