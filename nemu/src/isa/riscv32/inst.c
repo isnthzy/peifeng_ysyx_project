@@ -39,11 +39,50 @@ enum {
 #define immB() do { *imm = SEXT(BITS(i, 31, 31)<<12 | BITS(i, 7, 7)<<11 \
 | BITS(i, 30, 25)<<5 | BITS(i, 11, 8)<<1, 13); } while(0) //sext(immB)
 
+static word_t tran_csr(word_t csr_addr,word_t data,bool is_write){
+  word_t tmp_csr;
+switch (csr_addr){
+  case 0x305:
+    tmp_csr=cpu.mtvec;
+    if(is_write) cpu.mtvec=data;
+    break;
+  case 0x300:
+    tmp_csr=cpu.mstatus;
+    if(is_write) cpu.mstatus=data;
+    break;
+  case 0x341:
+    tmp_csr=cpu.mepc;
+    if(is_write) cpu.mepc=data;
+    break;    
+  case 0x342:
+    tmp_csr=cpu.mcause;
+    if(is_write) cpu.mcause=data;
+    break; 
+  case 0x343:
+    tmp_csr=cpu.mtval;
+    if(is_write) cpu.mtval=data;
+    break; 
+  default:
+    wLog("unknow CSR reg: 0x%x",csr_addr);
+    panic("访问了未知的CSR寄存器");
+    break;
+  }
+  return tmp_csr;
+}
+
+word_t Rcsr(word_t csr_addr){
+  return tran_csr(csr_addr,0,0);
+}
+
+void Wcsr(word_t csr_addr,word_t data){
+  tran_csr(csr_addr,data,1);
+}
+
 static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_t *imm, int type,word_t *csr) {
   uint32_t i = s->isa.inst.val;
   int rs1 = BITS(i, 19, 15);
   int rs2 = BITS(i, 24, 20);
-  *csr = BITS(i, 32, 20);
+  *csr    = BITS(i, 32, 20);
   *rd     = BITS(i, 11, 7);
   switch (type) {
     case TYPE_I: src1R();          immI(); break;
@@ -125,9 +164,9 @@ static int decode_exec(Decode *s) {
   INSTPAT("??????? ????? ????? 101 ????? 11000 11", bge    , B, if((sword_t)src1>=(sword_t)src2) s->dnpc=s->pc+imm);
   INSTPAT("??????? ????? ????? 111 ????? 11000 11", bgeu   , B, if(src1>=src2) s->dnpc=s->pc+imm);
 
-  INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs  , I, int t=cpu.CSRs[imm]; cpu.CSRs[imm]=t|src1; Reg(rd)=t);
-  INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw  , I, int t=cpu.CSRs[imm]; cpu.CSRs[imm]=src1; Reg(rd)=t);
-  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , N, s->dnpc=isa_raise_intr(Reg(17),cpu.CSRs[0x305]));
+  INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs  , I, int t=Rcsr(csr); Wcsr(csr,t|src1); Reg(rd)=t);
+  INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw  , I, int t=Rcsr(csr); Wcsr(csr,  src1); Reg(rd)=t);
+  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , N, s->dnpc=isa_raise_intr(Reg(17),Rcsr(csr)));
   INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , N, NEMUTRAP(s->pc, Reg(10))); // R(10) is $a0
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
   INSTPAT_END();
