@@ -25,6 +25,10 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
       return false;
     }
   }
+  if((ref_r->mtvec !=cpu.mtvec) \
+    |(ref_r->mepc  !=cpu.mepc ) \
+    |(ref_r->mcause!=cpu.mcause)) return false;
+    
   return true;
 }
 
