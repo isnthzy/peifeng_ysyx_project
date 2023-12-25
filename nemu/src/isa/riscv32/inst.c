@@ -56,7 +56,7 @@ switch (csr_addr){
     break;    
   case 0x342:
     tmp_csr=cpu.mcause;
-    if(is_write) cpu.mcause=data;
+    if(is_write) cpu.mcause=0xb;
     break; 
   case 0x343:
     tmp_csr=cpu.mtval;
