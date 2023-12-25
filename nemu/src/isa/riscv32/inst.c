@@ -41,31 +41,31 @@ enum {
 
 static word_t tran_csr(word_t csr_addr,word_t data,bool is_write){
   word_t tmp_csr;
-switch (csr_addr){
-  case 0x305:
-    tmp_csr=cpu.mtvec;
-    if(is_write) cpu.mtvec=data;
-    break;
-  case 0x300:
-    tmp_csr=cpu.mstatus;
-    if(is_write) cpu.mstatus=data;
-    break;
-  case 0x341:
-    tmp_csr=cpu.mepc;
-    if(is_write) cpu.mepc=data;
-    break;    
-  case 0x342:
-    tmp_csr=0xb;
-    if(is_write) cpu.mcause=data;
-    break; 
-  case 0x343:
-    tmp_csr=cpu.mtval;
-    if(is_write) cpu.mtval=data;
-    break; 
-  default:
-    wLog("unknow CSR reg: 0x%x",csr_addr);
-    panic("访问了未知的CSR寄存器");
-    break;
+  switch (csr_addr){
+    case 0x305:
+      tmp_csr=cpu.mtvec;
+      if(is_write) cpu.mtvec=data;
+      break;
+    case 0x300:
+      tmp_csr=cpu.mstatus;
+      if(is_write) cpu.mstatus=data;
+      break;
+    case 0x341:
+      tmp_csr=cpu.mepc;
+      if(is_write) cpu.mepc=data;
+      break;    
+    case 0x342:
+      tmp_csr=0xb;
+      if(is_write) cpu.mcause=data;
+      break; 
+    case 0x343:
+      tmp_csr=cpu.mtval;
+      if(is_write) cpu.mtval=data;
+      break; 
+    default:
+      wLog("unknow CSR reg: 0x%x",csr_addr);
+      panic("访问了未知的CSR寄存器");
+      break;
   }
   return tmp_csr;
 }
