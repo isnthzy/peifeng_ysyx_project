@@ -57,7 +57,7 @@ static word_t tran_csr(word_t csr_addr,word_t data,bool is_write){
     case 0x342:
       tmp_csr=0xb;
       if(is_write) cpu.mcause=0xb;
-      break; 
+      break; //因为nemu始终为m模式
     case 0x343:
       tmp_csr=cpu.mtval;
       if(is_write) cpu.mtval=data;
@@ -75,7 +75,7 @@ word_t Rcsr(word_t csr_addr){
 }
 
 void Wcsr(word_t csr_addr,word_t data){
-  tran_csr(csr_addr,data,1);
+  tran_csr(csr_addr,data,0);
 }
 
 static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_t *imm, int type,word_t *csr) {
