@@ -37,9 +37,9 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
 void yield() {
 #ifdef __riscv_e
   asm volatile("li a5, -1; ecall");
-  //将 -1 load到寄存器 a5 中，然后触发一个异常调用。
 #else
   asm volatile("li a7, -1; ecall");
+  //将 -1 load到寄存器 a7 中，然后触发一个异常调用。
 #endif
 }
 
