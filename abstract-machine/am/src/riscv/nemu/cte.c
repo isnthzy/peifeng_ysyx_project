@@ -9,7 +9,9 @@ Context* __am_irq_handle(Context *c) {
     Event ev = {0};
     switch (c->mcause) {
       case 0xb: //11 Environment call from M-mode
-        if(c->GPR1==-1) ev.event =EVENT_YIELD;
+        if(c->GPR1==-1){ev.event =EVENT_YIELD;
+          printf("is_yield");
+        }
         break;
       default: ev.event = EVENT_ERROR; break;
     }
