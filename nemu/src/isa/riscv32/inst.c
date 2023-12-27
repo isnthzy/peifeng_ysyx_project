@@ -78,6 +78,12 @@ void Wcsr(word_t csr_addr,word_t data){
   tran_csr(csr_addr,data,1);
 }
 
+void Bit_ctrl(uint32_t* number, int startBit, int width,uint32_t value) { //位操作
+  uint32_t mask = ~(((1<<width)-1)<<startBit); // 生成掩码，用于清除指定位段
+  *number&=mask; // 清除指定位段
+  *number|=(value<<startBit); // 将新值设置到指定位段
+}
+
 static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_t *imm, int type,word_t *csr) {
   uint32_t i = s->isa.inst.val;
   int rs1 = BITS(i, 19, 15);
@@ -166,7 +172,7 @@ static int decode_exec(Decode *s) {
 
   INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs  , I, int t=Rcsr(csr); Wcsr(csr,t|src1); Reg(rd)=t);
   INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw  , I, int t=Rcsr(csr); Wcsr(csr,  src1); Reg(rd)=t);
-  INSTPAT("0011000 00010 00000 000 00000 11100 11", mret   , R, s->dnpc=cpu.mepc;); //mret没有实现完毕
+  INSTPAT("0011000 00010 00000 000 00000 11100 11", mret   , R, Bit_ctrl(&cpu.mstatus,11,2,0);s->dnpc=cpu.mepc;); //mret没有实现完毕
   INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , I, s->dnpc=isa_raise_intr(Reg(17),s->pc));
   INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , N, NEMUTRAP(s->pc, Reg(10))); // R(10) is $a0
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
