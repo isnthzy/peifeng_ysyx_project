@@ -68,9 +68,9 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
         strncat(out, &c, 1);
         break;
       case 'x':
-        x=va_arg(ap, int);
-        char x_tmp[30];
-        itoa(x,x_tmp,16);
+        x=va_arg(ap,uint32_t);
+        char x_tmp[64];
+        htoa(x,x_tmp);
         int x_length=strlen(x_tmp);
         if (x_length<width) strcat(out,gSpaces(width-x_length,g_char));
         strcat(out, x_tmp);

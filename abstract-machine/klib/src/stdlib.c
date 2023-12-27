@@ -40,32 +40,49 @@ void reverse(char *s, int len){
     end--;
   }
 }
-char *itoa(int value, char *str, int radix) {
+char *itoa(int value,char * str,int radix){
   bool neg=false;
-  int i=0;
-  if (value<0&&radix==10){
-    if (value==INT_MIN){
+  int i=0; 
+  if(value<0){
+    if (value==INT_MIN) {
+      // 经过测试(INT_MIN)会发生这种情况,因而特殊处理最小负数(INT_MIN)
       value++;
-      str[i++]='8';
+      str[i++]='8';  // 个位数为8
       value/=radix;
     }
-    value*=-1;
-    neg = true;
+  	value*=-1;
+  	neg=true;
   }
-  if (value==0) {
+  if (value==0){
     str[i++]='0';
   }
-  while (value!=0) {
-    int tmp=0;
+  while(value!=0){
+  	int tmp=0;
     tmp=value%radix;
-    if (tmp<10) {
+	  str[i++]=tmp+'0';
+	  value/=radix;
+  }
+  if(neg) str[i++]='-';
+  reverse(str,i);
+  str[i]='\0';
+  return str;
+}
+
+char *htoa(uint32_t value,char *str){ //十六进制转换函数
+  int i=0; 
+  if (value==0){
+    str[i++]='0';
+  }
+  while(value!=0){
+  	int tmp=0;
+    tmp=value%16;
+	  if (tmp<10) {
       str[i++]=tmp+'0';
-    }else{
+    } else {
       str[i++]=tmp-10+'a';
     }
-    value/=radix;
+	  value/=16;
   }
-  if (neg) str[i++]='-';
   reverse(str,i);
   str[i]='\0';
   return str;
