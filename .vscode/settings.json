@@ -62,7 +62,10 @@
         "iringbuf.h": "c",
         "stdlib.h": "c",
         "amtest.h": "c",
-        "stdarg.h": "c"
+        "stdarg.h": "c",
+        "system_error": "c",
+        "tuple": "c",
+        "type_traits": "c"
     },
     "C_Cpp.intelliSenseEngine": "default",
     "digital-ide.dont-show-again.propose.issue": true,

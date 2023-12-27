@@ -40,29 +40,32 @@ void reverse(char *s, int len){
     end--;
   }
 }
-char *itoa(int value,char * str,int radix){
+char *itoa(int value, char *str, int radix) {
   bool neg=false;
-  int i=0; 
-  if(value<0){
-    if (value==INT_MIN) {
-      // 经过测试(INT_MIN)会发生这种情况,因而特殊处理最小负数(INT_MIN)
+  int i=0;
+  if (value<0){
+    if (value==INT_MIN){
       value++;
-      str[i++]='8';  // 个位数为8
+      str[i++]='8';
       value/=radix;
     }
-  	value*=-1;
-  	neg=true;
+    value*=-1;
+    neg = true;
   }
-  if (value==0){
+  if (value==0) {
     str[i++]='0';
   }
-  while(value!=0){
-  	int tmp=0;
+  while (value!=0) {
+    int tmp=0;
     tmp=value%radix;
-	  str[i++]=tmp+'0';
-	  value/=radix;
+    if (tmp<10) {
+      str[i++]=tmp+'0';
+    }else{
+      str[i++]=tmp-10+'a';
+    }
+    value/=radix;
   }
-  if(neg) str[i++]='-';
+  if (neg) str[i++]='-';
   reverse(str,i);
   str[i]='\0';
   return str;
