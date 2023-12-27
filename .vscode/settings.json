@@ -65,7 +65,8 @@
         "stdarg.h": "c",
         "system_error": "c",
         "tuple": "c",
-        "type_traits": "c"
+        "type_traits": "c",
+        "limits": "c"
     },
     "C_Cpp.intelliSenseEngine": "default",
     "digital-ide.dont-show-again.propose.issue": true,

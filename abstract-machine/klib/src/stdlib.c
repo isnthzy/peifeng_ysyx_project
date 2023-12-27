@@ -43,7 +43,7 @@ void reverse(char *s, int len){
 char *itoa(int value, char *str, int radix) {
   bool neg=false;
   int i=0;
-  if (value<0||radix==10){
+  if (value<0&&radix==10){
     if (value==INT_MIN){
       value++;
       str[i++]='8';
