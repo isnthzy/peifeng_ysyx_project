@@ -7,16 +7,13 @@ static Context* (*user_handler)(Event, Context*) = NULL;
 Context* __am_irq_handle(Context *c) {
   if (user_handler) {
     Event ev = {0};
-    printf("%x\n",c->mcause);
-    printf("%x\n",c->mstatus);
-    printf("%x\n",c->mepc);
     switch (c->mcause) {
-      // case 0xb: //11 Environment call from M-mode
-      //   if(c->GPR1==-1){
-      //     ev.event =EVENT_YIELD;
-      //     printf("is_yield");
-      //   }
-      //   break;
+      case 0xb: //11 Environment call from M-mode
+        if(c->GPR1==-1){
+          ev.event =EVENT_YIELD;
+          printf("is_yield");
+        }
+        break;
       default: ev.event = EVENT_ERROR; break;
     }
 
