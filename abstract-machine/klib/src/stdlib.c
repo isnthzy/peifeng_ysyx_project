@@ -68,6 +68,26 @@ char *itoa(int value,char * str,int radix){
   return str;
 }
 
+char *htoa(uint32_t value,char *str){ //十六进制转换函数
+  int i=0; 
+  if (value==0){
+    str[i++]='0';
+  }
+  while(value!=0){
+  	int tmp=0;
+    tmp=value%16;
+	  if (tmp<10) {
+      str[i++]=tmp+'0';
+    } else {
+      str[i++]=tmp-10+'a';
+    }
+	  value/=16;
+  }
+  reverse(str,i);
+  str[i]='\0';
+  return str;
+}
+
 #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
 static char *hbrk;
 static bool malloc_reset_flag=false;

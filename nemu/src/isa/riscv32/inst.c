@@ -18,10 +18,12 @@
 #include <cpu/ifetch.h>
 #include <cpu/decode.h>
 #include "../../monitor/sdb/ftrace.h"
+#include "../../cpu/iringbuf.h"
 #define Reg(i) gpr(i)
 #define Mr vaddr_read
 #define Mw vaddr_write
 #define XLEN 32 //代整数寄存器的宽度
+extern IRingBuffer etrace_buffer;
 extern bool ftrace_flag;
 enum {
   TYPE_I, TYPE_U, TYPE_S,
@@ -76,6 +78,12 @@ word_t Rcsr(word_t csr_addr){
 
 void Wcsr(word_t csr_addr,word_t data){
   tran_csr(csr_addr,data,1);
+}
+
+void Bit_ctrl(uint32_t* number, int startBit, int width,uint32_t value) { //位操作
+  uint32_t mask = ~(((1<<width)-1)<<startBit); // 生成掩码，用于清除指定位段
+  *number&=mask; // 清除指定位段
+  *number|=(value<<startBit); // 将新值设置到指定位段
 }
 
 static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_t *imm, int type,word_t *csr) {
@@ -164,9 +172,34 @@ static int decode_exec(Decode *s) {
   INSTPAT("??????? ????? ????? 101 ????? 11000 11", bge    , B, if((sword_t)src1>=(sword_t)src2) s->dnpc=s->pc+imm);
   INSTPAT("??????? ????? ????? 111 ????? 11000 11", bgeu   , B, if(src1>=src2) s->dnpc=s->pc+imm);
 
-  INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs  , I, int t=Rcsr(csr); Wcsr(csr,t|src1); Reg(rd)=t);
-  INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw  , I, int t=Rcsr(csr); Wcsr(csr,  src1); Reg(rd)=t);
-  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , I, s->dnpc=isa_raise_intr(Reg(17),s->pc));
+  INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs  , I, int t=Rcsr(csr); Wcsr(csr,t|src1); Reg(rd)=t;
+                                                                IFDEF(CONFIG_ETRACE,
+                                                                  char etrace_logbuf[128]; 
+                                                                  sprintf(etrace_logbuf,"pc:0x%08x csrrs Rcsr:0x%08x Wcsr:0x%08x",cpu.pc,t,t|src1); 
+                                                                  wLog("\t%s",etrace_logbuf);
+                                                                  enqueueIRingBuffer(&etrace_buffer,etrace_logbuf);
+                                                                ));
+  INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw  , I, int t=Rcsr(csr); Wcsr(csr,  src1); Reg(rd)=t;
+                                                                IFDEF(CONFIG_ETRACE,
+                                                                  char etrace_logbuf[128]; 
+                                                                  sprintf(etrace_logbuf,"pc:0x%08x csrrw Rcsr:0x%08x Wcsr:0x%08x",cpu.pc,t,  src1);
+                                                                  wLog("\t%s",etrace_logbuf); 
+                                                                  enqueueIRingBuffer(&etrace_buffer,etrace_logbuf);
+                                                                ));
+  INSTPAT("0011000 00010 00000 000 00000 11100 11", mret   , R, s->dnpc=cpu.mepc;
+                                                                IFDEF(CONFIG_ETRACE, 
+                                                                  char etrace_logbuf[128]; 
+                                                                  sprintf(etrace_logbuf,"pc:0x%08x mret mepc:0x%08x",cpu.pc,cpu.mepc); 
+                                                                  wLog("\t%s",etrace_logbuf);
+                                                                  enqueueIRingBuffer(&etrace_buffer,etrace_logbuf);
+                                                                )); //mret没有实现完毕
+  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , I, s->dnpc=isa_raise_intr(Reg(17),s->pc);
+                                                                IFDEF(CONFIG_ETRACE, 
+                                                                  char etrace_logbuf[128]; 
+                                                                  sprintf(etrace_logbuf,"pc:0x%08x ecall!!!",cpu.pc); 
+                                                                  wLog("\t%s",etrace_logbuf);
+                                                                  enqueueIRingBuffer(&etrace_buffer,etrace_logbuf);
+                                                                ));
   INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , N, NEMUTRAP(s->pc, Reg(10))); // R(10) is $a0
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
   INSTPAT_END();

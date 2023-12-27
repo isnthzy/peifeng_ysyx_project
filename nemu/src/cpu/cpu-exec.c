@@ -33,6 +33,7 @@ static bool g_print_step = false;
 IRingBuffer iring_buffer;
 IRingBuffer mtrace_buffer;
 IRingBuffer dtrace_buffer;
+IRingBuffer etrace_buffer;
 extern void mputIringbuf();
 extern void dputIringbuf();
 void device_update();
@@ -119,12 +120,22 @@ void iputIringbuf(){
     else wLog("[itrace]   %s",pop_iringbufdata);
   }
 }
+void eputIringbuf(){
+  while(!isIRingBufferEmpty(&etrace_buffer)){
+    char pop_iringbufdata[100];
+    dequeueIRingBuffer(&etrace_buffer,pop_iringbufdata);
+    if(etrace_buffer.num==0) wLog("[etrace]-->%s",pop_iringbufdata);
+    else wLog("[etrace]   %s",pop_iringbufdata);
+  }
+}
+
 
 void assert_fail_msg() {
   #ifdef CONFIG_TRACE
   iputIringbuf();
   mputIringbuf();
   dputIringbuf();
+  eputIringbuf();
   #endif
   isa_reg_display();
   statistic();
@@ -139,6 +150,7 @@ void cpu_exec(uint64_t n,bool is_ref) {
     initializeIRingBuffer(&iring_buffer,ITRACE_LOGBUF_SIZE);
     initializeIRingBuffer(&mtrace_buffer,MTRACE_LOGBUF_SIZE);
     initializeIRingBuffer(&dtrace_buffer,DTRACE_LOGBUF_SIZE);
+    initializeIRingBuffer(&etrace_buffer,ETRACE_LOGBUF_SIZE);
   } //初始化iringbuffer,只初始化一次
   #endif
   g_print_step = (n < MAX_INST_TO_PRINT);
@@ -160,7 +172,7 @@ void cpu_exec(uint64_t n,bool is_ref) {
     case NEMU_RUNNING: nemu_state.state = NEMU_STOP; break;
 
     case NEMU_END: case NEMU_ABORT:
-      if(nemu_state.state==NEMU_ABORT||nemu_state.halt_ret!=0){iputIringbuf();  mputIringbuf(); dputIringbuf();};
+      if(nemu_state.state==NEMU_ABORT||nemu_state.halt_ret!=0){iputIringbuf();  mputIringbuf(); dputIringbuf();eputIringbuf();};
       Log("nemu: %s at pc = " FMT_WORD,
           (nemu_state.state == NEMU_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED):
            (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN):

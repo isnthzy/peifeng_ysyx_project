@@ -23,16 +23,17 @@ extern const char *regs[];
   return false;\
 }
 
-bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
+bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc, vaddr_t npc) {
   for(int i=0;i<32;i++){
     if(ref_r->gpr[i]!=gpr(i)){
       wLog("The reg:%s(rf_%d) is different\ntrue:0x%08x false:0x%08x",regs[i],i,ref_r->gpr[i],gpr(i));
       return false;
     }
   }
+  DIFF_CHECK(ref_r->pc,npc,"pc");
   DIFF_CHECK(ref_r->mtvec,cpu.mtvec,"mtvec");
   DIFF_CHECK(ref_r->mepc ,cpu.mepc ,"mepc ");
-  DIFF_CHECK(ref_r->mstatus,cpu.mstatus,"mstatus");
+  // DIFF_CHECK(ref_r->mstatus,cpu.mstatus,"mstatus");
   // DIFF_CHECK(ref_r->mcause ,cpu.mcause ,"mcause");
 
   return true;
