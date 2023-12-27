@@ -7,9 +7,9 @@ static Context* (*user_handler)(Event, Context*) = NULL;
 Context* __am_irq_handle(Context *c) {
   if (user_handler) {
     Event ev = {0};
-    printf("%d\n",c->mcause);
-    printf("%d\n",c->mstatus);
-    printf("%d\n",c->mepc);
+    printf("%x\n",c->mcause);
+    printf("%x\n",c->mstatus);
+    printf("%x\n",c->mepc);
     switch (c->mcause) {
       // case 0xb: //11 Environment call from M-mode
       //   if(c->GPR1==-1){
