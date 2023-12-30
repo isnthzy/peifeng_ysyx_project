@@ -2,77 +2,53 @@ import chisel3._
 import chisel3.util._
 import config.Configs._
 
+// class Message extends Bundle {
+//   val inst = Output(UInt(32.W))
+//   val pc   = Output(UInt(32.W))
+// }
+// class IFU extends Module {
+//   val io = IO(new Bundle {
+//     val inst=Input(UInt(32.W))
+//     val out = Decoupled(new Message)
+//   })
+
+//   io.out.bits.inst :=io.inst
+//   io.out.bits.pc := 4.U
+//   io.out.valid := true.B
+// }
+// class IDU extends Module {
+//   val io = IO(new Bundle {
+//     val in = Flipped(Decoupled(new Message))
+//   })
+//   io.in.ready:=true.B
+//   // ...
+// }
 class SimTop extends Module {
   val io = IO(new Bundle {
-    val result = Output(UInt(32.W))
+    val debug_waddr=Output(UInt(5.W))
+    val debug_wdata=Output(UInt(DATA_WIDTH.W))
+    val debug_wen  =Output(Bool())
   })
-
-//定义变量
-  val Imm         = dontTouch(Wire(UInt(32.W)))
-  val pc          = dontTouch(Wire(UInt(32.W)))
-  val nextpc      = dontTouch(Wire(UInt(32.W)))
-  val is_not_jalr = dontTouch(Wire(Bool()))
-  val is_jump     = dontTouch(Wire(Bool()))
-  val jalr_taget  = dontTouch(Wire(UInt(32.W)))
-  val sram_rdata  = dontTouch(Wire(UInt(32.W)))
-  val inst        = dontTouch(Wire(UInt(32.W)))
-// IFU begin
   val IF_stage = Module(new IF_stage())
-  pc                      := IF_stage.io.pc
-  nextpc                  := IF_stage.io.nextpc      
-  IF_stage.io.Imm         := Imm
-  IF_stage.io.jalr_taget  := jalr_taget
-  IF_stage.io.is_not_jalr := is_not_jalr
-  IF_stage.io.is_jump     := is_jump
-// IDU begin
   val ID_stage = Module(new ID_stage())
-  ID_stage.io.inst   := inst
-  ID_stage.io.pc     := pc
-  ID_stage.io.nextpc := nextpc
-  ID_stage.io.result := io.result
-  Imm                := ID_stage.io.Imm
-  is_jump            := ID_stage.io.is_jump
-  is_not_jalr        := ID_stage.io.is_not_jalr
-
-  ID_stage.io.f_dbus := IF_stage.io.f_dbus
-// EXU begin
-  val EXE_stage = Module(new EXE_stage())
-  EXE_stage.io.pc := pc
-  jalr_taget      := EXE_stage.io.jalr_taget
-  io.result       := EXE_stage.io.result
-
-  EXE_stage.io.d_ebus := ID_stage.io.d_ebus
-
+  val EX_stage = Module(new EX_stage())
+  val LS_stage = Module(new LS_stage())
+  val WB_stage = Module(new WB_stage())
+// IF begin
+  IF_stage.IF.br_bus:=EX_stage.EX.br_bus
+// ID begin
+  ID_stage.ID.IO:=IF_stage.IF.IO
+  ID_stage.ID.wb_bus:=WB_stage.WB.to_id
+// EX begin
+  EX_stage.EX.IO:=ID_stage.ID.to_ex
+// lS begin
+  LS_stage.LS.IO:=EX_stage.EX.to_ls
 // WB begin
+  WB_stage.WB.IO:=LS_stage.LS.to_wb
 
-  val pmem_dpi=Module(new pmem_dpi())
-  pmem_dpi.io.clock:=clock
-  pmem_dpi.io.reset:=reset
-  pmem_dpi.io.pc:=pc
-  pmem_dpi.io.nextpc:=nextpc
-  inst:=pmem_dpi.io.inst
-  pmem_dpi.io.sram_valid:=EXE_stage.io.sram_valid
-  pmem_dpi.io.sram_wen:=EXE_stage.io.sram_wen
-  pmem_dpi.io.raddr:=EXE_stage.io.result
-  sram_rdata:=pmem_dpi.io.rdata
-  pmem_dpi.io.waddr:=EXE_stage.io.result
-  pmem_dpi.io.wdata:=EXE_stage.io.sram_wdata
-  pmem_dpi.io.wmask:=EXE_stage.io.sram_wmask
+//debug
+  io.debug_waddr:=WB_stage.WB.debug_waddr
+  io.debug_wdata:=WB_stage.WB.debug_wdata
+  io.debug_wen  :=WB_stage.WB.debug_wen
 }
-class pmem_dpi extends BlackBox with HasBlackBoxPath{
-  val io=IO(new Bundle {
-    val clock=Input(Clock())
-    val reset=Input(Bool())
-    val pc=Input(UInt(ADDR_WIDTH.W))
-    val nextpc=Input(UInt(ADDR_WIDTH.W))
-    val inst=Output(UInt(32.W))
-    val sram_valid=Input(Bool())
-    val sram_wen=Input(Bool())
-    val raddr=Input(UInt(32.W))
-    val rdata=Output(UInt(32.W))
-    val waddr=Input(UInt(32.W))
-    val wdata=Input(UInt(32.W))
-    val wmask=Input(UInt(4.W))
-  })
-  addPath("playground/src/v_resource/pmem.sv")
-}
+
