@@ -3,25 +3,36 @@ import chisel3.util._
 import config.Configs._
 
 class IF_stage extends Module {
-  val io = IO(new Bundle {
-    val jalr_taget  = Input(UInt(32.W))
-    val is_not_jalr = Input(Bool())
-    val is_jump     = Input(Bool())
-    val Imm         = Input(UInt(32.W))
-    val pc          = Output(UInt(ADDR_WIDTH.W))
-    val nextpc      = Output(UInt(ADDR_WIDTH.W))
-    val f_dbus      = Output(new if_to_id_bus())
+  val IF=IO(new Bundle {
+    val IO    =Output(new if_to_id_bus())
+    val br_bus=Input(new br_bus())
   })
-  val REGpc      = RegInit(START_ADDR)
-  val snpc       = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
-  val dnpc       = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
-
+  val REGpc   = RegInit(START_ADDR)
+  val snpc    = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
+  val nextpc  = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
+  val Fetch   = Module(new read_inst())
+// pc在这里用dpi-c进行取指
   snpc  := REGpc + 4.U
-  dnpc  := Mux(io.is_not_jalr, REGpc + io.Imm, io.jalr_taget) //不是jalr就是jal和IsaB
-  io.nextpc      := Mux(io.is_jump, dnpc, snpc)
-  REGpc := io.nextpc //reg类型，更新慢一拍
+  nextpc:= Mux(IF.br_bus.is_jump, IF.br_bus.dnpc, snpc)
+  
+  Fetch.io.clock:=clock
+  Fetch.io.reset:=reset
+  Fetch.io.nextpc:=nextpc
+  IF.IO.inst:=Fetch.io.inst
+  IF.IO.pc  :=REGpc
 
-  io.f_dbus.snpc := snpc
-  io.pc          := REGpc
+  REGpc := nextpc //reg类型，更新慢一拍
+  IF.IO.pc  :=REGpc
+
 }
 
+class read_inst extends BlackBox with HasBlackBoxPath{
+  val io=IO(new Bundle {
+    val clock =Input(Clock())
+    val reset =Input(Bool())
+    val nextpc=Input(UInt(ADDR_WIDTH.W))
+    val pc    =Output(UInt(ADDR_WIDTH.W))
+    val inst  =Output(UInt(32.W))
+  })
+  addPath("playground/src/dpi-c/pmem.sv")
+}
