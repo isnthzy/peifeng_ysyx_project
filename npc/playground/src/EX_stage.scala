@@ -67,7 +67,7 @@ class dpi_func extends BlackBox with HasBlackBoxInline {
     val is_jal   =Input(Bool())
     val pc       =Input(UInt(32.W))
     val nextpc   =Input(UInt(32.W))
-    val rd       =Input(UInt( 5.W))
+    val rd       =Input(UInt(32.W))
     val inst     =Input(UInt(32.W))
   })
   setInline("dpi_func.v",

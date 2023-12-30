@@ -9,7 +9,7 @@ module dpi_ebreak(
 );
  always @(posedge clock)begin
    if(~reset)begin
-     if(ebreak_flag)  sim_break(nextpc,ret_reg);
+     if(ebreak_flag)  sim_break(pc,ret_reg);
    end
   end
 endmodule

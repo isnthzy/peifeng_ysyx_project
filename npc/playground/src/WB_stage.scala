@@ -36,7 +36,7 @@ class dpi_ebreak extends BlackBox with HasBlackBoxInline {
     val clock=Input(Clock())
     val reset=Input(Bool())
     val ebreak_flag=Input(Bool())
-    val pc         =Input(Bool())
+    val pc         =Input(UInt(32.W))
     val ret_reg    =Input(UInt(32.W))
   })
   setInline("dpi_ebreak.v",
