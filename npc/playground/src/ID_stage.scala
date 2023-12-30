@@ -61,27 +61,27 @@ class ID_stage extends Module {
 }
 
 
-class inv_break extends BlackBox with HasBlackBoxInline {
-  val io = IO(new Bundle {
-    val clock=Input(Clock())
-    val reset=Input(Bool())
-    val inv_flag=Input(Bool())
-    val pc      =Input(UInt(32.W))
-  })
-  setInline("inv_break.v",
-    """
-      |import "DPI-C" function void inv_break(input int pc);
-      |module inv_break(
-      |    input        clock,
-      |    input        reset,
-      |    input        inv_flag,
-      |    input [31:0] pc
-      |);
-      | always @(posedge clock)begin
-      |   if(~reset)begin
-      |     if(inv_flag)  inv_break(pc);
-      |   end
-      |  end
-      |endmodule
-    """.stripMargin)
-}
+// class inv_break extends BlackBox with HasBlackBoxInline {
+//   val io = IO(new Bundle {
+//     val clock=Input(Clock())
+//     val reset=Input(Bool())
+//     val inv_flag=Input(Bool())
+//     val pc      =Input(UInt(32.W))
+//   })
+//   setInline("inv_break.v",
+//     """
+//       |import "DPI-C" function void inv_break(input int pc);
+//       |module inv_break(
+//       |    input        clock,
+//       |    input        reset,
+//       |    input        inv_flag,
+//       |    input [31:0] pc
+//       |);
+//       | always @(posedge clock)begin
+//       |   if(~reset)begin
+//       |     if(inv_flag)  inv_break(pc);
+//       |   end
+//       |  end
+//       |endmodule
+//     """.stripMargin)
+// }
