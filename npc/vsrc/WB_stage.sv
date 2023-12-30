@@ -22,7 +22,7 @@ module WB_stage(	// @[<stdin>:948:3]
     .clock       (clock),
     .reset       (reset),
     .ebreak_flag (WB_IO_ebreak_flag),
-    .pc          (WB_IO_pc[0]),	// @[playground/src/WB_stage.scala:28:19]
+    .pc          (WB_IO_pc),
     .ret_reg     (_WB_to_id_wdata_output)	// @[playground/src/WB_stage.scala:15:46]
   );
   assign WB_to_id_waddr = WB_IO_rd;	// @[<stdin>:948:3]

@@ -41,7 +41,7 @@ module EX_stage(	// @[<stdin>:844:3]
     .is_jal    (_dpi_func_io_is_jal_T),	// @[playground/src/EX_stage.scala:22:39]
     .pc        (EX_IO_pc),
     .nextpc    (32'h0),	// @[playground/src/EX_stage.scala:30:47]
-    .rd        (EX_IO_rd),
+    .rd        ({27'h0, EX_IO_rd}),	// @[playground/src/EX_stage.scala:57:17]
     .inst      (EX_IO_inst)
   );
   assign EX_to_ls_ebreak_flag = EX_IO_ebreak_flag;	// @[<stdin>:844:3]
