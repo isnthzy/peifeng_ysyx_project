@@ -8,7 +8,7 @@ module inv_break(
 );
  always @(posedge clock)begin
    if(~reset)begin
-     if(inv_flag)  inv_break(nextpc);
+     if(inv_flag)  inv_break(pc);
    end
   end
 endmodule

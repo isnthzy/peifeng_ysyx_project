@@ -4,6 +4,7 @@ module dpi_func(
     input        clock,
     input        reset,
     input        func_flag,
+    input        is_jal,
     input [31:0] pc,
     input [31:0] nextpc,
     input [ 5:0] rd,

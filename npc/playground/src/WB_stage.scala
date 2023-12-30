@@ -51,7 +51,7 @@ class dpi_ebreak extends BlackBox with HasBlackBoxInline {
       |);
       | always @(posedge clock)begin
       |   if(~reset)begin
-      |     if(ebreak_flag)  sim_break(nextpc,ret_reg);
+      |     if(ebreak_flag)  sim_break(pc,ret_reg);
       |   end
       |  end
       |endmodule
