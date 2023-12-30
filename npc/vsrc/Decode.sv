@@ -8,7 +8,8 @@ module Decode(	// @[<stdin>:34:3]
   output [2:0]  io_br_type,	// @[playground/src/Decode.scala:231:14]
   output [1:0]  io_wb_sel,	// @[playground/src/Decode.scala:231:14]
   output        io_wb_en,	// @[playground/src/Decode.scala:231:14]
-  output [2:0]  io_csr_cmd	// @[playground/src/Decode.scala:231:14]
+  output [2:0]  io_csr_cmd,	// @[playground/src/Decode.scala:231:14]
+  output        io_illegal	// @[playground/src/Decode.scala:231:14]
 );
 
   wire        _ctrlSignals_T_1 = io_inst[6:0] == 7'h37;	// @[src/main/scala/chisel3/util/Lookup.scala:31:38]
@@ -76,6 +77,10 @@ module Decode(	// @[<stdin>:34:3]
     | _ctrlSignals_T_321;	// @[src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
   wire        _GEN_8 = _ctrlSignals_T_1 | _ctrlSignals_T_3;	// @[src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
   wire        _GEN_9 = _ctrlSignals_T_5 | _ctrlSignals_T_7;	// @[src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
+  wire        _GEN_10 =
+    _ctrlSignals_T_1 | _ctrlSignals_T_3 | _ctrlSignals_T_5 | _ctrlSignals_T_7
+    | _ctrlSignals_T_9 | _ctrlSignals_T_11 | _ctrlSignals_T_13 | _ctrlSignals_T_15
+    | _ctrlSignals_T_17 | _ctrlSignals_T_19 | _GEN_3;	// @[src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
   assign io_A_sel =
     ~(_ctrlSignals_T_1 | _ctrlSignals_T_3 | _ctrlSignals_T_5)
     & (_ctrlSignals_T_7 | ~_GEN_4 & (_GEN_3 | _ctrlSignals_T_150));	// @[<stdin>:34:3, src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
@@ -171,11 +176,7 @@ module Decode(	// @[<stdin>:34:3]
           | _ctrlSignals_T_53 | _ctrlSignals_T_55 | _ctrlSignals_T_57 | _ctrlSignals_T_59
           | _ctrlSignals_T_61 | _ctrlSignals_T_63 | _ctrlSignals_T_65 | _ctrlSignals_T_67
           | _ctrlSignals_T_69 | _ctrlSignals_T_71 | _ctrlSignals_T_447));	// @[<stdin>:34:3, src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
-  assign io_csr_cmd =
-    _ctrlSignals_T_1 | _ctrlSignals_T_3 | _ctrlSignals_T_5 | _ctrlSignals_T_7
-    | _ctrlSignals_T_9 | _ctrlSignals_T_11 | _ctrlSignals_T_13 | _ctrlSignals_T_15
-    | _ctrlSignals_T_17 | _ctrlSignals_T_19 | _GEN_3 | ~_ctrlSignals_T_150
-      ? 3'h0
-      : 3'h5;	// @[<stdin>:34:3, src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
+  assign io_csr_cmd = _GEN_10 | ~_ctrlSignals_T_150 ? 3'h0 : 3'h5;	// @[<stdin>:34:3, src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
+  assign io_illegal = ~_GEN_10 & ~_ctrlSignals_T_150;	// @[<stdin>:34:3, src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
 endmodule
 
