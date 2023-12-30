@@ -40,7 +40,7 @@ class dpi_ebreak extends BlackBox with HasBlackBoxInline {
   setInline("dpi_ebreak.v",
     """
       |import "DPI-C" function void sim_break(input int pc,input int ret_reg);
-      |module BlackBoxRealAdd(
+      |module dpi_ebreak(
       |    input        clock,
       |    input        reset,
       |    input        ebreak_flag,

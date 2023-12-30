@@ -14,5 +14,6 @@ always @(posedge clock) begin
   if(~reset)begin
     get_pc(pc,nextpc);
     pmem_read(nextpc,inst);
+  end
 end
 endmodule //moduleName

@@ -70,7 +70,7 @@ class inv_break extends BlackBox with HasBlackBoxInline {
   setInline("inv_break.v",
     """
       |import "DPI-C" function void inv_break(input int pc);
-      |module BlackBoxRealAdd(
+      |module inv_break(
       |    input        clock,
       |    input        reset,
       |    input        inv_flag,
