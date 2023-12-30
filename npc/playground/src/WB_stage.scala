@@ -27,6 +27,7 @@ class WB_stage extends Module {
   dpi_ebreak.io.reset:=reset
   dpi_ebreak.io.pc:=WB.IO.pc
   dpi_ebreak.io.ebreak_flag:=WB.IO.ebreak_flag
+  dpi_ebreak.io.ret_reg:=WB.to_id.wdata
 }
 
 
@@ -36,6 +37,7 @@ class dpi_ebreak extends BlackBox with HasBlackBoxInline {
     val reset=Input(Bool())
     val ebreak_flag=Input(Bool())
     val pc         =Input(Bool())
+    val ret_reg    =Input(UInt(32.W))
   })
   setInline("dpi_ebreak.v",
     """
@@ -44,7 +46,8 @@ class dpi_ebreak extends BlackBox with HasBlackBoxInline {
       |    input        clock,
       |    input        reset,
       |    input        ebreak_flag,
-      |    input [31:0] pc
+      |    input [31:0] pc,
+      |    input [31:0] ret_reg
       |);
       | always @(posedge clock)begin
       |   if(~reset)begin

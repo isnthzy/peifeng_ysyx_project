@@ -1,6 +1,6 @@
 
 import "DPI-C" function void cpu_use_func(input int pc,input int nextpc,input int inst,input bit is_jal,input int rd);
-module BlackBoxRealAdd(
+module dpi_func(
     input        clock,
     input        reset,
     input        func_flag,

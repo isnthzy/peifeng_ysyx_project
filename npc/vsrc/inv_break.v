@@ -1,6 +1,6 @@
 
 import "DPI-C" function void inv_break(input int pc);
-module BlackBoxRealAdd(
+module inv_break(
     input        clock,
     input        reset,
     input        inv_flag,

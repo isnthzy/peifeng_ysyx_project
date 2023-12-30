@@ -51,6 +51,7 @@ class EX_stage extends Module {
   dpi_func.io.clock:=clock
   dpi_func.io.reset:=reset
   dpi_func.io.func_flag:=(EX.IO.br_type===BR_JAL)|(EX.IO.br_type===BR_JR)
+  dpi_func.io.is_jal:=(EX.IO.br_type===BR_JAL)
   dpi_func.io.pc:=EX.IO.pc
   dpi_func.io.nextpc:=0.U
   dpi_func.io.rd:=EX.IO.rd
@@ -63,6 +64,7 @@ class dpi_func extends BlackBox with HasBlackBoxInline {
     val clock=Input(Clock())
     val reset=Input(Bool())
     val func_flag=Input(Bool())
+    val is_jal   =Input(Bool())
     val pc       =Input(UInt(32.W))
     val nextpc   =Input(UInt(32.W))
     val rd       =Input(UInt( 5.W))
@@ -75,6 +77,7 @@ class dpi_func extends BlackBox with HasBlackBoxInline {
       |    input        clock,
       |    input        reset,
       |    input        func_flag,
+      |    input        is_jal,
       |    input [31:0] pc,
       |    input [31:0] nextpc,
       |    input [ 5:0] rd,
