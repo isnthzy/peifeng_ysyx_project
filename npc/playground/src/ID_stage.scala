@@ -41,13 +41,46 @@ class ID_stage extends Module {
   Regfile.io.wdata:=ID.wb_bus.wdata
   Regfile.io.wen  :=ID.wb_bus.wen
 
+  ID.to_ex.ebreak_flag:=(dc.io.csr_cmd===CSR.B)
   ID.to_ex.wb_sel :=dc.io.wb_sel
   ID.to_ex.br_type:=dc.io.br_type
   ID.to_ex.wen :=dc.io.wb_en
-  ID.to_ex.waddr:=rd
+  ID.to_ex.rd  :=rd
   ID.to_ex.alu_op:=dc.io.alu_op
   ID.to_ex.src1:=src1
   ID.to_ex.src2:=src2
   ID.to_ex.inst:=ID.IO.inst
   ID.to_ex.pc  :=ID.IO.pc
+
+  val inv_break=Module(new inv_break())
+  inv_break.io.clock:=clock
+  inv_break.io.reset:=reset
+  inv_break.io.pc:=ID.IO.pc
+  inv_break.io.inv_flag:=dc.io.illegal
+}
+
+
+class inv_break extends BlackBox with HasBlackBoxInline {
+  val io = IO(new Bundle {
+    val clock=Input(Clock())
+    val reset=Input(Bool())
+    val inv_flag=Input(Bool())
+    val pc      =Input(UInt(32.W))
+  })
+  setInline("inv_break.v",
+    """
+      |import "DPI-C" function void inv_break(input int pc);
+      |module BlackBoxRealAdd(
+      |    input        clock,
+      |    input        reset,
+      |    input        inv_flag,
+      |    input [31:0] pc
+      |);
+      | always @(posedge clock)begin
+      |   if(~reset)begin
+      |     if(inv_flag)  inv_break(nextpc);
+      |   end
+      |  end
+      |endmodule
+    """.stripMargin)
 }

@@ -38,11 +38,53 @@ class EX_stage extends Module {
     BR_JAL -> Alu.io.result,
     BR_JR  -> Cat(Alu.io.result(31,1),0.U(1.W))
   ))
-
+  
+  EX.to_ls.ebreak_flag:=EX.IO.ebreak_flag
   EX.to_ls.wb_sel:=EX.IO.wb_sel
   EX.to_ls.wen :=EX.IO.wen
-  EX.to_ls.waddr:=EX.IO.waddr
+  EX.to_ls.rd:=EX.IO.rd
   EX.to_ls.result:=Alu.io.result
   EX.to_ls.pc  :=EX.IO.pc
   EX.to_ls.inst:=EX.IO.inst
+
+  val dpi_func=Module(new dpi_func())
+  dpi_func.io.clock:=clock
+  dpi_func.io.reset:=reset
+  dpi_func.io.func_flag:=(EX.IO.br_type===BR_JAL)|(EX.IO.br_type===BR_JR)
+  dpi_func.io.pc:=EX.IO.pc
+  dpi_func.io.nextpc:=0.U
+  dpi_func.io.rd:=EX.IO.rd
+  dpi_func.io.inst:=EX.IO.inst
+
+}
+
+class dpi_func extends BlackBox with HasBlackBoxInline {
+  val io = IO(new Bundle {
+    val clock=Input(Clock())
+    val reset=Input(Bool())
+    val func_flag=Input(Bool())
+    val pc       =Input(UInt(32.W))
+    val nextpc   =Input(UInt(32.W))
+    val rd       =Input(UInt( 5.W))
+    val inst     =Input(UInt(32.W))
+  })
+  setInline("dpi_func.v",
+    """
+      |import "DPI-C" function void cpu_use_func(input int pc,input int nextpc,input int inst,input bit is_jal,input int rd);
+      |module BlackBoxRealAdd(
+      |    input        clock,
+      |    input        reset,
+      |    input        func_flag,
+      |    input [31:0] pc,
+      |    input [31:0] nextpc,
+      |    input [ 5:0] rd,
+      |    input [31:0] inst
+      |);
+      | always @(posedge clock)begin
+      |   if(~reset)begin
+      |     if(func_flag)   cpu_use_func(pc,nextpc,inst,is_jal,rd);
+      |   end
+      |  end
+      |endmodule
+    """.stripMargin)
 }
