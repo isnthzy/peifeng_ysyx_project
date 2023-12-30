@@ -14,4 +14,5 @@ class LS_stage extends Module {
   LS.to_wb.result:=LS.IO.result
   LS.to_wb.pc:=LS.IO.pc
   LS.to_wb.inst:=LS.IO.inst
+  LS.to_wb.nextpc:=LS.IO.nextpc
 }

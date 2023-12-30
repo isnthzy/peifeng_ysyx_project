@@ -25,7 +25,7 @@ class WB_stage extends Module {
   val dpi_ebreak=Module(new dpi_ebreak())
   dpi_ebreak.io.clock:=clock
   dpi_ebreak.io.reset:=reset
-  dpi_ebreak.io.pc:=WB.IO.pc
+  dpi_ebreak.io.pc:=WB.IO.nextpc
   dpi_ebreak.io.ebreak_flag:=WB.IO.ebreak_flag
   dpi_ebreak.io.ret_reg:=WB.to_id.wdata
 }

@@ -19,11 +19,10 @@ class IF_stage extends Module {
   Fetch.io.reset:=reset
   Fetch.io.nextpc:=nextpc
   IF.IO.inst:=Fetch.io.inst
-  IF.IO.pc  :=REGpc
 
   REGpc := nextpc //reg类型，更新慢一拍
   IF.IO.pc  :=REGpc
-
+  IF.IO.nextpc:=nextpc
 }
 
 class read_inst extends BlackBox with HasBlackBoxPath{

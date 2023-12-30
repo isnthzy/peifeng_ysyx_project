@@ -51,11 +51,12 @@ class ID_stage extends Module {
   ID.to_ex.src2:=src2
   ID.to_ex.inst:=ID.IO.inst
   ID.to_ex.pc  :=ID.IO.pc
+  ID.to_ex.nextpc:=ID.IO.nextpc
 
   val inv_break=Module(new inv_break())
   inv_break.io.clock:=clock
   inv_break.io.reset:=reset
-  inv_break.io.pc:=ID.IO.pc
+  inv_break.io.pc:=ID.IO.nextpc
   inv_break.io.inv_flag:=dc.io.illegal
 }
 

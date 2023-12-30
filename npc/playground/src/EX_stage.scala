@@ -46,13 +46,14 @@ class EX_stage extends Module {
   EX.to_ls.result:=Alu.io.result
   EX.to_ls.pc  :=EX.IO.pc
   EX.to_ls.inst:=EX.IO.inst
+  EX.to_ls.nextpc:=EX.IO.nextpc
 
   val dpi_func=Module(new dpi_func())
   dpi_func.io.clock:=clock
   dpi_func.io.reset:=reset
   dpi_func.io.func_flag:=(EX.IO.br_type===BR_JAL)|(EX.IO.br_type===BR_JR)
   dpi_func.io.is_jal:=(EX.IO.br_type===BR_JAL)
-  dpi_func.io.pc:=EX.IO.pc
+  dpi_func.io.pc:=EX.IO.nextpc
   dpi_func.io.nextpc:=0.U
   dpi_func.io.rd:=EX.IO.rd
   dpi_func.io.inst:=EX.IO.inst
