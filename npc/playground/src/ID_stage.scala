@@ -57,7 +57,7 @@ class ID_stage extends Module {
   
   val inv_break=Module(new inv_break())
   val inv_flag=Reg(Bool())
-  inv_flag:=dc.io.illegal
+  inv_flag:=(dc.io.illegal&&ID.IO.nextpc=/="h7ffffffc".U)
   inv_break.io.clock:=clock
   inv_break.io.reset:=reset
   inv_break.io.pc:=ID.IO.nextpc
