@@ -77,6 +77,7 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
 
 word_t paddr_read(paddr_t addr, int len,bool model) {
   #ifdef CONFIG_MTRACE //警惕切换riscv64会造成的段错误
+  printf("test1");
   if(model==1){
     if(likely(in_pmem(addr))){
       char mtrace_logbuf[120];
