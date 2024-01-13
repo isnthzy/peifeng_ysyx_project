@@ -29,10 +29,10 @@ extern "C" void sim_break(int nextpc,int ret_reg){
   npc_state.halt_pc=nextpc;
   npc_state.state=NPC_END;
 }
-// extern "C" void inv_break(int nextpc){
-//   npc_state.halt_pc=nextpc;
-//   npc_state.state=NPC_ABORT;
-// }
+extern "C" void inv_break(int nextpc){
+  npc_state.halt_pc=nextpc;
+  npc_state.state=NPC_ABORT;
+}
 
 extern "C" void cpu_use_func(int pc,int nextpc,int inst,svBit is_jal,int rd){
   //调用cpu_use_func后，is_jal=1 jal,is_jal=0 jalr
