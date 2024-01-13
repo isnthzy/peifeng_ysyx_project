@@ -57,7 +57,7 @@ module EX_stage(	// @[<stdin>:862:3]
     _dpi_func_io_is_jal_T | _dpi_func_io_func_flag_T_1 | EX_IO_br_type == 4'h3
     & rs1_eq_rs2 | EX_IO_br_type == 4'h6 & ~rs1_eq_rs2 | EX_IO_br_type == 4'h2
     & rs1_lt_rs2_s | EX_IO_br_type == 4'h1 & rs1_lt_rs2_u | EX_IO_br_type == 4'h5
-    & ~rs1_lt_rs2_s | EX_IO_br_type == 4'h4 & ~rs1_lt_rs2_u;	// @[<stdin>:862:3, playground/src/EX_stage.scala:18:33, :19:40, :20:34, :22:39, :23:39, :24:{39,49}, :25:{39,49,52}, :26:{39,49}, :27:{39,49}, :28:{39,49,52}, :29:{23,39,49,52}]
+    & ~rs1_lt_rs2_s | EX_IO_br_type == 4'h4 & ~rs1_lt_rs2_u;	// @[<stdin>:862:3, playground/src/EX_stage.scala:18:33, :19:40, :20:34, :22:39, :23:39, :24:{40,50}, :25:{40,50,53}, :26:{40,50}, :27:{40,50}, :28:{40,50,53}, :29:{23,40,50,53}]
   assign EX_br_bus_dnpc =
     EX_IO_br_type == 4'h8
       ? {_Alu_io_result[31:1], 1'h0}
@@ -65,6 +65,6 @@ module EX_stage(	// @[<stdin>:862:3]
         | EX_IO_br_type == 4'h4 | EX_IO_br_type == 4'h3 | EX_IO_br_type == 4'h2
         | EX_IO_br_type == 4'h1
           ? _Alu_io_result
-          : 32'h0;	// @[<stdin>:862:3, playground/src/EX_stage.scala:12:17, :22:39, :23:39, :24:39, :25:{39,52}, :26:39, :27:39, :28:39, :29:39, :30:47, :39:{18,32}]
+          : 32'h0;	// @[<stdin>:862:3, playground/src/EX_stage.scala:12:17, :22:39, :23:39, :24:40, :25:{40,53}, :26:40, :27:40, :28:40, :29:40, :30:47, :39:{18,32}]
 endmodule
 
