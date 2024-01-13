@@ -12,7 +12,7 @@ class LS_stage extends Module {
   val dpi_ls=Module(new dpi_ls())
   dpi_ls.io.clock:=clock
   dpi_ls.io.reset:=reset
-  dpi_ls.io.ls_valid:=(LS.IO.st_type.asUInt=/=0.U)&&(LS.IO.ld_type.asUInt=/=0.U)
+  dpi_ls.io.ls_valid:=(LS.IO.st_type.asUInt=/=0.U)||(LS.IO.ld_type.asUInt=/=0.U)
   dpi_ls.io.st_wen:=LS.IO.st_type.asUInt=/=0.U
   dpi_ls.io.raddr:=LS.IO.result
   // sram_data:=dpi_ls.io.rdata
