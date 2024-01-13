@@ -15,12 +15,19 @@ class LS_stage extends Module {
   dpi_ls.io.ls_valid:=(LS.IO.st_type.asUInt=/=0.U)&&(LS.IO.ld_type.asUInt=/=0.U)
   dpi_ls.io.st_wen:=LS.IO.st_type.asUInt=/=0.U
   dpi_ls.io.raddr:=LS.IO.result
-  sram_data:=dpi_ls.io.rdata
+  // sram_data:=dpi_ls.io.rdata
   dpi_ls.io.wmask:=LS.IO.st_type
   dpi_ls.io.waddr:=LS.IO.result
   dpi_ls.io.wdata:=LS.IO.src2
 
-
+  sram_data:=MuxLookup(LS.IO.ld_type,0.U)(Seq(
+    LD_LW -> dpi_ls.io.rdata,
+    LD_LH -> Sext(dpi_ls.io.rdata(15,0),32),
+    LD_LB -> Sext(dpi_ls.io.rdata( 7,0),32),
+    LD_LHU-> Zext(dpi_ls.io.rdata(15,0),32),
+    LD_LBU-> Zext(dpi_ls.io.rdata( 7,0),32)
+  ))
+  
   LS.to_wb.ebreak_flag:=LS.IO.ebreak_flag
   LS.to_wb.wen:=LS.IO.wen
   LS.to_wb.rd :=LS.IO.rd
@@ -44,7 +51,7 @@ class dpi_ls extends BlackBox with HasBlackBoxInline {
     val st_wen  =Input(Bool())
     val raddr   =Input(UInt(32.W))
     val rdata   =Output(UInt(32.W))
-    val wmask   =Input(UInt(2.W))
+    val wmask   =Input(UInt(4.W))
     val waddr   =Input(UInt(32.W))
     val wdata   =Input(UInt(32.W))
   })
@@ -57,18 +64,18 @@ class dpi_ls extends BlackBox with HasBlackBoxInline {
       |    input        reset,
       |    input        ls_valid,
       |    input        st_wen,
-      |    input [ 5:0] raddr,
+      |    input [31:0] raddr,
       |    output[31:0] rdata,
-      |    input        wmask,
-      |    input [ 5:0] waddr,
+      |    input [ 3:0] wmask,
+      |    input [31:0] waddr,
       |    input [31:0] wdata
       | );
       | 
-      | always @(posedge clock)begin
+      | always @(posedge clock) begin
       |   if(~reset)begin
-      |     if(ls_valid)begin
+      |     if(ls_valid) begin
       |       pmem_read (raddr,rdata);
-      |       if(st_wen)begin
+      |       if(st_wen) begin
       |         pmem_write(waddr,wdata,wmask);
       |       end
       |     end
