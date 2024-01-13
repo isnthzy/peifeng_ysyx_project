@@ -66,6 +66,10 @@ void free_wp(WP *wp){
 
 void add_watch(char *expr,word_t addr){
   WP* wp=new_wp();
+  if(expr==NULL){
+    printf("Error:add null expr");
+    return;
+  }
   strcpy(wp->expr,expr);
   wp->last=addr;
   printf("watchpoint %d: %s\n",wp->NO,expr);
