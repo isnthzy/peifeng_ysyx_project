@@ -17,6 +17,7 @@ class IF_stage extends Module {
   
   Fetch.io.clock:=clock
   Fetch.io.reset:=reset
+  Fetch.io.pc   :=REGpc
   Fetch.io.nextpc:=nextpc
   IF.IO.inst:=Fetch.io.inst
 
