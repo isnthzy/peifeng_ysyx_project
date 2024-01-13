@@ -124,7 +124,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
     }
     skip_dut_nr_inst --;
     if (skip_dut_nr_inst == 0)
-      panic("can not catch up with ref.pc = " FMT_WORD " at pc = " FMT_WORD, ref_r.pc, pc);
+      panic("can not catch up with ref.pc = " FMT_WORD " at pc = " FMT_WORD, ref_r.pc, npc);
     return;
   }
 
@@ -137,5 +137,5 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
 
   ref_difftest_exec(1);
   ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
-  checkregs(&ref_r, pc);
+  checkregs(&ref_r, npc);
 }
