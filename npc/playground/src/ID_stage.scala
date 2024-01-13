@@ -11,18 +11,25 @@ class ID_stage extends Module {
   })
   val dc=Module(new Decode())
   val ImmGen=Module(new ImmGen())
+  val imm=dontTouch(Wire(UInt(32.W)))
+  val rs1=dontTouch(Wire(UInt(5.W)))
+  val rs2=dontTouch(Wire(UInt(5.W)))
+  val funct3=dontTouch(Wire(UInt(3.W)))
+  val rd=dontTouch(Wire(UInt(5.W)))
+  val opcode=dontTouch(Wire(UInt(7.W)))
+
 
   dc.io.inst:=ID.IO.inst
 
   ImmGen.io.inst:=ID.IO.inst
   ImmGen.io.sel :=dc.io.imm_sel
 
-  val imm    = ImmGen.io.out
-  val rs2    = ID.IO.inst(24, 20)
-  val rs1    = ID.IO.inst(19, 15)
-  val funct3 = ID.IO.inst(14, 12)
-  val rd     = ID.IO.inst(11, 7)
-  val opcode = ID.IO.inst(6, 0)
+  imm := ImmGen.io.out
+  rs2 := ID.IO.inst(24, 20)
+  rs1 := ID.IO.inst(19, 15)
+  funct3 := ID.IO.inst(14, 12)
+  rd := ID.IO.inst(11, 7)
+  opcode := ID.IO.inst(6, 0)
 
   val Regfile=Module(new RegFile())
   Regfile.io.raddr1:=rs1
