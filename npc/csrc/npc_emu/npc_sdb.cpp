@@ -1,7 +1,7 @@
 #include "../include/npc_common.h"
 #include <readline/readline.h>
 #include <readline/history.h>
-word_t paddr_read(paddr_t addr, int len,bool model);
+word_t paddr_read(paddr_t addr, int len,int model);
 static int is_batch_mode = false;
 void reg_display();
 void npc_exev(uint64_t step);

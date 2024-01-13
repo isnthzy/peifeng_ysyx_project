@@ -1,7 +1,7 @@
 #include "../include/npc_common.h"
 #include "../include/npc_verilator.h"
 #include "../include/iringbuf.h"
-word_t paddr_read(paddr_t addr, int len,bool model);
+word_t paddr_read(paddr_t addr, int len,int model);
 void paddr_write(paddr_t addr, int len, word_t data);
 extern CPU_state cpu;
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN={};
@@ -75,7 +75,7 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
 }
 //----------------------------dpi-c----------------------------
 
-word_t paddr_read(paddr_t addr, int len,bool model) {
+word_t paddr_read(paddr_t addr, int len,int model) {
   #ifdef CONFIG_MTRACE //警惕切换riscv64会造成的段错误
   if(model==1){
     printf("test1");
