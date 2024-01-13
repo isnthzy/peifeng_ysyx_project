@@ -61,7 +61,7 @@ module LS_stage(	// @[<stdin>:963:3]
     .ls_valid ((|LS_IO_st_type) & (|LS_IO_ld_type)),	// @[playground/src/LS_stage.scala:15:{44,51,74}]
     .st_wen   (|LS_IO_st_type),	// @[playground/src/LS_stage.scala:15:44]
     .raddr    (LS_IO_result),
-    .wmask    ({2'h0, LS_IO_st_type}),	// @[playground/src/LS_stage.scala:15:44, :19:18]
+    .wmask    ({6'h0, LS_IO_st_type}),	// @[playground/src/LS_stage.scala:19:18]
     .waddr    (LS_IO_result),
     .wdata    (LS_IO_src2),
     .rdata    (_dpi_ls_rdata)

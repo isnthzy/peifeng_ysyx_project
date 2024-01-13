@@ -8,7 +8,7 @@ module dpi_ls(
    input        st_wen,
    input [31:0] raddr,
    output[31:0] rdata,
-   input [ 3:0] wmask,
+   input [ 7:0] wmask,
    input [31:0] waddr,
    input [31:0] wdata
 );
