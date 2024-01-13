@@ -27,8 +27,7 @@ typedef word_t paddr_t;
         printf("\033[0m"); \
     } while (0)
 #define gpr(idx) (cpu.gpr[check_reg_idx(idx)])
-word_t paddr_read(paddr_t addr, int len);
-void paddr_write(paddr_t addr, int len, word_t data);
+
 word_t expr(char *e, bool *success);
 void sdb_mainloop();
 typedef struct {

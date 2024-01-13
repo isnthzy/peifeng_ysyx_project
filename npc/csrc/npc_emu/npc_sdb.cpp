@@ -1,6 +1,7 @@
 #include "../include/npc_common.h"
 #include <readline/readline.h>
 #include <readline/history.h>
+word_t paddr_read(paddr_t addr, int len,bool model);
 static int is_batch_mode = false;
 void reg_display();
 void npc_exev(uint64_t step);
@@ -64,7 +65,7 @@ static int cmd_x(char *args) {
   printf("addr        mem\n");
   for(i=0;i<s1;i++){
     printf("0x%08x: ",addr);
-    vaddr_t data = paddr_read(addr,4);
+    vaddr_t data = paddr_read(addr,4,0);
     
     for(j=3;j>=0;j--){
       printf("0x%02x ",(data>>(j*8))&0xff);

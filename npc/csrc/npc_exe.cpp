@@ -16,6 +16,8 @@ static bool g_print_step = false;
 static uint64_t g_timer = 0; // unit: us
 uint64_t g_nr_guest_inst;
 IRingBuffer iring_buffer;
+IRingBuffer mtrace_buffer;
+extern void mputIringbuf();
 
 void step_and_dump_wave(){
   top->eval();
@@ -139,7 +141,8 @@ bool init_iringbuf_f=false;
 void npc_exev(uint64_t step){ //之所以不用int因为int是有符号的，批处理传入-1就是-1，无法达到效果
   if(!init_iringbuf_f){
     init_iringbuf_f=true;
-    initializeIRingBuffer(&iring_buffer);
+    initializeIRingBuffer(&iring_buffer ,ITRACE_LOGBUF_SIZE);
+    initializeIRingBuffer(&mtrace_buffer,MTRACE_LOGBUF_SIZE);
   } //初始化iringbuffer,只初始化一次
   g_print_step = (step<MAX_INST_TO_PRINT);
   switch (npc_state.state) {
@@ -157,7 +160,7 @@ void npc_exev(uint64_t step){ //之所以不用int因为int是有符号的，批
   switch (npc_state.state) {
     case NPC_RUNNING: npc_state.state = NPC_STOP; break;
     case NPC_END: case NPC_ABORT:
-      if(npc_state.state==NPC_ABORT||npc_state.halt_ret!=0) IFDEF(CONFIG_ITRACE,putIringbuf()); 
+      if(npc_state.state==NPC_ABORT||npc_state.halt_ret!=0) IFDEF(CONFIG_ITRACE, putIringbuf(); mputIringbuf();); 
       Log("npc: %s at pc = " FMT_WORD,
           (npc_state.state == NPC_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED):
            (npc_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_CYAN):
