@@ -51,7 +51,7 @@ class dpi_ls extends BlackBox with HasBlackBoxInline {
     val st_wen  =Input(Bool())
     val raddr   =Input(UInt(32.W))
     val rdata   =Output(UInt(32.W))
-    val wmask   =Input(UInt(4.W))
+    val wmask   =Input(UInt(8.W))
     val waddr   =Input(UInt(32.W))
     val wdata   =Input(UInt(32.W))
   })
@@ -66,7 +66,7 @@ class dpi_ls extends BlackBox with HasBlackBoxInline {
       |   input        st_wen,
       |   input [31:0] raddr,
       |   output[31:0] rdata,
-      |   input [ 3:0] wmask,
+      |   input [ 7:0] wmask,
       |   input [31:0] waddr,
       |   input [31:0] wdata
       |);
