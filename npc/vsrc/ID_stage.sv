@@ -33,7 +33,7 @@ module ID_stage(	// @[<stdin>:741:3]
   wire        _ID_to_ex_ebreak_flag_T = _dc_io_csr_cmd == 3'h5;	// @[playground/src/ID_stage.scala:12:16, :29:39]
   reg         inv_flag;	// @[playground/src/ID_stage.scala:59:19]
   always @(posedge clock)	// @[<stdin>:742:11]
-    inv_flag <= _dc_io_illegal & ID_IO_nextpc != 32'h7FFFFFFC;	// @[playground/src/ID_stage.scala:12:16, :59:19, :60:{27,41}]
+    inv_flag <= _dc_io_illegal & ID_IO_nextpc != 32'h80000000;	// @[playground/src/ID_stage.scala:12:16, :59:19, :60:{27,41}]
   Decode dc (	// @[playground/src/ID_stage.scala:12:16]
     .io_inst    (ID_IO_inst),
     .io_A_sel   (_dc_io_A_sel),
