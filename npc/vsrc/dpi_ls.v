@@ -6,18 +6,18 @@
     input        reset,
     input        ls_valid,
     input        st_wen,
-    input [ 5:0] raddr,
+    input [31:0] raddr,
     output[31:0] rdata,
-    input        wmask,
-    input [ 5:0] waddr,
+    input [ 3:0] wmask,
+    input [31:0] waddr,
     input [31:0] wdata
  );
  
- always @(posedge clock)begin
+ always @(posedge clock) begin
    if(~reset)begin
-     if(ls_valid)begin
+     if(ls_valid) begin
        pmem_read (raddr,rdata);
-       if(st_wen)begin
+       if(st_wen) begin
          pmem_write(waddr,wdata,wmask);
        end
      end
