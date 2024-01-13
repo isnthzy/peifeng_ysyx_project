@@ -12,7 +12,7 @@ class LS_stage extends Module {
   val dpi_ls=Module(new dpi_ls())
   dpi_ls.io.clock:=clock
   dpi_ls.io.reset:=reset
-  dpi_ls.io.ls_valid:=(LS.IO.st_type.asUInt=/=0.U)||(LS.IO.ld_type.asUInt=/=0.U)
+  dpi_ls.io.ld_wen:=LS.IO.ld_type.asUInt=/=0.U
   dpi_ls.io.st_wen:=LS.IO.st_type.asUInt=/=0.U
   dpi_ls.io.raddr:=LS.IO.result
   // sram_data:=dpi_ls.io.rdata
@@ -47,13 +47,13 @@ class dpi_ls extends BlackBox with HasBlackBoxInline {
   val io = IO(new Bundle {
     val clock=Input(Clock())
     val reset=Input(Bool())
-    val ls_valid=Input(Bool())
-    val st_wen  =Input(Bool())
-    val raddr   =Input(UInt(32.W))
-    val rdata   =Output(UInt(32.W))
-    val wmask   =Input(UInt(8.W))
-    val waddr   =Input(UInt(32.W))
-    val wdata   =Input(UInt(32.W))
+    val ld_wen=Input(Bool())
+    val st_wen=Input(Bool())
+    val raddr =Input(UInt(32.W))
+    val rdata =Output(UInt(32.W))
+    val wmask =Input(UInt(8.W))
+    val waddr =Input(UInt(32.W))
+    val wdata =Input(UInt(32.W))
   })
   setInline("dpi_ls.v",
     """
@@ -62,7 +62,7 @@ class dpi_ls extends BlackBox with HasBlackBoxInline {
       |module dpi_ls(
       |   input        clock,
       |   input        reset,
-      |   input        ls_valid,
+      |   input        ld_wen,
       |   input        st_wen,
       |   input [31:0] raddr,
       |   output[31:0] rdata,
@@ -73,14 +73,15 @@ class dpi_ls extends BlackBox with HasBlackBoxInline {
       | 
       |always @(posedge clock) begin
       |  if(~reset)begin
-      |    if(ls_valid) begin
+      |    if(ld_wen) begin
       |      pmem_read (raddr,rdata);
-      |      if(st_wen) begin
-      |        pmem_write(waddr,wdata,wmask);
-      |      end
       |    end
       |    else begin
       |      rdata[31:0]=0;
+      |    end
+      |
+      |    if(st_wen) begin
+      |        pmem_write(waddr,wdata,wmask);
       |    end
       |  end
       | end
