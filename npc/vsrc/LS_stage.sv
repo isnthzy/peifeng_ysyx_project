@@ -56,15 +56,15 @@ module LS_stage(	// @[<stdin>:963:3]
     endcase	// @[playground/src/LS_stage.scala:34:47]
   end // always_comb
   dpi_ls dpi_ls (	// @[playground/src/LS_stage.scala:12:20]
-    .clock    (clock),
-    .reset    (reset),
-    .ls_valid ((|LS_IO_st_type) | (|LS_IO_ld_type)),	// @[playground/src/LS_stage.scala:15:{44,51,74}]
-    .st_wen   (|LS_IO_st_type),	// @[playground/src/LS_stage.scala:15:44]
-    .raddr    (LS_IO_result),
-    .wmask    ({6'h0, LS_IO_st_type}),	// @[playground/src/LS_stage.scala:19:18]
-    .waddr    (LS_IO_result),
-    .wdata    (LS_IO_src2),
-    .rdata    (_dpi_ls_rdata)
+    .clock  (clock),
+    .reset  (reset),
+    .ld_wen (|LS_IO_ld_type),	// @[playground/src/LS_stage.scala:15:41]
+    .st_wen (|LS_IO_st_type),	// @[playground/src/LS_stage.scala:16:41]
+    .raddr  (LS_IO_result),
+    .wmask  ({6'h0, LS_IO_st_type}),	// @[playground/src/LS_stage.scala:19:18]
+    .waddr  (LS_IO_result),
+    .wdata  (LS_IO_src2),
+    .rdata  (_dpi_ls_rdata)
   );
   assign LS_to_wb_ebreak_flag = LS_IO_ebreak_flag;	// @[<stdin>:963:3]
   assign LS_to_wb_wen = LS_IO_wen;	// @[<stdin>:963:3]
