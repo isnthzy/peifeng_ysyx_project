@@ -21,12 +21,12 @@ class EX_stage extends Module {
 
   EX.br_bus.is_jump := ((EX.IO.br_type===BR_JAL)
                       | (EX.IO.br_type===BR_JR)
-                      | (EX.IO.br_type===BR_EQ) && rs1_eq_rs2
-                      | (EX.IO.br_type===BR_NE) && !rs1_eq_rs2
-                      | (EX.IO.br_type===BR_LT) && rs1_lt_rs2_s
-                      | (EX.IO.br_type===BR_LTU)&& rs1_lt_rs2_u
-                      | (EX.IO.br_type===BR_GE) && !rs1_lt_rs2_s
-                      | (EX.IO.br_type===BR_GEU)&& !rs1_lt_rs2_u)
+                      | ((EX.IO.br_type===BR_EQ) && rs1_eq_rs2)
+                      | ((EX.IO.br_type===BR_NE) && !rs1_eq_rs2)
+                      | ((EX.IO.br_type===BR_LT) && rs1_lt_rs2_s)
+                      | ((EX.IO.br_type===BR_LTU)&& rs1_lt_rs2_u)
+                      | ((EX.IO.br_type===BR_GE) && !rs1_lt_rs2_s)
+                      | ((EX.IO.br_type===BR_GEU)&& !rs1_lt_rs2_u))
   EX.br_bus.dnpc:=MuxLookup(EX.IO.br_type,0.U)(Seq(
     BR_XXX -> 0.U,
     BR_LTU -> Alu.io.result,

@@ -29,10 +29,10 @@ extern "C" void sim_break(int nextpc,int ret_reg){
   npc_state.halt_pc=nextpc;
   npc_state.state=NPC_END;
 }
-// extern "C" void inv_break(int nextpc){
-//   npc_state.halt_pc=nextpc;
-//   npc_state.state=NPC_ABORT;
-// }
+extern "C" void inv_break(int nextpc){
+  npc_state.halt_pc=nextpc;
+  npc_state.state=NPC_ABORT;
+}
 
 extern "C" void cpu_use_func(int pc,int nextpc,int inst,svBit is_jal,int rd){
   //调用cpu_use_func后，is_jal=1 jal,is_jal=0 jalr
@@ -162,7 +162,7 @@ void npc_exev(uint64_t step){ //之所以不用int因为int是有符号的，批
           (npc_state.state == NPC_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED):
            (npc_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_CYAN):
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
-          npc_state.halt_pc);
+          cpu.nextpc);
     case NPC_QUIT: statistic();
   }
 
