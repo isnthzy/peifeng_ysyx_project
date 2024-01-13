@@ -58,7 +58,7 @@ module LS_stage(	// @[<stdin>:963:3]
   dpi_ls dpi_ls (	// @[playground/src/LS_stage.scala:12:20]
     .clock    (clock),
     .reset    (reset),
-    .ls_valid ((|LS_IO_st_type) & (|LS_IO_ld_type)),	// @[playground/src/LS_stage.scala:15:{44,51,74}]
+    .ls_valid ((|LS_IO_st_type) | (|LS_IO_ld_type)),	// @[playground/src/LS_stage.scala:15:{44,51,74}]
     .st_wen   (|LS_IO_st_type),	// @[playground/src/LS_stage.scala:15:44]
     .raddr    (LS_IO_result),
     .wmask    ({6'h0, LS_IO_st_type}),	// @[playground/src/LS_stage.scala:19:18]
