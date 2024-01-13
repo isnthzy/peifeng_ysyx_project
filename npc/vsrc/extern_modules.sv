@@ -5,5 +5,7 @@
 
 // external module dpi_func
 
+// external module dpi_ls
+
 // external module dpi_ebreak
 

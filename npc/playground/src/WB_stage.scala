@@ -12,12 +12,8 @@ class WB_stage extends Module {
     val debug_wen  =Output(Bool())
   })
   WB.to_id.waddr:=WB.IO.rd
-  WB.to_id.wdata:=MuxLookup(WB.IO.wb_sel,0.U)(Seq(
-    WB_ALU ->  WB.IO.result,
-    WB_PC4 -> (WB.IO.pc+4.U)
-  ))
+  WB.to_id.wdata:=WB.IO.result
   WB.to_id.wen  :=WB.IO.wen
-
   WB.debug_waddr:=WB.to_id.waddr
   WB.debug_wdata:=WB.to_id.wdata
   WB.debug_wen  :=WB.to_id.wen

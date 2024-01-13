@@ -2,19 +2,22 @@
 #define _IRINGBUF_H__
 #include <stdbool.h>
 
-#define BUFFER_SIZE 10
-#define MAX_STRING_LENGTH 100
-
+#define MAX_STRING_LENGTH 128
+#define MTRACE_LOGBUF_SIZE 10
+#define ITRACE_LOGBUF_SIZE 10
+#define DTRACE_LOGBUF_SIZE 10
+#define ETRACE_LOGBUF_SIZE 10
 typedef struct {
-    char buffer[BUFFER_SIZE][MAX_STRING_LENGTH];
+    char buffer[128][MAX_STRING_LENGTH];
     int head;     // 指向队列头部的指针
     int tail;     // 指向队列尾部的指针
-    int size;     // 缓冲区有多少个元素
+    int size;     // 缓冲区有多大
+    int num ;     // 缓冲区有多少个元素
     bool full;    // 标志缓冲区是否已满
 } IRingBuffer;
 
 // 初始化缓冲区
-void initializeIRingBuffer(IRingBuffer* buffer);
+void initializeIRingBuffer(IRingBuffer* buffer,int size);
 // 检查缓冲区是否为空
 bool isIRingBufferEmpty(const IRingBuffer* buffer);
 // 检查缓冲区是否已满
