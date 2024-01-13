@@ -27,7 +27,7 @@ extern void npc_quit();
 #define wLog(format, ...) \
   do { \
     printf(ANSI_FMT(format, ANSI_FG_MAGENTA) "\n", ## __VA_ARGS__); \
-    log_write(format, ## __VA_ARGS__); \
+    log_write(format "\n", ## __VA_ARGS__); \
   } while (0)
 
 #define Assert(cond, format, ...) \
