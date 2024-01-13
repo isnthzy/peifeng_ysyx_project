@@ -81,7 +81,7 @@ class dpi_ls extends BlackBox with HasBlackBoxInline {
       |    end
       |
       |    if(st_wen) begin
-      |        pmem_write(waddr,wdata,wmask);
+      |      pmem_write(waddr,wdata,wmask);
       |    end
       |  end
       | end
