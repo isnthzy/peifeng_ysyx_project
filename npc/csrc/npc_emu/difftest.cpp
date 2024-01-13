@@ -15,6 +15,10 @@
 
 #include <dlfcn.h>
 #include "../include/npc_common.h"
+#define DIFF_CHECK(addr1, addr2, name) if(addr1!=addr2){\
+  wLog("The %s is different\ntrue:0x%08x false:0x%08x",name,addr1,addr2); \
+  return false;\
+}
 uint8_t* guest_to_host(paddr_t paddr);
 void reg_display();
 int check_reg_idx(int idx);
@@ -29,10 +33,10 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc){
   for(int i=0;i<32;i++){
     if(ref_r->gpr[i]!=gpr(i)){
       wLog("The reg:%s(rf_%d) is different\ntrue:0x%08x false:0x%08x",regs[i],i,ref_r->gpr[i],gpr(i));
-      pc=ref_r->pc;
       return false;
     }
   }
+  DIFF_CHECK(ref_r->pc,pc,"pc");
   return true;
 }
 
