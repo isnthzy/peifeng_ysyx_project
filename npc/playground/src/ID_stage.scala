@@ -48,6 +48,8 @@ class ID_stage extends Module {
   Regfile.io.wdata:=ID.wb_bus.wdata
   Regfile.io.wen  :=ID.wb_bus.wen
 
+  ID.to_ex.st_type:=dc.io.st_type
+  ID.to_ex.ld_type:=dc.io.ld_type
   ID.to_ex.ebreak_flag:=(dc.io.csr_cmd===CSR.B)
   ID.to_ex.wb_sel :=dc.io.wb_sel
   ID.to_ex.br_type:=dc.io.br_type

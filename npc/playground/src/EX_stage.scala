@@ -39,10 +39,13 @@ class EX_stage extends Module {
     BR_JR  -> Cat(Alu.io.result(31,1),0.U(1.W))
   ))
   
+  EX.to_ls.st_type:=EX.IO.st_type
+  EX.to_ls.ld_type:=EX.IO.ld_type
   EX.to_ls.ebreak_flag:=EX.IO.ebreak_flag
   EX.to_ls.wb_sel:=EX.IO.wb_sel
   EX.to_ls.wen :=EX.IO.wen
   EX.to_ls.rd:=EX.IO.rd
+  EX.to_ls.src2:=EX.IO.src2
   EX.to_ls.result:=Alu.io.result
   EX.to_ls.pc  :=EX.IO.pc
   EX.to_ls.inst:=EX.IO.inst

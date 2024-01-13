@@ -33,5 +33,5 @@ class read_inst extends BlackBox with HasBlackBoxPath{
     val pc    =Output(UInt(ADDR_WIDTH.W))
     val inst  =Output(UInt(32.W))
   })
-  addPath("playground/src/dpi-c/pmem.sv")
+  addPath("playground/src/dpi-c/read_inst.sv")
 }
