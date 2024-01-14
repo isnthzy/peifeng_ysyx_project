@@ -13,7 +13,7 @@ module dpi_ls(
    input [31:0] wdata
 );
  
-always @(posedge clock) begin
+always @(*) begin
   if(~reset)begin
     if(ld_wen) begin
       pmem_read (raddr,rdata);
@@ -23,7 +23,7 @@ always @(posedge clock) begin
     end
 
     if(st_wen) begin
-        pmem_write(waddr,wdata,wmask);
+      pmem_write(waddr,wdata,wmask);
     end
   end
  end

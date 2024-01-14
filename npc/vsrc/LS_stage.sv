@@ -20,39 +20,39 @@ module LS_stage(	// @[<stdin>:964:3]
 );
 
   wire [31:0] _dpi_ls_rdata;	// @[playground/src/LS_stage.scala:12:20]
-  reg  [31:0] casez_tmp;	// @[playground/src/LS_stage.scala:23:42]
+  reg  [31:0] casez_tmp;	// @[playground/src/LS_stage.scala:23:41]
   reg  [31:0] casez_tmp_0;	// @[playground/src/LS_stage.scala:34:47]
-  always_comb begin	// @[playground/src/LS_stage.scala:23:42]
-    casez (LS_IO_ld_type)	// @[playground/src/LS_stage.scala:23:42]
+  always_comb begin	// @[playground/src/LS_stage.scala:23:41]
+    casez (LS_IO_ld_type)	// @[playground/src/LS_stage.scala:23:41]
       3'b000:
-        casez_tmp = 32'h0;	// @[playground/src/LS_stage.scala:23:42]
+        casez_tmp = 32'h0;	// @[playground/src/LS_stage.scala:23:41]
       3'b001:
-        casez_tmp = _dpi_ls_rdata;	// @[playground/src/LS_stage.scala:12:20, :23:42]
+        casez_tmp = _dpi_ls_rdata;	// @[playground/src/LS_stage.scala:12:20, :23:41]
       3'b010:
-        casez_tmp = {{16{_dpi_ls_rdata[15]}}, _dpi_ls_rdata[15:0]};	// @[playground/src/Bundle.scala:69:{10,15,37}, playground/src/LS_stage.scala:12:20, :23:42, :25:34]
+        casez_tmp = {{16{_dpi_ls_rdata[15]}}, _dpi_ls_rdata[15:0]};	// @[playground/src/Bundle.scala:69:{10,15,37}, playground/src/LS_stage.scala:12:20, :23:41, :25:34]
       3'b011:
-        casez_tmp = {{24{_dpi_ls_rdata[7]}}, _dpi_ls_rdata[7:0]};	// @[playground/src/Bundle.scala:69:{10,15,37}, playground/src/LS_stage.scala:12:20, :23:42, :26:34]
+        casez_tmp = {{24{_dpi_ls_rdata[7]}}, _dpi_ls_rdata[7:0]};	// @[playground/src/Bundle.scala:69:{10,15,37}, playground/src/LS_stage.scala:12:20, :23:41, :26:34]
       3'b100:
-        casez_tmp = {16'h0, _dpi_ls_rdata[15:0]};	// @[playground/src/Bundle.scala:69:15, :80:10, playground/src/LS_stage.scala:12:20, :23:42, :25:34]
+        casez_tmp = {16'h0, _dpi_ls_rdata[15:0]};	// @[playground/src/Bundle.scala:69:15, :80:10, playground/src/LS_stage.scala:12:20, :23:41, :25:34]
       3'b101:
-        casez_tmp = {24'h0, _dpi_ls_rdata[7:0]};	// @[playground/src/Bundle.scala:69:15, :80:10, playground/src/LS_stage.scala:12:20, :23:42, :26:34]
+        casez_tmp = {24'h0, _dpi_ls_rdata[7:0]};	// @[playground/src/Bundle.scala:69:15, :80:10, playground/src/LS_stage.scala:12:20, :23:41, :26:34]
       3'b110:
-        casez_tmp = 32'h0;	// @[playground/src/LS_stage.scala:23:42]
+        casez_tmp = 32'h0;	// @[playground/src/LS_stage.scala:23:41]
       default:
-        casez_tmp = 32'h0;	// @[playground/src/LS_stage.scala:23:42]
-    endcase	// @[playground/src/LS_stage.scala:23:42]
+        casez_tmp = 32'h0;	// @[playground/src/LS_stage.scala:23:41]
+    endcase	// @[playground/src/LS_stage.scala:23:41]
   end // always_comb
-  wire [31:0] sram_data = casez_tmp;	// @[playground/src/LS_stage.scala:11:31, :23:42]
+  wire [31:0] ram_data = casez_tmp;	// @[playground/src/LS_stage.scala:11:30, :23:41]
   always_comb begin	// @[playground/src/LS_stage.scala:34:47]
     casez (LS_IO_wb_sel)	// @[playground/src/LS_stage.scala:34:47]
       2'b00:
         casez_tmp_0 = LS_IO_result;	// @[playground/src/LS_stage.scala:34:47]
       2'b01:
-        casez_tmp_0 = sram_data;	// @[playground/src/LS_stage.scala:11:31, :34:47]
+        casez_tmp_0 = ram_data;	// @[playground/src/LS_stage.scala:11:30, :34:47]
       2'b10:
         casez_tmp_0 = LS_IO_pc + 32'h4;	// @[playground/src/LS_stage.scala:34:47, :37:24]
       default:
-        casez_tmp_0 = 32'h0;	// @[playground/src/LS_stage.scala:23:42, :34:47]
+        casez_tmp_0 = 32'h0;	// @[playground/src/LS_stage.scala:23:41, :34:47]
     endcase	// @[playground/src/LS_stage.scala:34:47]
   end // always_comb
   dpi_ls dpi_ls (	// @[playground/src/LS_stage.scala:12:20]
