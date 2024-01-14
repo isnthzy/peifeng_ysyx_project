@@ -66,7 +66,7 @@ extern "C" void pmem_read(int raddr, int *rdata) {
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 extern "C" void pmem_write(int waddr, int wdata, char wmask) {
-  printf("wmask: %x",wmask);
+  // printf("wmask: %x",wmask);
   if(wmask==0x1) paddr_write(waddr,1,wdata);
   else if(wmask==0x3) paddr_write(waddr,2,wdata);
   else if(wmask==0x15) paddr_write(waddr,4,wdata);

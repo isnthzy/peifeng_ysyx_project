@@ -131,9 +131,9 @@ object Control {
 
   // st_type
   val ST_XXX= 0.U(8.W)
-  val ST_SW = 1.U(8.W)
+  val ST_SB = 1.U(8.W)
   val ST_SH = 3.U(8.W)
-  val ST_SB = 15.U(8.W)
+  val ST_SW = 15.U(8.W)
 
   // ld_type
   val LD_XXX = 0.U(3.W)
