@@ -13,7 +13,7 @@ module dpi_ls(
    input [31:0] wdata
 );
  
-always @(*) begin
+always_latch @(*) begin
   if(~reset)begin
     if(ld_wen) begin
       pmem_read (raddr,rdata);
