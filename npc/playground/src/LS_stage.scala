@@ -10,12 +10,12 @@ class LS_stage extends Module {
   })
   val ram_data=dontTouch(Wire(UInt(32.W)))
   val dpi_ls=Module(new dpi_ls())
+  dontTouch(dpi_ls.io.rdata)
   dpi_ls.io.clock:=clock
   dpi_ls.io.reset:=reset
   dpi_ls.io.ld_wen:=LS.IO.ld_type.asUInt=/=0.U
   dpi_ls.io.st_wen:=LS.IO.st_type.asUInt=/=0.U
   dpi_ls.io.raddr:=LS.IO.result
-  // sram_data:=dpi_ls.io.rdata
   dpi_ls.io.wmask:=LS.IO.st_type
   dpi_ls.io.waddr:=LS.IO.result
   dpi_ls.io.wdata:=LS.IO.rdata2
