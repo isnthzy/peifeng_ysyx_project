@@ -17,8 +17,6 @@ class Alu extends Module {
 
   val alu_sub= io.src1 - io.src2 
 
-  val alu_neg = ~io.src1
-
   val alu_and = io.src1 & io.src2
 
   val alu_or  = io.src1 | io.src2
@@ -31,14 +29,20 @@ class Alu extends Module {
 
   val alu_srl = io.src1 >> io.src2(5,0)
 
+  val alu_slt = (io.src1.asSInt < io.src2.asSInt).asUInt
+  
+  val alu_sltu= (io.src1.asUInt < io.src2.asUInt).asUInt
+
   io.result := MuxLookup(io.op, 0.U)(Seq(
     ALU_ADD -> alu_add, 
     ALU_SUB -> alu_sub,
     ALU_AND -> alu_and,
     ALU_OR  -> alu_or,
     ALU_XOR -> alu_xor,
-    "b000010000000".U -> alu_sll, 
-    "b000100000000".U -> alu_sra.asUInt,
-    "b001000000000".U -> alu_srl,
+    ALU_SLL -> alu_sll, 
+    ALU_SRL -> alu_sra.asUInt,
+    ALU_SRA -> alu_srl,
+    ALU_SLT -> alu_slt,
+    ALU_SLTU-> alu_sltu
   ))
 }
