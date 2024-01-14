@@ -18,7 +18,7 @@ class LS_stage extends Module {
   // sram_data:=dpi_ls.io.rdata
   dpi_ls.io.wmask:=LS.IO.st_type
   dpi_ls.io.waddr:=LS.IO.result
-  dpi_ls.io.wdata:=LS.IO.src2
+  dpi_ls.io.wdata:=LS.IO.rdata2
 
   ram_data:=MuxLookup(LS.IO.ld_type,0.U)(Seq(
     LD_LW -> dpi_ls.io.rdata,
