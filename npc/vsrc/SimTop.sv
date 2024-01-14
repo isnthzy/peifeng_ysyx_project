@@ -15,19 +15,19 @@ module SimTop(	// @[<stdin>:1055:3]
   wire [4:0]  _LS_stage_LS_to_wb_rd;	// @[playground/src/SimTop.scala:35:24]
   wire [31:0] _LS_stage_LS_to_wb_result;	// @[playground/src/SimTop.scala:35:24]
   wire [31:0] _LS_stage_LS_to_wb_nextpc;	// @[playground/src/SimTop.scala:35:24]
-  wire [1:0]  _EX_stage_EX_to_ls_st_type;	// @[playground/src/SimTop.scala:34:24]
+  wire [7:0]  _EX_stage_EX_to_ls_st_type;	// @[playground/src/SimTop.scala:34:24]
   wire [2:0]  _EX_stage_EX_to_ls_ld_type;	// @[playground/src/SimTop.scala:34:24]
   wire        _EX_stage_EX_to_ls_ebreak_flag;	// @[playground/src/SimTop.scala:34:24]
   wire [1:0]  _EX_stage_EX_to_ls_wb_sel;	// @[playground/src/SimTop.scala:34:24]
   wire        _EX_stage_EX_to_ls_wen;	// @[playground/src/SimTop.scala:34:24]
   wire [4:0]  _EX_stage_EX_to_ls_rd;	// @[playground/src/SimTop.scala:34:24]
-  wire [31:0] _EX_stage_EX_to_ls_src2;	// @[playground/src/SimTop.scala:34:24]
+  wire [31:0] _EX_stage_EX_to_ls_rdata2;	// @[playground/src/SimTop.scala:34:24]
   wire [31:0] _EX_stage_EX_to_ls_result;	// @[playground/src/SimTop.scala:34:24]
   wire [31:0] _EX_stage_EX_to_ls_nextpc;	// @[playground/src/SimTop.scala:34:24]
   wire [31:0] _EX_stage_EX_to_ls_pc;	// @[playground/src/SimTop.scala:34:24]
   wire        _EX_stage_EX_br_bus_is_jump;	// @[playground/src/SimTop.scala:34:24]
   wire [31:0] _EX_stage_EX_br_bus_dnpc;	// @[playground/src/SimTop.scala:34:24]
-  wire [1:0]  _ID_stage_ID_to_ex_st_type;	// @[playground/src/SimTop.scala:33:24]
+  wire [7:0]  _ID_stage_ID_to_ex_st_type;	// @[playground/src/SimTop.scala:33:24]
   wire [2:0]  _ID_stage_ID_to_ex_ld_type;	// @[playground/src/SimTop.scala:33:24]
   wire        _ID_stage_ID_to_ex_ebreak_flag;	// @[playground/src/SimTop.scala:33:24]
   wire [1:0]  _ID_stage_ID_to_ex_wb_sel;	// @[playground/src/SimTop.scala:33:24]
@@ -37,6 +37,7 @@ module SimTop(	// @[<stdin>:1055:3]
   wire [3:0]  _ID_stage_ID_to_ex_alu_op;	// @[playground/src/SimTop.scala:33:24]
   wire [31:0] _ID_stage_ID_to_ex_src1;	// @[playground/src/SimTop.scala:33:24]
   wire [31:0] _ID_stage_ID_to_ex_src2;	// @[playground/src/SimTop.scala:33:24]
+  wire [31:0] _ID_stage_ID_to_ex_rdata2;	// @[playground/src/SimTop.scala:33:24]
   wire [31:0] _ID_stage_ID_to_ex_nextpc;	// @[playground/src/SimTop.scala:33:24]
   wire [31:0] _ID_stage_ID_to_ex_pc;	// @[playground/src/SimTop.scala:33:24]
   wire [31:0] _ID_stage_ID_to_ex_inst;	// @[playground/src/SimTop.scala:33:24]
@@ -71,6 +72,7 @@ module SimTop(	// @[<stdin>:1055:3]
     .ID_to_ex_alu_op      (_ID_stage_ID_to_ex_alu_op),
     .ID_to_ex_src1        (_ID_stage_ID_to_ex_src1),
     .ID_to_ex_src2        (_ID_stage_ID_to_ex_src2),
+    .ID_to_ex_rdata2      (_ID_stage_ID_to_ex_rdata2),
     .ID_to_ex_nextpc      (_ID_stage_ID_to_ex_nextpc),
     .ID_to_ex_pc          (_ID_stage_ID_to_ex_pc),
     .ID_to_ex_inst        (_ID_stage_ID_to_ex_inst)
@@ -88,6 +90,7 @@ module SimTop(	// @[<stdin>:1055:3]
     .EX_IO_alu_op         (_ID_stage_ID_to_ex_alu_op),	// @[playground/src/SimTop.scala:33:24]
     .EX_IO_src1           (_ID_stage_ID_to_ex_src1),	// @[playground/src/SimTop.scala:33:24]
     .EX_IO_src2           (_ID_stage_ID_to_ex_src2),	// @[playground/src/SimTop.scala:33:24]
+    .EX_IO_rdata2         (_ID_stage_ID_to_ex_rdata2),	// @[playground/src/SimTop.scala:33:24]
     .EX_IO_nextpc         (_ID_stage_ID_to_ex_nextpc),	// @[playground/src/SimTop.scala:33:24]
     .EX_IO_pc             (_ID_stage_ID_to_ex_pc),	// @[playground/src/SimTop.scala:33:24]
     .EX_IO_inst           (_ID_stage_ID_to_ex_inst),	// @[playground/src/SimTop.scala:33:24]
@@ -97,7 +100,7 @@ module SimTop(	// @[<stdin>:1055:3]
     .EX_to_ls_wb_sel      (_EX_stage_EX_to_ls_wb_sel),
     .EX_to_ls_wen         (_EX_stage_EX_to_ls_wen),
     .EX_to_ls_rd          (_EX_stage_EX_to_ls_rd),
-    .EX_to_ls_src2        (_EX_stage_EX_to_ls_src2),
+    .EX_to_ls_rdata2      (_EX_stage_EX_to_ls_rdata2),
     .EX_to_ls_result      (_EX_stage_EX_to_ls_result),
     .EX_to_ls_nextpc      (_EX_stage_EX_to_ls_nextpc),
     .EX_to_ls_pc          (_EX_stage_EX_to_ls_pc),
@@ -113,7 +116,7 @@ module SimTop(	// @[<stdin>:1055:3]
     .LS_IO_wb_sel         (_EX_stage_EX_to_ls_wb_sel),	// @[playground/src/SimTop.scala:34:24]
     .LS_IO_wen            (_EX_stage_EX_to_ls_wen),	// @[playground/src/SimTop.scala:34:24]
     .LS_IO_rd             (_EX_stage_EX_to_ls_rd),	// @[playground/src/SimTop.scala:34:24]
-    .LS_IO_src2           (_EX_stage_EX_to_ls_src2),	// @[playground/src/SimTop.scala:34:24]
+    .LS_IO_rdata2         (_EX_stage_EX_to_ls_rdata2),	// @[playground/src/SimTop.scala:34:24]
     .LS_IO_result         (_EX_stage_EX_to_ls_result),	// @[playground/src/SimTop.scala:34:24]
     .LS_IO_nextpc         (_EX_stage_EX_to_ls_nextpc),	// @[playground/src/SimTop.scala:34:24]
     .LS_IO_pc             (_EX_stage_EX_to_ls_pc),	// @[playground/src/SimTop.scala:34:24]

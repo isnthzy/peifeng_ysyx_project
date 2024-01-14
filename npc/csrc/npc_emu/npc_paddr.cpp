@@ -1,7 +1,7 @@
 #include "../include/npc_common.h"
 #include "../include/npc_verilator.h"
 #include "../include/iringbuf.h"
-word_t paddr_read(paddr_t addr, int len,bool model);
+word_t paddr_read(paddr_t addr, int len,int model);
 void paddr_write(paddr_t addr, int len, word_t data);
 extern CPU_state cpu;
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN={};
@@ -57,35 +57,37 @@ static void out_of_bound(paddr_t addr) {
 }
 //----------------------------dpi-c----------------------------
 extern "C" void get_inst(int raddr, int *rdata) {
-  *rdata=paddr_read(raddr,4,1);
+  *rdata=paddr_read(raddr,4,0);
   cpu.inst=*rdata;
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 extern "C" void pmem_read(int raddr, int *rdata) {
-  *rdata=paddr_read(raddr,4,0);
+  *rdata=paddr_read(raddr,4,1);
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 extern "C" void pmem_write(int waddr, int wdata, char wmask) {
   if(wmask==0x1) paddr_write(waddr,1,wdata);
   else if(wmask==0x3) paddr_write(waddr,2,wdata);
-  else if(wmask==0x15) paddr_write(waddr,4,wdata);
+  else if(wmask==0xf) paddr_write(waddr,4,wdata);
   // 总是往地址为`waddr & ~0x3u`的4字节按写掩码`wmask`写入`wdata`
   // `wmask`中每比特表示`wdata`中1个字节的掩码,
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
 }
 //----------------------------dpi-c----------------------------
 
-word_t paddr_read(paddr_t addr, int len,bool model) {
+word_t paddr_read(paddr_t addr, int len,int model) {
+  word_t pmem_rdata;
+  if (likely(in_pmem(addr))) pmem_rdata=pmem_read(addr,4);
   #ifdef CONFIG_MTRACE //警惕切换riscv64会造成的段错误
   if(model==1){
     if(likely(in_pmem(addr))){
       char mtrace_logbuf[120];
-      sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",cpu.nextpc,addr,pmem_read(addr, len));
+      sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",cpu.nextpc,addr,pmem_rdata);
       enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
     }
   }
   #endif
-  if (likely(in_pmem(addr))) return pmem_read(addr, len);
+  if (likely(in_pmem(addr))) return pmem_rdata;
   // IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
   out_of_bound(addr);
   return 0;
@@ -94,7 +96,7 @@ word_t paddr_read(paddr_t addr, int len,bool model) {
 void paddr_write(paddr_t addr, int len, word_t data) {
   #ifdef CONFIG_MTRACE
   char mtrace_logbuf[120];
-  sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x wdata:0x%08x",cpu.nextpc,addr,data);
+  sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x wdata:0x%08x len:%d",cpu.nextpc,addr,data,len);
   enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
   #endif
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }

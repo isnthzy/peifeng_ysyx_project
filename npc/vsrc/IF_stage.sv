@@ -22,7 +22,7 @@ module IF_stage(	// @[<stdin>:11:3]
     .clock  (clock),
     .reset  (reset),
     .nextpc (nextpc),	// @[playground/src/IF_stage.scala:12:31]
-    .pc     (/* unused */),
+    .pc     (REGpc),	// @[playground/src/IF_stage.scala:10:24]
     .inst   (IF_IO_inst)
   );
   assign IF_IO_nextpc = nextpc;	// @[<stdin>:11:3, playground/src/IF_stage.scala:12:31]

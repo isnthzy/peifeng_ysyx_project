@@ -17,6 +17,7 @@ class IF_stage extends Module {
   
   Fetch.io.clock:=clock
   Fetch.io.reset:=reset
+  Fetch.io.pc   :=REGpc
   Fetch.io.nextpc:=nextpc
   IF.IO.inst:=Fetch.io.inst
 
@@ -30,7 +31,7 @@ class read_inst extends BlackBox with HasBlackBoxPath{
     val clock =Input(Clock())
     val reset =Input(Bool())
     val nextpc=Input(UInt(ADDR_WIDTH.W))
-    val pc    =Output(UInt(ADDR_WIDTH.W))
+    val pc    =Input(UInt(ADDR_WIDTH.W))
     val inst  =Output(UInt(32.W))
   })
   addPath("playground/src/dpi-c/read_inst.sv")

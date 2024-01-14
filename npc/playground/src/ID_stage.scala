@@ -58,6 +58,7 @@ class ID_stage extends Module {
   ID.to_ex.alu_op:=dc.io.alu_op
   ID.to_ex.src1:=src1
   ID.to_ex.src2:=src2
+  ID.to_ex.rdata2:=Regfile.io.rdata2
   ID.to_ex.inst:=ID.IO.inst
   ID.to_ex.pc  :=ID.IO.pc
   ID.to_ex.nextpc:=ID.IO.nextpc

@@ -21,7 +21,7 @@ class if_to_id_bus extends Bundle{
 
 
 class id_to_ex_bus extends Bundle{
-  val st_type=UInt(2.W)
+  val st_type=UInt(8.W)
   val ld_type=UInt(3.W)
   val ebreak_flag=Bool()
   val wb_sel =UInt(2.W)
@@ -31,19 +31,20 @@ class id_to_ex_bus extends Bundle{
   val alu_op=UInt(4.W)
   val src1=UInt(DATA_WIDTH.W)
   val src2=UInt(DATA_WIDTH.W)
+  val rdata2=UInt(DATA_WIDTH.W)
   val nextpc=UInt(ADDR_WIDTH.W)
   val pc  =UInt(ADDR_WIDTH.W)
   val inst=UInt(32.W)
 }
 
 class ex_to_ls_bus extends Bundle{
-  val st_type=UInt(2.W)
+  val st_type=UInt(8.W)
   val ld_type=UInt(3.W)
   val ebreak_flag=Bool()
   val wb_sel =UInt(2.W)
   val wen   =Bool()
   val rd    =UInt(5.W)
-  val src2=UInt(DATA_WIDTH.W)
+  val rdata2=UInt(DATA_WIDTH.W)
   val result=UInt(DATA_WIDTH.W)
   val nextpc=UInt(ADDR_WIDTH.W)
   val pc  =UInt(ADDR_WIDTH.W)

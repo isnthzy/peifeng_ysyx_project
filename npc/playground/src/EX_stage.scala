@@ -45,7 +45,7 @@ class EX_stage extends Module {
   EX.to_ls.wb_sel:=EX.IO.wb_sel
   EX.to_ls.wen :=EX.IO.wen
   EX.to_ls.rd:=EX.IO.rd
-  EX.to_ls.src2:=EX.IO.src2
+  EX.to_ls.rdata2:=EX.IO.rdata2
   EX.to_ls.result:=Alu.io.result
   EX.to_ls.pc  :=EX.IO.pc
   EX.to_ls.inst:=EX.IO.inst

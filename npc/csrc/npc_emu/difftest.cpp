@@ -29,14 +29,17 @@ void (*ref_difftest_regcpy)(void *dut, bool direction) = NULL;
 void (*ref_difftest_exec)(uint64_t n) = NULL;
 void (*ref_difftest_raise_intr)(uint64_t NO) = NULL;
 
-bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc){
+bool isa_difftest_checkregs(CPU_state *ref_r,vaddr_t pc,vaddr_t npc){
   for(int i=0;i<32;i++){
     if(ref_r->gpr[i]!=gpr(i)){
-      wLog("The reg:%s(rf_%d) is different\ntrue:0x%08x false:0x%08x",regs[i],i,ref_r->gpr[i],gpr(i));
+          /*真机的pc要慢一拍,因为nemu的寄存器写入是瞬间写，npc是延迟一拍后写
+          所以要用pc指示相应的reg不同*/
+      wLog("The reg:%s(rf_%d) is different\nref:0x%08x dut:0x%08x",regs[i],i,ref_r->gpr[i],gpr(i));
+      wLog("at pc:0x%08x",pc);
       return false;
     }
   }
-  DIFF_CHECK(ref_r->pc,pc,"pc");
+  DIFF_CHECK(ref_r->pc,npc,"pc");
   return true;
 }
 
@@ -104,10 +107,10 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
 }
 
-static void checkregs(CPU_state *ref, vaddr_t pc) {
-  if (!isa_difftest_checkregs(ref, pc)) {
+static void checkregs(CPU_state *ref, vaddr_t pc,vaddr_t npc) {
+  if (!isa_difftest_checkregs(ref, pc, npc)) {
     npc_state.state = NPC_ABORT;
-    npc_state.halt_pc = pc;
+    npc_state.halt_pc = npc;
     reg_display();
   }
 }
@@ -119,7 +122,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
     ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
     if (ref_r.pc == npc) {
       skip_dut_nr_inst = 0;
-      checkregs(&ref_r, npc);
+      checkregs(&ref_r, pc, npc);
       return;
     }
     skip_dut_nr_inst --;
@@ -137,5 +140,5 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
 
   ref_difftest_exec(1);
   ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
-  checkregs(&ref_r, npc);
+  checkregs(&ref_r, pc, npc);
 }

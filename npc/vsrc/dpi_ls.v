@@ -4,7 +4,7 @@ import "DPI-C" function void pmem_write(input int waddr, input  int wdata, input
 module dpi_ls(
    input        clock,
    input        reset,
-   input        ls_valid,
+   input        ld_wen,
    input        st_wen,
    input [31:0] raddr,
    output[31:0] rdata,
@@ -13,16 +13,17 @@ module dpi_ls(
    input [31:0] wdata
 );
  
-always @(posedge clock) begin
+always_latch @(*) begin
   if(~reset)begin
-    if(ls_valid) begin
+    if(ld_wen) begin
       pmem_read (raddr,rdata);
-      if(st_wen) begin
-        pmem_write(waddr,wdata,wmask);
-      end
     end
     else begin
       rdata[31:0]=0;
+    end
+
+    if(st_wen) begin
+      pmem_write(waddr,wdata,wmask);
     end
   end
  end
