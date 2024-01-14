@@ -171,7 +171,9 @@ module Decode(	// @[<stdin>:35:3]
     | _ctrlSignals_T_9 | _ctrlSignals_T_11 | _ctrlSignals_T_13 | _ctrlSignals_T_15
     | _ctrlSignals_T_17 | _ctrlSignals_T_19 | _GEN_7
       ? 8'h0
-      : _ctrlSignals_T_31 ? 8'hF : _ctrlSignals_T_33 ? 8'h3 : {7'h0, _ctrlSignals_T_35};	// @[<stdin>:35:3, src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
+      : _ctrlSignals_T_31
+          ? 8'h1
+          : _ctrlSignals_T_33 ? 8'h3 : _ctrlSignals_T_35 ? 8'hF : 8'h0;	// @[<stdin>:35:3, src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
   assign io_ld_type =
     _ctrlSignals_T_1 | _ctrlSignals_T_3 | _ctrlSignals_T_5 | _ctrlSignals_T_7 | _GEN_4
       ? 3'h0
