@@ -112,7 +112,9 @@ void wp_trace(char *decodelog){
     }
     h=h->next;
   }
-  if(flag) nemu_state.state=NEMU_STOP;
+  if(flag){
+    printf("111111");
+    nemu_state.state=NEMU_STOP;}
   #endif
 }
 
