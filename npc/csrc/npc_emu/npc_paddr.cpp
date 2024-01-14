@@ -76,16 +76,18 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
 //----------------------------dpi-c----------------------------
 
 word_t paddr_read(paddr_t addr, int len,int model) {
+  word_t pmem_rdata;
+  if (likely(in_pmem(addr))) pmem_rdata=pmem_read(addr, len);
   #ifdef CONFIG_MTRACE //警惕切换riscv64会造成的段错误
-  // if(model==1){
-  //   if(likely(in_pmem(addr))){
-  //     char mtrace_logbuf[120];
-  //     sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",cpu.nextpc,addr,pmem_read(addr, len));
-  //     enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
-  //   }
-  // }
+  if(model==1){
+    if(likely(in_pmem(addr))){
+      char mtrace_logbuf[120];
+      sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",cpu.nextpc,addr,pmem_rdata);
+      enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
+    }
+  }
   #endif
-  if (likely(in_pmem(addr))) return pmem_read(addr, len);
+  if (likely(in_pmem(addr))) return pmem_rdata;
   // IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
   out_of_bound(addr);
   return 0;
