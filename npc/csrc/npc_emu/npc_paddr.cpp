@@ -89,7 +89,6 @@ word_t paddr_read(paddr_t addr, int len,int model) {
     }
   }
   #endif
-  if(addr<0x80000000) printf("22222222222222");
   if (likely(in_pmem(addr))) return pmem_rdata;
   
   out_of_bound(addr);
@@ -102,7 +101,7 @@ void paddr_write(paddr_t addr, int len, word_t data) {
   sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x wdata:0x%08x len:%d",cpu.nextpc,addr,data,len);
   enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
   #endif
-  if(addr<0x80000000) printf("1111111111111111");
+  printf("%x\n",addr);
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
   
   // if(addr==0xa00003f8){putchar('c'); return;}
