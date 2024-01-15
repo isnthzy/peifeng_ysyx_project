@@ -102,6 +102,6 @@ void paddr_write(paddr_t addr, int len, word_t data) {
   enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
   #endif
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
-  if(addr=0xa00003f8){putchar('c'); return;}
+  if(addr==0xa00003f8){putchar('c'); return;}
   out_of_bound(addr);
 }
