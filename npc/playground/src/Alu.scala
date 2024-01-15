@@ -40,8 +40,8 @@ class Alu extends Module {
     ALU_OR  -> alu_or,
     ALU_XOR -> alu_xor,
     ALU_SLL -> alu_sll, 
-    ALU_SRL -> alu_sra,
-    ALU_SRA -> alu_srl,
+    ALU_SRL -> alu_srl,
+    ALU_SRA -> alu_sra,
     ALU_SLT -> alu_slt,
     ALU_SLTU-> alu_sltu
   ))
