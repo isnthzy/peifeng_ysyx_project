@@ -18,7 +18,7 @@ static uint64_t g_timer = 0; // unit: us
 uint64_t g_nr_guest_inst;
 IRingBuffer iring_buffer;
 IRingBuffer mtrace_buffer;
-// extern void mputIringbuf();
+extern void mputIringbuf();
 
 void step_and_dump_wave(){
   top->eval();
