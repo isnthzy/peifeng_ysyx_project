@@ -86,7 +86,6 @@ word_t paddr_read(paddr_t addr, int len,int model) {
       char mtrace_logbuf[120];
       sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",cpu.nextpc,addr,pmem_rdata);
       enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
-      printf("%s\n",mtrace_logbuf);
     }
   }
   #endif
