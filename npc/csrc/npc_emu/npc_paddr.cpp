@@ -78,8 +78,8 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
 //----------------------------dpi-c----------------------------
 static uint64_t read_cnt=0;
 word_t paddr_read(paddr_t addr, int len,int model) {
-  read_cnt++;
-  if(read_cnt%2==1) return 0; 
+  if(model==1){read_cnt++;
+  if(read_cnt%2==1) return 0; }
   //这是一串自我欺骗代码，因为触发沿是*而不是clock,在实现总线之前暂时用这个达到访问一次的效果
 
   word_t pmem_rdata;
