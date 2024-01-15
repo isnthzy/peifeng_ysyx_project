@@ -4,8 +4,8 @@
 word_t paddr_read(paddr_t addr, int len,int model);
 void paddr_write(paddr_t addr, int len, word_t data);
 extern CPU_state cpu;
-//static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN={};
-static uint8_t pmem[CONFIG_MSIZE];
+static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN={};
+// static uint8_t pmem[CONFIG_MSIZE];
 extern IRingBuffer mtrace_buffer;
 
 static inline uint32_t host_read(void *addr, int len) {
