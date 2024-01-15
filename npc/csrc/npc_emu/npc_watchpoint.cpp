@@ -80,7 +80,6 @@ void wp_trace(char *decodelog){
   while(h){
     bool b;
     word_t new_value=expr(h->expr,&b);
-    printf("%d %d,,,,",new_value,h->last);
     if(new_value!=h->last){
       if(flagput==false){
         puts(decodelog);

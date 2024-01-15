@@ -4,6 +4,7 @@
 #include "include/iringbuf.h"
 #include "include/difftest.h"
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
+extern void wp_trace(char *decodelog);
 #define MAX_INST_TO_PRINT 10
 void reg_display();
 void cpy_reg();
@@ -117,6 +118,7 @@ static void trace_and_difftest(word_t this_pc,word_t next_pc){
   log_write("%s\n",logbuf);
   enqueueIRingBuffer(&iring_buffer,logbuf); //入队环形缓冲区
   #endif
+  wp_trace(logbuf);
   if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s\n",logbuf)); }
 }
 
