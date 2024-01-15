@@ -63,11 +63,11 @@ extern "C" void get_inst(int raddr, int *rdata) {
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 extern "C" void pmem_read(int raddr, int *rdata) {
-  *rdata=paddr_read(raddr,4,1);
+  *rdata=paddr_read(raddr & ~0x3u,4,1);
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 extern "C" void pmem_write(int waddr, int wdata, char wmask) {
-  // waddr=waddr & ~0x3u;
+  waddr=waddr & ~0x3u;
   if(wmask==0x1) paddr_write(waddr,1,wdata);
   else if(wmask==0x3) paddr_write(waddr,2,wdata);
   else if(wmask==0xf) paddr_write(waddr,4,wdata);
@@ -90,7 +90,7 @@ word_t paddr_read(paddr_t addr, int len,int model) {
   }
   #endif
   if (likely(in_pmem(addr))) return pmem_rdata;
-  printf("222222222222222 %x\n",addr);
+  // printf("222222222222222 %x\n",addr);
   out_of_bound(addr);
   return 0;
 }
@@ -101,7 +101,7 @@ void paddr_write(paddr_t addr, int len, word_t data) {
   sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x wdata:0x%08x len:%d",cpu.nextpc,addr,data,len);
   enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
   #endif
-  printf("111111111111 %x\n",addr);
+  // printf("111111111111 %x\n",addr);
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
   
   // if(addr==0xa00003f8){putchar('c'); return;}
