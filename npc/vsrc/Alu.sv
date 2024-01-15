@@ -7,7 +7,7 @@ module Alu(	// @[<stdin>:814:3]
 );
 
   reg  [31:0] casez_tmp;	// @[playground/src/Alu.scala:36:37]
-  wire [31:0] _GEN = {26'h0, io_src2[5:0]};	// @[playground/src/Alu.scala:14:28, :28:32]
+  wire [31:0] _GEN = {26'h0, io_src2[5:0]};	// @[playground/src/Alu.scala:14:28, :28:33]
   wire [94:0] _sll_T_1 = {63'h0, io_src1} << io_src2[5:0];	// @[playground/src/Alu.scala:14:{18,28}]
   always_comb begin	// @[playground/src/Alu.scala:36:37]
     casez (io_op)	// @[playground/src/Alu.scala:36:37]
@@ -28,9 +28,9 @@ module Alu(	// @[<stdin>:814:3]
       4'b0111:
         casez_tmp = {31'h0, io_src1 < io_src2};	// @[playground/src/Alu.scala:34:33, :36:37]
       4'b1000:
-        casez_tmp = $signed($signed(io_src1) >>> _GEN);	// @[playground/src/Alu.scala:28:32, :36:37]
+        casez_tmp = $signed($signed(io_src1) >>> _GEN);	// @[playground/src/Alu.scala:28:33, :36:37]
       4'b1001:
-        casez_tmp = io_src1 >> _GEN;	// @[playground/src/Alu.scala:28:32, :30:25, :36:37]
+        casez_tmp = io_src1 >> _GEN;	// @[playground/src/Alu.scala:28:33, :30:26, :36:37]
       4'b1010:
         casez_tmp = 32'h0;	// @[playground/src/Alu.scala:36:37]
       4'b1011:
