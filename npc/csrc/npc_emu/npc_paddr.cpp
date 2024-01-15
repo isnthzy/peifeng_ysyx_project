@@ -101,7 +101,7 @@ void paddr_write(paddr_t addr, int len, word_t data) {
   sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x wdata:0x%08x len:%d",cpu.nextpc,addr,data,len);
   enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
   #endif
-  printf("%x\n",addr);
+  printf("111111111111\n");
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
   
   // if(addr==0xa00003f8){putchar('c'); return;}
