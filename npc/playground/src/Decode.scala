@@ -22,7 +22,7 @@ object Alus{
   val ALU_SRL = 8.U(4.W)
   val ALU_SRA = 9.U(4.W)
   val ALU_COPY_A = 10.U(4.W)
-  val ALU_COPY_B = 11.U(4.W)
+  val ALU_LUI = 11.U(4.W)
   val ALU_XXX = 15.U(4.W)
 }
 
@@ -158,7 +158,7 @@ object Control {
   //               |         |       |     |          |          |    |     |       |       |    |  |      |
              List(PC_XXX  , A_XXX,  B_XXX, IMM_X, ALU_XXX   , BR_XXX, N, ST_XXX, LD_XXX, WB_ALU, N, CSR.N, Y)
   val map = Array(
-    LUI   -> List(PC_XXX  , A_PC,   B_IMM, IMM_U, ALU_COPY_B, BR_XXX, N, ST_XXX, LD_XXX, WB_ALU, Y, CSR.N, N),
+    LUI   -> List(PC_XXX  , A_XXX,  B_IMM, IMM_U, ALU_LUI   , BR_XXX, N, ST_XXX, LD_XXX, WB_ALU, Y, CSR.N, N),
     AUIPC -> List(PC_XXX  , A_PC,   B_IMM, IMM_U, ALU_ADD   , BR_XXX, N, ST_XXX, LD_XXX, WB_ALU, Y, CSR.N, N),
     JAL   -> List(PC_XXX  , A_PC,   B_IMM, IMM_J, ALU_ADD   , BR_JAL, Y, ST_XXX, LD_XXX, WB_PC4, Y, CSR.N, N),
     JALR  -> List(PC_XXX  , A_RS1,  B_IMM, IMM_I, ALU_ADD   , BR_JR , Y, ST_XXX, LD_XXX, WB_PC4, Y, CSR.N, N),    

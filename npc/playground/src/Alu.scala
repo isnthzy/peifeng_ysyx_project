@@ -33,6 +33,7 @@ class Alu extends Module {
   
   val alu_sltu= (io.src1.asUInt < io.src2.asUInt).asUInt
 
+  val alu_lui = Cat(io.src2(31,12),0.U(12.W))
   io.result := MuxLookup(io.op, 0.U)(Seq(
     ALU_ADD -> alu_add, 
     ALU_SUB -> alu_sub,
@@ -43,6 +44,7 @@ class Alu extends Module {
     ALU_SRL -> alu_srl,
     ALU_SRA -> alu_sra,
     ALU_SLT -> alu_slt,
-    ALU_SLTU-> alu_sltu
+    ALU_SLTU-> alu_sltu,
+    ALU_LUI -> alu_lui
   ))
 }
