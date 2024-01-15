@@ -48,6 +48,10 @@ void free_wp(WP *wp){
 
 void add_watch(char *expr,word_t addr){
   WP* wp=new_wp();
+  if(expr==NULL){
+    printf("Error:add null expr");
+    return;
+  }
   strcpy(wp->expr,expr);
   wp->last=addr;
   printf("watchpoint %d: %s\n",wp->NO,expr);
@@ -77,7 +81,6 @@ void wp_trace(char *decodelog){
     bool b;
     word_t new_value=expr(h->expr,&b);
     if(new_value!=h->last){
-      printf("11111111111111111111111");
       if(flagput==false){
         puts(decodelog);
         flagput=true;
