@@ -7,8 +7,8 @@ module Alu(	// @[<stdin>:814:3]
 );
 
   reg  [31:0] casez_tmp;	// @[playground/src/Alu.scala:36:37]
-  wire [31:0] _GEN = {26'h0, io_src2[5:0]};	// @[playground/src/Alu.scala:14:28, :28:33]
   wire [94:0] _sll_T_1 = {63'h0, io_src1} << io_src2[5:0];	// @[playground/src/Alu.scala:14:{18,28}]
+  wire [31:0] _GEN = {27'h0, io_src2[4:0]};	// @[playground/src/Alu.scala:28:{33,43}]
   always_comb begin	// @[playground/src/Alu.scala:36:37]
     casez (io_op)	// @[playground/src/Alu.scala:36:37]
       4'b0000:
