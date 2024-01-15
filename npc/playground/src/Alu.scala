@@ -25,9 +25,9 @@ class Alu extends Module {
 
   val alu_sll = sll(31,0)
 
-  val alu_sra = io.src1.asSInt >> io.src2(5,0)
+  val alu_sra = (io.src1.asSInt >> io.src2(5,0)).asUInt
 
-  val alu_srl = io.src1 >> io.src2(5,0)
+  val alu_srl = (io.src1 >> io.src2(5,0)).asUInt
 
   val alu_slt = (io.src1.asSInt < io.src2.asSInt).asUInt
   
@@ -40,7 +40,7 @@ class Alu extends Module {
     ALU_OR  -> alu_or,
     ALU_XOR -> alu_xor,
     ALU_SLL -> alu_sll, 
-    ALU_SRL -> alu_sra.asUInt,
+    ALU_SRL -> alu_sra,
     ALU_SRA -> alu_srl,
     ALU_SLT -> alu_slt,
     ALU_SLTU-> alu_sltu
