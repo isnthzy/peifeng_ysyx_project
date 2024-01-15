@@ -15,7 +15,8 @@ extern bool ftrace_flag;
 extern bool difftest_flag;
 static bool g_print_step = false;
 static uint64_t g_timer = 0; // unit: us
-uint64_t g_nr_guest_inst;
+
+uint64_t g_nr_guest_inst; //可以复用作为指令计数器，记录指令总共走了多少步
 IRingBuffer iring_buffer;
 IRingBuffer mtrace_buffer;
 extern void mputIringbuf();
@@ -113,7 +114,7 @@ static void trace_and_difftest(word_t this_pc,word_t next_pc){
   static word_t tmp_inst;
   tmp_inst=cpu.inst;
   disassemble(tmp_dis, sizeof(tmp_dis),next_pc, (uint8_t*)&tmp_inst,4);
-  sprintf(logbuf,"0x%08x: %08x\t%s",next_pc,tmp_inst,tmp_dis);
+  sprintf(logbuf,"[%ld]\t0x%08x: %08x\t%s",g_nr_guest_inst,next_pc,tmp_inst,tmp_dis);
   #ifdef CONFIG_ITRACE
   log_write("%s\n",logbuf);
   enqueueIRingBuffer(&iring_buffer,logbuf); //入队环形缓冲区
