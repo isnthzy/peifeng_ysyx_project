@@ -58,7 +58,7 @@ static void out_of_bound(paddr_t addr) {
 }
 //----------------------------dpi-c----------------------------
 extern "C" void get_inst(int raddr, int *rdata) {
-  *rdata=paddr_read(raddr & ~0x3u,4,0);
+  *rdata=paddr_read(raddr,4,0);
   cpu.inst=*rdata;
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
