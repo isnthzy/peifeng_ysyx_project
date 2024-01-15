@@ -31,6 +31,7 @@ class id_to_ex_bus extends Bundle{
   val alu_op=UInt(4.W)
   val src1=UInt(DATA_WIDTH.W)
   val src2=UInt(DATA_WIDTH.W)
+  val rdata1=UInt(DATA_WIDTH.W)
   val rdata2=UInt(DATA_WIDTH.W)
   val nextpc=UInt(ADDR_WIDTH.W)
   val pc  =UInt(ADDR_WIDTH.W)

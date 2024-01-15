@@ -15,9 +15,9 @@ class EX_stage extends Module {
   Alu.io.src2:=EX.IO.src2
   
   //分支跳转
-  val rs1_eq_rs2   = EX.IO.src1 === EX.IO.src2
-  val rs1_lt_rs2_s = EX.IO.src1.asSInt < EX.IO.src2.asSInt
-  val rs1_lt_rs2_u = EX.IO.src1  <  EX.IO.src2
+  val rs1_eq_rs2   = EX.IO.rdata1 === EX.IO.rdata2
+  val rs1_lt_rs2_s = EX.IO.rdata1.asSInt < EX.IO.rdata2.asSInt
+  val rs1_lt_rs2_u = EX.IO.rdata1  <  EX.IO.rdata2
 
   EX.br_bus.is_jump := ((EX.IO.br_type===BR_JAL)
                       | (EX.IO.br_type===BR_JR)
