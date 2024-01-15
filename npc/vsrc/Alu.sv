@@ -28,9 +28,9 @@ module Alu(	// @[<stdin>:814:3]
       4'b0111:
         casez_tmp = {31'h0, io_src1 < io_src2};	// @[playground/src/Alu.scala:34:33, :36:37]
       4'b1000:
-        casez_tmp = $signed($signed(io_src1) >>> _GEN);	// @[playground/src/Alu.scala:28:33, :36:37]
-      4'b1001:
         casez_tmp = io_src1 >> _GEN;	// @[playground/src/Alu.scala:28:33, :30:33, :36:37]
+      4'b1001:
+        casez_tmp = $signed($signed(io_src1) >>> _GEN);	// @[playground/src/Alu.scala:28:33, :36:37]
       4'b1010:
         casez_tmp = 32'h0;	// @[playground/src/Alu.scala:36:37]
       4'b1011:
