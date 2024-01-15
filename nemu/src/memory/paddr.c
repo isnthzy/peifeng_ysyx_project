@@ -49,6 +49,7 @@ void mputIringbuf(){
   }
 }
 
+#ifndef CONFIG_TARGET_SHARE
 static void out_of_bound(paddr_t addr) {
   iputIringbuf();
   mputIringbuf();
@@ -56,6 +57,7 @@ static void out_of_bound(paddr_t addr) {
   panic("(nemu)address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
       addr, PMEM_LEFT, PMEM_RIGHT, cpu.pc);
 }
+#endif
 
 void init_mem() {
 #if   defined(CONFIG_PMEM_MALLOC)
@@ -78,8 +80,10 @@ word_t paddr_read(paddr_t addr, int len,int model) {
   #endif
   if (likely(in_pmem(addr))) return pmem_read(addr, len);
   IFDEF(CONFIG_DEVICE, return mmio_read(addr, len););
-
-  IFNDEF(CONFIG_TARGET_SHARE,out_of_bound(addr));
+  #ifndef CONFIG_TARGET_SHARE
+    out_of_bound(addr);
+  #endif
+  // IFNDEF(CONFIG_TARGET_SHARE,out_of_bound(addr));
   //如果没有定义difftest模式就用out of bound检查越界
   return 0;
 }
@@ -92,5 +96,7 @@ void paddr_write(paddr_t addr, int len, word_t data) {
   #endif
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
   IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
-  IFDEF(CONFIG_TARGET_SHARE,out_of_bound(addr));
+  #ifndef CONFIG_TARGET_SHARE
+    out_of_bound(addr);
+  #endif
 }
