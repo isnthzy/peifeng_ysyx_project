@@ -76,8 +76,12 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
 }
 //----------------------------dpi-c----------------------------
-
+static uint64_t read_cnt=0;
 word_t paddr_read(paddr_t addr, int len,int model) {
+  read_cnt++;
+  if(read_cnt%2==1) return 0; 
+  //这是一串自我欺骗代码，因为触发沿是*而不是clock,在实现总线之前暂时用这个达到访问一次的效果
+
   word_t pmem_rdata;
   if (likely(in_pmem(addr))) pmem_rdata=pmem_read(addr,4);
   #ifdef CONFIG_MTRACE //警惕切换riscv64会造成的段错误
@@ -93,8 +97,12 @@ word_t paddr_read(paddr_t addr, int len,int model) {
   out_of_bound(addr);
   return 0;
 }
-
+static uint64_t write_cnt=0;
 void paddr_write(paddr_t addr, int len, word_t data) {
+  write_cnt++;
+  if(write_cnt%2==1) return; 
+  //这是一串自我欺骗代码，因为触发沿是*而不是clock,在实现总线之前暂时用这个达到访问一次的效果
+
   #ifdef CONFIG_MTRACE
   char mtrace_logbuf[120];
   sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x wdata:0x%08x len:%d",cpu.nextpc,addr,data,len);
