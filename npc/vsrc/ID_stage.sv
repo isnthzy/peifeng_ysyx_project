@@ -18,6 +18,7 @@ module ID_stage(	// @[<stdin>:742:3]
   output [3:0]  ID_to_ex_alu_op,	// @[playground/src/ID_stage.scala:7:12]
   output [31:0] ID_to_ex_src1,	// @[playground/src/ID_stage.scala:7:12]
                 ID_to_ex_src2,	// @[playground/src/ID_stage.scala:7:12]
+                ID_to_ex_rdata1,	// @[playground/src/ID_stage.scala:7:12]
                 ID_to_ex_rdata2,	// @[playground/src/ID_stage.scala:7:12]
                 ID_to_ex_nextpc,	// @[playground/src/ID_stage.scala:7:12]
                 ID_to_ex_pc,	// @[playground/src/ID_stage.scala:7:12]
@@ -38,9 +39,9 @@ module ID_stage(	// @[<stdin>:742:3]
   wire [6:0]  opcode = ID_IO_inst[6:0];	// @[playground/src/ID_stage.scala:19:28, :32:23]
   wire        _ID_to_ex_ebreak_flag_T = _dc_io_csr_cmd == 3'h5;	// @[playground/src/ID_stage.scala:12:16, :36:39]
   wire [31:0] imm;	// @[playground/src/ID_stage.scala:14:25]
-  reg         inv_flag;	// @[playground/src/ID_stage.scala:69:19]
+  reg         inv_flag;	// @[playground/src/ID_stage.scala:70:19]
   always @(posedge clock)	// @[<stdin>:743:11]
-    inv_flag <= _dc_io_illegal & ID_IO_nextpc != 32'h80000000;	// @[playground/src/ID_stage.scala:12:16, :69:19, :70:{27,41}]
+    inv_flag <= _dc_io_illegal & ID_IO_nextpc != 32'h80000000;	// @[playground/src/ID_stage.scala:12:16, :70:19, :71:{27,41}]
   Decode dc (	// @[playground/src/ID_stage.scala:12:16]
     .io_inst    (ID_IO_inst),
     .io_A_sel   (_dc_io_A_sel),
@@ -71,16 +72,17 @@ module ID_stage(	// @[<stdin>:742:3]
     .io_rdata1 (_Regfile_io_rdata1),
     .io_rdata2 (_Regfile_io_rdata2)
   );
-  inv_break inv_break (	// @[playground/src/ID_stage.scala:68:23]
+  inv_break inv_break (	// @[playground/src/ID_stage.scala:69:23]
     .clock    (clock),
     .reset    (reset),
-    .inv_flag (inv_flag),	// @[playground/src/ID_stage.scala:69:19]
+    .inv_flag (inv_flag),	// @[playground/src/ID_stage.scala:70:19]
     .pc       (ID_IO_nextpc)
   );
   assign ID_to_ex_ebreak_flag = _ID_to_ex_ebreak_flag_T;	// @[<stdin>:742:3, playground/src/ID_stage.scala:36:39]
   assign ID_to_ex_rd = rd;	// @[<stdin>:742:3, playground/src/ID_stage.scala:18:24]
   assign ID_to_ex_src1 = _dc_io_A_sel ? _Regfile_io_rdata1 : ID_IO_pc;	// @[<stdin>:742:3, playground/src/ID_stage.scala:12:16, :34:21, :39:38]
   assign ID_to_ex_src2 = _dc_io_B_sel ? _Regfile_io_rdata2 : imm;	// @[<stdin>:742:3, playground/src/ID_stage.scala:12:16, :14:25, :34:21, :43:38]
+  assign ID_to_ex_rdata1 = _Regfile_io_rdata1;	// @[<stdin>:742:3, playground/src/ID_stage.scala:34:21]
   assign ID_to_ex_rdata2 = _Regfile_io_rdata2;	// @[<stdin>:742:3, playground/src/ID_stage.scala:34:21]
   assign ID_to_ex_nextpc = ID_IO_nextpc;	// @[<stdin>:742:3]
   assign ID_to_ex_pc = ID_IO_pc;	// @[<stdin>:742:3]
