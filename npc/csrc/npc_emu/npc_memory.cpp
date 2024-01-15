@@ -3,6 +3,8 @@
 #include "../include/iringbuf.h"
 word_t paddr_read(paddr_t addr, int len,int model);
 void paddr_write(paddr_t addr, int len, word_t data);
+extern  void  device_write(paddr_t addr,word_t data);
+extern word_t device_read(paddr_t addr);
 extern CPU_state cpu;
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN={};
 // static uint8_t pmem[CONFIG_MSIZE];
@@ -51,7 +53,7 @@ void mputIringbuf(){
   }
 }
 
-static void out_of_bound(paddr_t addr) {
+void out_of_bound(paddr_t addr) {
   IFDEF(CONFIG_ITRACE,putIringbuf()); 
   panic("(npc)address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
       addr, PMEM_LEFT, PMEM_RIGHT,cpu.pc);
@@ -94,7 +96,9 @@ word_t paddr_read(paddr_t addr, int len,int model) {
   }
   #endif
   if (likely(in_pmem(addr))) return pmem_rdata;
-  // if(raddr==)
+  if(addr>=0xa0000000){
+    return device_read(addr);
+  }
   out_of_bound(addr);
   return 0;
 }
@@ -111,6 +115,10 @@ void paddr_write(paddr_t addr, int len, word_t data) {
   // printf("%s\n",mtrace_logbuf);
   #endif
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
-  if(addr==0xa00003f8){putchar(data); return;}
+  if(addr>=0xa0000000){
+    device_write(addr,data);
+    return;
+  }
+  
   out_of_bound(addr);
 }

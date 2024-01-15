@@ -2345,12 +2345,12 @@
         "-Os",
         "-c",
         "-o",
-        "npc_paddr.o",
-        "/home/wangxin/ysyx-workbench/npc/csrc/npc_emu/npc_paddr.cpp"
+        "npc_memory.o",
+        "/home/wangxin/ysyx-workbench/npc/csrc/npc_emu/npc_memory.cpp"
       ],
       "directory": "/home/wangxin/ysyx-workbench/npc/build/obj_dirtop",
-      "file": "/home/wangxin/ysyx-workbench/npc/csrc/npc_emu/npc_paddr.cpp",
-      "output": "/home/wangxin/ysyx-workbench/npc/build/obj_dirtop/npc_paddr.o"
+      "file": "/home/wangxin/ysyx-workbench/npc/csrc/npc_emu/npc_memory.cpp",
+      "output": "/home/wangxin/ysyx-workbench/npc/build/obj_dirtop/npc_memory.o"
     },
     {
       "arguments": [
