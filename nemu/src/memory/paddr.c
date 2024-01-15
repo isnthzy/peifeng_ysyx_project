@@ -79,7 +79,8 @@ word_t paddr_read(paddr_t addr, int len,int model) {
   if (likely(in_pmem(addr))) return pmem_read(addr, len);
   IFDEF(CONFIG_DEVICE, return mmio_read(addr, len););
 
-  out_of_bound(addr);
+  IFNDEF(CONFIG_TARGET_SHARE,out_of_bound(addr));
+  //如果没有定义difftest模式就用out of bound检查越界
   return 0;
 }
 
@@ -91,5 +92,5 @@ void paddr_write(paddr_t addr, int len, word_t data) {
   #endif
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
   IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
-  out_of_bound(addr);
+  IFDEF(CONFIG_TARGET_SHARE,out_of_bound(addr));
 }

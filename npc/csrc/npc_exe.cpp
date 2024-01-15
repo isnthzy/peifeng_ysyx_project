@@ -101,12 +101,14 @@ void putIringbuf(){
 static bool first_diff=true;
 static void trace_and_difftest(word_t this_pc,word_t next_pc){
   g_nr_guest_inst++; //记录总共执行了多少步
+  #ifdef CONFIG_DIFFTEST
   if(difftest_flag){
     /*第一次不进行diff,因为nemu的寄存器写入是瞬间写，npc是延迟一拍后写
     因此diff时机是npc执行结束了，进入下一排执行了，reg能取出来了，进行diff*/
     if(!first_diff) difftest_step(cpu.pc,cpu.nextpc);
     first_diff=false;
   }
+  #endif
   // cpu.pc=this_pc;
   
   static char logbuf[128];
