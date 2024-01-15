@@ -21,10 +21,10 @@ class LS_stage extends Module {
 
   ram_data:=MuxLookup(LS.IO.ld_type,0.U)(Seq(
     LD_LW -> dpi_ls.io.rdata,
-    LD_LH -> Sext(dpi_ls.io.rdata(15,0),32),
-    LD_LB -> Sext(dpi_ls.io.rdata( 7,0),32),
-    LD_LHU-> Zext(dpi_ls.io.rdata(15,0),32),
-    LD_LBU-> Zext(dpi_ls.io.rdata( 7,0),32)
+    LD_LH -> Sext(dpi_ls.io.rdata(31,16),32),
+    LD_LB -> Sext(dpi_ls.io.rdata(31,24),32),
+    LD_LHU-> Zext(dpi_ls.io.rdata(31,16),32),
+    LD_LBU-> Zext(dpi_ls.io.rdata(31,24),32)
   ))
   
   LS.to_wb.ebreak_flag:=LS.IO.ebreak_flag
