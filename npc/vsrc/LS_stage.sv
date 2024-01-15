@@ -29,13 +29,13 @@ module LS_stage(	// @[<stdin>:977:3]
       3'b001:
         casez_tmp = _dpi_ls_rdata;	// @[playground/src/LS_stage.scala:12:20, :22:41]
       3'b010:
-        casez_tmp = {{16{_dpi_ls_rdata[15]}}, _dpi_ls_rdata[15:0]};	// @[playground/src/Bundle.scala:71:{10,15,37}, playground/src/LS_stage.scala:12:20, :22:41, :24:34]
+        casez_tmp = {{16{_dpi_ls_rdata[31]}}, _dpi_ls_rdata[31:16]};	// @[playground/src/Bundle.scala:71:{10,15,37}, playground/src/LS_stage.scala:12:20, :22:41, :24:34]
       3'b011:
-        casez_tmp = {{24{_dpi_ls_rdata[7]}}, _dpi_ls_rdata[7:0]};	// @[playground/src/Bundle.scala:71:{10,15,37}, playground/src/LS_stage.scala:12:20, :22:41, :25:34]
+        casez_tmp = {{24{_dpi_ls_rdata[31]}}, _dpi_ls_rdata[31:24]};	// @[playground/src/Bundle.scala:71:{10,15,37}, playground/src/LS_stage.scala:12:20, :22:41, :25:34]
       3'b100:
-        casez_tmp = {16'h0, _dpi_ls_rdata[15:0]};	// @[playground/src/Bundle.scala:71:15, :82:10, playground/src/LS_stage.scala:12:20, :22:41, :24:34]
+        casez_tmp = {16'h0, _dpi_ls_rdata[31:16]};	// @[playground/src/Bundle.scala:71:15, :82:10, playground/src/LS_stage.scala:12:20, :22:41, :24:34]
       3'b101:
-        casez_tmp = {24'h0, _dpi_ls_rdata[7:0]};	// @[playground/src/Bundle.scala:71:15, :82:10, playground/src/LS_stage.scala:12:20, :22:41, :25:34]
+        casez_tmp = {24'h0, _dpi_ls_rdata[31:24]};	// @[playground/src/Bundle.scala:71:15, :82:10, playground/src/LS_stage.scala:12:20, :22:41, :25:34]
       3'b110:
         casez_tmp = 32'h0;	// @[playground/src/LS_stage.scala:22:41]
       default:
