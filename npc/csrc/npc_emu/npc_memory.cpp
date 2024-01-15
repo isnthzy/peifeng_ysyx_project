@@ -94,6 +94,7 @@ word_t paddr_read(paddr_t addr, int len,int model) {
   }
   #endif
   if (likely(in_pmem(addr))) return pmem_rdata;
+  // if(raddr==)
   out_of_bound(addr);
   return 0;
 }
