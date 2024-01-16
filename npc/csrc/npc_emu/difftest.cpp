@@ -120,14 +120,14 @@ static void checkregs(CPU_state *ref, vaddr_t pc,vaddr_t npc) {
     reg_ref_display(ref);
     puts("----------------------------dut----------------------------");
     reg_dut_display();
-  // if (!isa_difftest_checkregs(ref, pc, npc)) {
-  //   npc_state.state = NPC_ABORT;
-  //   npc_state.halt_pc = npc;
-  //   puts("----------------------------ref----------------------------");
-  //   reg_ref_display(ref);
-  //   puts("----------------------------dut----------------------------");
-  //   reg_dut_display();
-  // }
+  if (!isa_difftest_checkregs(ref, pc, npc)) {
+    npc_state.state = NPC_ABORT;
+    npc_state.halt_pc = npc;
+    // puts("----------------------------ref----------------------------");
+    // reg_ref_display(ref);
+    // puts("----------------------------dut----------------------------");
+    // reg_dut_display();
+  }
 }
 
 void difftest_step(vaddr_t pc, vaddr_t npc) {
