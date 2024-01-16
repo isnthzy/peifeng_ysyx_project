@@ -55,9 +55,8 @@ const char *regs[] = {
 };
 
 void reg_ref_display(CPU_state *ref_r){
-  int i;
   printf("name   value   name   value   name   value   name   value\n");
-  for(i=0;i<32;i+=4){
+  for(int i=0;i<32;i+=4){
     printf("%3s 0x%08x %3s 0x%08x %3s 0x%08x %3s 0x%08x\n",\
     regs[i],ref_r->gpr[i],regs[i+1],ref_r->gpr[i+1],regs[i+2],ref_r->gpr[i+2],regs[i+3],ref_r->gpr[i+3]);
   }

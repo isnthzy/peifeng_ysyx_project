@@ -30,7 +30,10 @@ void (*ref_difftest_exec)(uint64_t n) = NULL;
 void (*ref_difftest_raise_intr)(uint64_t NO) = NULL;
 
 #ifdef CONFIG_DIFFTEST
+
+CPU_state* ref_t; //全局变量传递到reg
 bool isa_difftest_checkregs(CPU_state *ref_r,vaddr_t pc,vaddr_t npc){
+  ref_t=ref_r;
   for(int i=0;i<32;i++){
     if(ref_r->gpr[i]!=gpr(i)){
           /*真机的pc要慢一拍,因为nemu的寄存器写入是瞬间写，npc是延迟一拍后写
@@ -109,9 +112,7 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
 }
 
 
-CPU_state* ref_t; //全局变量传递到reg
 static void checkregs(CPU_state *ref, vaddr_t pc,vaddr_t npc) {
-  ref_t=ref;
   if (!isa_difftest_checkregs(ref, pc, npc)) {
     npc_state.state = NPC_ABORT;
     npc_state.halt_pc = npc;
