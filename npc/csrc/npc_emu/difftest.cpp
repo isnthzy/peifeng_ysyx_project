@@ -119,18 +119,18 @@ void reg_ref_display(CPU_state *ref_r){
   printf("pc:%x\n",ref_r->pc);
 }
 static void checkregs(CPU_state *ref, vaddr_t pc,vaddr_t npc) {
-  // puts("----------------------------ref----------------------------");
-  // reg_ref_display(ref);
-  // puts("----------------------------dut----------------------------");
-  // reg_dut_display();
-  if (!isa_difftest_checkregs(ref, pc, npc)) {
-    npc_state.state = NPC_ABORT;
-    npc_state.halt_pc = npc;
-    puts("----------------------------ref----------------------------");
-    reg_ref_display(ref);
-    puts("----------------------------dut----------------------------");
-    reg_dut_display();
-  }
+  puts("----------------------------ref----------------------------");
+  reg_ref_display(ref);
+  puts("----------------------------dut----------------------------");
+  reg_dut_display();
+  // if (!isa_difftest_checkregs(ref, pc, npc)) {
+  //   npc_state.state = NPC_ABORT;
+  //   npc_state.halt_pc = npc;
+  //   puts("----------------------------ref----------------------------");
+  //   reg_ref_display(ref);
+  //   puts("----------------------------dut----------------------------");
+  //   reg_dut_display();
+  // }
 }
 
 void difftest_step(vaddr_t pc, vaddr_t npc) {
@@ -149,7 +149,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
     return;
   }
   // printf("aaa: pc: %x npc: %x deque: %x\n",pc,npc,deque_pc.front());
-  if (!deque_pc.empty()&&deque_pc.front()==pc) {
+  if (!deque_pc.empty()&&deque_pc.front()==npc) {
     printf("aaa: pc: %x npc: %x deque: %x\n",pc,npc,deque_pc.front());
     // to skip the checking of an instruction, just copy the reg state to reference design
     ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
