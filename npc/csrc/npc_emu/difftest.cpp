@@ -52,7 +52,8 @@ static int skip_dut_nr_inst = 0;
 // this is used to let ref skip instructions which
 // can not produce consistent behavior with NEMU
 void difftest_skip_ref() {
-  is_skip_ref = true;
+  // is_skip_ref = true;
+  skip_pc.push_back(cpu.nextpc);
   // If such an instruction is one of the instruction packing in QEMU
   // (see below), we end the process of catching up with QEMU's pc to
   // keep the consistent behavior in our best.
@@ -60,7 +61,7 @@ void difftest_skip_ref() {
   // already write some memory, and the incoming instruction in NEMU
   // will load that memory, we will encounter false negative. But such
   // situation is infrequent.
-  skip_dut_nr_inst = 0;
+  // skip_dut_nr_inst = 0;
 }
 
 // this is used to deal with instruction packing in QEMU.
@@ -144,10 +145,11 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
     return;
   }
 
-  if (is_skip_ref) {
+  if (!skip_pc.empty()&&skip_pc.front()==pc) {
     // to skip the checking of an instruction, just copy the reg state to reference design
     ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
     is_skip_ref = false;
+    skip_pc.pop_front();
     return;
   }
 
