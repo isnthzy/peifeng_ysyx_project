@@ -15,8 +15,6 @@
 
 #include <dlfcn.h>
 #include "../include/npc_common.h"
-#include <deque>
-std::deque<vaddr_t> skip_pc;
 #define DIFF_CHECK(addr1, addr2, name) if(addr1!=addr2){\
   wLog("The %s is different\ntrue:0x%08x false:0x%08x",name,addr1,addr2); \
   return false;\
@@ -38,7 +36,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r,vaddr_t pc,vaddr_t npc){
           所以要用pc指示相应的reg不同*/
       wLog("The reg:%s(rf_%d) is different\nref:0x%08x dut:0x%08x",regs[i],i,ref_r->gpr[i],gpr(i));
       wLog("at pc:0x%08x",pc);
-      return false; 
+      return false;
     }
   }
   DIFF_CHECK(ref_r->pc,npc,"pc");
@@ -52,8 +50,7 @@ static int skip_dut_nr_inst = 0;
 // this is used to let ref skip instructions which
 // can not produce consistent behavior with NEMU
 void difftest_skip_ref() {
-  // is_skip_ref = true;
-  skip_pc.push_back(cpu.nextpc);
+  is_skip_ref = true;
   // If such an instruction is one of the instruction packing in QEMU
   // (see below), we end the process of catching up with QEMU's pc to
   // keep the consistent behavior in our best.
@@ -61,7 +58,7 @@ void difftest_skip_ref() {
   // already write some memory, and the incoming instruction in NEMU
   // will load that memory, we will encounter false negative. But such
   // situation is infrequent.
-  // skip_dut_nr_inst = 0;
+  skip_dut_nr_inst = 0;
 }
 
 // this is used to deal with instruction packing in QEMU.
@@ -108,7 +105,6 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   ref_difftest_init(port);
   ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
-  
 }
 void reg_ref_display(CPU_state *ref_r){
   int i;
@@ -145,12 +141,11 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
     return;
   }
 
-  if (!skip_pc.empty()&&skip_pc.front()==npc) {
-    printf("11111111111111");
+  if (is_skip_ref) {
     // to skip the checking of an instruction, just copy the reg state to reference design
     ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
+    printf("111111111111111\n");
     is_skip_ref = false;
-    skip_pc.pop_front();
     return;
   }
 
