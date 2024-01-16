@@ -10,7 +10,6 @@ void  device_write(paddr_t addr,word_t data){
   switch (addr)
   {
   case SERIAL_PORT:
-    difftest_skip_ref();
     putchar(data);
     break;
 
