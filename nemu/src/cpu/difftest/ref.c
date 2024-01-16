@@ -33,8 +33,8 @@ __EXPORT void difftest_regcpy(void *dut, bool direction) {
     for(int i=0;i<32;i++){
       cpu.gpr[i]=dut_t->gpr[i];
     }
-    cpu.pc=dut_t->pc;
     printf("ref: pc:%x—>%x\n",cpu.pc,dut_t->pc);
+    cpu.pc=dut_t->pc;
   }else{
     for(int i=0;i<32;i++){
       dut_t->gpr[i]=cpu.gpr[i];
