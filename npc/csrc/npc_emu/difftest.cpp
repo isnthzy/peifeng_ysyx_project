@@ -151,6 +151,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
 
   if (!deque_pc.empty()&&deque_pc.front()==pc) {
     // to skip the checking of an instruction, just copy the reg state to reference design
+    printf("111111111111");
     ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
     deque_pc.pop_front();
     // is_skip_ref = false;
