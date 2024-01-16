@@ -14,7 +14,9 @@
 ***************************************************************************************/
 
 #include <dlfcn.h>
+#include <deque>
 #include "../include/npc_common.h"
+std::deque <word_t> deque_pc;
 #define DIFF_CHECK(addr1, addr2, name) if(addr1!=addr2){\
   wLog("The %s is different\ntrue:0x%08x false:0x%08x",name,addr1,addr2); \
   return false;\
@@ -50,15 +52,16 @@ static int skip_dut_nr_inst = 0;
 // this is used to let ref skip instructions which
 // can not produce consistent behavior with NEMU
 void difftest_skip_ref() {
-  is_skip_ref = true;
-  // If such an instruction is one of the instruction packing in QEMU
-  // (see below), we end the process of catching up with QEMU's pc to
-  // keep the consistent behavior in our best.
-  // Note that this is still not perfect: if the packed instructions
-  // already write some memory, and the incoming instruction in NEMU
-  // will load that memory, we will encounter false negative. But such
-  // situation is infrequent.
-  skip_dut_nr_inst = 0;
+  deque_pc.push_back(cpu.nextpc);
+  // is_skip_ref = true;
+  // // If such an instruction is one of the instruction packing in QEMU
+  // // (see below), we end the process of catching up with QEMU's pc to
+  // // keep the consistent behavior in our best.
+  // // Note that this is still not perfect: if the packed instructions
+  // // already write some memory, and the incoming instruction in NEMU
+  // // will load that memory, we will encounter false negative. But such
+  // // situation is infrequent.
+  // skip_dut_nr_inst = 0;
 }
 
 // this is used to deal with instruction packing in QEMU.
@@ -116,17 +119,17 @@ void reg_ref_display(CPU_state *ref_r){
   printf("pc:%x\n",ref_r->pc);
 }
 static void checkregs(CPU_state *ref, vaddr_t pc,vaddr_t npc) {
-    puts("----------------------------ref----------------------------");
-    reg_ref_display(ref);
-    puts("----------------------------dut----------------------------");
-    reg_dut_display();
-  if (!isa_difftest_checkregs(ref, pc, npc)) {
-    npc_state.state = NPC_ABORT;
-    npc_state.halt_pc = npc;
     // puts("----------------------------ref----------------------------");
     // reg_ref_display(ref);
     // puts("----------------------------dut----------------------------");
     // reg_dut_display();
+  if (!isa_difftest_checkregs(ref, pc, npc)) {
+    npc_state.state = NPC_ABORT;
+    npc_state.halt_pc = npc;
+    puts("----------------------------ref----------------------------");
+    reg_ref_display(ref);
+    puts("----------------------------dut----------------------------");
+    reg_dut_display();
   }
 }
 
@@ -146,10 +149,11 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
     return;
   }
 
-  if (is_skip_ref) {
+  if (!deque_pc.empty()&&deque_pc.front()==pc) {
     // to skip the checking of an instruction, just copy the reg state to reference design
     ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
-    is_skip_ref = false;
+    deque_pc.pop_front();
+    // is_skip_ref = false;
     return;
   }
 
