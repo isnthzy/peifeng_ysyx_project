@@ -15,6 +15,8 @@
 
 #include <dlfcn.h>
 #include "../include/npc_common.h"
+#include <deque>
+std::deque<vaddr_t> skip_pc;
 #define DIFF_CHECK(addr1, addr2, name) if(addr1!=addr2){\
   wLog("The %s is different\ntrue:0x%08x false:0x%08x",name,addr1,addr2); \
   return false;\
@@ -36,7 +38,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r,vaddr_t pc,vaddr_t npc){
           所以要用pc指示相应的reg不同*/
       wLog("The reg:%s(rf_%d) is different\nref:0x%08x dut:0x%08x",regs[i],i,ref_r->gpr[i],gpr(i));
       wLog("at pc:0x%08x",pc);
-      return false;
+      return false; 
     }
   }
   DIFF_CHECK(ref_r->pc,npc,"pc");
@@ -105,6 +107,7 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   ref_difftest_init(port);
   ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
+  
 }
 void reg_ref_display(CPU_state *ref_r){
   int i;
