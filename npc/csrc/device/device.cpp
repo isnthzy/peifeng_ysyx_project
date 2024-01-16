@@ -24,10 +24,10 @@ word_t device_read(paddr_t addr){
   {
   case RTC_ADDR:
   case RTC_ADDR+4:
-    difftest_skip_ref();
     rtc_us=get_time();
     if(addr==RTC_ADDR)   return (uint32_t)rtc_us;
     if(addr==RTC_ADDR+4) return rtc_us >> 32;
+    difftest_skip_ref();
     break;
 
   default:
