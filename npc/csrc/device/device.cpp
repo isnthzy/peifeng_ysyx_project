@@ -2,6 +2,7 @@
 #define DEVICE_BASE 0xa0000000
 #define SERIAL_PORT (DEVICE_BASE + 0x00003f8)
 #define RTC_ADDR    (DEVICE_BASE + 0x0000048)
+extern CPU_state cpu;
 extern uint64_t get_time();
 extern void out_of_bound(paddr_t addr);
 extern void difftest_skip_ref();
