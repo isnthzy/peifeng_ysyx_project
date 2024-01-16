@@ -20,7 +20,7 @@
   return false;\
 }
 uint8_t* guest_to_host(paddr_t paddr);
-void reg_dut_display();
+void reg_display();
 int check_reg_idx(int idx);
 extern CPU_state cpu;
 extern const char *regs[];
@@ -28,6 +28,7 @@ void (*ref_difftest_memcpy)(paddr_t addr, void *buf, size_t n, bool direction) =
 void (*ref_difftest_regcpy)(void *dut, bool direction) = NULL;
 void (*ref_difftest_exec)(uint64_t n) = NULL;
 void (*ref_difftest_raise_intr)(uint64_t NO) = NULL;
+
 #ifdef CONFIG_DIFFTEST
 bool isa_difftest_checkregs(CPU_state *ref_r,vaddr_t pc,vaddr_t npc){
   for(int i=0;i<32;i++){
@@ -106,21 +107,9 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
 }
-void reg_ref_display(CPU_state *ref_r){
-  int i;
-  printf("name   value   name   value   name   value   name   value\n");
-  for(i=0;i<32;i+=4){
-    printf("%3s 0x%08x %3s 0x%08x %3s 0x%08x %3s 0x%08x\n",\
-    regs[i],ref_r->gpr[i],regs[i+1],ref_r->gpr[i+1],regs[i+2],ref_r->gpr[i+2],regs[i+3],ref_r->gpr[i+3]);
-  }
-}
-static CPU_state* ref_t; 
-void reg_display(){
-  puts("----------------------------ref----------------------------");
-  reg_ref_display(ref_t);
-  puts("----------------------------dut----------------------------");
-  reg_dut_display();
-}
+
+
+CPU_state* ref_t;
 static void checkregs(CPU_state *ref, vaddr_t pc,vaddr_t npc) {
   if (!isa_difftest_checkregs(ref, pc, npc)) {
     ref_t=ref;
