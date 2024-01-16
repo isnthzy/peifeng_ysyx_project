@@ -138,7 +138,6 @@ static void npc_execute(uint64_t n) {
 
     top->clock=0;
     step_and_dump_wave();
-    cpy_reg();
     if (npc_state.state != NPC_RUNNING) break;
   }
 }
