@@ -109,8 +109,9 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
 }
 
 
-
+CPU_state* ref_t; //全局变量传递到reg
 static void checkregs(CPU_state *ref, vaddr_t pc,vaddr_t npc) {
+  ref_t=ref;
   if (!isa_difftest_checkregs(ref, pc, npc)) {
     npc_state.state = NPC_ABORT;
     npc_state.halt_pc = npc;
@@ -118,7 +119,7 @@ static void checkregs(CPU_state *ref, vaddr_t pc,vaddr_t npc) {
   }
 }
 
-CPU_state* ref_t; //全局变量传递到reg
+
 void difftest_step(vaddr_t pc, vaddr_t npc) {
   CPU_state ref_r;
 
@@ -144,7 +145,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
 
   ref_difftest_exec(1);
   ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
-  ref_t=&ref_r;
+  
   checkregs(&ref_r, pc, npc);
 }
 #endif
