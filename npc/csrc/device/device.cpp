@@ -4,6 +4,7 @@
 #define RTC_ADDR    (DEVICE_BASE + 0x0000048)
 extern uint64_t get_time();
 extern void out_of_bound(paddr_t addr);
+extern void difftest_skip_ref();
 void  device_write(paddr_t addr,word_t data){
   switch (addr)
   {
@@ -22,6 +23,7 @@ word_t device_read(paddr_t addr){
   {
   case RTC_ADDR:
   case RTC_ADDR+4:
+    difftest_skip_ref();
     rtc_us=get_time();
     if(addr==RTC_ADDR)   return (uint32_t)rtc_us;
     if(addr==RTC_ADDR+4) return rtc_us >> 32;
