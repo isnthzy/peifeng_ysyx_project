@@ -20,7 +20,7 @@
   return false;\
 }
 uint8_t* guest_to_host(paddr_t paddr);
-void reg_display();
+void reg_dut_display();
 int check_reg_idx(int idx);
 extern CPU_state cpu;
 extern const char *regs[];
@@ -106,12 +106,22 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
 }
-
+void reg_ref_display(CPU_state *ref_r){
+  int i;
+  printf("name   value   name   value   name   value   name   value\n");
+  for(i=0;i<32;i+=4){
+    printf("%3s 0x%08x %3s 0x%08x %3s 0x%08x %3s 0x%08x\n",\
+    regs[i],ref_r->gpr[i],regs[i+1],ref_r->gpr[i+1],regs[i+2],ref_r->gpr[i+2],regs[i+3],ref_r->gpr[i+3]);
+  }
+}
 static void checkregs(CPU_state *ref, vaddr_t pc,vaddr_t npc) {
   if (!isa_difftest_checkregs(ref, pc, npc)) {
     npc_state.state = NPC_ABORT;
     npc_state.halt_pc = npc;
-    reg_display();
+    puts("--------------ref--------------");
+    reg_ref_display(ref);
+    puts("--------------dut--------------");
+    reg_dut_display();
   }
 }
 

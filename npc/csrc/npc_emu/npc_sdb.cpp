@@ -3,7 +3,7 @@
 #include <readline/history.h>
 word_t paddr_read(paddr_t addr, int len,int model);
 static int is_batch_mode = false;
-void reg_display();
+void reg_dut_display();
 void npc_exev(uint64_t step);
 void sdb_mainloop();
 void init_regex();
@@ -38,7 +38,7 @@ static int cmd_info(char *args) {
   char *arg = strtok(NULL, " ");
   char subcmd = arg[0];
   if(subcmd=='r'){
-    reg_display();
+    reg_dut_display();
   }else if(subcmd=='w'){
     display_watch();
   }else{

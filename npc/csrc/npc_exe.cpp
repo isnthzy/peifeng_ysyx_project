@@ -6,7 +6,7 @@
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 extern void wp_trace(char *decodelog);
 #define MAX_INST_TO_PRINT 10
-void reg_display();
+void reg_dut_display();
 void cpy_reg();
 uint64_t get_time();
 // CPU_state cpu;
@@ -69,7 +69,7 @@ extern "C" void prt_debug(const svBitVecVal* debug_1,int debug_2){
 
 //----------------------------dpi-c----------------------------
 void npc_quit(){
-  reg_display();
+  reg_dut_display();
   npc_state.halt_pc=cpu.pc;
   npc_state.state=NPC_QUIT;
 }
