@@ -28,7 +28,3 @@
 #define CONFIG_TRACE 1
 #define CONFIG_ISA "riscv32"
 #define CONFIG_PMEM_GARRAY 1
-
-
-#define CONFIG_TRACE 1
-#define CONFIG_ITRACE_COND 1

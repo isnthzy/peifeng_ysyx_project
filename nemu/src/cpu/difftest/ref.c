@@ -30,21 +30,19 @@ __EXPORT void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction)
 __EXPORT void difftest_regcpy(void *dut, bool direction) {
   CPU_state* dut_t=dut; 
   if (direction == DIFFTEST_TO_REF) {
-
-    printf("ref: pc:%x—>%x\n",cpu.pc,dut_t->pc);
-    puts("----------------------------ref----------------------------");
-    printf("name   value   name   value   name   value   name   value\n");
-    for(int i=0;i<32;i+=4){
-      printf("%3d 0x%08x %3d 0x%08x %3d 0x%08x %3d 0x%08x\n",\
-      i,cpu.gpr[i],i,cpu.gpr[i+1],i+2,cpu.gpr[i+2],i+3,cpu.gpr[i+3]);
-    }
-    puts("----------------------------dut----------------------------");
-    printf("name   value   name   value   name   value   name   value\n");
-    for(int i=0;i<32;i+=4){
-      printf("%3d 0x%08x %3d 0x%08x %3d 0x%08x %3d 0x%08x\n",\
-      i,dut_t->gpr[i],i,dut_t->gpr[i+1],i+2,dut_t->gpr[i+2],i+3,dut_t->gpr[i+3]);
-    }
-
+    // printf("ref: pc:%x—>%x\n",cpu.pc,dut_t->pc);
+    // puts("----------------------------ref----------------------------");
+    // printf("name   value   name   value   name   value   name   value\n");
+    // for(int i=0;i<32;i+=4){
+    //   printf("%3d 0x%08x %3d 0x%08x %3d 0x%08x %3d 0x%08x\n",\
+    //   i,cpu.gpr[i],i,cpu.gpr[i+1],i+2,cpu.gpr[i+2],i+3,cpu.gpr[i+3]);
+    // }
+    // puts("----------------------------dut----------------------------");
+    // printf("name   value   name   value   name   value   name   value\n");
+    // for(int i=0;i<32;i+=4){
+    //   printf("%3d 0x%08x %3d 0x%08x %3d 0x%08x %3d 0x%08x\n",\
+    //   i,dut_t->gpr[i],i,dut_t->gpr[i+1],i+2,dut_t->gpr[i+2],i+3,dut_t->gpr[i+3]);
+    // }
     for(int i=0;i<32;i++){
       cpu.gpr[i]=dut_t->gpr[i];
     }
