@@ -44,15 +44,13 @@ bool isa_difftest_checkregs(CPU_state *ref_r,vaddr_t pc,vaddr_t npc){
 }
 
 
-// static bool is_skip_ref = false;
-static size_t skip_x=0;
+static bool is_skip_ref = false;
 static int skip_dut_nr_inst = 0;
 
 // this is used to let ref skip instructions which
 // can not produce consistent behavior with NEMU
 void difftest_skip_ref() {
-  skip_x++;
-  // is_skip_ref = true;
+  is_skip_ref = true;
   
   // If such an instruction is one of the instruction packing in QEMU
   // (see below), we end the process of catching up with QEMU's pc to
@@ -144,24 +142,12 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
     return;
   }
 
-  // if (is_skip_ref) {//因为diff npc和nemu错一拍对齐原则，执行按理说也是延迟1一次执行
-  //   // to skip the checking of an instruction, just copy the reg state to reference design
-  //   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
-  //   is_skip_ref = false;
-  //   return;
-  // }
-  if(skip_x>2) skip_x++;
-  if(skip_x%2==1){ 
-		skip_x++;
-	}else if(skip_x%2==0 &&skip_x)
-	{
+  if (is_skip_ref) {//因为diff npc和nemu错一拍对齐原则，执行按理说也是延迟1一次执行
+    // to skip the checking of an instruction, just copy the reg state to reference design
     ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
-		skip_x-=2;
-		return;
-	}
-
-
-
+    is_skip_ref = false;
+    return;
+  }
 
   ref_difftest_exec(1);
   ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
