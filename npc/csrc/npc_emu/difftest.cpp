@@ -114,10 +114,12 @@ void reg_ref_display(CPU_state *ref_r){
     regs[i],ref_r->gpr[i],regs[i+1],ref_r->gpr[i+1],regs[i+2],ref_r->gpr[i+2],regs[i+3],ref_r->gpr[i+3]);
   }
 }
+
 static void checkregs(CPU_state *ref, vaddr_t pc,vaddr_t npc) {
   if (!isa_difftest_checkregs(ref, pc, npc)) {
     npc_state.state = NPC_ABORT;
     npc_state.halt_pc = npc;
+
     puts("----------------------------ref----------------------------");
     reg_ref_display(ref);
     puts("----------------------------dut----------------------------");
