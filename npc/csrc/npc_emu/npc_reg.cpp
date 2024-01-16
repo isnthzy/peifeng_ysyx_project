@@ -1,6 +1,5 @@
 #include "../include/npc_common.h"
 #include "../include/npc_verilator.h"
-#include "../include/npc_conf.h"
 extern CPU_state cpu;
 
 void cpy_reg() {
@@ -54,14 +53,6 @@ const char *regs[] = {
   "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
 };
 
-void reg_ref_display(CPU_state *ref_r){
-  printf("name   value   name   value   name   value   name   value\n");
-  for(int i=0;i<32;i+=4){
-    printf("%3s 0x%08x %3s 0x%08x %3s 0x%08x %3s 0x%08x\n",\
-    regs[i],ref_r->gpr[i],regs[i+1],ref_r->gpr[i+1],regs[i+2],ref_r->gpr[i+2],regs[i+3],ref_r->gpr[i+3]);
-  }
-}
-
 void reg_dut_display(){
   int i;
   printf("name   value   name   value   name   value   name   value\n");
@@ -71,17 +62,7 @@ void reg_dut_display(){
   }
   
 }
-#ifdef CONFIG_DIFFTEST
-extern CPU_state* ref_t; 
-#endif
-void reg_display(){
-  #ifdef CONFIG_DIFFTEST
-  puts("----------------------------ref----------------------------");
-  reg_ref_display(ref_t);
-  #endif
-  puts("----------------------------dut----------------------------");
-  reg_dut_display();
-}
+
 word_t isa_reg_str2val(const char *s, bool *success) {
   int idx=0;
   char str[10];

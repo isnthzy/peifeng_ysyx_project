@@ -20,7 +20,7 @@
   return false;\
 }
 uint8_t* guest_to_host(paddr_t paddr);
-void reg_display();
+void reg_dut_display();
 int check_reg_idx(int idx);
 extern CPU_state cpu;
 extern const char *regs[];
@@ -28,12 +28,8 @@ void (*ref_difftest_memcpy)(paddr_t addr, void *buf, size_t n, bool direction) =
 void (*ref_difftest_regcpy)(void *dut, bool direction) = NULL;
 void (*ref_difftest_exec)(uint64_t n) = NULL;
 void (*ref_difftest_raise_intr)(uint64_t NO) = NULL;
-
 #ifdef CONFIG_DIFFTEST
-
-CPU_state* ref_t; //全局变量传递到reg
 bool isa_difftest_checkregs(CPU_state *ref_r,vaddr_t pc,vaddr_t npc){
-  ref_t=ref_r;
   for(int i=0;i<32;i++){
     if(ref_r->gpr[i]!=gpr(i)){
           /*真机的pc要慢一拍,因为nemu的寄存器写入是瞬间写，npc是延迟一拍后写
@@ -110,16 +106,24 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
 }
-
-
+void reg_ref_display(CPU_state *ref_r){
+  int i;
+  printf("name   value   name   value   name   value   name   value\n");
+  for(i=0;i<32;i+=4){
+    printf("%3s 0x%08x %3s 0x%08x %3s 0x%08x %3s 0x%08x\n",\
+    regs[i],ref_r->gpr[i],regs[i+1],ref_r->gpr[i+1],regs[i+2],ref_r->gpr[i+2],regs[i+3],ref_r->gpr[i+3]);
+  }
+}
 static void checkregs(CPU_state *ref, vaddr_t pc,vaddr_t npc) {
   if (!isa_difftest_checkregs(ref, pc, npc)) {
     npc_state.state = NPC_ABORT;
     npc_state.halt_pc = npc;
-    reg_display();
+    puts("----------------------------ref----------------------------");
+    reg_ref_display(ref);
+    puts("----------------------------dut----------------------------");
+    reg_dut_display();
   }
 }
-
 
 void difftest_step(vaddr_t pc, vaddr_t npc) {
   CPU_state ref_r;
@@ -146,7 +150,6 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
 
   ref_difftest_exec(1);
   ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
-  
   checkregs(&ref_r, pc, npc);
 }
 #endif
