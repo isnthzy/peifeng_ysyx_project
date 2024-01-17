@@ -21,8 +21,8 @@ VSRCS = $(shell find $(abspath ./vsrc) -name "*.sv" -or -name "*.v")
 CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cpp" -or -name "*.cc")
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\"" 
-CXXFLAGS += -Wall -Werror -lSDL2
-LDFLAGS += -lreadline  -lSDL2
+CXXFLAGS += -Wall -Werror $(shell sdl2-config)
+LDFLAGS += -lreadline $(shell sdl2-config) -lSDL2
 
 ##分隔符 llvm用于反汇编itrace
 CXXFLAGS += $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config --cxxflags)) -fPIE
