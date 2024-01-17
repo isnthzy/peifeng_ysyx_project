@@ -6,7 +6,7 @@
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 extern void wp_trace(char *decodelog);
 #define MAX_INST_TO_PRINT 10
-void reg_display();
+void reg_dut_display();
 void cpy_reg();
 uint64_t get_time();
 // CPU_state cpu;
@@ -69,7 +69,7 @@ extern "C" void prt_debug(const svBitVecVal* debug_1,int debug_2){
 
 //----------------------------dpi-c----------------------------
 void npc_quit(){
-  reg_display();
+  reg_dut_display();
   npc_state.halt_pc=cpu.pc;
   npc_state.state=NPC_QUIT;
 }
@@ -101,12 +101,14 @@ void putIringbuf(){
 static bool first_diff=true;
 static void trace_and_difftest(word_t this_pc,word_t next_pc){
   g_nr_guest_inst++; //记录总共执行了多少步
+  #ifdef CONFIG_DIFFTEST
   if(difftest_flag){
     /*第一次不进行diff,因为nemu的寄存器写入是瞬间写，npc是延迟一拍后写
     因此diff时机是npc执行结束了，进入下一排执行了，reg能取出来了，进行diff*/
     if(!first_diff) difftest_step(cpu.pc,cpu.nextpc);
     first_diff=false;
   }
+  #endif
   // cpu.pc=this_pc;
   
   static char logbuf[128];
@@ -136,7 +138,6 @@ static void npc_execute(uint64_t n) {
 
     top->clock=0;
     step_and_dump_wave();
-    cpy_reg();
     if (npc_state.state != NPC_RUNNING) break;
   }
 }
@@ -172,7 +173,7 @@ void npc_exev(uint64_t step){ //之所以不用int因为int是有符号的，批
           (npc_state.state == NPC_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED):
            (npc_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_CYAN):
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
-          cpu.nextpc);
+          cpu.pc);
     case NPC_QUIT: statistic();
   }
 

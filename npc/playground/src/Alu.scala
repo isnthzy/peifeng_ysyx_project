@@ -11,7 +11,7 @@ class Alu extends Module {
   
 
   val sll=Wire(UInt(64.W))
-  sll := io.src1 << io.src2(5,0) //左移
+  sll := io.src1 << io.src2(4,0) //左移
 
   val alu_add= io.src1 + io.src2
 

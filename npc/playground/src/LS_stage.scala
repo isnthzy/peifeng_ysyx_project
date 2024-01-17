@@ -72,14 +72,14 @@ class dpi_ls extends BlackBox with HasBlackBoxInline {
       | 
       |always_latch @(*) begin
       |  if(~reset)begin
-      |    if(ld_wen) begin
+      |    if(ld_wen&&clock) begin
       |      pmem_read (raddr,rdata);
       |    end
       |    else begin
       |      rdata[31:0]=0;
       |    end
       |
-      |    if(st_wen) begin
+      |    if(st_wen&&clock) begin
       |      pmem_write(waddr,wdata,wmask);
       |    end
       |  end

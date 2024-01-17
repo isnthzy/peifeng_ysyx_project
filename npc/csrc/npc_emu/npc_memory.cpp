@@ -3,8 +3,11 @@
 #include "../include/iringbuf.h"
 word_t paddr_read(paddr_t addr, int len,int model);
 void paddr_write(paddr_t addr, int len, word_t data);
+extern  void  device_write(paddr_t addr,word_t data);
+extern word_t device_read(paddr_t addr);
 extern CPU_state cpu;
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN={};
+// static uint8_t pmem[CONFIG_MSIZE];
 extern IRingBuffer mtrace_buffer;
 
 static inline uint32_t host_read(void *addr, int len) {
@@ -50,7 +53,7 @@ void mputIringbuf(){
   }
 }
 
-static void out_of_bound(paddr_t addr) {
+void out_of_bound(paddr_t addr) {
   IFDEF(CONFIG_ITRACE,putIringbuf()); 
   panic("(npc)address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
       addr, PMEM_LEFT, PMEM_RIGHT,cpu.pc);
@@ -66,6 +69,7 @@ extern "C" void pmem_read(int raddr, int *rdata) {
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 extern "C" void pmem_write(int waddr, int wdata, char wmask) {
+  // waddr=waddr & ~0x3u;
   if(wmask==0x1) paddr_write(waddr,1,wdata);
   else if(wmask==0x3) paddr_write(waddr,2,wdata);
   else if(wmask==0xf) paddr_write(waddr,4,wdata);
@@ -74,8 +78,12 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
 }
 //----------------------------dpi-c----------------------------
-
+static uint64_t read_cnt=0;
 word_t paddr_read(paddr_t addr, int len,int model) {
+  if(model==1){read_cnt++;
+  if(read_cnt%2==1) return 0; }
+  //这是一串自我欺骗代码，因为触发沿是*而不是clock,在实现总线之前暂时用这个达到访问一次的效果
+
   word_t pmem_rdata;
   if (likely(in_pmem(addr))) pmem_rdata=pmem_read(addr,4);
   #ifdef CONFIG_MTRACE //警惕切换riscv64会造成的段错误
@@ -88,18 +96,29 @@ word_t paddr_read(paddr_t addr, int len,int model) {
   }
   #endif
   if (likely(in_pmem(addr))) return pmem_rdata;
-  // IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
+  if(addr>=0xa0000000){
+    return device_read(addr);
+  }
   out_of_bound(addr);
   return 0;
 }
-
+static uint64_t write_cnt=0;
 void paddr_write(paddr_t addr, int len, word_t data) {
+  write_cnt++;
+  if(write_cnt%2==1) return; 
+  //这是一串自我欺骗代码，因为触发沿是*而不是clock,在实现总线之前暂时用这个达到访问一次的效果
+
   #ifdef CONFIG_MTRACE
   char mtrace_logbuf[120];
   sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x wdata:0x%08x len:%d",cpu.nextpc,addr,data,len);
   enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
+  // printf("%s\n",mtrace_logbuf);
   #endif
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
-  // IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
+  if(addr>=0xa0000000){
+    device_write(addr,data);
+    return;
+  }
+  
   out_of_bound(addr);
 }
