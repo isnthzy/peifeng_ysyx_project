@@ -1,10 +1,10 @@
 
 
 #define CONFIG_ISA_riscv 1
-#define CONFIG_TRACE 1
-#define CONFIG_ITRACE 1
-#define CONFIG_FTRACE 1
-#define CONFIG_MTRACE 1
+// #define CONFIG_TRACE 1
+// #define CONFIG_ITRACE 1
+// #define CONFIG_FTRACE 1
+// #define CONFIG_MTRACE 1
 // #define CONFIG_DIFFTEST 1
 #define CONFIG_PC_RESET_OFFSET 0x4
 #define DIFFTEST_TO_REF 1
