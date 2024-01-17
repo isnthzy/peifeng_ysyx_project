@@ -53,7 +53,7 @@ static int skip_dut_nr_inst = 0;
 // can not produce consistent behavior with NEMU
 void difftest_skip_ref() {
   deque_pc.push_back(cpu.nextpc);
-  // is_skip_ref = true;
+  is_skip_ref = true;
   // // If such an instruction is one of the instruction packing in QEMU
   // // (see below), we end the process of catching up with QEMU's pc to
   // // keep the consistent behavior in our best.
@@ -149,11 +149,11 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
     return;
   }
   // printf("aaa: pc: %x npc: %x deque: %x\n",pc,npc,deque_pc.front());
-  if (!deque_pc.empty()&&deque_pc.front()==pc) {
+  if (is_skip_ref) {
     // to skip the checking of an instruction, just copy the reg state to reference design
     ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF,npc);
     deque_pc.pop_front();
-    // is_skip_ref = false;
+    is_skip_ref = false;
     return;
   }
 
