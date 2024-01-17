@@ -7,7 +7,7 @@ ARGS?= --log=$(BUILD_DIR)/npc-log.txt
 
 NXDC_FILES = constr/SimTop.nxdc
 
-VERILATOR = verilator
+VERILATOR = verilator --gdbbt --gdb
 VERILATOR_CFLAGS += -MMD --build -cc
 VERILATOR_CFLAGS += --trace --timing
 # VERILATOR_CFLAGS += -O3 --x-assign fast --x-initial fast --noassert 
@@ -86,5 +86,5 @@ sim:com
 
 gdb:com
 	$(call git_commit, "gdb RTL") # DO NOT REMOVE THIS LINE!!!
-	gdb -ex "handle SIGSEGV noprint nostop" -ex "set print thread-events off" $(BIN) $(ARGS) --gdbbt $(IMG)
+	gdb -ex "handle SIGSEGV noprint nostop" -ex "set print thread-events off" $(BIN) $(ARGS) $(IMG)
 -include ../Makefile
