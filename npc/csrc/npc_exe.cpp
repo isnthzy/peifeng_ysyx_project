@@ -114,15 +114,17 @@ static void trace_and_difftest(word_t this_pc,word_t next_pc){
   static char logbuf[128];
   static char tmp_dis[64];
   static word_t tmp_inst;
+  #ifdef CONFIG_TRACE
   tmp_inst=cpu.inst;
   disassemble(tmp_dis, sizeof(tmp_dis),next_pc, (uint8_t*)&tmp_inst,4);
   sprintf(logbuf,"[%ld]\t0x%08x: %08x\t%s",g_nr_guest_inst,next_pc,tmp_inst,tmp_dis);
   #ifdef CONFIG_ITRACE
-  // log_write("%s\n",logbuf);
-  // enqueueIRingBuffer(&iring_buffer,logbuf); //入队环形缓冲区
+  log_write("%s\n",logbuf);
+  enqueueIRingBuffer(&iring_buffer,logbuf); //入队环形缓冲区
   #endif
   wp_trace(logbuf);
   if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s\n",logbuf)); }
+  #endif
 }
 
 
