@@ -7,7 +7,7 @@ ARGS?= --log=$(BUILD_DIR)/npc-log.txt
 
 NXDC_FILES = constr/SimTop.nxdc
 
-VERILATOR = verilator --debug --gdbbt
+VERILATOR = verilator --debug --gdb --gdbbt
 VERILATOR_CFLAGS += -MMD --build -cc
 VERILATOR_CFLAGS += --trace --timing
 # VERILATOR_CFLAGS += -O3 --x-assign fast --x-initial fast --noassert 
@@ -21,7 +21,7 @@ VSRCS = $(shell find $(abspath ./vsrc) -name "*.sv" -or -name "*.v")
 CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cpp" -or -name "*.cc")
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\"" 
-CXXFLAGS += -Wall -Werror $(shell sdl2-config)
+CXXFLAGS += -Wall -Werror $(shell sdl2-config) -g
 LDFLAGS += -lreadline $(shell sdl2-config) -lSDL2
 
 ##分隔符 llvm用于反汇编itrace
