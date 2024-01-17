@@ -49,7 +49,7 @@ __EXPORT void difftest_regcpy(void *dut, bool direction,vaddr_t skip_target) {
       cpu.gpr[i]=dut_t->gpr[i];
     }
     if(skip_target==0) cpu.pc=dut_t->pc;
-    // else cpu.pc=dut_t->pc;
+    else cpu.pc=dut_t->pc;
 
   }else{
     for(int i=0;i<32;i++){
