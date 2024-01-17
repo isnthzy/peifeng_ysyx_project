@@ -15,6 +15,7 @@ extern void difftest_skip_ref();
 void send_key(uint8_t scancode, bool is_keydown);
 void init_i8042();
 void init_vga();
+void vga_update_screen();
 uint32_t key_dequeue();
 
 void init_device() {
@@ -36,7 +37,7 @@ void device_update() {
     return;
   }
   last = now;
-  // IFDEF(CONFIG_HAS_VGA, vga_update_screen());
+  IFDEF(CONFIG_HAS_VGA, vga_update_screen());
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
     switch (event.type) {
