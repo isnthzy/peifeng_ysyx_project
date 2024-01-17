@@ -24,7 +24,9 @@ extern void mputIringbuf();
 void step_and_dump_wave(){
   top->eval();
   contextp->timeInc(1); //时间+1
+#ifdef TRACE_VCD
   tfp->dump(contextp->time()); //使用时间
+#endif
 }
 
 //----------------------------dpi-c----------------------------
