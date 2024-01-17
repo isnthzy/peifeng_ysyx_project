@@ -14,9 +14,7 @@
 ***************************************************************************************/
 
 #include <dlfcn.h>
-#include <deque>
 #include "../include/npc_common.h"
-std::deque <word_t> deque_pc;
 #define DIFF_CHECK(addr1, addr2, name) if(addr1!=addr2){\
   wLog("The %s is different\ntrue:0x%08x false:0x%08x",name,addr1,addr2); \
   return false;\
@@ -52,7 +50,6 @@ static int skip_dut_nr_inst = 0;
 // this is used to let ref skip instructions which
 // can not produce consistent behavior with NEMU
 void difftest_skip_ref() {
-  deque_pc.push_back(cpu.nextpc);
   is_skip_ref = true;
   // // If such an instruction is one of the instruction packing in QEMU
   // // (see below), we end the process of catching up with QEMU's pc to
@@ -61,7 +58,7 @@ void difftest_skip_ref() {
   // // already write some memory, and the incoming instruction in NEMU
   // // will load that memory, we will encounter false negative. But such
   // // situation is infrequent.
-  // skip_dut_nr_inst = 0;
+  skip_dut_nr_inst = 0;
 }
 
 // this is used to deal with instruction packing in QEMU.
@@ -148,11 +145,12 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
       panic("can not catch up with ref.pc = " FMT_WORD " at pc = " FMT_WORD, ref_r.pc, npc);
     return;
   }
-  // printf("aaa: pc: %x npc: %x deque: %x\n",pc,npc,deque_pc.front());
+
   if (is_skip_ref) {
     // to skip the checking of an instruction, just copy the reg state to reference design
     ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF,npc);
-    deque_pc.pop_front();
+    //
+
     is_skip_ref = false;
     return;
   }
