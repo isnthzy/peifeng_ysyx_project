@@ -10,7 +10,7 @@ NXDC_FILES = constr/SimTop.nxdc
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  
 VERILATOR_CFLAGS += --trace --timing
-VERILATOR_CFLAGS += -O3 --x-assign fast --x-initial fast --noassert 
+# VERILATOR_CFLAGS += -O3 --x-assign fast --x-initial fast --noassert 
 #优化加速
 				
 INC_PATH ?=
@@ -86,5 +86,5 @@ sim:com
 
 gdb:com
 	$(call git_commit, "gdb RTL") # DO NOT REMOVE THIS LINE!!!
-	gdb -ex "handle SIGSEGV noprint nostop" -ex "set print thread-events off" $(BIN) $(ARGS) $(IMG)
+	gdb -ex "handle SIGSEGV noprint nostop" -ex "set print thread-events off" $(BIN) $(ARGS) -g $(IMG)
 -include ../Makefile
