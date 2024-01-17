@@ -35,8 +35,7 @@ int main() {
   frame_t *fend = (void *)&video_payload_end;
   printf("\033[H\033[J");  // screan_clear
 
-  // bool has_audio = io_read(AM_AUDIO_CONFIG).present;
-  bool has_audio=false;
+  bool has_audio = io_read(AM_AUDIO_CONFIG).present;
   if (has_audio) {
     io_write(AM_AUDIO_CTRL, AUDIO_FREQ, AUDIO_CHANNEL, 1024);
     audio_left = audio_len = &audio_payload_end - &audio_payload;
