@@ -7,7 +7,7 @@ ARGS?= --log=$(BUILD_DIR)/npc-log.txt
 
 NXDC_FILES = constr/SimTop.nxdc
 
-VERILATOR = verilator --gdbbt --gdb
+VERILATOR = verilator --debug --gdbbt
 VERILATOR_CFLAGS += -MMD --build -cc
 VERILATOR_CFLAGS += --trace --timing
 # VERILATOR_CFLAGS += -O3 --x-assign fast --x-initial fast --noassert 
