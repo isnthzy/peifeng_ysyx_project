@@ -20,6 +20,7 @@ uint64_t g_nr_guest_inst; //可以复用作为指令计数器，记录指令总�
 IRingBuffer iring_buffer;
 IRingBuffer mtrace_buffer;
 extern void mputIringbuf();
+void device_update();
 
 void step_and_dump_wave(){
   top->eval();
@@ -137,6 +138,7 @@ static void npc_execute(uint64_t n) {
     step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
     cpy_reg();
     trace_and_difftest(cpu.pc,cpu.nextpc);
+    IFDEF(CONFIG_DEVICE, device_update());
     /*------------------------分割线每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次*/
   
 

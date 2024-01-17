@@ -12,6 +12,10 @@
 // #define TRACE_VCD 1
 //波形生成开关
 
+#define CONFIG_DEVICE 1
+#define DEVICE_HAS_KEYBOARD 1
+//设备开关
+
 #define MTRACE_LOGBUF_SIZE 10
 #define ITRACE_LOGBUF_SIZE 10
 #define DTRACE_LOGBUF_SIZE 10
