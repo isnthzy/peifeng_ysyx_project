@@ -27,7 +27,7 @@ word_t device_read(paddr_t addr){
     difftest_skip_ref();
     rtc_us=get_time();
     if(addr==RTC_ADDR)   return (uint32_t)rtc_us;
-    if(addr==RTC_ADDR+4) return rtc_us >> 32;
+    if(addr==RTC_ADDR+4) return (uint32_t)rtc_us;
     
     break;
 
