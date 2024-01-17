@@ -113,7 +113,7 @@ void reg_ref_display(CPU_state *ref_r){
     printf("%3s 0x%08x %3s 0x%08x %3s 0x%08x %3s 0x%08x\n",\
     regs[i],ref_r->gpr[i],regs[i+1],ref_r->gpr[i+1],regs[i+2],ref_r->gpr[i+2],regs[i+3],ref_r->gpr[i+3]);
   }
-  printf("pc:%x\n",ref_r->pc);
+  // printf("pc:%x\n",ref_r->pc);
 }
 static void checkregs(CPU_state *ref, vaddr_t pc,vaddr_t npc) {
   // puts("----------------------------ref----------------------------");
