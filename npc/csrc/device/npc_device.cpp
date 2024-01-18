@@ -29,14 +29,10 @@ word_t vmem_read(paddr_t addr);
 void vmem_write(paddr_t addr,word_t data);
 
 void init_device() {
-  // IFDEF(CONFIG_HAS_SERIAL, init_serial());
-  // IFDEF(CONFIG_HAS_TIMER, init_timer());
+
   IFDEF(CONFIG_HAS_VGA, init_vga());
   IFDEF(DEVICE_HAS_KEYBOARD, init_i8042());
-  // IFDEF(CONFIG_HAS_AUDIO, init_audio());
-  // IFDEF(CONFIG_HAS_DISK, init_disk());
-  // IFDEF(CONFIG_HAS_SDCARD, init_sdcard());
-  // IFNDEF(CONFIG_TARGET_AM, init_alarm());
+
 }
 
 
@@ -67,26 +63,7 @@ void device_update() {
   }
 }
 
-// void  device_write(paddr_t addr,word_t data){
-//   difftest_skip_ref();
-//   switch (addr)
-//   {
-//   case SERIAL_PORT:
-//     putchar(data);
-//     break;
 
-//   case SYNC_ADDR:
-//     change_vga_sync(data);
-//     break;
-
-//   case FB_ADDR:
-//   screen_size();
-//   default:
-//     out_of_bound(addr);
-//     break;
-//   }
-//   return;
-// }
 
 void  device_write(paddr_t addr,word_t data){
   difftest_skip_ref();
@@ -107,31 +84,6 @@ void  device_write(paddr_t addr,word_t data){
   return;
 }
 
-// word_t device_read(paddr_t addr){
-//   static uint64_t rtc_us=0;
-//   difftest_skip_ref();
-//   switch (addr)
-//   {
-//   case RTC_ADDR:
-//   case RTC_ADDR+4:
-//     rtc_us=get_time();
-//     if(addr==RTC_ADDR)   return (uint32_t)rtc_us;
-//     if(addr==RTC_ADDR+4) return rtc_us >> 32;
-//     break;
-//   case KBD_ADDR:
-//     return key_dequeue();
-//     break;
-
-//   case VGACTL_ADDR:
-//     return get_vga_vgactl();
-//     break;
-
-//   default:
-//     out_of_bound(addr);
-//     break;
-//   }
-//   return 0;
-// }
 
 
 word_t device_read(paddr_t addr){
