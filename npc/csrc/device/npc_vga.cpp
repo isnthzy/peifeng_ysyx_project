@@ -97,5 +97,6 @@ word_t vmem_read(paddr_t addr) {
 }
 
 void vmem_write(paddr_t addr,word_t data) {
+  printf("addr:0x%x wdata:0x%08x ",addr,data);
   vhost_write(guest_to_vhost(addr),data);
 }
