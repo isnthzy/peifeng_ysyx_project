@@ -2,28 +2,11 @@
 
 #include "../include/npc_common.h"
 #include <SDL2/SDL.h>
-
+#define DEVICE_BASE 0xa0000000
+#define FB_ADDR     (DEVICE_BASE + 0x1000000)
 #define SCREEN_W (MUXDEF(CONFIG_VGA_SIZE_800x600, 800, 400))
 #define SCREEN_H (MUXDEF(CONFIG_VGA_SIZE_800x600, 600, 300))
-
-///
-#define PAGE_SHIFT        12
-#define PAGE_SIZE         (1ul << PAGE_SHIFT)
-#define PAGE_MASK         (PAGE_SIZE - 1)
-#define IO_SPACE_MAX (2 * 1024 * 1024)
-
-static uint8_t *io_space = NULL;
-static uint8_t *p_space = NULL;
-
-uint8_t* new_space(int size) {
-  uint8_t *p = p_space;
-  // page aligned;
-  size = (size + (PAGE_SIZE - 1)) & ~PAGE_MASK;
-  p_space += size;
-  assert(p_space - io_space < IO_SPACE_MAX);
-  return p;
-}
-///
+static uint32_t vmem[120000];
 
 static uint32_t screen_width() {
   return SCREEN_W;
@@ -33,11 +16,11 @@ static uint32_t screen_height() {
   return SCREEN_H;
 }
 
-static uint32_t screen_size() {
+uint32_t screen_size() {
   return screen_width() * screen_height() * sizeof(uint32_t);
 }
 
-static uint32_t vmem[120000];
+
 static uint32_t vgactl_port_base[2];
 
 #ifdef CONFIG_VGA_SHOW_SCREEN
@@ -80,13 +63,40 @@ void vga_update_screen() {
 
 void init_vga() {
   vgactl_port_base[0] = (screen_width() << 16) | screen_height();
-// #ifdef CONFIG_HAS_PORT_IO
-//   add_pio_map ("vgactl", CONFIG_VGA_CTL_PORT, vgactl_port_base, 8, NULL);
-// #else
-//   add_mmio_map("vgactl", CONFIG_VGA_CTL_MMIO, vgactl_port_base, 8, NULL);
-// #endif
 
-  // add_mmio_map("vmem", CONFIG_FB_ADDR, vmem, screen_size(), NULL);
   IFDEF(CONFIG_VGA_SHOW_SCREEN, init_screen());
   IFDEF(CONFIG_VGA_SHOW_SCREEN, memset(vmem, 0, screen_size()));
+}
+
+uint32_t get_vga_vgactl(){
+  return vgactl_port_base[0];
+}
+
+void change_vga_sync(word_t data){
+  vgactl_port_base[1]=data;
+  return;
+}
+
+
+
+
+static inline uint32_t vhost_read(void *addr) {
+  return *(uint32_t *)addr;
+}
+
+static inline void vhost_write(void *addr,uint32_t data) {
+  *(uint32_t *)addr = data;
+}
+
+static uint32_t* guest_to_vhost(paddr_t paddr) {
+  return vmem + paddr - FB_ADDR;
+}
+
+word_t vmem_read(paddr_t addr) {
+  word_t ret = vhost_read(guest_to_vhost(addr));
+  return ret;
+}
+
+void vmem_write(paddr_t addr,word_t data) {
+  vhost_write(guest_to_vhost(addr),data);
 }
