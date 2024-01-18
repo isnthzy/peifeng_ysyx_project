@@ -77,7 +77,7 @@ void  device_write(paddr_t addr,word_t data){
   }
 
   if(addr>=FB_ADDR&&addr<=FB_ADDR+screen_size()){
-    // vmem_write(addr,data);
+    vmem_write(addr,data);
     return;
   }
   out_of_bound(addr);
@@ -97,7 +97,7 @@ word_t device_read(paddr_t addr){
   if(addr==KBD_ADDR)    return key_dequeue();
   if(addr==VGACTL_ADDR) return get_vga_vgactl();
   if(addr>=FB_ADDR&&addr<=FB_ADDR+screen_size()){
-    // return vmem_read(addr);
+    return vmem_read(addr);
   }
   out_of_bound(addr);
   return 0;
