@@ -3,6 +3,7 @@
 #include "../include/npc_common.h"
 #include <SDL2/SDL.h>
 #define DEVICE_BASE 0xa0000000
+#define VMEM_SIZE 480000
 #define FB_ADDR     (DEVICE_BASE + 0x1000000)
 #define SCREEN_W (MUXDEF(CONFIG_VGA_SIZE_800x600, 800, 400))
 #define SCREEN_H (MUXDEF(CONFIG_VGA_SIZE_800x600, 600, 300))
@@ -19,7 +20,7 @@ uint32_t screen_size() {
   return screen_width() * screen_height() * sizeof(uint32_t);
 }
 
-static uint8_t vmem[480000];
+static uint8_t vmem[VMEM_SIZE];
 static uint32_t vgactl_port_base[2];
 
 #ifdef CONFIG_VGA_SHOW_SCREEN
