@@ -25,8 +25,8 @@ void change_vga_sync(word_t data);
 uint32_t get_vga_vgactl();
 uint32_t key_dequeue();
 uint32_t screen_size();
-word_t vmem_read(paddr_t addr);
-void vmem_write(paddr_t addr,word_t data);
+word_t vmem_read(paddr_t addr,int len);
+void vmem_write(paddr_t addr,int len,word_t data);
 
 void init_device() {
 
@@ -65,7 +65,7 @@ void device_update() {
 
 
 
-void  device_write(paddr_t addr,word_t data){
+void  device_write(paddr_t addr,int len,word_t data){
   difftest_skip_ref();
   if(addr==SERIAL_PORT){
     putchar(data);
@@ -77,7 +77,7 @@ void  device_write(paddr_t addr,word_t data){
   }
 
   if(addr>=FB_ADDR&&addr<=FB_ADDR+screen_size()){
-    vmem_write(addr,data);
+    vmem_write(addr,len,data);
     return;
   }
   out_of_bound(addr);
@@ -86,7 +86,7 @@ void  device_write(paddr_t addr,word_t data){
 
 
 
-word_t device_read(paddr_t addr){
+word_t device_read(paddr_t addr,int len){
   static uint64_t rtc_us=0;
   difftest_skip_ref();
   if(addr==RTC_ADDR||addr==RTC_ADDR+4){
@@ -97,7 +97,7 @@ word_t device_read(paddr_t addr){
   if(addr==KBD_ADDR)    return key_dequeue();
   if(addr==VGACTL_ADDR) return get_vga_vgactl();
   if(addr>=FB_ADDR&&addr<=FB_ADDR+screen_size()){
-    return vmem_read(addr);
+    return vmem_read(addr,len);
   }
   out_of_bound(addr);
   return 0;

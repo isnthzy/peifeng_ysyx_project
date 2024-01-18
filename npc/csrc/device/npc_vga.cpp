@@ -6,7 +6,7 @@
 #define FB_ADDR     (DEVICE_BASE + 0x1000000)
 #define SCREEN_W (MUXDEF(CONFIG_VGA_SIZE_800x600, 800, 400))
 #define SCREEN_H (MUXDEF(CONFIG_VGA_SIZE_800x600, 600, 300))
-static uint32_t vmem[120000];
+static void *vmem = NULL;
 
 static uint32_t screen_width() {
   return SCREEN_W;
@@ -61,6 +61,7 @@ void vga_update_screen() {
 }
 
 void init_vga() {
+  vmem = malloc(screen_size());
   vgactl_port_base[0] = (screen_width() << 16) | screen_height();
 
   IFDEF(CONFIG_VGA_SHOW_SCREEN, init_screen());
@@ -79,24 +80,54 @@ void change_vga_sync(word_t data){
 
 
 
-static inline uint32_t vhost_read(void *addr) {
-  return *(uint32_t *)addr;
+// static inline uint32_t vhost_read(void *addr) {
+//   return *(uint32_t *)addr;
+// }
+
+// static inline void vhost_write(void *addr,uint32_t data) {
+//   *(uint32_t *)addr = data;
+// }
+
+// static uint32_t* guest_to_vhost(paddr_t paddr) {
+//   return vmem + paddr - FB_ADDR;
+// }
+
+// word_t vmem_read(paddr_t addr) {
+//   word_t ret = vhost_read(guest_to_vhost(addr));
+//   return ret;
+// }
+
+// void vmem_write(paddr_t addr,word_t data) {
+//   printf("addr:0x%x wdata:0x%08x\n",addr,data);
+//   vhost_write(guest_to_vhost(addr),data);
+// }
+
+
+static inline uint32_t vhost_read(void *addr, int len) {
+  switch (len) {
+    case 1: return *(uint8_t  *)addr;
+    case 2: return *(uint16_t *)addr;
+    case 4: return *(uint32_t *)addr;
+    default:  return 0;
+  }
+}
+static inline void vhost_write(void *addr, int len, uint32_t data) {
+  switch (len) {
+    case 1: *(uint8_t  *)addr = data; return;
+    case 2: *(uint16_t *)addr = data; return;
+    case 4: *(uint32_t *)addr = data; return;
+    default: return;
+  }
 }
 
-static inline void vhost_write(void *addr,uint32_t data) {
-  *(uint32_t *)addr = data;
-}
 
-static uint32_t* guest_to_vhost(paddr_t paddr) {
-  return vmem + paddr - FB_ADDR;
-}
+uint8_t* guest_to_vhost(paddr_t paddr) { return (uint8_t*)vmem + paddr - FB_ADDR; }
 
-word_t vmem_read(paddr_t addr) {
-  word_t ret = vhost_read(guest_to_vhost(addr));
+word_t vmem_read(paddr_t addr, int len) {
+  word_t ret = vhost_read(guest_to_vhost(addr), len);
   return ret;
 }
 
-void vmem_write(paddr_t addr,word_t data) {
-  printf("addr:0x%x wdata:0x%08x\n",addr,data);
-  vhost_write(guest_to_vhost(addr),data);
+void vmem_write(paddr_t addr, int len, word_t data) {
+  vhost_write(guest_to_vhost(addr), len, data);
 }

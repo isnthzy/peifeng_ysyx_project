@@ -3,8 +3,8 @@
 #include "../include/iringbuf.h"
 word_t paddr_read(paddr_t addr, int len,int model);
 void paddr_write(paddr_t addr, int len, word_t data);
-extern  void  device_write(paddr_t addr,word_t data);
-extern word_t device_read(paddr_t addr);
+extern  void  device_write(paddr_t addr,int len,word_t data);
+extern word_t device_read(paddr_t addr,int len);
 extern CPU_state cpu;
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN={};
 // static uint8_t pmem[CONFIG_MSIZE];
@@ -97,7 +97,7 @@ word_t paddr_read(paddr_t addr, int len,int model) {
   #endif
   if (likely(in_pmem(addr))) return pmem_rdata;
   if(addr>=0xa0000000){
-    return device_read(addr);
+    return device_read(addr,len);
   }
   out_of_bound(addr);
   return 0;
@@ -116,7 +116,7 @@ void paddr_write(paddr_t addr, int len, word_t data) {
   #endif
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
   if(addr>=0xa0000000){
-    device_write(addr,data);
+    device_write(addr,len,data);
     return;
   }
   
