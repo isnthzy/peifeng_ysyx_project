@@ -6,8 +6,7 @@
 #define FB_ADDR     (DEVICE_BASE + 0x1000000)
 #define SCREEN_W (MUXDEF(CONFIG_VGA_SIZE_800x600, 800, 400))
 #define SCREEN_H (MUXDEF(CONFIG_VGA_SIZE_800x600, 600, 300))
-// static void *vmem = NULL;
-static uint8_t *vmem[480000];
+
 static uint32_t screen_width() {
   return SCREEN_W;
 }
@@ -20,7 +19,7 @@ uint32_t screen_size() {
   return screen_width() * screen_height() * sizeof(uint32_t);
 }
 
-
+static uint8_t vmem[480000];
 static uint32_t vgactl_port_base[2];
 
 #ifdef CONFIG_VGA_SHOW_SCREEN
@@ -61,9 +60,7 @@ void vga_update_screen() {
 }
 
 void init_vga() {
-  // vmem = malloc(screen_size());
   vgactl_port_base[0] = (screen_width() << 16) | screen_height();
-
   IFDEF(CONFIG_VGA_SHOW_SCREEN, init_screen());
   IFDEF(CONFIG_VGA_SHOW_SCREEN, memset(vmem, 0, screen_size()));
 }
