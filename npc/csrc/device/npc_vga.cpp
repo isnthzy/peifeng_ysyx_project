@@ -79,30 +79,6 @@ void change_vga_sync(word_t data){
 
 
 
-
-// static inline uint32_t vhost_read(void *addr) {
-//   return *(uint32_t *)addr;
-// }
-
-// static inline void vhost_write(void *addr,uint32_t data) {
-//   *(uint32_t *)addr = data;
-// }
-
-// static uint32_t* guest_to_vhost(paddr_t paddr) {
-//   return vmem + paddr - FB_ADDR;
-// }
-
-// word_t vmem_read(paddr_t addr) {
-//   word_t ret = vhost_read(guest_to_vhost(addr));
-//   return ret;
-// }
-
-// void vmem_write(paddr_t addr,word_t data) {
-//   printf("addr:0x%x wdata:0x%08x\n",addr,data);
-//   vhost_write(guest_to_vhost(addr),data);
-// }
-
-
 static inline uint32_t vhost_read(void *addr, int len) {
   switch (len) {
     case 1: return *(uint8_t  *)addr;
