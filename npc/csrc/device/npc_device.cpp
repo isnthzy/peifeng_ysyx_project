@@ -98,6 +98,7 @@ void  device_write(paddr_t addr,word_t data){
     change_vga_sync(data);
     return;
   }
+  printf("%x %x",FB_ADDR,FB_ADDR+screen_size());
   if(addr>=FB_ADDR&&addr<=FB_ADDR+screen_size()){
     vmem_write(addr,data);
   }
@@ -142,7 +143,6 @@ word_t device_read(paddr_t addr){
   }
   if(addr==KBD_ADDR)    return key_dequeue();
   if(addr==VGACTL_ADDR) return get_vga_vgactl();
-  printf("%x %x",FB_ADDR,FB_ADDR+screen_size());
   if(addr>=FB_ADDR&&addr<=FB_ADDR+screen_size()){
     return vmem_read(addr);
   }
