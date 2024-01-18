@@ -84,10 +84,13 @@ word_t device_read(paddr_t addr){
     rtc_us=get_time();
     if(addr==RTC_ADDR)   return (uint32_t)rtc_us;
     if(addr==RTC_ADDR+4) return rtc_us >> 32;
-    
     break;
   case KBD_ADDR:
     return key_dequeue();
+    break;
+
+  case VGACTL_ADDR:
+    // return;
     break;
   default:
     out_of_bound(addr);

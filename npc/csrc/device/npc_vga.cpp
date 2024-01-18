@@ -62,6 +62,7 @@ static void init_screen() {
 }
 
 static inline void update_screen() {
+  printf("update_screen\n");
   SDL_UpdateTexture(texture, NULL, vmem, SCREEN_W * sizeof(uint32_t));
   SDL_RenderClear(renderer);
   SDL_RenderCopy(renderer, texture, NULL, NULL);
@@ -71,7 +72,6 @@ static inline void update_screen() {
 #endif
 
 void vga_update_screen() {
-  // printf("update_screen\n");
   if(vgactl_port_base[1]) update_screen();
   vgactl_port_base[1]=0;
   // TODO: call `update_screen()` when the sync register is non-zero,
