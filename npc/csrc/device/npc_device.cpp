@@ -84,6 +84,7 @@ word_t device_read(paddr_t addr){
     
     break;
   case KBD_ADDR:
+    printf("return kbd");
     return key_dequeue();
     break;
   default:
