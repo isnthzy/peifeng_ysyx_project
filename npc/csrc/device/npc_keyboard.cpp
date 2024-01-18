@@ -44,12 +44,10 @@ uint32_t key_dequeue() {
     key = key_queue[key_f];
     key_f = (key_f + 1) % KEY_QUEUE_LEN;
   }
-  if(key!=NPC_KEY_NONE) printf("key!=null\n");
   return key;
 }
 
-void send_key(uint8_t scancode, bool is_keydown) {
-  printf("send keyboard,%x,%d\n",keymap[scancode],scancode);
+void send_key(uint8_t scancode, bool is_keydown) {\
   if (npc_state.state == NPC_RUNNING && keymap[scancode] != NPC_KEY_NONE) {
     uint32_t am_scancode = keymap[scancode] | (is_keydown ? KEYDOWN_MASK : 0);
     key_enqueue(am_scancode);
