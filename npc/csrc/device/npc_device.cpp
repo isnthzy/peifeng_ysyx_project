@@ -38,7 +38,7 @@ void device_update() {
   }
   last = now;
   IFDEF(CONFIG_HAS_VGA, vga_update_screen());
-  printf("update_screen\n");
+  // printf("update_screen\n");
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
     switch (event.type) {
