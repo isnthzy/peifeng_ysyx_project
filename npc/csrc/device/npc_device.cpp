@@ -5,6 +5,9 @@
 #define SERIAL_PORT (DEVICE_BASE + 0x00003f8)
 #define RTC_ADDR    (DEVICE_BASE + 0x0000048)
 #define KBD_ADDR    (DEVICE_BASE + 0x0000060)
+#define VGACTL_ADDR  (DEVICE_BASE + 0x0000100)
+#define SYNC_ADDR    (VGACTL_ADDR + 4)
+
 #ifndef CONFIG_DIFFTEST
 void difftest_skip_ref(){}
 #endif
@@ -70,8 +73,9 @@ void  device_write(paddr_t addr,word_t data){
     break;
   }
 }
-uint64_t rtc_us=0;
+
 word_t device_read(paddr_t addr){
+  static uint64_t rtc_us=0;
   difftest_skip_ref();
   switch (addr)
   {
