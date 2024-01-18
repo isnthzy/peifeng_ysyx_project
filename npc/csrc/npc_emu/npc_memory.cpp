@@ -114,6 +114,7 @@ void paddr_write(paddr_t addr, int len, word_t data) {
   enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
   // printf("%s\n",mtrace_logbuf);
   #endif
+  printf("pc:0x%08x addr:0x%x wdata:0x%08x len:%d\n",cpu.nextpc,addr,data,len);
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
   if(addr>=0xa0000000){
     device_write(addr,data);
