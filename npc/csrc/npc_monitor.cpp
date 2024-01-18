@@ -2,6 +2,7 @@
 #include "include/npc_verilator.h"
 void step_and_dump_wave();
 void init_difftest(char *ref_so_file, long img_size, int port);
+void init_device();
 uint8_t* guest_to_host(paddr_t paddr);
 paddr_t host_to_guest(uint8_t *haddr);
 bool ftrace_flag=false;
@@ -72,11 +73,13 @@ void reset(int n){
 
 void init_sim(){
   contextp = new VerilatedContext;
-  tfp = new VerilatedVcdC;
   top = new VSimTop;
+#ifdef TRACE_VCD
+  tfp = new VerilatedVcdC;
   contextp->traceEverOn(true);
   top->trace(tfp, 0);
   tfp->open("dump.vcd"); 
+#endif
   //使用make sim生成的dump.vcd在npc/
   //SimTop+*.bin生成的dump.vcd在npc/build
 }
@@ -163,13 +166,16 @@ void init_monitor(int argc, char *argv[]) {
   // /* Open the ${IMAGE}.elf file */
   IFDEF(CONFIG_FTRACE,init_elf(elf_file));
 
+  /* Initialize device. */
+  IFDEF(CONFIG_DEVICE, init_device());
+
   /* Initialize differential testing. */
   if(difftest_flag) init_difftest(diff_so_file, img_size, difftest_port);
 
   /* Initialize the simple debugger. */
   init_sdb();
 
-  IFDEF(CONFIG_ITRACE, init_disasm(
+  IFDEF(CONFIG_TRACE, init_disasm(
     MUXDEF(CONFIG_ISA_riscv,
       MUXDEF(CONFIG_RV64,      "riscv64",
                                "riscv32"),

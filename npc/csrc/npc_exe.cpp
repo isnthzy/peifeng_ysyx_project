@@ -20,11 +20,14 @@ uint64_t g_nr_guest_inst; //可以复用作为指令计数器，记录指令总�
 IRingBuffer iring_buffer;
 IRingBuffer mtrace_buffer;
 extern void mputIringbuf();
+void device_update();
 
 void step_and_dump_wave(){
   top->eval();
   contextp->timeInc(1); //时间+1
+#ifdef TRACE_VCD
   tfp->dump(contextp->time()); //使用时间
+#endif
 }
 
 //----------------------------dpi-c----------------------------
@@ -114,6 +117,7 @@ static void trace_and_difftest(word_t this_pc,word_t next_pc){
   static char logbuf[128];
   static char tmp_dis[64];
   static word_t tmp_inst;
+  #ifdef CONFIG_TRACE
   tmp_inst=cpu.inst;
   disassemble(tmp_dis, sizeof(tmp_dis),next_pc, (uint8_t*)&tmp_inst,4);
   sprintf(logbuf,"[%ld]\t0x%08x: %08x\t%s",g_nr_guest_inst,next_pc,tmp_inst,tmp_dis);
@@ -123,6 +127,7 @@ static void trace_and_difftest(word_t this_pc,word_t next_pc){
   #endif
   wp_trace(logbuf);
   if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s\n",logbuf)); }
+  #endif
 }
 
 
@@ -133,6 +138,7 @@ static void npc_execute(uint64_t n) {
     step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
     cpy_reg();
     trace_and_difftest(cpu.pc,cpu.nextpc);
+    IFDEF(CONFIG_DEVICE, device_update());
     /*------------------------分割线每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次*/
   
 

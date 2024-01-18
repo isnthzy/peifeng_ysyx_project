@@ -12,7 +12,9 @@ NPCState npc_state = { .state = NPC_STOP };
 
 void sim_exit(){
   delete top;
+  #ifdef TRACE_VCD
   tfp->close();
+  #endif
 }
 int is_exit_status_bad() {
   int good = (npc_state.state == NPC_END && npc_state.halt_ret == 0) ||
