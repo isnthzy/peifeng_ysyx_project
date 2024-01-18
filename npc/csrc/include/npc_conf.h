@@ -3,11 +3,11 @@
 #define CONFIG_ISA_riscv 1
 //isa选择
 
-#define CONFIG_TRACE 1
-#define CONFIG_ITRACE 1
-#define CONFIG_FTRACE 1
-#define CONFIG_MTRACE 1
-#define CONFIG_DIFFTEST 1
+// #define CONFIG_TRACE 1
+// #define CONFIG_ITRACE 1
+// #define CONFIG_FTRACE 1
+// #define CONFIG_MTRACE 1
+// #define CONFIG_DIFFTEST 1
 
 // #define TRACE_VCD 1
 //波形生成开关
