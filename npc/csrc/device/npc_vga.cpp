@@ -93,7 +93,7 @@ static inline void vhost_write(void *addr, int len, uint32_t data) {
 }
 
 
-uint8_t* guest_to_vhost(paddr_t paddr) { return (uint8_t*)vmem + paddr - FB_ADDR; }
+uint8_t* guest_to_vhost(paddr_t paddr) { return vmem + paddr - FB_ADDR; }
 
 word_t vmem_read(paddr_t addr, int len) {
   word_t ret = vhost_read(guest_to_vhost(addr), len);
