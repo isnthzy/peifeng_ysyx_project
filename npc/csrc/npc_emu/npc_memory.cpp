@@ -56,7 +56,7 @@ void mputIringbuf(){
 void out_of_bound(paddr_t addr) {
   IFDEF(CONFIG_ITRACE,putIringbuf()); 
   panic("(npc)address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
-      addr, PMEM_LEFT, PMEM_RIGHT,cpu.pc);
+      addr, PMEM_LEFT, PMEM_RIGHT,cpu.nextpc);
 }
 //----------------------------dpi-c----------------------------
 extern "C" void get_inst(int raddr, int *rdata) {
