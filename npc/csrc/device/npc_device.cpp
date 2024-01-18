@@ -98,10 +98,10 @@ void  device_write(paddr_t addr,word_t data){
     change_vga_sync(data);
     return;
   }
-  bool t=(addr>=FB_ADDR&&addr<=FB_ADDR+screen_size());
-  printf("%x %x %d\n",FB_ADDR,FB_ADDR+screen_size(),t);
+
   if(addr>=FB_ADDR&&addr<=FB_ADDR+screen_size()){
     vmem_write(addr,data);
+    return;
   }
   out_of_bound(addr);
   return;
