@@ -21,8 +21,8 @@ VSRCS = $(shell find $(abspath ./vsrc) -name "*.sv" -or -name "*.v")
 CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cpp" -or -name "*.cc")
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\"" 
-CXXFLAGS += -Wall -Werror $(shell sdl2-config) 
-LDFLAGS += -lreadline $(shell sdl2-config) -lSDL2
+CXXFLAGS += -Wall -Werror 
+LDFLAGS += -lreadline  -lSDL2
 
 # CXXFLAGS += -ggdb -DVL_DEBUG=1 -D_GLIBCXX_DEBUG -fsanitize=address,undefined
 # LDFLAGS  += -ggdb -fsanitize=address,undefined

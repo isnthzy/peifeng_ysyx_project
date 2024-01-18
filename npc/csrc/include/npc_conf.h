@@ -16,6 +16,8 @@
 #define DEVICE_HAS_KEYBOARD 1
 #define CONFIG_HAS_VGA 1
 #define CONFIG_VGA_SHOW_SCREEN 1
+#define CONFIG_VGA_SIZE_400x300 1
+
 //设备开关
 
 #define MTRACE_LOGBUF_SIZE 10
@@ -26,6 +28,4 @@
 
 #define CONFIG_PC_RESET_OFFSET 0x4
 //pc重置偏移
-#define DIFFTEST_TO_REF 1
-#define DIFFTEST_TO_DUT 0
-//固定好的宏配置
+
