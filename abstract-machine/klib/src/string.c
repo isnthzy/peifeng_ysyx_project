@@ -116,15 +116,18 @@ void *memcpy(void *out, const void *in, size_t n) {
   }
   void *ret=out;
   size_t i=0;
-  if(out<=in||(char*)out>=(char*)in+n){
-    for(i=0;i<n;i++){
+  // if(out<=in||(char*)out>=(char*)in+n){
+  //   for(i=0;i<n;i++){
+  //     *((char *)out+i)= *((char *)in+i);
+  //   }
+  // }else{
+  //   for(i=n-1;i>0;i--){
+  //     *((char *)out+i)= *((char *)in+i);
+  //   }
+  // }
+  for(i=0;i<n;i++){
       *((char *)out+i)= *((char *)in+i);
     }
-  }else{
-    for(i=n-1;i>0;i--){
-      *((char *)out+i)= *((char *)in+i);
-    }
-  }
   return ret;
 }
 
