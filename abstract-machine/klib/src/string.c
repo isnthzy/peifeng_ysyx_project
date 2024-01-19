@@ -1,43 +1,122 @@
 #include <klib.h>
 #include <klib-macros.h>
 #include <stdint.h>
-#define MIN(i, j) (((i) < (j)) ? (i) : (j))
+
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
-size_t strlen(const char *s) {
-  size_t i=0;
-  while(s[i]!='\0'){
-    i++;
+size_t strnlen(const char* s, size_t count) {
+  const char* s_p;
+  for (s_p = s; *s_p != '\0' && ((s_p - s) < count); ++s_p)
+    ;
+  return (s_p - s);
+}
+
+size_t strlen(const char* s) {
+  char* s_p = (char*)s;
+  while (*s_p != '\0') {
+    s_p++;
   }
-  return i;
+  return (s_p - s); // 返回两个指针的距离，就是 str 的长度
 }
 
-char *stpcpy(char *restrict dst, const char *restrict src){
-    char  *p;
-    p = memcpy(dst, src, strlen(src))+strlen(src); //mempcpy
-    *p = '\0';
-    return p;
-}
-char *strcpy(char *dst, const char *src) {
-  stpcpy(dst, src);
+char* strcpy(char* dst, const char* src) {
+  char* dst_p = dst;
+  while (*src != '\0') {
+    *dst_p++ = *src++;
+  }
+  *dst_p = '\0'; // 添加结束标志
   return dst;
 }
 
-char *strncpy(char *dst, const char *src, size_t n) {
-  if(strlen(src)<n) n=strlen(src);
-  memcpy(dst, src, n);
-  // size_t i;
-  // for(i=0;i<n&&src[i]!='\0';i++){
-  //   dst[i]=src[i];
-  //   if(src[i+1]=='\0') dst[i+1]=src[i+1];
-  // }
+char* strncpy(char* dst, const char* src, size_t n) {
+
+  char* dst_p = dst;
+  for (size_t i = 0; i < n; i++) {
+    *dst_p++ = *src++;
+  }
   return dst;
 }
 
-char *strcat(char *dst, const char *src) {
-  stpcpy(dst + strlen(dst), src);
+
+char* strcat(char* dst, const char* src) {
+
+  char* dst_p = dst;
+  while (*dst_p != '\0') { // 移动到字符串结尾
+    dst_p++;
+  }
+  strcpy(dst_p, src);
   return dst;
 }
+
+int strcmp(const char* s1, const char* s2) {
+  int ret = 0;
+  char* s1_p = (char*)s1;
+  char* s2_p = (char*)s2;
+  while (*s1_p != '\0' && *s2_p != '\0') {
+    ret = *s1_p++ - *s2_p++;
+    if (ret != 0) // 不相等直接返回
+      return ret;
+  }
+  ret = *s1_p - *s2_p; // 比较字符串结束标志 \0
+  return ret;
+}
+
+int strncmp(const char* s1, const char* s2, size_t n) {
+  int ret = 0;
+  char* s1_p = (char*)s1;
+  char* s2_p = (char*)s2;
+  for (int i = 0; i < n;i++) {
+    ret = *(s1_p++) - *(s2_p++);
+    if (ret != 0)
+      break;
+  }
+  return ret;
+}
+
+void* memset(void* s, int c, size_t n) {
+  char* s_p = (char*)s;
+  for (size_t i = 0;i < n;i++) {
+    *(s_p++) = c;
+  }
+  return s;
+}
+
+void* memmove(void* dst, const void* src, size_t n) {
+  char* dst_p = (char*)dst;
+  char* src_p = (char*)src;
+  if (dst <= src) { // 从前往后
+    for (size_t i = 0; i < n; i++) {
+      *dst_p++ = *src_p++;
+    }
+  }
+  else {// 从后往前
+    dst_p += (n - 1);
+    src_p += (n - 1);// 移动到最后一个元素上
+    for (size_t i = 0; i < n; i++) {
+      *dst_p-- = *src_p--;
+    }
+  }
+  return dst;
+}
+
+void* memcpy(void* dst, const void* src, size_t n) {
+
+  memmove(dst, src, n);
+  return dst;
+}
+
+int memcmp(const void* s1, const void* s2, size_t n) {
+  int ret = 0;
+  char* s1_p = (char*)s1;
+  char* s2_p = (char*)s2;
+  for (int i = 0; i < n;i++) {
+    ret = *(s1_p++) - *(s2_p++);// 逐个比较，不相等就退出
+    if (ret != 0)
+      break;
+  }
+  return ret;
+}
+
 char *strncat(char *dst, const char *src, size_t n){
   size_t dst_len = strlen(dst);
   size_t i;
@@ -50,100 +129,6 @@ char *strncat(char *dst, const char *src, size_t n){
   return dst;
 
 }
-
-int strcmp(const char *s1, const char *s2) {
-  size_t lens1=strlen(s1);
-  size_t lens2=strlen(s2);
-  size_t len=MIN(lens1,lens2);
-  int retn=strncmp(s1,s2,len);
-  if(retn==0&&lens1!=lens2){
-    if(lens1<lens2){
-      return -1;
-    }else{
-      return 1;
-    }
-  }else{
-    return retn;
-  }
-}
-
-int strncmp(const char *s1, const char *s2, size_t n) {
-  size_t i=0;
-  for(i=0;i<n;i++){
-    if(s1[i]>s2[i]){
-      return 1;
-    }else if(s1[i]==s2[i]){
-      continue;
-    }else if(s1[i]<s2[i]){
-      return -1;
-    }
-  }
-  return 0;
-}
-
-void *memset(void *s, int c, size_t n) {
-  if(s==NULL){
-    return NULL;
-  }
-  char *set=s;
-  while(n--){
-    *set++=c;
-  }
-  return s;
-}
-
-void *memmove(void *dst, const void *src, size_t n) {
-  if(dst==NULL||src==NULL){
-    return NULL;
-  }
-  void *ret=dst;
-  size_t i=0;
-  if(dst<=src||(char*)dst>=(char*)src+n){
-    for(i=0;i<n;i++){
-      *((char *)dst+i)= *((char *)src+i);
-    }
-  }else{
-    for(i=n-1;i>0;i--){
-      *((char *)dst+i)= *((char *)src+i);
-    }
-  }
-  return ret;
-}
-
-void *memcpy(void *out, const void *in, size_t n) {
-  if(out==NULL||in==NULL){
-    return NULL;
-  }
-  void *ret=out;
-  // size_t i=0;
-  // if(out<=in||(char*)out>=(char*)in+n){
-  //   for(i=0;i<n;i++){
-  //     *((char *)out+i)= *((char *)in+i);
-  //   }
-  // }else{
-  //   for(i=n-1;i>0;i--){
-  //     *((char *)out+i)= *((char *)in+i);
-  //   }
-  // }
-  return ret;
-}
-
-int memcmp(const void *s1, const void *s2, size_t n) {
-  if(s1==NULL||s2==NULL){
-    return -1;
-    // assert(0);
-  }
-  size_t i=0;
-  for(i=0;i<n;i++){
-    if(*((char *)s1+i)>*((char *)s2+i)){
-      return 1;
-    }else if(*((char *)s1+i)<*((char *)s2+i)){
-      return -1;
-    }else if(*((char *)s1+i)==*((char *)s2+i)){
-      continue;
-    }
-  }
-  return 0;
-}
-
 #endif
+
+
