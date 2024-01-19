@@ -73,7 +73,7 @@ word_t paddr_read(paddr_t addr, int len,int model) {
   if(model==1){
     if(likely(in_pmem(addr))){
       char mtrace_logbuf[120];
-      sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",cpu.pc,addr,pmem_read(addr, len));
+      sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x,len:%d",cpu.pc,addr,pmem_read(addr, len),len);
       enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
     }
   }
@@ -91,7 +91,7 @@ word_t paddr_read(paddr_t addr, int len,int model) {
 void paddr_write(paddr_t addr, int len, word_t data) {
   #ifdef CONFIG_MTRACE
   char mtrace_logbuf[120];
-  sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x wdata:0x%08x",cpu.pc,addr,data);
+  sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x wdata:0x%08x len:%d",cpu.pc,addr,data,len);
   enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
   #endif
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
