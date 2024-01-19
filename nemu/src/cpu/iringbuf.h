@@ -3,7 +3,7 @@
 #include <stdbool.h>
 
 #define MAX_STRING_LENGTH 128
-#define MTRACE_LOGBUF_SIZE 10
+#define MTRACE_LOGBUF_SIZE 128
 #define ITRACE_LOGBUF_SIZE 10
 #define DTRACE_LOGBUF_SIZE 10
 #define ETRACE_LOGBUF_SIZE 10
