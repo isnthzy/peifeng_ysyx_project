@@ -31,7 +31,8 @@ char* gSpaces(int glength,char g_char) { //空格生成器
 int vsprintf(char *out, const char *fmt, va_list ap) {
   *out='\0';
   char *s,c;
-  int d,i,x,p;
+  int d,i,x;
+  void *p;
   for (i=0;fmt[i]!='\0';i++) {
     if (fmt[i]!='%') {
       strncat(out,&fmt[i],1);
@@ -76,7 +77,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
         strcat(out, x_tmp);
         break;
       case 'p':
-        p = (uint32_t) va_arg(ap, void*);
+        p = (void *) va_arg(ap, void*);
         char p_tmp[128];
         htoa((uintptr_t) p, p_tmp);  // 将指针地址转换为十六进制字符串
         int p_length = strlen(p_tmp);
