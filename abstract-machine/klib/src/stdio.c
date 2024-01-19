@@ -20,7 +20,7 @@ char* gSpaces(int glength,char g_char) { //空格生成器
   if (glength < 0) {
     return NULL;
   }
-  static char spaces[128]; // 假设最大长度为 128
+  static char spaces[256]; // 假设最大长度为 128
   for (int i=0;i<glength;i++) {
     spaces[i]=g_char;
   }
@@ -31,7 +31,7 @@ char* gSpaces(int glength,char g_char) { //空格生成器
 int vsprintf(char *out, const char *fmt, va_list ap) {
   *out='\0';
   char *s,c;
-  int d,i,x;
+  int d,i,x,p;
   for (i=0;fmt[i]!='\0';i++) {
     if (fmt[i]!='%') {
       strncat(out,&fmt[i],1);
@@ -57,7 +57,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
         break;
       case 'd':
         d=va_arg(ap, int);
-        char d_tmp[64];
+        char d_tmp[128];
         itoa(d,d_tmp,10);
         int d_length=strlen(d_tmp);
         if(d_length<width) strcat(out,gSpaces(width-d_length,g_char));
@@ -69,11 +69,19 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
         break;
       case 'x':
         x=va_arg(ap,uint32_t);
-        char x_tmp[64];
+        char x_tmp[128];
         htoa(x,x_tmp);
         int x_length=strlen(x_tmp);
         if (x_length<width) strcat(out,gSpaces(width-x_length,g_char));
         strcat(out, x_tmp);
+        break;
+      case 'p':
+        p = (uint32_t) va_arg(ap, void*);
+        char p_tmp[128];
+        htoa((uintptr_t) p, p_tmp);  // 将指针地址转换为十六进制字符串
+        int p_length = strlen(p_tmp);
+        if (p_length < width) strcat(out, gSpaces(width - p_length, g_char));
+        strcat(out, p_tmp);
         break;
       default:
         char default_tmp[]="打印该字符串功能暂未实现，请检查库函数";
