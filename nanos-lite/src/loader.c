@@ -38,6 +38,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
       ramdisk_read((void *)program_header[i].p_vaddr, offset, memsz);   
       //需要将[&ramdisk_start+offset,&ramdisk_start+offset]地址的数据拷贝到地址[VirtAddr,VirtAddr+size]上
       memset((void *)(program_header[i].p_vaddr+filesz),0,memsz-filesz);
+      printf("%x %x %d %d",offset,program_header[i].p_vaddr,filesz,memsz);
       //再将[VirtAddr + FileSiz, VirtAddr + MemSiz)对应的物理区间清零
       /*.bss This section holds uninitialized data that contributes to the
        program's memory image.  By definition, the system  initializes 
