@@ -8,14 +8,27 @@
 # define Elf_Ehdr Elf32_Ehdr
 # define Elf_Phdr Elf32_Phdr
 #endif
+
+#if defined(__ISA_X86__)
+#define EXPECT_TYPE EM_X86_64
+#elif defined(__ISA_MIPS32__)
+#define EXPECT_TYPE EM_MIPS
+#elif defined(__riscv)
+#define EXPECT_TYPE EM_RISCV
+#elif defined(__ISA_AM_NATIVE__)
+#define EXPECT_TYPE EM_X86_64
+#else
+#error Unsupported ISA
+#endif
 size_t ramdisk_read(void *buf, size_t offset, size_t len);
 
 static uintptr_t loader(PCB *pcb, const char *filename) {
   Elf_Ehdr elf_header;
   ramdisk_read(&elf_header,0,sizeof(Elf_Ehdr));
-  if(*(uint32_t *)elf_header.e_ident != 0x464c457f) panic("elf文件异常error:1");
+  if(*(uint32_t *)elf_header.e_ident != 0x464c457f) panic("elf文件异常error:1 这不是elf文件");
+  if(elf_header.e_machine!=EXPECT_TYPE) panic("elf文件异常error:2 传入了错误架构的elf或使用错误的架构启动");
   Elf_Phdr program_header[elf_header.e_phnum];
-  if(elf_header.e_phnum==0) panic("elf文件异常error:2");
+  if(elf_header.e_phnum==0) panic("elf文件异常error:3 这个elf文件有点问题");
   ramdisk_read(program_header,elf_header.e_phoff,sizeof(Elf_Phdr)*elf_header.e_phnum);
   for(int i=0;i<elf_header.e_phnum;i++){
     if(program_header[i].p_type==PT_LOAD&&program_header[i].p_memsz>0){
