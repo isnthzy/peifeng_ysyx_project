@@ -105,7 +105,8 @@
         "cfenv": "cpp",
         "string.h": "c",
         "map.h": "c",
-        "proc.h": "c"
+        "proc.h": "c",
+        "syscall.h": "c"
     },
     "C_Cpp.intelliSenseEngine": "default",
     "digital-ide.dont-show-again.propose.issue": true,
