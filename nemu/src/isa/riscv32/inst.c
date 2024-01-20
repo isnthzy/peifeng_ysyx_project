@@ -41,26 +41,31 @@ enum {
 #define immB() do { *imm = SEXT(BITS(i, 31, 31)<<12 | BITS(i, 7, 7)<<11 \
 | BITS(i, 30, 25)<<5 | BITS(i, 11, 8)<<1, 13); } while(0) //sext(immB)
 
+#define MTVEC   0x305
+#define MSTATUS 0x300
+#define MEPC    0x341
+#define MCAUSE  0x342
+#define MTVAL   0x343
 static word_t tran_csr(word_t csr_addr,word_t data,bool is_write){
   word_t tmp_csr;
   switch (csr_addr){
-    case 0x305:
+    case MTVEC:
       tmp_csr=cpu.mtvec;
       if(is_write) cpu.mtvec=data;
       break;
-    case 0x300:
+    case MSTATUS:
       tmp_csr=cpu.mstatus;
       if(is_write) cpu.mstatus=data;
       break;
-    case 0x341:
+    case MEPC:
       tmp_csr=cpu.mepc;
       if(is_write) cpu.mepc=data;
       break;    
-    case 0x342:
+    case MCAUSE:
       tmp_csr=0xb;
       if(is_write) cpu.mcause=0xb;
       break; //因为nemu始终为m模式
-    case 0x343:
+    case MTVAL:
       tmp_csr=cpu.mtval;
       if(is_write) cpu.mtval=data;
       break; 
@@ -72,6 +77,19 @@ static word_t tran_csr(word_t csr_addr,word_t data,bool is_write){
   return tmp_csr;
 }
 
+static char* get_csrname(word_t csr_addr){
+  switch (csr_addr){
+    case MTVEC:   return "mtvec";
+    case MSTATUS: return "mstatus";
+    case MEPC:    return "mepc";
+    case MCAUSE:  return "mcause";
+    case MTVAL:   return "mtval";
+    default:
+      wLog("unknow CSR reg: 0x%x",csr_addr);
+      panic("访问了未知的CSR寄存器");
+      break;
+  }
+}
 word_t Rcsr(word_t csr_addr){
   return tran_csr(csr_addr,0,0);
 }
@@ -175,21 +193,23 @@ static int decode_exec(Decode *s) {
   INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs  , I, int t=Rcsr(csr); Wcsr(csr,t|src1); Reg(rd)=t;
                                                                 IFDEF(CONFIG_ETRACE,
                                                                   char etrace_logbuf[128]; 
-                                                                  sprintf(etrace_logbuf,"pc:0x%08x csrrs Rcsr:0x%08x Wcsr:0x%08x",cpu.pc,t,t|src1); 
+                                                                  sprintf(etrace_logbuf,"pc:0x%08x csrrs reg(%d)<-0x%08x Wcsr:0x%08x->%s"\
+                                                                  ,cpu.pc,rd,t,t|src1,get_csrname(csr)); 
                                                                   wLog("\t%s",etrace_logbuf);
                                                                   enqueueIRingBuffer(&etrace_buffer,etrace_logbuf);
                                                                 ));
   INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw  , I, int t=Rcsr(csr); Wcsr(csr,  src1); Reg(rd)=t;
                                                                 IFDEF(CONFIG_ETRACE,
                                                                   char etrace_logbuf[128]; 
-                                                                  sprintf(etrace_logbuf,"pc:0x%08x csrrw Rcsr:0x%08x Wcsr:0x%08x",cpu.pc,t,  src1);
+                                                                  sprintf(etrace_logbuf,"pc:0x%08x csrrw reg(%d)<-0x%08x Wcsr:0x%08x->%s"\
+                                                                  ,cpu.pc,rd,t,  src1,get_csrname(csr));
                                                                   wLog("\t%s",etrace_logbuf); 
                                                                   enqueueIRingBuffer(&etrace_buffer,etrace_logbuf);
                                                                 ));
   INSTPAT("0011000 00010 00000 000 00000 11100 11", mret   , R, s->dnpc=cpu.mepc;
                                                                 IFDEF(CONFIG_ETRACE, 
                                                                   char etrace_logbuf[128]; 
-                                                                  sprintf(etrace_logbuf,"pc:0x%08x mret mepc:0x%08x",cpu.pc,cpu.mepc); 
+                                                                  sprintf(etrace_logbuf,"pc:0x%08x mret dnpc<-mepc:0x%08x",cpu.pc,cpu.mepc); 
                                                                   wLog("\t%s",etrace_logbuf);
                                                                   enqueueIRingBuffer(&etrace_buffer,etrace_logbuf);
                                                                 )); //mret没有实现完毕
