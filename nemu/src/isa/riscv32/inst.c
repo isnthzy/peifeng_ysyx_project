@@ -194,7 +194,7 @@ static int decode_exec(Decode *s) {
                                                                 IFDEF(CONFIG_ETRACE,
                                                                   char etrace_logbuf[128]; 
                                                                   sprintf(etrace_logbuf,"pc:0x%08x csrrs reg(%d)<-0x%08x Wcsr:0x%08x->%s"\
-                                                                  ,cpu.pc,t,rd,t|src1,get_csrname(csr)); 
+                                                                  ,cpu.pc,rd,t,t|src1,get_csrname(csr)); 
                                                                   wLog("\t%s",etrace_logbuf);
                                                                   enqueueIRingBuffer(&etrace_buffer,etrace_logbuf);
                                                                 ));
@@ -202,7 +202,7 @@ static int decode_exec(Decode *s) {
                                                                 IFDEF(CONFIG_ETRACE,
                                                                   char etrace_logbuf[128]; 
                                                                   sprintf(etrace_logbuf,"pc:0x%08x csrrw reg(%d)<-0x%08x Wcsr:0x%08x->%s"\
-                                                                  ,cpu.pc,t,rd,  src1,get_csrname(csr));
+                                                                  ,cpu.pc,rd,t,  src1,get_csrname(csr));
                                                                   wLog("\t%s",etrace_logbuf); 
                                                                   enqueueIRingBuffer(&etrace_buffer,etrace_logbuf);
                                                                 ));
