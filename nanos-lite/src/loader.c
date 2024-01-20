@@ -13,8 +13,7 @@ size_t ramdisk_read(void *buf, size_t offset, size_t len);
 static uintptr_t loader(PCB *pcb, const char *filename) {
   Elf_Ehdr elf_header;
   ramdisk_read(&elf_header,0,sizeof(Elf_Ehdr));
-  printf("%x",*(uint32_t *)elf_header.e_ident);
-  if(*(uint32_t *)elf_header.e_ident != 0x7f454c46) panic("elf文件异常error:1");
+  if(*(uint32_t *)elf_header.e_ident != 0x464c457f) panic("elf文件异常error:1");
   Elf_Phdr program_header[elf_header.e_phnum];
   if(elf_header.e_phnum==0) panic("elf文件异常error:2");
   ramdisk_read(program_header,elf_header.e_phoff,sizeof(Elf_Phdr)*elf_header.e_phnum);
