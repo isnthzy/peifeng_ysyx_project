@@ -19,7 +19,7 @@ void do_syscall(Context *c) {
   a[1] = c->GPR2;
   a[2] = c->GPR3;
   a[3] = c->GPR4;
-  a[4] = c->GPR1;
+  a[4] = c->GPRx;
   #ifdef CONFIG_STRACE
   strace_log(a[0]);
   #endif
@@ -33,6 +33,7 @@ void do_syscall(Context *c) {
       if(a[1]==1||a[1]==2){
         putch(a[2]); c->GPRx=0;
       }else c->GPRx=-1;
+      printf("%d",c->GPRx);
       break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
