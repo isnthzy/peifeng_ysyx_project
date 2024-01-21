@@ -21,9 +21,9 @@ bool have_guest_program=false;
 char *guest_file="/home/wangxin/ysyx-workbench/nanos-lite/build/ramdisk.img";
 void init_guest_elf(){
     FILE *guest_elf = fopen(guest_file, "rb");
-    if(!guest_elf) wLog("No guest elf");
+    if(!guest_elf) Log("No guest elf");
     else{ 
-        wLog("load guest elf");
+        Log("load guest elf");
         have_guest_program=true;
     }fclose(guest_elf);
 }
