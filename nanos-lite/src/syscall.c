@@ -33,7 +33,6 @@ void do_syscall(Context *c) {
       if(a[1]==1||a[1]==2){
         putch(a[2]); c->GPRx=0;
       }else c->GPRx=-1;
-      printf("%d",c->GPRx);
       break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
