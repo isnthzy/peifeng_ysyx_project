@@ -100,7 +100,7 @@ void init_elf(const char *elf_file,const char *elf_name){
     }
     fclose(file);
     if(have_guest_program){
-        if(strcmp(elf_name,"guest_program")) return;
+        if(!strcmp(elf_name,"guest_program")) return;
         init_elf(guest_file,"guest_program");
         have_guest_program=false;
     }
