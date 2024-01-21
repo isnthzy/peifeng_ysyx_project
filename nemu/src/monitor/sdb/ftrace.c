@@ -92,12 +92,13 @@ void init_elf(const char *elf_file,const char *elf_name){
             // 获取符号的地址
             elf_func[func_cnt].value=symbols[i].st_value;
             elf_func[func_cnt].size =symbols[i].st_size;
-            printf("Function: %s\nAddress: 0x%lx %ld(Dec) %lx(Hec)\n",elf_func[func_cnt].func_name,elf_func[func_cnt].value,elf_func[func_cnt].size,elf_func[func_cnt].size);
+           // printf("Function: %s\nAddress: 0x%lx %ld(Dec) %lx(Hec)\n",elf_func[func_cnt].func_name,elf_func[func_cnt].value,elf_func[func_cnt].size,elf_func[func_cnt].size);
             func_cnt++; //func_cnt用于只筛出来符合要求的函数
         }
     }
     fclose(file);
     if(have_guest_program){
+        printf("%d",have_guest_program);
         init_elf(guest_file,"guest_program");
         have_guest_program=false;
     }
