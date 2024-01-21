@@ -9,7 +9,7 @@ void do_syscall(Context *c) {
     case SYS_exit:
       halt(c->GPRx);
     case SYS_yield:
-      yield(); c->GPRx = 5; break;
+      yield(); c->GPRx = 0; break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
 }
