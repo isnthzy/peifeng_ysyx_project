@@ -66,6 +66,10 @@ int _open(const char *path, int flags, mode_t mode) {
 }
 
 int _write(int fd, void *buf, size_t count) {
+  char *char_buf = (char *)buf;
+  for(size_t i=0;i<count;i++){
+    _syscall_(SYS_write,fd,(intptr_t)(char_buf[i]), 0);
+  }
   _exit(SYS_write);
   return 0;
 }
