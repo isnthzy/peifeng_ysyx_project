@@ -11,7 +11,7 @@ Context* __am_irq_handle(Context *c) {
       case 0xb: //11 Environment call from M-mode
         if(c->GPR1==-1){
           ev.event=EVENT_YIELD;
-          c->mepc+=4;
+          c->mepc+=4; //做pa3.2的时候发现这里没有处理，，，难绷
         }else if(c->GPR1==1){
           ev.event=EVENT_SYSCALL;
           c->mepc+=4;
