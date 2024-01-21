@@ -40,7 +40,7 @@ void do_syscall(Context *c) {
       }else c->GPRx=-1;
       break;
     case SYS_brk:
-      // brk((void *)a[1]); c->GPRx=0; break;
+      c->GPRx=0; break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
 }
