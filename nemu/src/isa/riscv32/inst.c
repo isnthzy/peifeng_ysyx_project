@@ -52,6 +52,22 @@ enum {
 #define MEPC    0x341
 #define MCAUSE  0x342
 #define MTVAL   0x343
+
+#ifdef CONFIG_ETRACE
+static char* get_csrname(word_t csr_addr){
+  switch (csr_addr){
+    case MTVEC:   return "mtvec";
+    case MSTATUS: return "mstatus";
+    case MEPC:    return "mepc";
+    case MCAUSE:  return "mcause";
+    case MTVAL:   return "mtval";
+    default:
+      wLog("unknow CSR reg: 0x%x",csr_addr);
+      panic("访问了未知的CSR寄存器");
+      break;
+  }
+}
+#endif
 static word_t tran_csr(word_t csr_addr,word_t data,bool is_write){
   word_t tmp_csr;
   switch (csr_addr){
@@ -83,19 +99,6 @@ static word_t tran_csr(word_t csr_addr,word_t data,bool is_write){
   return tmp_csr;
 }
 
-static char* get_csrname(word_t csr_addr){
-  switch (csr_addr){
-    case MTVEC:   return "mtvec";
-    case MSTATUS: return "mstatus";
-    case MEPC:    return "mepc";
-    case MCAUSE:  return "mcause";
-    case MTVAL:   return "mtval";
-    default:
-      wLog("unknow CSR reg: 0x%x",csr_addr);
-      panic("访问了未知的CSR寄存器");
-      break;
-  }
-}
 word_t Rcsr(word_t csr_addr){
   return tran_csr(csr_addr,0,0);
 }

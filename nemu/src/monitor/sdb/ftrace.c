@@ -17,27 +17,36 @@ typedef struct tail_rec_node {
 TailRecNode *tail_rec_head = NULL; 
 static void init_tail_rec_list();
 // 解析elf文件代码
-void init_elf(const char *elf_file){
-    init_tail_rec_list(); //初始化尾调用处理数据结构
-    if(ftrace_flag==false){Log("Ftrace: OFF");
-        return ;
+bool have_guest_program=false;
+char *guest_file="/home/wangxin/ysyx-workbench/nanos-lite/build/ramdisk.img";
+void init_guest_elf(){
+    FILE *guest_elf = fopen(guest_file, "rb");
+    if(!guest_elf) Log("No guest elf");
+    else{ 
+        Log("load guest elf");
+        have_guest_program=true;
+    }fclose(guest_elf);
+}
+
+
+void init_elf(const char *elf_file,const char *elf_name){
+    static bool init_tail_rec_flag=false;
+    if(!init_tail_rec_flag){ 
+        init_tail_rec_flag=true;
+        init_tail_rec_list(); //初始化尾调用处理数据结构
     }
+    if(ftrace_flag==false){ Log("Ftrace: OFF"); return ; }
     else Log("Ftrace: ON");
 #ifdef CONFIG_FTRACE
     if (elf_file == NULL)
         return;
     // 打开ELF文件
     FILE *file = fopen(elf_file, "rb");
-    if(!file){
-        Log("文件打开失败!\n");
-        assert(0);
-    }
+    if(!file) panic("%s 文件打开失败!\n",elf_name);
+
     // 读取 ELF 文件的头部信息
     Elf_Ehdr elf_header;
-    if (fread(&elf_header, sizeof(Elf_Ehdr), 1, file) <= 0) {
-        fclose(file);
-        assert(0);
-    }
+    if (fread(&elf_header, sizeof(Elf_Ehdr), 1, file) <= 0) panic("%s 文件打开失败!\n",elf_name);
 
     // 定位到节头表
     fseek(file, elf_header.e_shoff, SEEK_SET);
@@ -55,11 +64,7 @@ void init_elf(const char *elf_file){
     // 读取字符串表内容
     char string_table[strtab_header.sh_size];
     fseek(file, strtab_header.sh_offset, SEEK_SET);
-    if (fread(string_table, strtab_header.sh_size, 1, file) <= 0) {
-        fclose(file);
-        assert(0);
-    }
-
+    if (fread(string_table, strtab_header.sh_size, 1, file) <= 0) panic("%s 文件打开失败!\n",elf_name);
     // 读取节头表并寻找符号表表节
     Elf_Shdr symtab_header;
     fseek(file, elf_header.e_shoff, SEEK_SET);
@@ -78,10 +83,7 @@ void init_elf(const char *elf_file){
     fseek(file, symtab_header.sh_offset, SEEK_SET);
     Elf_Sym symbols[symbol_count];
     // 读取符号表
-    if(fread(symbols, sizeof(Elf_Sym), symbol_count, file)<=0){
-        fclose(file);
-        assert(0);
-    }
+    if(fread(symbols, sizeof(Elf_Sym), symbol_count, file)<=0) panic("%s 文件打开失败!\n",elf_name);
     // 遍历符号表，筛选出类型为FUNC的符号
     for (size_t i = 0; i < symbol_count; ++i) {
         if (ELF32_ST_TYPE(symbols[i].st_info) == STT_FUNC) {
@@ -92,12 +94,19 @@ void init_elf(const char *elf_file){
             // 获取符号的地址
             elf_func[func_cnt].value=symbols[i].st_value;
             elf_func[func_cnt].size =symbols[i].st_size;
-            printf("Function: %s\nAddress: 0x%lx %ld(Dec) %lx(Hec)\n",elf_func[func_cnt].func_name,elf_func[func_cnt].value,elf_func[func_cnt].size,elf_func[func_cnt].size);
+            //printf("Function: %s\nAddress: 0x%lx %ld(Dec) %lx(Hec)\n",elf_func[func_cnt].func_name,elf_func[func_cnt].value,elf_func[func_cnt].size,elf_func[func_cnt].size);
             func_cnt++; //func_cnt用于只筛出来符合要求的函数
         }
     }
     fclose(file);
+    if(have_guest_program){
+        if(!strcmp(elf_name,"guest_program")) return;
+        //递归实现加载多个elf文件，如果guest_program已经加载了，就退出不再加载
+        init_elf(guest_file,"guest_program");
+        have_guest_program=false;
+    }
 #endif
+    return;
 }
 
 /*ftrace追踪内容*/

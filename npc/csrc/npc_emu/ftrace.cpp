@@ -17,53 +17,72 @@ TailRecNode *tail_rec_head = NULL;
 static void init_tail_rec_list();
 // 解析elf文件代码
 void init_elf(const char *elf_file){
-    init_tail_rec_list();
+    init_tail_rec_list(); //初始化尾调用处理数据结构
     if(ftrace_flag==false){Log("Ftrace: OFF");
         return ;
     }
     else Log("Ftrace: ON");
-    FILE* file = fopen(elf_file, "rb");//以只读的形式打开elf_file
+#ifdef CONFIG_FTRACE
+    if (elf_file == NULL)
+        return;
+    // 打开ELF文件
+    FILE *file = fopen(elf_file, "rb");
     if(!file){
         Log("文件打开失败!\n");
         assert(0);
     }
-    uint64_t result;
-    
     // 读取 ELF 文件的头部信息
     Elf_Ehdr elf_header;
-    result=fread(&elf_header, sizeof(Elf_Ehdr), 1, file);
-    if (result== 0) assert(0);
-    // 获取节头表的偏移量和条目数量
-    Elf_Off section_header_offset = elf_header.e_shoff;
-    Elf_Half section_header_entry_count = elf_header.e_shnum;
-    // 定位到节头表
-    fseek(file, section_header_offset, SEEK_SET);
-    // 读取节头表
-    Elf_Shdr section_headers[section_header_entry_count];
-    result=fread(section_headers, sizeof(Elf64_Shdr), section_header_entry_count, file);
-    // 定位到字符串表节
-    Elf_Shdr string_table_header = section_headers[elf_header.e_shstrndx];
-    fseek(file, string_table_header.sh_offset, SEEK_SET);
-    // 读取字符串表内容
-    char string_table[string_table_header.sh_size];
-    result=fread(string_table, string_table_header.sh_size, 1, file);
-    // 查找符号表节和字符串表节
-    Elf_Shdr symtab_header={};
-    for (int i = 0; i < section_header_entry_count; ++i) {
-        if (section_headers[i].sh_type == SHT_SYMTAB) {
-            symtab_header = section_headers[i];
-            break;
-        }
+    if (fread(&elf_header, sizeof(Elf_Ehdr), 1, file) <= 0) {
+        fclose(file);
+        assert(0);
     }
+
+    // 定位到节头表
+    fseek(file, elf_header.e_shoff, SEEK_SET);
+    Elf_Shdr strtab_header;
+    // 读取节头表并寻找字符串表节
+    while (1) {
+        if (fread(&strtab_header, sizeof(Elf_Shdr), 1, file) <= 0) {
+            fclose(file);
+            assert(0);
+        }
+        // 找到到字符串表节
+        if (strtab_header.sh_type == SHT_STRTAB) break;
+    }
+
+    // 读取字符串表内容
+    char string_table[strtab_header.sh_size];
+    fseek(file, strtab_header.sh_offset, SEEK_SET);
+    if (fread(string_table, strtab_header.sh_size, 1, file) <= 0) {
+        fclose(file);
+        assert(0);
+    }
+
+    // 读取节头表并寻找符号表表节
+    Elf_Shdr symtab_header;
+    fseek(file, elf_header.e_shoff, SEEK_SET);
+    while (1) {
+        if (fread(&symtab_header, sizeof(Elf_Shdr), 1, file) <= 0) {
+            fclose(file);
+            assert(0);
+        }
+        //找到符号表表节
+        if (symtab_header.sh_type == SHT_SYMTAB) break;
+    }
+
+    // 计算符号表中的符号数量
+    size_t symbol_count = symtab_header.sh_size / symtab_header.sh_entsize;
     // 定位到符号表节
     fseek(file, symtab_header.sh_offset, SEEK_SET);
-    // 计算符号表中的符号数量
-    uint64_t symbol_count = symtab_header.sh_size / symtab_header.sh_entsize;
-    // 读取符号表
     Elf_Sym symbols[symbol_count];
-    result=fread(symbols, sizeof(Elf64_Sym), symbol_count, file);
+    // 读取符号表
+    if(fread(symbols, sizeof(Elf_Sym), symbol_count, file)<=0){
+        fclose(file);
+        assert(0);
+    }
     // 遍历符号表，筛选出类型为FUNC的符号
-    for (uint64_t i = 0; i < symbol_count; ++i) {
+    for (size_t i = 0; i < symbol_count; ++i) {
         if (ELF32_ST_TYPE(symbols[i].st_info) == STT_FUNC) {
             if(symbols[i].st_size==0) continue; //不符合的大小直接略过
             // 获取符号的名称
@@ -72,16 +91,13 @@ void init_elf(const char *elf_file){
             // 获取符号的地址
             elf_func[func_cnt].value=symbols[i].st_value;
             elf_func[func_cnt].size =symbols[i].st_size;
-            static char funcs[128];
-            sprintf(funcs,"Function: %s\nAddress: 0x%lx %ld(Dec) %lx(Hec)\n",elf_func[func_cnt].func_name,elf_func[func_cnt].value,elf_func[func_cnt].size,elf_func[func_cnt].size);
-            log_write("%s",funcs);
-            printf("%s",funcs);
+            printf("Function: %s\nAddress: 0x%lx %ld(Dec) %lx(Hec)\n",elf_func[func_cnt].func_name,elf_func[func_cnt].value,elf_func[func_cnt].size,elf_func[func_cnt].size);
             func_cnt++; //func_cnt用于只筛出来符合要求的函数
         }
     }
     fclose(file);
+#endif
 }
-
 /*ftrace追踪内容*/
 /*ftrace追踪内容*/
 static void init_tail_rec_list() {
