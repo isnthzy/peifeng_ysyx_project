@@ -15,6 +15,7 @@ void strace_log(int gpr){
 void do_syscall(Context *c) {
   uintptr_t a[4];
   a[0] = c->GPR1;
+  strace_log(a[0]);
   switch (a[0]) {
     case SYS_exit:
       halt(c->GPRx); break;
