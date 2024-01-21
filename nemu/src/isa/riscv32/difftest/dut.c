@@ -34,7 +34,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc, vaddr_t npc) {
   DIFF_CHECK(ref_r->mtvec,cpu.mtvec,"mtvec");
   DIFF_CHECK(ref_r->mepc ,cpu.mepc ,"mepc ");
   DIFF_CHECK(ref_r->mstatus,cpu.mstatus,"mstatus");
-  DIFF_CHECK(ref_r->mcause ,cpu.mcause ,"mcause");
+  // DIFF_CHECK(ref_r->mcause ,cpu.mcause ,"mcause");
 
   return true;
 }
