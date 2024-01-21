@@ -23,10 +23,11 @@
 #define Mr vaddr_read
 #define Mw vaddr_write
 #define XLEN 32 //代整数寄存器的宽度
+
 #ifdef __riscv_e
-#define ecall_reg 15 // a5
+#define ECALL_REG 15 // a5
 #else
-#define ecall_reg 17 // a7
+#define ECALL_REG 17 // a7
 #endif
 extern IRingBuffer etrace_buffer;
 extern bool ftrace_flag;
@@ -218,7 +219,7 @@ static int decode_exec(Decode *s) {
                                                                   wLog("\t%s",etrace_logbuf);
                                                                   enqueueIRingBuffer(&etrace_buffer,etrace_logbuf);
                                                                 )); //mret没有实现完毕
-  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , I, s->dnpc=isa_raise_intr(Reg(ecall_reg),s->pc);
+  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , I, s->dnpc=isa_raise_intr(Reg(ECALL_REG),s->pc);
                                                                 IFDEF(CONFIG_ETRACE, 
                                                                   char etrace_logbuf[128]; 
                                                                   sprintf(etrace_logbuf,"pc:0x%08x ecall!!!",cpu.pc); 
