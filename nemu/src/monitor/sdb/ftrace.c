@@ -98,11 +98,12 @@ void init_elf(const char *elf_file,const char *elf_name){
     }
     fclose(file);
     if(have_guest_program){
+        if(strcmp(elf_name,"guest_program")) return;
         init_elf(guest_file,"guest_program");
         have_guest_program=false;
-        printf("%d",have_guest_program);
     }
 #endif
+    return;
 }
 
 /*ftrace追踪内容*/
