@@ -7,7 +7,8 @@ object TopMain extends App {
     CIRCTTargetAnnotation(CIRCTTarget.SystemVerilog)
   )
   // (new ChiselStage).execute(args, generator :+ CIRCTTargetAnnotation(CIRCTTarget.Verilog))
-
+  /*  firtoolOpts = Array("-disable-all-randomization", "-strip-debug-info",
+        "--lowering-options=disallowLocalVariables,disallowPackedArrays,locationInfoStyle=wrapInAtSquareBracket,noAlwaysComb")*/
   val firtoolOptions=Seq(
     FirtoolOption(
       "--lowering-options=disallowLocalVariables,disallowPackedArrays,locationInfoStyle=wrapInAtSquareBracket"
