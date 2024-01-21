@@ -1,4 +1,5 @@
 #include <common.h>
+#include <unistd.h>
 #include "syscall.h"
 void strace_log(int gpr){
   char *syscall_name;
@@ -7,6 +8,7 @@ void strace_log(int gpr){
   case SYS_exit:  syscall_name="SYS_exit" ; break;
   case SYS_yield: syscall_name="SYS_yield"; break;
   case SYS_write: syscall_name="SYS_write"; break;
+  case SYS_brk:   syscall_name="SYS_brk";   break;
   default:
     panic("Unhandled syscall ID  = %d by strace", gpr);
     break;
@@ -37,6 +39,8 @@ void do_syscall(Context *c) {
         } c->GPRx=0;
       }else c->GPRx=-1;
       break;
+    case SYS_brk:
+      brk((void *)a[1]); c->GPRx=0; break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
 }
