@@ -30,11 +30,11 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc, vaddr_t npc) {
       return false;
     }
   }
-  DIFF_CHECK(ref_r->pc,pc,"pc");
+  DIFF_CHECK(ref_r->pc,npc,"pc");
   DIFF_CHECK(ref_r->mtvec,cpu.mtvec,"mtvec");
   DIFF_CHECK(ref_r->mepc ,cpu.mepc ,"mepc ");
-  // DIFF_CHECK(ref_r->mstatus,cpu.mstatus,"mstatus");
-  // DIFF_CHECK(ref_r->mcause ,cpu.mcause ,"mcause");
+  DIFF_CHECK(ref_r->mstatus,cpu.mstatus,"mstatus");
+  DIFF_CHECK(ref_r->mcause ,cpu.mcause ,"mcause");
 
   return true;
 }
