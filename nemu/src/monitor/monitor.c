@@ -18,7 +18,8 @@
 
 void init_rand();
 void init_log(const char *log_file);
-void init_elf(const char *elf_file);
+void init_elf(const char *elf_file,const char *elf_name);
+void init_guest_elf();
 void init_mem();
 void init_difftest(char *ref_so_file, long img_size, int port);
 void init_device();
@@ -115,7 +116,8 @@ void init_monitor(int argc, char *argv[]) {
   init_log(log_file);
 
   /* Open the ${IMAGE}.elf file */
-  init_elf(elf_file);
+  init_guest_elf(); //用于ftrace判断是否要加载客户程序
+  init_elf(elf_file,"default");
 
   /* Initialize memory. */
   init_mem();

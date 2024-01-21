@@ -17,27 +17,34 @@ typedef struct tail_rec_node {
 TailRecNode *tail_rec_head = NULL; 
 static void init_tail_rec_list();
 // 解析elf文件代码
-void init_elf(const char *elf_file){
-    init_tail_rec_list(); //初始化尾调用处理数据结构
-    if(ftrace_flag==false){Log("Ftrace: OFF");
-        return ;
+bool have_guest_program=false;
+char *guest_file="/home/wangxin/ysyx-workbench/nanos-lite/build/ramdisk.img";
+void init_guest_elf(){
+    FILE *guest_elf = fopen(guest_file, "rb");
+    if(!guest_elf) wLog("No guest elf");
+    else have_guest_program=true;
+    fclose(guest_elf);
+}
+
+
+void init_elf(const char *elf_file,const char *elf_name){
+    static bool init_tail_rec_flag=false;
+    if(!init_tail_rec_flag){ 
+        init_tail_rec_flag=true;
+        init_tail_rec_list(); //初始化尾调用处理数据结构
     }
+    if(ftrace_flag==false){ Log("Ftrace: OFF"); return ; }
     else Log("Ftrace: ON");
 #ifdef CONFIG_FTRACE
     if (elf_file == NULL)
         return;
     // 打开ELF文件
     FILE *file = fopen(elf_file, "rb");
-    if(!file){
-        Log("文件打开失败!\n");
-        assert(0);
-    }
+    if(!file) panic("%s 文件打开失败!\n",elf_name);
+
     // 读取 ELF 文件的头部信息
     Elf_Ehdr elf_header;
-    if (fread(&elf_header, sizeof(Elf_Ehdr), 1, file) <= 0) {
-        fclose(file);
-        assert(0);
-    }
+    if (fread(&elf_header, sizeof(Elf_Ehdr), 1, file) <= 0) panic("%s 文件打开失败!\n",elf_name);
 
     // 定位到节头表
     fseek(file, elf_header.e_shoff, SEEK_SET);
@@ -55,11 +62,7 @@ void init_elf(const char *elf_file){
     // 读取字符串表内容
     char string_table[strtab_header.sh_size];
     fseek(file, strtab_header.sh_offset, SEEK_SET);
-    if (fread(string_table, strtab_header.sh_size, 1, file) <= 0) {
-        fclose(file);
-        assert(0);
-    }
-
+    if (fread(string_table, strtab_header.sh_size, 1, file) <= 0) panic("%s 文件打开失败!\n",elf_name);
     // 读取节头表并寻找符号表表节
     Elf_Shdr symtab_header;
     fseek(file, elf_header.e_shoff, SEEK_SET);
@@ -78,10 +81,7 @@ void init_elf(const char *elf_file){
     fseek(file, symtab_header.sh_offset, SEEK_SET);
     Elf_Sym symbols[symbol_count];
     // 读取符号表
-    if(fread(symbols, sizeof(Elf_Sym), symbol_count, file)<=0){
-        fclose(file);
-        assert(0);
-    }
+    if(fread(symbols, sizeof(Elf_Sym), symbol_count, file)<=0) panic("%s 文件打开失败!\n",elf_name);
     // 遍历符号表，筛选出类型为FUNC的符号
     for (size_t i = 0; i < symbol_count; ++i) {
         if (ELF32_ST_TYPE(symbols[i].st_info) == STT_FUNC) {
@@ -97,6 +97,10 @@ void init_elf(const char *elf_file){
         }
     }
     fclose(file);
+    if(have_guest_program){
+        init_elf(guest_file,"guest_program");
+        have_guest_program=false;
+    }
 #endif
 }
 
