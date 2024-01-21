@@ -20,7 +20,7 @@ void do_syscall(Context *c) {
   a[2] = c->GPR3;
   a[3] = c->GPR4;
   a[4] = c->GPR1;
-  #ifdef CONFIG_FTRACE
+  #ifdef CONFIG_STRACE
   strace_log(a[0]);
   #endif
   switch (a[0]) {
