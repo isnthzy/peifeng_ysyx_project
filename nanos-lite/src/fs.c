@@ -48,8 +48,8 @@ void init_fs() {
   for (int i = 0; i < num_files; i++) {
     printf("File %d:\n", i);
     printf("  Name: %s\n", file_table[i].name);
-    printf("  Size: %zu\n", file_table[i].size);
-    printf("  Disk Offset: %zu\n", file_table[i].disk_offset);
+    printf("  Size: %d\n", file_table[i].size);
+    printf("  Disk Offset: %x\n", file_table[i].disk_offset);
     printf("\n");
   }
   // TODO: initialize the size of /dev/fb
