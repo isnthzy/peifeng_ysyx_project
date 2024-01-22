@@ -1,6 +1,11 @@
 #include <common.h>
 #include <unistd.h>
 #include "syscall.h"
+int fs_open(const char *pathname, int flags, int mode);
+size_t fs_read(int fd, void *buf, size_t len);
+size_t fs_write(int fd, const void *buf, size_t len);
+size_t fs_lseek(int fd, size_t offset, int whence);
+int fs_close(int fd);
 void strace_log(int gpr){
   char *syscall_name;
   switch (gpr)
@@ -9,6 +14,10 @@ void strace_log(int gpr){
   case SYS_yield: syscall_name="SYS_yield"; break;
   case SYS_write: syscall_name="SYS_write"; break;
   case SYS_brk:   syscall_name="SYS_brk";   break;
+  case SYS_read:  syscall_name="SYS_read";  break; 
+  case SYS_open:  syscall_name="SYS_open";  break;
+  case SYS_lseek: syscall_name="SYS_lseek"; break;
+  case SYS_close: syscall_name="SYS_close"; break;  
   default:
     panic("Unhandled syscall ID  = %d by strace", gpr);
     break;
@@ -41,6 +50,18 @@ void do_syscall(Context *c) {
       break;
     case SYS_brk:
       c->GPRx=0; break;
+    case SYS_read:
+      c->GPRx=fs_read(a[1],(void *)a[2],a[3]);
+      break;
+    case SYS_open:
+      c->GPRx=fs_open((char *)a[1],a[2],a[3]);
+      break;
+    case SYS_lseek:
+      c->GPRx=fs_lseek(a[1],a[2],a[3]);
+      break;
+    case SYS_close:
+      c->GPRx=fs_close(a[1]);
+      break;  
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
 }
