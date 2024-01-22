@@ -20,8 +20,8 @@ int main() {
   for (i = 0; i < 500; i ++) {
     fprintf(fp, "%4d\n", i + 1 + 1000);
   }
-  printf("pass test 2\n");
   fseek(fp, 500 * 5, SEEK_SET);
+  printf("pass test 2\n");
   for (i = 500; i < 1000; i ++) {
     fscanf(fp, "%d", &n);
     assert(n == i + 1);
