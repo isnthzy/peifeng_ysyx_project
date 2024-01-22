@@ -39,9 +39,9 @@ int fs_open(const char *pathname, int flags, int mode){
   }
   panic("file not found");
 }
-size_t fs_read(int fd, void *buf, size_t len){
+size_t fs_read(int fd, void *buf, size_t len,size_t size){
   if(len>=file_table[fd].size) panic("读了过大的文件");
-  return ramdisk_read(buf,file_table[fd].disk_offset+len,file_table[fd].size-len);
+  return ramdisk_read(buf,file_table[fd].disk_offset+len,size);
 }
 int fs_close(int fd){
   return 0;
