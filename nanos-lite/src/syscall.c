@@ -41,7 +41,7 @@ void do_syscall(Context *c) {
     case SYS_yield:
       yield(); c->GPRx=0; break;
     case SYS_write:
-      if(a[1]==1||a[1]==2){
+      if(a[1]==1){
         char *write_buf=(char *)a[2];
         for(size_t i=0;i<a[3];i++){
           putch(write_buf[i]);
