@@ -45,8 +45,9 @@ void do_syscall(Context *c) {
         char *write_buf=(char *)a[2];
         for(size_t i=0;i<a[3];i++){
           putch(write_buf[i]);
-        } c->GPRx=0;
-      }else c->GPRx=-1;
+        } 
+      }else c->GPRx=fs_write(a[1],(void *)a[2],a[3]);
+      c->GPRx=0;
       break;
     case SYS_brk:
       c->GPRx=0; break;

@@ -1,5 +1,6 @@
 #include <fs.h>
 size_t ramdisk_read(void *buf, size_t offset, size_t len);
+size_t ramdisk_write(const void *buf, size_t offset, size_t len);
 typedef size_t (*ReadFn) (void *buf, size_t offset, size_t len);
 typedef size_t (*WriteFn) (const void *buf, size_t offset, size_t len);
 
@@ -41,16 +42,17 @@ int fs_open(const char *pathname, int flags, int mode){
   panic("file not found");
 }
 size_t fs_read(int fd, void *buf, size_t len){
-  ramdisk_read(buf,file_table[fd].disk_offset+file_table[fd].open_offset,len);
+  ramdisk_read (buf,file_table[fd].disk_offset+file_table[fd].open_offset,len);
+  file_table[fd].open_offset+=len;
   return len;
 }
 int fs_close(int fd){
   return 0;
 }
 size_t fs_write(int fd, const void *buf, size_t len){
-  // if(len>=file_table[fd].size) panic("写入了过大的文件");
-  // return ramdisk_read(buf,file_table[fd].disk_offset+len,size);
-  return 0;
+  ramdisk_write(buf,file_table[fd].disk_offset+file_table[fd].open_offset,len);
+  file_table[fd].open_offset+=len;
+  return len;
 }
 size_t fs_lseek(int fd, size_t offset, int whence){
   switch (whence)
@@ -68,7 +70,7 @@ size_t fs_lseek(int fd, size_t offset, int whence){
     panic("Invalid whence");
     break;
   }
-  return 0;
+  return file_table[fd].open_offset;
 }
 
 
