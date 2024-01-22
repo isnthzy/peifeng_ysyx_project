@@ -23,7 +23,6 @@ int main() {
   printf("pass test 2\n");
   for (i = 500; i < 1000; i ++) {
     fscanf(fp, "%d", &n);
-    // printf("i:%d n:%d\n",i+1,n);
     assert(n == i + 1);
   }
   printf("pass test 3\n");
