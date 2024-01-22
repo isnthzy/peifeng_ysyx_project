@@ -41,7 +41,7 @@ int fs_open(const char *pathname, int flags, int mode){
 }
 size_t fs_read(int fd, void *buf, size_t len){
   if(len>=file_table[fd].size) panic("读了过大的文件");
-  return ramdisk_read(buf,file_table[fd].disk_offset+len,file_table[fd].disk_offset+file_table[fd].size-len-1);
+  return ramdisk_read(buf,file_table[fd].disk_offset+len,file_table[fd].size-len);
 }
 int fs_close(int fd){
   return 0;
