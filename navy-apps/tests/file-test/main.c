@@ -15,17 +15,17 @@ int main() {
     fscanf(fp, "%d", &n);
     assert(n == i + 1);
   }
-
+  printf("pass test 1\n");
   fseek(fp, 0, SEEK_SET);
   for (i = 0; i < 500; i ++) {
     fprintf(fp, "%4d\n", i + 1 + 1000);
   }
-
+  printf("pass test 2\n");
   for (i = 500; i < 1000; i ++) {
     fscanf(fp, "%d", &n);
     assert(n == i + 1);
   }
-
+  printf("pass test 3\n");
   fseek(fp, 0, SEEK_SET);
   for (i = 0; i < 500; i ++) {
     fscanf(fp, "%d", &n);
@@ -34,7 +34,7 @@ int main() {
 
   fclose(fp);
 
-  printf("PASS!!!\n");
+  printf("ALL PASS!!!\n");
 
   return 0;
 }
