@@ -43,8 +43,9 @@ int fs_open(const char *pathname, int flags, int mode){
 size_t fs_read(int fd, void *buf, size_t len,size_t size){
   // size_t size=file_table[fd].size-file_table[fd].open_offset;
   ramdisk_read(buf,file_table[fd].disk_offset+file_table[fd].open_offset,size);
+  printf("%x %x\n",file_table[fd].disk_offset+file_table[fd].open_offset,size);
   file_table[fd].open_offset+=size;
-  printf("%x %x\n",len,size);
+  
   // file_table[fd].open_offset+=len;
   return len;
 }
