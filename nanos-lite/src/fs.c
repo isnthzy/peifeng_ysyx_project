@@ -31,6 +31,26 @@ static Finfo file_table[] __attribute__((used)) = {
 #include "files.h"
 };
 
+int fs_open(const char *pathname, int flags, int mode){
+  return 0;
+}
+size_t fs_read(int fd, void *buf, size_t len){
+  return 0;
+}
+int fs_close(int fd){
+  return 0;
+}
+
+
 void init_fs() {
+  int num_files = sizeof(file_table) / sizeof(file_table[0]);
+
+  for (int i = 0; i < num_files; i++) {
+    printf("File %d:\n", i);
+    printf("  Name: %s\n", file_table[i].name);
+    printf("  Size: %zu\n", file_table[i].size);
+    printf("  Disk Offset: %zu\n", file_table[i].disk_offset);
+    printf("\n");
+  }
   // TODO: initialize the size of /dev/fb
 }
