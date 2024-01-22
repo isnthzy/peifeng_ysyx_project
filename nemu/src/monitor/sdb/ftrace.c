@@ -61,7 +61,7 @@ void init_elf(const char *elf_file,const char *elf_name){
     // 读取字符串表内容
     char string_table[strtab_header.sh_size];
     fseek(file, strtab_header.sh_offset, SEEK_SET);
-    if (fread(string_table, strtab_header.sh_size, 1, file) <= 0) panic("%s 文件打开失败!\n",elf_name);
+    if (fread(string_table, strtab_header.sh_size, 1, file) <= 0){ Log("%s 文件打开失败!\n",elf_name); return ;}
     // 读取节头表并寻找符号表表节
     Elf_Shdr symtab_header;
     fseek(file, elf_header.e_shoff, SEEK_SET);
