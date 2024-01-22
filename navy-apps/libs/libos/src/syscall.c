@@ -73,10 +73,10 @@ int _write(int fd, void *buf, size_t count) {
 
 extern char end;
 void *_sbrk(intptr_t increment) {
-  static char *addr = &end;
+  static char *addr=&end;
   _syscall_(SYS_brk,increment,0,0);
-  void *old_addr = addr;
-  addr += increment;
+  void *old_addr=addr;
+  addr+=increment;
   return old_addr;
 }
 
