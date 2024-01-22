@@ -53,10 +53,7 @@ void init_elf(const char *elf_file,const char *elf_name){
     Elf_Shdr strtab_header;
     // 读取节头表并寻找字符串表节
     while (1) {
-        if (fread(&strtab_header, sizeof(Elf_Shdr), 1, file) <= 0) {
-            fclose(file);
-            assert(0);
-        }
+        if (fread(&strtab_header, sizeof(Elf_Shdr), 1, file) <= 0) break;
         // 找到到字符串表节
         if (strtab_header.sh_type == SHT_STRTAB) break;
     }
