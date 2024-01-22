@@ -40,13 +40,8 @@ int fs_open(const char *pathname, int flags, int mode){
   }
   panic("file not found");
 }
-size_t fs_read(int fd, void *buf, size_t len,size_t size){
-  // size_t size=file_table[fd].size-file_table[fd].open_offset;
-  ramdisk_read(buf,file_table[fd].disk_offset+len,size);
-  printf("%x %x\n",file_table[fd].disk_offset+len,size);
-  file_table[fd].open_offset+=size;
-  
-  // file_table[fd].open_offset+=len;
+size_t fs_read(int fd, void *buf, size_t len){
+  ramdisk_read(buf,file_table[fd].disk_offset+file_table[fd].open_offset,len);
   return len;
 }
 int fs_close(int fd){
@@ -58,6 +53,21 @@ size_t fs_write(int fd, const void *buf, size_t len){
   return 0;
 }
 size_t fs_lseek(int fd, size_t offset, int whence){
+  switch (whence)
+  {
+  case SEEK_SET:
+    file_table[fd].open_offset=0+offset;
+    break;
+  case SEEK_CUR:
+    file_table[fd].open_offset+=offset;
+    break;
+  case SEEK_END:
+    file_table[fd].open_offset=file_table[fd].size+offset;
+    break;
+  default:
+    panic("Invalid whence");
+    break;
+  }
   return 0;
 }
 
