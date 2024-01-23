@@ -64,13 +64,9 @@ size_t fs_write(int fd, const void *buf, size_t len){
   //   file_table[fd].open_offset+=realsize;
   //   return realsize;
   // }
-  // ramdisk_write(buf,file_table[fd].disk_offset+file_table[fd].open_offset,len);
-  // file_table[fd].open_offset+=len;
-  // // printf("%d size:%d\n",file_table[fd].open_offset,file_table[fd].size);
-  // return len;
-  assert((file_table[fd].open_offset + len) <= file_table[fd].size);
-  ramdisk_write(buf, file_table[fd].disk_offset + file_table[fd].open_offset, len);
-  file_table[fd].open_offset += len;
+  ramdisk_write(buf,file_table[fd].disk_offset+file_table[fd].open_offset,len);
+  file_table[fd].open_offset+=len;
+  // printf("%d size:%d\n",file_table[fd].open_offset,file_table[fd].size);
   return len;
 }
 size_t fs_lseek(int fd, size_t offset, int whence){
