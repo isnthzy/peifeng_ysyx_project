@@ -76,7 +76,6 @@ void *_sbrk(intptr_t increment) {
   _syscall_(SYS_brk,increment,0,0);
   void *old_addr=addr;
   addr+=increment;
-  printf("brk: %p -> %p\n",old_addr,addr);
   return (void *)old_addr;
 }
 

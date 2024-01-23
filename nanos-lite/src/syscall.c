@@ -50,6 +50,7 @@ void do_syscall(Context *c) {
       c->GPRx=0;
       break;
     case SYS_brk:
+      printf("implement %d",a[1]);
       c->GPRx=0; break;
     case SYS_read:
       c->GPRx=fs_read(a[1],(void *)a[2],a[3]);
