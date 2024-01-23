@@ -46,6 +46,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
       size_t filesz= program_header[i].p_filesz;
       fs_lseek(file,offset,SEEK_SET);
       fs_read(file,(void *)program_header[i].p_vaddr,memsz);
+      printf("%x %x %d %d\n",offset,program_header[i].p_vaddr,filesz,memsz);
       // ramdisk_read((void *)program_header[i].p_vaddr, offset, memsz);   
       //需要将[&ramdisk_start+offset,&ramdisk_start+offset]地址的数据拷贝到地址[VirtAddr,VirtAddr+size]上
       memset((void *)(program_header[i].p_vaddr+filesz),0,memsz-filesz);
