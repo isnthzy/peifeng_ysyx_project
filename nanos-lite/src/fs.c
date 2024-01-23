@@ -90,10 +90,10 @@ size_t fs_lseek(int fd, size_t offset, int whence){
 
 
 void init_fs() {
-  // if(file_nums>=FILE_NAME_NUM) panic("超过预设的文件名");
-  // for(int i=0;i<file_nums;i++){
-  //   strcpy(file_names[i],file_table[i].name);
-  // }
+  if(file_nums>=FILE_NAME_NUM) panic("超过预设的文件名");
+  for(int i=0;i<file_nums;i++){
+    strcpy(file_names[i],file_table[i].name);
+  }
   // int num_files = sizeof(file_table) / sizeof(file_table[0]);
 
   // for (int i = 0; i < num_files; i++) {
