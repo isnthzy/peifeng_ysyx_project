@@ -26,7 +26,7 @@ int main() {
     fscanf(fp, "%d", &n);
     assert(n == i + 1);
   }
-
+  printf("pass2");
   fseek(fp, 0, SEEK_SET);
   for (i = 0; i < 500; i ++) {
     fscanf(fp, "%d", &n);
