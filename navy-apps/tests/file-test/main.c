@@ -19,7 +19,6 @@ int main() {
   fseek(fp, 0, SEEK_SET);
   for (i = 0; i < 500; i ++) {
     fprintf(fp, "%4d\n", i + 1 + 1000);
-    printf("1");
     // fseek(fp, 0, SEEK_CUR);
   }
   // fseek(fp, 0, SEEK_CUR);
