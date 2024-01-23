@@ -23,9 +23,8 @@ void strace_log(int gpr,int a1,int a2,int a3){
     panic("Unhandled syscall ID  = %d by strace", gpr);
     break;
   }
-  // char *file_name=NULL;
-  // strcpy(file_name,file_names[a1]);
-  Log("Syscall:%s!!! %d %d %d",syscall_name,a1,a2,a3);
+  char *file_name=file_names[a1];
+  Log("%s Syscall:%s!!! %d %d %d",file_name,syscall_name,a1,a2,a3);
 }
 void do_syscall(Context *c) {
   uintptr_t a[4];
