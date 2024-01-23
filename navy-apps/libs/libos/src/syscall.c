@@ -72,9 +72,9 @@ int _write(int fd, void *buf, size_t count) {
 
 extern char end;
 void *_sbrk(intptr_t increment) {
-  static intptr_t addr=(intptr_t)&end;
+  static char *addr=&end;
   _syscall_(SYS_brk,increment,0,0);
-  intptr_t old_addr=addr;
+  void *old_addr=addr;
   addr+=increment;
   return (void *)old_addr;
 }
