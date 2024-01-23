@@ -3,7 +3,8 @@ size_t ramdisk_read(void *buf, size_t offset, size_t len);
 size_t ramdisk_write(const void *buf, size_t offset, size_t len);
 typedef size_t (*ReadFn) (void *buf, size_t offset, size_t len);
 typedef size_t (*WriteFn) (const void *buf, size_t offset, size_t len);
-
+#define FILE_NAME_NUM 128
+extern char file_names[128][128];
 typedef struct {
   char *name;
   size_t size;
@@ -42,7 +43,6 @@ int fs_open(const char *pathname, int flags, int mode){
   panic("file not found");
 }
 size_t fs_read(int fd, void *buf, size_t len){
-  // printf("fs_read :%d %d\n",file_table[fd].open_offset,file_table[fd].size);
   if(file_table[fd].open_offset>=file_table[fd].size) return 0;
   if(file_table[fd].open_offset+len>=file_table[fd].size){
     size_t realsize=file_table[fd].size-file_table[fd].open_offset;
@@ -66,7 +66,6 @@ size_t fs_write(int fd, const void *buf, size_t len){
   }
   ramdisk_write(buf,file_table[fd].disk_offset+file_table[fd].open_offset,len);
   file_table[fd].open_offset+=len;
-  // printf("%d size:%d\n",file_table[fd].open_offset,file_table[fd].size);
   return len;
 }
 size_t fs_lseek(int fd, size_t offset, int whence){
@@ -91,6 +90,10 @@ size_t fs_lseek(int fd, size_t offset, int whence){
 
 
 void init_fs() {
+  if(file_nums>=FILE_NAME_NUM) panic("超过预设的文件名");
+  for(int i=0;i<file_nums;i++){
+    strcpy(file_names[i],file_table[i].name);
+  }
   // int num_files = sizeof(file_table) / sizeof(file_table[0]);
 
   // for (int i = 0; i < num_files; i++) {
