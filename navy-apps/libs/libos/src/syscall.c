@@ -76,7 +76,7 @@ void *_sbrk(intptr_t increment) {
   _syscall_(SYS_brk,increment,0,0);
   void *old_addr=addr;
   addr+=increment;
-  return old_addr;
+  return (void *)old_addr;
 }
 
 int _read(int fd, void *buf, size_t count) {
