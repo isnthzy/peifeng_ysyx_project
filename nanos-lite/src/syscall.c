@@ -48,7 +48,6 @@ void do_syscall(Context *c) {
         } 
         c->GPRx=a[3];
       }else c->GPRx=fs_write(a[1],(void *)a[2],a[3]);
-      c->GPRx=0;
       break;
     case SYS_brk:
       c->GPRx=0; break;
