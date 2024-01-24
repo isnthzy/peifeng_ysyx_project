@@ -16,7 +16,7 @@ struct sys_timeval{
 int sys_gettimeofday(struct sys_timeval *tv){
   if(tv==NULL) return 0;
   uint64_t us=io_read(AM_TIMER_UPTIME).us;
-  uint64_t s=us%1000000;
+  uint64_t s=us/1000000;
   tv->tv_sec=s;
   tv->tv_usec=us;
   return 0;
