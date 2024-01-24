@@ -8,7 +8,12 @@ size_t fs_lseek(int fd, size_t offset, int whence);
 int fs_close(int fd);
 #define FILE_NAME_NUM 128
 char* file_names[FILE_NAME_NUM]={"stdin","stdout","stderr"};
-int sys_gettimeofday(struct timeval *tv){
+
+struct sys_timeval{
+  uint64_t tv_sec;     /* seconds */
+  uint64_t tv_usec;    /* microseconds */
+};
+int sys_gettimeofday(struct sys_timeval *tv){
   uint64_t us=io_read(AM_TIMER_UPTIME).us;
   uint64_t s=us/1000000;
   tv->tv_sec=s;
@@ -88,7 +93,7 @@ void do_syscall(Context *c) {
       break;  
     case SYS_gettimeofday:
       // strace_log(a[0],-1,a[1],a[2],a[3]);
-      c->GPRx=sys_gettimeofday((struct timeval *)a[1]);
+      c->GPRx=sys_gettimeofday((struct sys_timeval *)a[1]);
       break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
