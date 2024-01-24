@@ -128,10 +128,8 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
         int s_length=strlen(s);
         if(s_length<width) {
           strncat(out,gSpaces(width - s_length, g_char),n - 1);
-          out[n-1]='\0';
         }else{
           strncat(out,s,n-1);
-          out[n-1]='\0';
         }
         break;
       case 'd':
@@ -141,10 +139,8 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
         int d_length=strlen(d_tmp);
         if (d_length<width) {
           strncat(out,gSpaces(width-d_length,g_char),n-1);
-          out[n-1] ='\0';
         } else {
           strncat(out,d_tmp,n-1);
-          out[n-1]='\0';
         }
         break;
       case 'c':
@@ -158,10 +154,8 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
         int x_length=strlen(x_tmp);
         if (x_length<width) {
           strncat(out,gSpaces(width-x_length,g_char),n-1);
-          out[n-1]='\0';
         }else{
           strncat(out, x_tmp,n-1);
-          out[n-1]='\0';
         }
         break;
       case 'p':
@@ -171,19 +165,17 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
         int p_length=strlen(p_tmp);
         if (p_length<width) {
           strncat(out,gSpaces(width-p_length,g_char),n-1);
-          out[n-1]='\0';
         }else{
           strncat(out,p_tmp,n-1);
-          out[n-1]='\0';
         }
         break;
       default:
         char default_tmp[] = "打印该字符串功能暂未实现，请检查库函数";
         strncat(out,default_tmp,n-1);
-        out[n-1]='\0';
         break;
     }
   }
+  if(n>0) out[n-1]='\0';
   return strlen(out);
 }
 
