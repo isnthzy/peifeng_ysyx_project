@@ -90,7 +90,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
         break;
     }
   }
-  return 0;
+  return strlen(out);
 }
 
 int sprintf(char *out, const char *fmt, ...) { //fmt可以当个字符串处理
