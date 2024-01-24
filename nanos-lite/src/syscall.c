@@ -8,6 +8,14 @@ size_t fs_lseek(int fd, size_t offset, int whence);
 int fs_close(int fd);
 #define FILE_NAME_NUM 128
 char* file_names[FILE_NAME_NUM]={"stdin","stdout","stderr"};
+int sys_gettimeofday(struct timeval *tv){
+  uint64_t us=io_read(AM_TIMER_UPTIME).us;
+  uint64_t s=us/1000000;
+  tv->tv_sec=s;
+  tv->tv_usec=us;
+  return 0;
+}
+/*gettimeofday*/
 #ifdef CONFIG_STRACE
 void strace_log(int gpr,int fd,int a1,int a2,int a3){
   char *syscall_name;
@@ -20,7 +28,8 @@ void strace_log(int gpr,int fd,int a1,int a2,int a3){
   case SYS_read:  syscall_name="SYS_read";  break; 
   case SYS_open:  syscall_name="SYS_open";  break;
   case SYS_lseek: syscall_name="SYS_lseek"; break;
-  case SYS_close: syscall_name="SYS_close"; break;  
+  case SYS_close: syscall_name="SYS_close"; break; 
+  case SYS_gettimeofday: syscall_name="SYS_gettimeofday"; break;
   default:
     panic("Unhandled syscall ID  = %d by strace", gpr);
     break;
@@ -77,6 +86,10 @@ void do_syscall(Context *c) {
       strace_log(a[0],a[1],a[1],a[2],a[3]);
       c->GPRx=fs_close(a[1]);
       break;  
+    case SYS_gettimeofday:
+      // strace_log(a[0],-1,a[1],a[2],a[3]);
+      c->GPRx=sys_gettimeofday((struct timeval *)a[1]);
+      break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
 }
