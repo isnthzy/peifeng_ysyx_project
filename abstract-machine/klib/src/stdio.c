@@ -184,7 +184,7 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
         break;
     }
   }
-  return 0;
+  return strlen(out);
 }
 
 int snprintf(char *out, size_t n, const char *fmt, ...) {
