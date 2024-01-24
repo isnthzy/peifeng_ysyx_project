@@ -6,8 +6,10 @@ size_t fs_read(int fd, void *buf, size_t len);
 size_t fs_write(int fd, const void *buf, size_t len);
 size_t fs_lseek(int fd, size_t offset, int whence);
 int fs_close(int fd);
-char file_names[128][128];
-void strace_log(int gpr,int a1,int a2,int a3){
+#define FILE_NAME_NUM 128
+char* file_names[FILE_NAME_NUM]={"stdin","stdout","stderr"};
+#ifdef CONFIG_STRACE
+void strace_log(int gpr,int fd,int a1,int a2,int a3){
   char *syscall_name;
   switch (gpr)
   {
@@ -23,9 +25,19 @@ void strace_log(int gpr,int a1,int a2,int a3){
     panic("Unhandled syscall ID  = %d by strace", gpr);
     break;
   }
-  char *file_name=file_names[a1];
-  Log("%s Syscall:%s!!! %d %d %d",file_name,syscall_name,a1,a2,a3);
+  char *file_name;
+  if(fd>=FILE_NAME_NUM) panic("存放文件名的数组空间不够了");
+  if(fd==-1){
+    file_name=" ";
+    Log("Syscall:%s!!! %d %d %d",syscall_name,a1,a2,a3);
+  }else{
+    file_name=file_names[fd];
+    Log("file:%s Syscall:%s!!! %d %d %d",file_name,syscall_name,a1,a2,a3);
+  }
 }
+#else
+void strace_log(int gpr,int fd,int a1,int a2,int a3){}
+#endif
 void do_syscall(Context *c) {
   uintptr_t a[4];
   a[0] = c->GPR1;
@@ -33,36 +45,36 @@ void do_syscall(Context *c) {
   a[2] = c->GPR3;
   a[3] = c->GPR4;
   a[4] = c->GPRx;
-  #ifdef CONFIG_STRACE
-  strace_log(a[0],a[1],a[2],a[3]);
-  #endif
+
   switch (a[0]) {
     case SYS_exit:
-      // printf("%d",c->GPRx);
+      strace_log(a[0],-1,a[1],a[2],a[3]);
       halt(c->GPRx); break;
     case SYS_yield:
+      strace_log(a[0],-1,a[1],a[2],a[3]);
       yield(); c->GPRx=0; break;
     case SYS_write:
-      if(a[1]==1||a[1]==2){
-        char *write_buf=(char *)a[2];
-        for(size_t i=0;i<a[3];i++){
-          putch(write_buf[i]);
-        } 
-        c->GPRx=a[3];
-      }else c->GPRx=fs_write(a[1],(void *)a[2],a[3]);
+      strace_log(a[0],a[1],a[1],a[2],a[3]);
+      c->GPRx=fs_write(a[1],(void *)a[2],a[3]);
       break;
     case SYS_brk:
+      strace_log(a[0],-1,a[1],a[2],a[3]);
       c->GPRx=0; break;
     case SYS_read:
+      strace_log(a[0],a[1],a[1],a[2],a[3]);
       c->GPRx=fs_read(a[1],(void *)a[2],a[3]);
       break;
     case SYS_open:
+      strace_log(a[0],-1,a[1],a[2],a[3]);
       c->GPRx=fs_open((char *)a[1],a[2],a[3]);
+      file_names[c->GPRx]=(char *)a[1];
       break;
     case SYS_lseek:
+      strace_log(a[0],a[1],a[1],a[2],a[3]);
       c->GPRx=fs_lseek(a[1],a[2],a[3]);
       break;
     case SYS_close:
+      strace_log(a[0],a[1],a[1],a[2],a[3]);
       c->GPRx=fs_close(a[1]);
       break;  
     default: panic("Unhandled syscall ID = %d", a[0]);
