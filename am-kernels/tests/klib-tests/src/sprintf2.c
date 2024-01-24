@@ -9,7 +9,7 @@ int main()
  
     // 读取字符串并存储在 buffer 中
     int j1 = sprintf(buffer1,"%s 666\n", s);
-    int j2 = snprintf(buffer2,5,"%s 666\n", s);
+    int j2 = snprintf(buffer2,10,"%s 666\n", s);
  
     // 输出 buffer及字符数
     printf("string:\n%s\ncharacter count = %d\n", buffer1, j1);
