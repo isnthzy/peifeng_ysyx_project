@@ -162,7 +162,7 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
         strcat(out,default_tmp);
         break;
     }
-  }
+  } //总感觉这个函数有问题，强行截断‘\0’,但是写入依然是溢出写入的，还是会越界
   int ret=strlen(out);
   if(n>0) out[n-1]='\0';
   return ret;
