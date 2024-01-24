@@ -102,7 +102,7 @@ int sprintf(char *out, const char *fmt, ...) { //fmt可以当个字符串处理
 }
 
 int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
-  *out = '\0';
+  *out='\0';
   char *s,c;
   int d,i,x;
   void *p;
@@ -114,7 +114,7 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
     i++;
     int width=0;
     char g_char=' ';
-    if (fmt[i]=='0') {
+    if(fmt[i]=='0'){
       g_char='0';
       i++;
     }
@@ -124,54 +124,42 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
     }
     switch (fmt[i]) {
       case 's':
-        s=va_arg(ap,char *);
+        s=va_arg(ap, char*);
         int s_length=strlen(s);
-        if(s_length<width) {
-          strncat(out,gSpaces(width - s_length, g_char),n - 1);
-        }else{
-          strncat(out,s,n-1);
-        }
+        if(s_length<width) strcat(out,gSpaces(width-s_length,g_char));
+        strcat(out, s);
         break;
       case 'd':
         d=va_arg(ap, int);
         char d_tmp[128];
-        sprintf(d_tmp, "%d", d);
+        itoa(d,d_tmp,10);
         int d_length=strlen(d_tmp);
-        if (d_length<width) {
-          strncat(out,gSpaces(width-d_length,g_char),n-1);
-        } else {
-          strncat(out,d_tmp,n-1);
-        }
+        if(d_length<width) strcat(out,gSpaces(width-d_length,g_char));
+        strcat(out,d_tmp);
         break;
       case 'c':
         c=(char)va_arg(ap, int);
-        strncat(out,&c,1);
+        strncat(out, &c, 1);
         break;
       case 'x':
-        x=va_arg(ap, uint32_t);
+        x=va_arg(ap,uint32_t);
         char x_tmp[128];
-        sprintf(x_tmp,"%X",x);
+        htoa(x,x_tmp);
         int x_length=strlen(x_tmp);
-        if (x_length<width) {
-          strncat(out,gSpaces(width-x_length,g_char),n-1);
-        }else{
-          strncat(out, x_tmp,n-1);
-        }
+        if (x_length<width) strcat(out,gSpaces(width-x_length,g_char));
+        strcat(out, x_tmp);
         break;
       case 'p':
-        p=va_arg(ap, void *);
+        p = (void *) va_arg(ap, void*);
         char p_tmp[128];
-        sprintf(p_tmp, "%p", p);
-        int p_length=strlen(p_tmp);
-        if (p_length<width) {
-          strncat(out,gSpaces(width-p_length,g_char),n-1);
-        }else{
-          strncat(out,p_tmp,n-1);
-        }
+        htoa((uintptr_t) p, p_tmp);  // 将指针地址转换为十六进制字符串
+        int p_length = strlen(p_tmp);
+        if (p_length < width) strcat(out, gSpaces(width - p_length, g_char));
+        strcat(out, p_tmp);
         break;
       default:
-        char default_tmp[] = "打印该字符串功能暂未实现，请检查库函数";
-        strncat(out,default_tmp,n-1);
+        char default_tmp[]="打印该字符串功能暂未实现，请检查库函数";
+        strcat(out,default_tmp);
         break;
     }
   }
