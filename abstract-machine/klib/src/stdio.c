@@ -101,12 +101,98 @@ int sprintf(char *out, const char *fmt, ...) { //fmt可以当个字符串处理
   return len;
 }
 
-int snprintf(char *out, size_t n, const char *fmt, ...) {
+int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
+  *out = '\0';
+  char *s,c;
+  int d,i,x;
+  void *p;
+  for (i=0;fmt[i]!='\0';i++) {
+    if (fmt[i]!='%') {
+      strncat(out,&fmt[i],1);
+      continue;
+    }
+    i++;
+    int width=0;
+    char g_char=' ';
+    if (fmt[i]=='0') {
+      g_char='0';
+      i++;
+    }
+    while (fmt[i]>='1'&&fmt[i]<='9') {
+      width=width*10+(fmt[i]-'0');
+      i++;
+    }
+    switch (fmt[i]) {
+      case 's':
+        s=va_arg(ap,char *);
+        int s_length=strlen(s);
+        if(s_length<width) {
+          strncat(out,gSpaces(width - s_length, g_char),n - 1);
+          out[n-1]='\0';
+        }else{
+          strncat(out,s,n-1);
+          out[n-1]='\0';
+        }
+        break;
+      case 'd':
+        d=va_arg(ap, int);
+        char d_tmp[128];
+        sprintf(d_tmp, "%d", d);
+        int d_length=strlen(d_tmp);
+        if (d_length<width) {
+          strncat(out,gSpaces(width-d_length,g_char),n-1);
+          out[n-1] ='\0';
+        } else {
+          strncat(out,d_tmp,n-1);
+          out[n-1]='\0';
+        }
+        break;
+      case 'c':
+        c=(char)va_arg(ap, int);
+        strncat(out,&c,1);
+        break;
+      case 'x':
+        x=va_arg(ap, uint32_t);
+        char x_tmp[128];
+        sprintf(x_tmp,"%X",x);
+        int x_length=strlen(x_tmp);
+        if (x_length<width) {
+          strncat(out,gSpaces(width-x_length,g_char),n-1);
+          out[n-1]='\0';
+        }else{
+          strncat(out, x_tmp,n-1);
+          out[n-1]='\0';
+        }
+        break;
+      case 'p':
+        p=va_arg(ap, void *);
+        char p_tmp[128];
+        sprintf(p_tmp, "%p", p);
+        int p_length=strlen(p_tmp);
+        if (p_length<width) {
+          strncat(out,gSpaces(width-p_length,g_char),n-1);
+          out[n-1]='\0';
+        }else{
+          strncat(out,p_tmp,n-1);
+          out[n-1]='\0';
+        }
+        break;
+      default:
+        char default_tmp[] = "打印该字符串功能暂未实现，请检查库函数";
+        strncat(out,default_tmp,n-1);
+        out[n-1]='\0';
+        break;
+    }
+  }
   return 0;
 }
 
-int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
-  return 0;
+int snprintf(char *out, size_t n, const char *fmt, ...) {
+  va_list ap;
+  va_start(ap, fmt);
+  int len = vsnprintf(out,n,fmt,ap);
+  va_end(ap);
+  return len;
 }
 
 #endif
