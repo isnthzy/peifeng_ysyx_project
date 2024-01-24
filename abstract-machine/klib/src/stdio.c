@@ -163,8 +163,9 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
         break;
     }
   }
+  int ret=strlen(out);
   if(n>0) out[n-1]='\0';
-  return strlen(out);
+  return ret;
 }
 
 int snprintf(char *out, size_t n, const char *fmt, ...) {
