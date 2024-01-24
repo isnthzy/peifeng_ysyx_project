@@ -29,7 +29,7 @@ size_t invalid_write(const void *buf, size_t offset, size_t len) {
 
 
 /* This is the information about all files in disk. */
-Finfo file_table[] __attribute__((used)) = {
+static Finfo file_table[] __attribute__((used)) = {
   [FD_STDIN]  = {"stdin", 0, 0, 0,invalid_read, invalid_write},
   [FD_STDOUT] = {"stdout", 0, 0, 0,invalid_read, serial_write},
   [FD_STDERR] = {"stderr", 0, 0, 0,invalid_read, serial_write},
@@ -48,6 +48,8 @@ int fs_open(const char *pathname, int flags, int mode){
 }
 size_t fs_read(int fd, void *buf, size_t len){
   if(fd==FD_STDIN){
+    file_table[fd].read(buf,0,len);
+  }else if(fd==FD_EVENTS){
     file_table[fd].read(buf,0,len);
   }else{
     if(file_table[fd].open_offset>=file_table[fd].size) return 0;

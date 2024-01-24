@@ -4,8 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/time.h>
-extern Finfo file_table[];
-static int evtdev = -1;
+static int evtdev = 4;
 static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
 
@@ -20,11 +19,9 @@ uint32_t NDL_GetTicks() {
 }
 
 int NDL_PollEvent(char *buf, int len) {
-  int len=file_table[4].read(buf,0,len);
-  int ret;
-  if(len>0) ret=1;
-  else ret=0;
-  return ret;
+  int real_len=fs_read(evtdev, buf, len);
+  if(real_len>0) return 1;
+  else return 0;
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
