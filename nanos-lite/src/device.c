@@ -30,14 +30,25 @@ size_t events_read(void *buf, size_t offset, size_t len) {
   else ret_ken=snprintf(buf,len,"ku %s\n",keyname[ev.keycode]);
   // printf("%s",buf);
   return ret_ken;
+}
+
+
+static size_t screen_w = 0, screen_h = 0;
+size_t dispinfo_read(void *buf, size_t offset, size_t len) {
+  AM_GPU_CONFIG_T gpu_cfg=io_read(AM_GPU_CONFIG);
+  snprintf(buf,len,"WIDTH :%d\nHEIGHT:%d",gpu_cfg.width,gpu_cfg.height);
+  screen_w = gpu_cfg.width;
+  screen_h = gpu_cfg.height;
   return 0;
 }
 
-size_t dispinfo_read(void *buf, size_t offset, size_t len) {
-  return 0;
-}
 
 size_t fb_write(const void *buf, size_t offset, size_t len) {
+  size_t begin_x=offset%screen_w;
+  size_t begin_y=offset/screen_w;
+  uint32_t *color_buf=(uint32_t *)buf;
+  printf("%d %d %d %d %d\n",begin_x,begin_y,color_buf,len,begin_y);
+  io_write(AM_GPU_FBDRAW,begin_x,begin_y-128,color_buf,len,begin_y,true);
   return 0;
 }
 

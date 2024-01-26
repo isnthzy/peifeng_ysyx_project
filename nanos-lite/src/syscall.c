@@ -7,7 +7,7 @@ size_t fs_write(int fd, const void *buf, size_t len);
 size_t fs_lseek(int fd, size_t offset, int whence);
 int fs_close(int fd);
 #define FILE_NAME_NUM 128
-char* file_names[FILE_NAME_NUM]={"stdin","stdout","stderr"};
+char* file_names[FILE_NAME_NUM]={"stdin","stdout","stderr","/dev/fb","/dev/events","/proc/dispinfo"};
 
 struct sys_timeval{
   uint64_t tv_sec;     /* seconds */

@@ -4,11 +4,13 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/time.h>
+#define FD_FB 3
 #define FD_EVENTS 4
+#define FD_DISPINFO 5
 static int evtdev = -1;
 static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
-
+static int canvas_w = 0, canvas_h = 0;  //画布的宽和高
 static uint32_t get_time_ms() {
   struct timeval now;
   gettimeofday(&now, NULL);
@@ -44,9 +46,31 @@ void NDL_OpenCanvas(int *w, int *h) {
     }
     close(fbctl);
   }
+  char dispinfo_buf[64];
+  read(FD_DISPINFO, dispinfo_buf, 64);
+  sscanf(dispinfo_buf, "WIDTH :%d\nHEIGHT:%d", &screen_w, &screen_h);
+  if(*w>screen_w||*h>screen_h)  printf("画布大小超过屏幕大小\n");
+  if(*w==0||*h==0) {
+    *w=screen_w;
+    *h=screen_h;
+  }
+  canvas_w=*w;
+  canvas_h=*h;
+  printf("%d %d\n%d %d\n",canvas_w,canvas_h,screen_w,screen_h);
 }
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
+  //接口限制，len不能拆分传递，可以写成循环传递，传递h次，每次传递w个像素
+
+  // int len=w*h;
+  size_t offset=(y-0)*screen_w+x;
+  //因为存放pixels是uint32类型，所以可以不用*4
+  lseek(FD_FB,offset,SEEK_SET);
+  for(int i=0;i<h;i++){
+    write(FD_FB,pixels,w);
+    if(i!=h-1) lseek(FD_FB,screen_w-w,SEEK_CUR);
+  }
+
 }
 
 void NDL_OpenAudio(int freq, int channels, int samples) {
