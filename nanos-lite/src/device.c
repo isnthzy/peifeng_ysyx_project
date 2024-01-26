@@ -48,7 +48,7 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
   size_t begin_y=offset/screen_w;
   uint32_t *color_buf=(uint32_t *)buf;
   printf("%d %d %d %d %d\n",begin_x,begin_y,color_buf,len,begin_y);
-  io_write(AM_GPU_FBDRAW,begin_x,begin_y,color_buf,len,1,true);
+  io_write(AM_GPU_FBDRAW,begin_x,begin_y,color_buf,len,begin_y,true);
   return 0;
 }
 
