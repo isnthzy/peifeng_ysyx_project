@@ -62,7 +62,7 @@ void NDL_OpenCanvas(int *w, int *h) {
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   //接口限制，len不能拆分传递，可以写成循环传递，传递h次，每次传递w个像素
   // size_t offset=(y-0)*screen_w+x;
-  size_t offset=(screen_w+w)/2+(screen_h+h)/2; //实现居中的画布
+  size_t offset=(screen_w+w)/2+((screen_h+h)/2)*screen_w; //实现居中的画布
   //因为存放pixels是uint32类型，所以可以不用*4
   lseek(FD_FB,offset,SEEK_SET);
   for(int i=0;i<h;i++){
