@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <sys/time.h>
 #define FD_EVENTS 4
+#define FD_DISPINFO 5
 static int evtdev = -1;
 static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
@@ -27,6 +28,16 @@ int NDL_PollEvent(char *buf, int len) {
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
+  char dispinfo_buf[64];
+  read(FD_DISPINFO, dispinfo_buf, 64);
+  sscanf(dispinfo_buf, "WIDTH :%d\nHEIGHT:%d", &screen_w, &screen_h);
+  if(*w>screen_w||*h>screen_h) panic("画布大小超过屏幕大小");
+  if(*w==0||*h==0) {
+    *w=screen_w;
+    *h=screen_h;
+  }
+  printf("%d %d\n%d %d\n",*w,*h,screen_w,screen_h);
+
   if (getenv("NWM_APP")) {
     int fbctl = 4;
     fbdev = 5;

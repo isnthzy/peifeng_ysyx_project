@@ -30,10 +30,11 @@ size_t events_read(void *buf, size_t offset, size_t len) {
   else ret_ken=snprintf(buf,len,"ku %s\n",keyname[ev.keycode]);
   // printf("%s",buf);
   return ret_ken;
-  return 0;
 }
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
+  AM_GPU_CONFIG_T gpu_cfg=io_read(AM_GPU_CONFIG);
+  snprintf(buf,len,"WIDTH :%d\nHEIGHT:%d",gpu_cfg.width,gpu_cfg.height);
   return 0;
 }
 
