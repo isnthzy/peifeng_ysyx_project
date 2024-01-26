@@ -63,7 +63,8 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   //接口限制，len不能拆分传递，可以写成循环传递，传递h次，每次传递w个像素
 
   // int len=w*h;
-  size_t offset=(y-0)*screen_w+x;
+  // size_t offset=(y-0)*screen_w+x;
+  size_t offset=(screen_w+w)/2+(screen_w+h)/2
   //因为存放pixels是uint32类型，所以可以不用*4
   lseek(FD_FB,offset,SEEK_SET);
   for(int i=0;i<h;i++){
