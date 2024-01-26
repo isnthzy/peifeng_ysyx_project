@@ -14,6 +14,7 @@ static uint32_t get_time_ms() {
   // gettimeofday(&now, NULL);
   // uint32_t ms = now.tv_sec*1000 + now.tv_usec/1000;
   // return ms;
+  return 0;
 }
 uint32_t NDL_GetTicks() {
   return get_time_ms();
