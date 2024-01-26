@@ -32,7 +32,7 @@ static Finfo file_table[] __attribute__((used)) = {
   [FD_STDIN]  = {"stdin", 0, 0, 0,invalid_read, invalid_write},
   [FD_STDOUT] = {"stdout", 0, 0, 0,invalid_read, serial_write},
   [FD_STDERR] = {"stderr", 0, 0, 0,invalid_read, serial_write},
-  // [FD_FB]     = {"fb", 0, 0, 0,invalid_read, fb_write},
+  [FD_FB]     = {"fb", 0, 0, 0,invalid_read, invalid_write},
   [FD_EVENTS] = {"dev/events", 0, 0, 0,events_read, invalid_write},
 #include "files.h"
 };
@@ -92,7 +92,6 @@ size_t fs_lseek(int fd, size_t offset, int whence){
     break;
   case SEEK_CUR:
     file_table[fd].open_offset+=offset;
-    // printf("%d\n",file_table[fd].open_offset);
     break;
   case SEEK_END:
     file_table[fd].open_offset=file_table[fd].size+offset;
@@ -106,14 +105,14 @@ size_t fs_lseek(int fd, size_t offset, int whence){
 
 
 void init_fs() {
-  // int num_files = sizeof(file_table) / sizeof(file_table[0]);
+  int num_files = sizeof(file_table) / sizeof(file_table[0]);
 
-  // for (int i = 0; i < num_files; i++) {
-  //   printf("File %d:\n", i);
-  //   printf("  Name: %s\n", file_table[i].name);
-  //   printf("  Size: %d\n", file_table[i].size);
-  //   printf("  Disk Offset: %x\n", file_table[i].disk_offset);
-  //   printf("\n");
-  // }
+  for (int i = 0; i < num_files; i++) {
+    printf("File %d:\n", i);
+    printf("  Name: %s\n", file_table[i].name);
+    printf("  Size: %d\n", file_table[i].size);
+    printf("  Disk Offset: %x\n", file_table[i].disk_offset);
+    printf("\n");
+  }
   // TODO: initialize the size of /dev/fb
 }
