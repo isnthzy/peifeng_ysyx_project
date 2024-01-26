@@ -49,9 +49,9 @@ size_t fs_read(int fd, void *buf, size_t len){
   if(fd==FD_STDIN){
     file_table[fd].read(buf,0,len);
   }
-  // else if(fd==FD_EVENTS){
-  //   len=file_table[fd].read(buf,0,len);
-  // }
+  else if(fd==FD_EVENTS){
+    len=file_table[fd].read(buf,0,len);
+  }
   else{
     if(file_table[fd].open_offset>=file_table[fd].size) return 0;
     if(file_table[fd].open_offset+len>=file_table[fd].size){

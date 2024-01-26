@@ -4,7 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/time.h>
-
+#define FD_EVENTS 4
 static int evtdev = -1;
 static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
@@ -20,9 +20,9 @@ uint32_t NDL_GetTicks() {
 }
 
 int NDL_PollEvent(char *buf, int len) {
-  // int real_len=read(4, buf, len);
-  // if(real_len>0) return 1;
-  // else return 0;
+  int real_len=read(FD_EVENTS, buf, len);
+  if(real_len>0) return 1;
+  else return 0;
   return 0;
 }
 

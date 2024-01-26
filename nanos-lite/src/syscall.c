@@ -41,6 +41,7 @@ void strace_log(int gpr,int fd,int a1,int a2,int a3){
     panic("Unhandled syscall ID  = %d by strace", gpr);
     break;
   }
+  if(gpr==SYS_read&&fd==4) return; //屏蔽读取键盘的trace,注意，fd==4的4要随着dev/event在数组中的位置调整
   char *file_name;
   if(fd>=FILE_NAME_NUM) panic("存放文件名的数组空间不够了");
   if(fd==-1){
