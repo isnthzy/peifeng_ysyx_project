@@ -23,6 +23,13 @@ size_t serial_write(const void *buf, size_t offset, size_t len) {
 }
 
 size_t events_read(void *buf, size_t offset, size_t len) {
+  AM_INPUT_KEYBRD_T ev = io_read(AM_INPUT_KEYBRD);
+  if(ev.keycode == AM_KEY_NONE) return 0;
+  int ret_ken=0;
+  if(ev.keydown) ret_ken=snprintf(buf,len,"kd %s\n",keyname[ev.keycode]);
+  else ret_ken=snprintf(buf,len,"ku %s\n",keyname[ev.keycode]);
+  // printf("%s",buf);
+  return ret_ken;
   return 0;
 }
 

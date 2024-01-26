@@ -4,7 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/time.h>
-
+#define FD_EVENTS 4
 static int evtdev = -1;
 static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
@@ -13,13 +13,16 @@ static uint32_t get_time_ms() {
   struct timeval now;
   gettimeofday(&now, NULL);
   uint32_t ms = now.tv_sec*1000 + now.tv_usec/1000;
-  return us;
+  return ms;
 }
 uint32_t NDL_GetTicks() {
   return get_time_ms();
 }
 
 int NDL_PollEvent(char *buf, int len) {
+  int real_len=read(FD_EVENTS, buf, len);
+  if(real_len>0) return 1;
+  else return 0;
   return 0;
 }
 
