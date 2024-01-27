@@ -47,8 +47,9 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
   size_t begin_x=offset%screen_w;
   size_t begin_y=offset/screen_w;
   uint32_t *color_buf=(uint32_t *)buf;
-  printf("%d %d %d %d %d\n",begin_x,begin_y,color_buf,len,begin_y);
-  io_write(AM_GPU_FBDRAW,begin_x,begin_y,color_buf,len,1,true);
+  printf("%d %d %d %d %d\n",begin_x,begin_y,color_buf,len);
+  io_write(AM_GPU_FBDRAW,begin_x,begin_y,color_buf+offset,len,1,true);
+  //感觉问题发生在每次的color_buf都是从头开始，从而导致写入的图像全是空白
   return 0;
 }
 
