@@ -44,16 +44,22 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
 
 
 size_t fb_write(const void *buf, size_t offset, size_t len) {
-  size_t mid_offset_x=(screen_w-len)/2;
-  size_t mid_offset_y=(screen_h-len)/2;
-  size_t begin_x=offset%len+mid_offset_x;
-  size_t begin_y=offset/len+mid_offset_y;
-  uint32_t *color_buf=(uint32_t *)(buf+offset*4);
-  //buf是void *型，转换成uint32_t *型要加上sizeof(uint32_t)*offset
-  // printf("%d %d %d %d %d\n",begin_x,begin_y,color_buf,len,offset*4);
-  io_write(AM_GPU_FBDRAW,begin_x,begin_y,color_buf,len,1,true);
-  //感觉问题发生在每次的color_buf都是从头开始，从而导致写入的图像全是空白
-  return 0;
+  // size_t mid_offset_x=(screen_w-len)/2;
+  // size_t mid_offset_y=(screen_h-len)/2;
+  // size_t begin_x=offset%len+mid_offset_x;
+  // size_t begin_y=offset/len+mid_offset_y;
+  // uint32_t *color_buf=(uint32_t *)(buf+offset*4);
+  // //buf是void *型，转换成uint32_t *型要加上sizeof(uint32_t)*offset
+  // // printf("%d %d %d %d %d\n",begin_x,begin_y,color_buf,len,offset*4);
+  // io_write(AM_GPU_FBDRAW,begin_x,begin_y,color_buf,len,1,true);
+  // //感觉问题发生在每次的color_buf都是从头开始，从而导致写入的图像全是空白
+  // return 0;
+  offset/=4;
+  len/=4;
+  size_t begin_x=offset%screen_w;
+  size_t begin_y=offset/screen_w;
+  io_write(AM_GPU_FBDRAW,begin_x,begin_y,(uint32_t *)buf,len,1,true);
+  return len;
 }
 
 void init_device() {

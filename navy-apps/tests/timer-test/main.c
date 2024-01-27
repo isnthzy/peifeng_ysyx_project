@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <sys/time.h>
 static uint64_t boot_time;
 static uint64_t get_time_internal() {
