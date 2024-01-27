@@ -4,6 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <assert.h>
 #define FD_FB 3
 #define FD_EVENTS 4
 #define FD_DISPINFO 5
@@ -49,7 +50,10 @@ void NDL_OpenCanvas(int *w, int *h) {
   char dispinfo_buf[64];
   read(FD_DISPINFO, dispinfo_buf, 64);
   sscanf(dispinfo_buf, "WIDTH :%d\nHEIGHT:%d", &screen_w, &screen_h);
-  if(*w>screen_w||*h>screen_h)  printf("画布大小超过屏幕大小\n");
+  if(*w>screen_w||*h>screen_h){
+    printf("画布大小超过屏幕大小\n");
+    assert(0);
+  }
   if(*w==0||*h==0) {
     *w=screen_w;
     *h=screen_h;
