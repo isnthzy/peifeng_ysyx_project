@@ -68,6 +68,12 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   size_t offset=(y-0)*screen_w+x;
   //因为存放pixels是uint32类型，所以可以不用*4
   //pixels的长宽为canvas的长宽
+  /*系统屏幕(即frame buffer), NDL_OpenCanvas()打开的画布, 以及NDL_DrawRect()指示的绘制区域之间的位置关系.
+    pixels就是已经准备好的数据，我们需要将这个数据映射到画布上，再用画布通过偏移量控制映射到屏幕相应的位置上
+    所以我们采用逐行写入的方式，再借助fb_write函数，fb_write函数的职责是定位画布的位置
+    并在画布起始位置通过io写入相应的数据
+    所以实现居中的画布，应该在fb_write中修改相应的参数定位
+  */
   lseek(FD_FB,offset,SEEK_SET);
   for(int i=0;i<h;i++){
     write(FD_FB,pixels,w);

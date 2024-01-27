@@ -106,6 +106,7 @@ typedef	__uint128_t fixedptud;
 #define FIXEDPT_FMASK	(((fixedpt)1 << FIXEDPT_FBITS) - 1)
 
 #define fixedpt_rconst(R) ((fixedpt)((R) * FIXEDPT_ONE + ((R) >= 0 ? 0.5 : -0.5)))
+//因为浮点数转化为int数操作会舍弃最低位。所以此处对0.5的操作相当于4舍五入，再丢弃最低位达到四舍五入的效果
 #define fixedpt_fromint(I) ((fixedptd)(I) << FIXEDPT_FBITS)
 #define fixedpt_toint(F) ((F) >> FIXEDPT_FBITS)
 #define fixedpt_add(A,B) ((A) + (B))
@@ -127,35 +128,43 @@ typedef	__uint128_t fixedptud;
 
 /* Multiplies a fixedpt number with an integer, returns the result. */
 static inline fixedpt fixedpt_muli(fixedpt A, int B) {
-	return 0;
+	return (A*fixedpt_fromint(B))/(1<<8);
 }
 
 /* Divides a fixedpt number with an integer, returns the result. */
 static inline fixedpt fixedpt_divi(fixedpt A, int B) {
-	return 0;
+	if (B==0) {
+		return 0;
+	}
+	return (A/fixedpt_fromint(B))*(1<<8);
 }
 
 /* Multiplies two fixedpt numbers, returns the result. */
 static inline fixedpt fixedpt_mul(fixedpt A, fixedpt B) {
-	return 0;
+	return (A*B)/(1<<8);
 }
 
 
 /* Divides two fixedpt numbers, returns the result. */
 static inline fixedpt fixedpt_div(fixedpt A, fixedpt B) {
-	return 0;
+	if (B==0) {
+		return 0;
+	}
+	return (A/B)*(1<<8);
 }
 
 static inline fixedpt fixedpt_abs(fixedpt A) {
-	return 0;
+	return -A;
 }
 
 static inline fixedpt fixedpt_floor(fixedpt A) {
-	return 0;
+	if((A%FIXEDPT_ONE)==0) return A;
+	return A-(A%FIXEDPT_ONE);
 }
 
 static inline fixedpt fixedpt_ceil(fixedpt A) {
-	return 0;
+	if((A%FIXEDPT_ONE)==0) return A;
+	return A-(A%FIXEDPT_ONE)+FIXEDPT_ONE;
 }
 
 /*
