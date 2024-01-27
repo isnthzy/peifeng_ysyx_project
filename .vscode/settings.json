@@ -113,7 +113,9 @@
         "time.h": "c",
         "files.h": "c",
         "fs.h": "c",
-        "assert.h": "c"
+        "assert.h": "c",
+        "math.h": "c",
+        "fixedptc.h": "c"
     },
     "C_Cpp.intelliSenseEngine": "default",
     "digital-ide.dont-show-again.propose.issue": true,
