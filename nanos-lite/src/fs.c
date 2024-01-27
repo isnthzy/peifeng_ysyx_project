@@ -110,7 +110,7 @@ size_t fs_lseek(int fd, size_t offset, int whence){
     panic("Invalid whence");
     break;
   }
-  printf("offset:%d\n",file_table[fd].open_offset);
+  // printf("offset:%d\n",file_table[fd].open_offset);
   return file_table[fd].open_offset;
 }
 

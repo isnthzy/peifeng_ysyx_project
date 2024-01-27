@@ -4,6 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <assert.h>
 #define FD_FB 3
 #define FD_EVENTS 4
 #define FD_DISPINFO 5
@@ -49,7 +50,10 @@ void NDL_OpenCanvas(int *w, int *h) {
   char dispinfo_buf[64];
   read(FD_DISPINFO, dispinfo_buf, 64);
   sscanf(dispinfo_buf, "WIDTH :%d\nHEIGHT:%d", &screen_w, &screen_h);
-  if(*w>screen_w||*h>screen_h)  printf("画布大小超过屏幕大小\n");
+  if(*w>screen_w||*h>screen_h){
+    printf("画布大小超过屏幕大小\n");
+    assert(0);
+  }
   if(*w==0||*h==0) {
     *w=screen_w;
     *h=screen_h;
@@ -61,13 +65,12 @@ void NDL_OpenCanvas(int *w, int *h) {
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   //接口限制，len不能拆分传递，可以写成循环传递，传递h次，每次传递w个像素
-  // size_t offset=(y-0)*screen_w+x;
-  size_t offset=(screen_w+w)/2+(screen_w+h)/2; //实现居中的画布
+  size_t offset=(y-0)*screen_w+x;
   //因为存放pixels是uint32类型，所以可以不用*4
+  //pixels的长宽为canvas的长宽
   lseek(FD_FB,offset,SEEK_SET);
   for(int i=0;i<h;i++){
     write(FD_FB,pixels,w);
-    if(i!=h-1) lseek(FD_FB,screen_w-w,SEEK_CUR);
   }
 
 }

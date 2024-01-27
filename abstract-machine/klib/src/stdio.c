@@ -10,6 +10,7 @@ int printf(const char *fmt, ...) {
   va_list args;
   va_start(args,fmt);
   int len=vsprintf(out_buffer,fmt,args);
+  if (len>2048)  strcpy(out_buffer,"am/stdio printf函数输出超过缓冲区\n");
   //传入的参数是va_list类型还是 ...类型还是有区别的
   putstr(out_buffer);
   va_end(args);
@@ -21,6 +22,7 @@ char* gSpaces(int glength,char g_char) { //空格生成器
     return NULL;
   }
   static char spaces[256]; // 假设最大长度为 128
+  if(glength>256) strcpy(spaces, "am/stdio空格生成器输出超过缓冲区\n");
   for (int i=0;i<glength;i++) {
     spaces[i]=g_char;
   }
@@ -90,8 +92,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
         break;
     }
   }
-  // return strlen(out);
-  return 0;
+  return strlen(out);
 }
 
 int sprintf(char *out, const char *fmt, ...) { //fmt可以当个字符串处理
@@ -167,7 +168,6 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
   int ret=strlen(out);
   if(n>0) out[n-1]='\0';
   return ret;
-  return 0;
 }
 
 int snprintf(char *out, size_t n, const char *fmt, ...) {
