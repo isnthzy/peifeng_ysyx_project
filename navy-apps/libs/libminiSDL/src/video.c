@@ -3,13 +3,80 @@
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
-
+#include <stdio.h>
 void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
   assert(dst && src);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
+  int dx,dy;
+  int sx,sy,sw,sh;
+  // 设置源矩形的默认值
+  if(srcrect!=NULL){
+    sx=srcrect->x;
+    sy=srcrect->y;
+    sw=srcrect->w;
+    sh=srcrect->h;
+  }else{
+    sx=0;
+    sy=0;
+    sw=src->w;
+    sh=src->h;
+  }
+  // 设置目标矩形的默认值
+  if(dstrect!=NULL){
+    dx=dstrect->x;
+    dy=dstrect->y;
+    // dw=dstrect->w;
+    // dh=dstrect->h;
+  }else{
+    dx=0;
+    dy=0;
+    // dw=dst->w;
+    // dh=dst->h;
+    //终于明白了忽略（dstrect）dw和dh参数的意思
+    //感觉手册又详细又不详细，看来自己读的还不够细
+    //原来就是把srcrect画布sx,sy开始宽度为sw和sh的像素复制到dx,dy位置相应的上
+  }
+  if(sx<0||sy<0||sx+sw>src->w||sy+sh>src->h) assert(0);
+  // printf("sxywh %d %d %d %d-> d %d %d\n",sx,sy,sw,sh,dx,dy);
+  for (int i=0;i<sh;i++) {
+      memcpy(dst->pixels+dst->pitch*(dy+i)+dx*src->format->BytesPerPixel, \
+             src->pixels+src->pitch*(sy+i)+sx*src->format->BytesPerPixel, \
+             sw*src->format->BytesPerPixel);
+  }
+
 }
 
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
+  int x,y,w,h;
+  if(dstrect==NULL){
+    x=0;
+    y=0;
+    w=dst->w;
+    h=dst->h;
+  }else{
+    x=dstrect->x;
+    y=dstrect->y;
+    w=dstrect->w;
+    h=dstrect->h;
+  }
+  if(w==0||h==0) assert(0);
+  if(x+w>dst->w&&y+h>dst->h) assert(0);
+  // printf("xywh %d %d %d %d %d\n",x,y,w,h,dst->pitch);
+  for(int i=0;i<h;i++){
+    memset(dst->pixels+dst->pitch*(y+i)+x*dst->format->BytesPerPixel,color,w*dst->format->BytesPerPixel);
+  }
+  /*
+    这段memset很绕口用图形说明下
+    假设：
+    000000000
+    000000000
+    000000000
+    dstrect x=1 y=1 w=2 h=2
+    那么修后的就是
+    000000000
+    011000000
+    011000000
+  */
 }
 
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
