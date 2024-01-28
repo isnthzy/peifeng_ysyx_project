@@ -115,7 +115,9 @@
         "fs.h": "c",
         "assert.h": "c",
         "math.h": "c",
-        "fixedptc.h": "c"
+        "fixedptc.h": "c",
+        "sdl-video.h": "c",
+        "ndl.h": "c"
     },
     "C_Cpp.intelliSenseEngine": "default",
     "digital-ide.dont-show-again.propose.issue": true,

@@ -1,5 +1,6 @@
 #include <NDL.h>
 #include <SDL.h>
+#include <string.h>
 
 #define keyname(k) #k,
 
@@ -15,8 +16,26 @@ int SDL_PushEvent(SDL_Event *ev) {
 int SDL_PollEvent(SDL_Event *ev) {
   return 0;
 }
-
+int get_SDL_keynum(const char *key_name){
+  for(int i=0;i<sizeof(keyname)/sizeof(char*);i++){
+    if(!strcmp(key_name,keyname[i])) return i;
+  }
+}
 int SDL_WaitEvent(SDL_Event *event) {
+  char event_buf[64];
+  int NDL_PollEvent_ret=NDL_PollEvent(event_buf,sizeof(event_buf));
+  //返回值为1有效，0无效
+  char key_name[60];
+  char key_command[4];
+  if(NDL_PollEvent_ret){
+    sscanf(event_buf, "%s %s\n", key_command, key_name);
+    if(!strcmp(key_command,"kd")) event->type=SDL_KEYDOWN;
+    else if(!strcmp(key_command,"ku")) event->type=SDL_KEYUP;
+    else printf("触发了未准备的事件");
+
+    event->key.keysym.sym=get_SDL_keynum(key_name);
+    printf("%d %d",event->type,event->key.keysym.sym);
+  }
   return 1;
 }
 

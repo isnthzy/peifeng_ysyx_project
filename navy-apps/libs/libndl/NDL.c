@@ -29,7 +29,6 @@ int NDL_PollEvent(char *buf, int len) {
   int real_len=read(fd_events, buf, len);
   if(real_len>0) return 1;
   else return 0;
-  return 0;
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
@@ -40,7 +39,7 @@ void NDL_OpenCanvas(int *w, int *h) {
     char buf[64];
     int len = sprintf(buf, "%d %d", screen_w, screen_h);
     // let NWM resize the window and create the frame buffer
-    write(fbctl, buf, len);
+    (void)!write(fbctl, buf, len); //(void)!屏蔽编译器的Wunused-result警告
     while (1) {
       // 3 = evtdev
       int nread = read(3, buf, sizeof(buf) - 1);
@@ -52,7 +51,7 @@ void NDL_OpenCanvas(int *w, int *h) {
   }
   char dispinfo_buf[64];
 
-  read(fd_dispinfo, dispinfo_buf, 64);
+  (void)!read(fd_dispinfo, dispinfo_buf, 64);
   sscanf(dispinfo_buf, "WIDTH :%d\nHEIGHT:%d", &screen_w, &screen_h);
 
   if(*w>screen_w||*h>screen_h){
@@ -65,7 +64,7 @@ void NDL_OpenCanvas(int *w, int *h) {
   }
   canvas_w=*w;
   canvas_h=*h;
-  printf("%d %d\n%d %d\n",canvas_w,canvas_h,screen_w,screen_h);
+  printf("canvas w:%d h:%d\nscreen w:%d h:%d\n",canvas_w,canvas_h,screen_w,screen_h);
 }
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
@@ -81,12 +80,16 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   */
 
   /*做了pa3.5的补充，跑了native,发现前面对画布的处理是错的，重新思考做这个问题*/
+  if(x==0&&y==0&&w==0&&h==0){
+    w=canvas_w;
+    h=canvas_h;
+  }//做全屏写入处理
   size_t offset_mid=screen_w*(screen_h-h)/2+(screen_w-w)/2;
   /*在NDL_DrawRect中实现居中显示*/
   size_t offset=(y-0)*screen_w+x+offset_mid;
   lseek(fd_fb,offset*4,SEEK_SET);
   for(int i=0;i<h;i++){
-    write(fd_fb,pixels+i*w,(w*4)); //api传的是void类型，长度为1，uint32长度为4
+    (void)!write(fd_fb,pixels+i*w,(w*4)); //api传的是void类型，长度为1，uint32长度为4
     lseek(fd_fb,(screen_w-w)*4,SEEK_CUR);
   }
 
