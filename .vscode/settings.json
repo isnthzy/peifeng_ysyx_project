@@ -118,7 +118,9 @@
         "fixedptc.h": "c",
         "sdl-video.h": "c",
         "ndl.h": "c",
-        "sdl_stbimage.h": "c"
+        "sdl_stbimage.h": "c",
+        "palcommon.h": "c",
+        "main.h": "c"
     },
     "C_Cpp.intelliSenseEngine": "default",
     "digital-ide.dont-show-again.propose.issue": true,
