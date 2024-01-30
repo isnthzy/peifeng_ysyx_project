@@ -145,6 +145,24 @@ static int cmd_d(char *args) {
   return 0;
 }
 
+
+bool difftest_mode=true;
+static int cmd_detach(char *args) {
+  IFNDEF(CONFIG_DIFFTEST,printf("not have difftest config");return;)
+  printf("difftest is close\n");
+  difftest_mode=false;
+  return 0;
+}
+void difftest_sync_mem_reg_to_ref();
+static int cmd_attach(char *args) {
+  IFNDEF(CONFIG_DIFFTEST,printf("not have difftest config");return;)
+  printf("wait.... it's slow(About 10 seconds) \n");
+  difftest_sync_mem_reg_to_ref();
+  printf("difftest is open\n");
+  difftest_mode=true;
+  return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -164,6 +182,8 @@ address,\n and output N consecutive 4-byte outputs in hexadecimal." ,cmd_x},
   { "p", "\"p EXPR\"Find the value of the expression EXPR" , cmd_p},
   { "w", "\"w EXPR\"Suspends program execution when the value of expression EXPR changes." ,cmd_w},
   { "d", "\"d N\"Delete the monitoring point with serial number N" ,cmd_d},
+  { "detach", "\"d N\"close difftest mode" ,cmd_detach},
+  { "attach", "\"d N\"open  difftest mode" ,cmd_attach},
   /* TODO: Add more commands */
 
 };
