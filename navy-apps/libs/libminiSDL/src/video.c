@@ -166,7 +166,7 @@ SDL_Surface* SDL_CreateRGBSurfaceFrom(void *pixels, int width, int height, int d
 }
 
 void SDL_FreeSurface(SDL_Surface *s) {
-  printf("miniSDL_trace SDL_FreeSurface\n");
+  // printf("miniSDL_trace SDL_FreeSurface\n");
   if (s != NULL) {
     if (s->format != NULL) {
       if (s->format->palette != NULL) {
