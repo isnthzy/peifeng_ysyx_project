@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
+  // fprintf(stderr,"miniSDL_trace SDL_BlitSurface\n");
   assert(dst && src);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
   int dx,dy;
@@ -47,6 +48,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
 }
 
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
+  // fprintf(stderr,"miniSDL_trace SDL_FillRect\n");
   int x,y,w,h;
   if(dstrect==NULL){
     x=0;
@@ -61,6 +63,7 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
   }
   if(w==0||h==0) assert(0);
   if(x+w>dst->w&&y+h>dst->h) assert(0);
+  fprintf(stderr,"xywh %d %d %d %d\n",x,y,w,h);
   // printf("xywh %d %d %d %d %d\n",x,y,w,h,dst->pitch);
   for(int i=0;i<h;i++){
     memset(dst->pixels+dst->pitch*(y+i)+x*dst->format->BytesPerPixel,color,w*dst->format->BytesPerPixel);
@@ -80,7 +83,23 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 }
 
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
-  NDL_DrawRect((uint32_t *)s->pixels,x,y,w,h);
+  // fprintf(stderr,"miniSDL_trace SDL_UpdateRect\n");
+  
+  uint32_t *real_pixels=malloc(s->w*s->h*sizeof(uint32_t));
+  if(real_pixels!=NULL) memset(real_pixels,0,s->w*s->h*sizeof(uint32_t));
+  if(s->format->palette!=NULL){
+    for(int i=0;i<s->w*s->h;i++){
+      real_pixels[i]=(s->format->palette->colors[s->pixels[i]].a<<24 \
+                     |s->format->palette->colors[s->pixels[i]].r<<16 \
+                     |s->format->palette->colors[s->pixels[i]].g<<8  \
+                     |s->format->palette->colors[s->pixels[i]].b);
+    }
+  }else{
+    real_pixels=(uint32_t *)s->pixels;
+  }
+  // printf("xywh %d %d %d %d\n",x,y,w,h);
+  NDL_DrawRect((uint32_t *)real_pixels,x,y,w,h);
+  free(real_pixels);
 }
 
 // APIs below are already implemented.
@@ -98,6 +117,7 @@ static inline int maskToShift(uint32_t mask) {
 
 SDL_Surface* SDL_CreateRGBSurface(uint32_t flags, int width, int height, int depth,
     uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask) {
+  // printf("miniSDL_trace SDL_CreateRGBSurface\n");
   assert(depth == 8 || depth == 32);
   SDL_Surface *s = malloc(sizeof(SDL_Surface));
   assert(s);
@@ -137,6 +157,7 @@ SDL_Surface* SDL_CreateRGBSurface(uint32_t flags, int width, int height, int dep
 
 SDL_Surface* SDL_CreateRGBSurfaceFrom(void *pixels, int width, int height, int depth,
     int pitch, uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask) {
+  // printf("miniSDL_trace SDL_CreateRGBSurfaceFrom\n");
   SDL_Surface *s = SDL_CreateRGBSurface(SDL_PREALLOC, width, height, depth,
       Rmask, Gmask, Bmask, Amask);
   assert(pitch == s->pitch);
@@ -145,6 +166,7 @@ SDL_Surface* SDL_CreateRGBSurfaceFrom(void *pixels, int width, int height, int d
 }
 
 void SDL_FreeSurface(SDL_Surface *s) {
+  printf("miniSDL_trace SDL_FreeSurface\n");
   if (s != NULL) {
     if (s->format != NULL) {
       if (s->format->palette != NULL) {
@@ -159,12 +181,14 @@ void SDL_FreeSurface(SDL_Surface *s) {
 }
 
 SDL_Surface* SDL_SetVideoMode(int width, int height, int bpp, uint32_t flags) {
+  // printf("miniSDL_trace SDL_SetVideoMode\n");
   if (flags & SDL_HWSURFACE) NDL_OpenCanvas(&width, &height);
   return SDL_CreateRGBSurface(flags, width, height, bpp,
       DEFAULT_RMASK, DEFAULT_GMASK, DEFAULT_BMASK, DEFAULT_AMASK);
 }
 
 void SDL_SoftStretch(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
+  // printf("miniSDL_trace SDL_SoftStretch\n");
   assert(src && dst);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
   assert(dst->format->BitsPerPixel == 8);
@@ -192,6 +216,7 @@ void SDL_SoftStretch(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
 }
 
 void SDL_SetPalette(SDL_Surface *s, int flags, SDL_Color *colors, int firstcolor, int ncolors) {
+  // printf("miniSDL_trace SDL_SetPalette\n");
   assert(s);
   assert(s->format);
   assert(s->format->palette);
@@ -239,6 +264,7 @@ static void ConvertPixelsARGB_ABGR(void *dst, void *src, int len) {
 }
 
 SDL_Surface *SDL_ConvertSurface(SDL_Surface *src, SDL_PixelFormat *fmt, uint32_t flags) {
+  printf("miniSDL_trace SDL_ConvertSurface\n");
   assert(src->format->BitsPerPixel == 32);
   assert(src->w * src->format->BytesPerPixel == src->pitch);
   assert(src->format->BitsPerPixel == fmt->BitsPerPixel);
@@ -254,6 +280,7 @@ SDL_Surface *SDL_ConvertSurface(SDL_Surface *src, SDL_PixelFormat *fmt, uint32_t
 }
 
 uint32_t SDL_MapRGBA(SDL_PixelFormat *fmt, uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+  printf("miniSDL_trace SDL_MapRGBA\n");
   assert(fmt->BytesPerPixel == 4);
   uint32_t p = (r << fmt->Rshift) | (g << fmt->Gshift) | (b << fmt->Bshift);
   if (fmt->Amask) p |= (a << fmt->Ashift);
@@ -261,8 +288,10 @@ uint32_t SDL_MapRGBA(SDL_PixelFormat *fmt, uint8_t r, uint8_t g, uint8_t b, uint
 }
 
 int SDL_LockSurface(SDL_Surface *s) {
+  printf("miniSDL_trace SDL_LockSurface");
   return 0;
 }
 
 void SDL_UnlockSurface(SDL_Surface *s) {
+  printf("miniSDL_trace SDL_UnlockSurface");
 }
