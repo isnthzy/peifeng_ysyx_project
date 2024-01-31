@@ -148,14 +148,14 @@ static int cmd_d(char *args) {
 
 bool difftest_mode=true;
 static int cmd_detach(char *args) {
-  IFNDEF(CONFIG_DIFFTEST,printf("not have difftest config");return;)
+  IFNDEF(CONFIG_DIFFTEST,printf("not have difftest config");return 0;)
   printf("difftest is close\n");
   difftest_mode=false;
   return 0;
 }
 void difftest_sync_mem_reg_to_ref();
 static int cmd_attach(char *args) {
-  IFNDEF(CONFIG_DIFFTEST,printf("not have difftest config");return;)
+  IFNDEF(CONFIG_DIFFTEST,printf("not have difftest config");return 0;)
   printf("wait.... it's slow(About 10 seconds) \n");
   difftest_sync_mem_reg_to_ref();
   printf("difftest is open\n");

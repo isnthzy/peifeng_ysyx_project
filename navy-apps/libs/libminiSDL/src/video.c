@@ -101,6 +101,7 @@ void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
 
   NDL_DrawRect((uint32_t *)real_pixels,x,y,w,h);
   if(s->format->palette!=NULL) free(real_pixels);
+  //老版本free掉了不该free的内存，已修复
 }
 
 // APIs below are already implemented.
