@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
-  fprintf(stderr,"miniSDL_trace SDL_BlitSurface\n");
+  // fprintf(stderr,"miniSDL_trace SDL_BlitSurface\n");
   assert(dst && src);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
   int dx,dy;
@@ -48,7 +48,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
 }
 
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
-  fprintf(stderr,"miniSDL_trace SDL_FillRect\n");
+  // fprintf(stderr,"miniSDL_trace SDL_FillRect\n");
   int x,y,w,h;
   if(dstrect==NULL){
     x=0;
@@ -266,7 +266,7 @@ static void ConvertPixelsARGB_ABGR(void *dst, void *src, int len) {
 }
 
 SDL_Surface *SDL_ConvertSurface(SDL_Surface *src, SDL_PixelFormat *fmt, uint32_t flags) {
-  printf("miniSDL_trace SDL_ConvertSurface\n");
+  // printf("miniSDL_trace SDL_ConvertSurface\n");
   assert(src->format->BitsPerPixel == 32);
   assert(src->w * src->format->BytesPerPixel == src->pitch);
   assert(src->format->BitsPerPixel == fmt->BitsPerPixel);

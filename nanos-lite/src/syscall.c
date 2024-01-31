@@ -72,7 +72,7 @@ void do_syscall(Context *c) {
       // halt(c->GPRx);
       naive_uload(NULL,"/bin/menu");
       c->GPRx=0;
-       break;
+      break;
     case SYS_yield:
       strace_log(a[0],-1,a[1],a[2],a[3]);
       yield(); c->GPRx=0; break;
