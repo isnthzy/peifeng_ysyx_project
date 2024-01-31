@@ -102,7 +102,6 @@ void do_syscall(Context *c) {
       break;  
     case SYS_execve:
       strace_log(a[0],-1,a[1],a[2],a[3]);
-      printf("%s11111111111111111111111",(char *)a[1]);
       naive_uload(NULL,(const char *)a[1]);
       c->GPRx=0;
       break;

@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
-  // fprintf(stderr,"miniSDL_trace SDL_BlitSurface\n");
+  fprintf(stderr,"miniSDL_trace SDL_BlitSurface\n");
   assert(dst && src);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
   int dx,dy;
@@ -48,7 +48,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
 }
 
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
-  // fprintf(stderr,"miniSDL_trace SDL_FillRect\n");
+  fprintf(stderr,"miniSDL_trace SDL_FillRect\n");
   int x,y,w,h;
   if(dstrect==NULL){
     x=0;
@@ -63,7 +63,7 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
   }
   if(w==0||h==0) assert(0);
   if(x+w>dst->w&&y+h>dst->h) assert(0);
-  fprintf(stderr,"xywh %d %d %d %d\n",x,y,w,h);
+  // fprintf(stderr,"xywh %d %d %d %d\n",x,y,w,h);
   // printf("xywh %d %d %d %d %d\n",x,y,w,h,dst->pitch);
   for(int i=0;i<h;i++){
     memset(dst->pixels+dst->pitch*(y+i)+x*dst->format->BytesPerPixel,color,w*dst->format->BytesPerPixel);
@@ -84,10 +84,11 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
   // fprintf(stderr,"miniSDL_trace SDL_UpdateRect\n");
-  
-  uint32_t *real_pixels=malloc(s->w*s->h*sizeof(uint32_t));
-  if(real_pixels!=NULL) memset(real_pixels,0,s->w*s->h*sizeof(uint32_t));
+  // if(s->format->palette!=NULL) fprintf(stderr,"palette!=NULL\n");
+
+  uint32_t *real_pixels; 
   if(s->format->palette!=NULL){
+    real_pixels=(uint32_t *)malloc(s->w*s->h*sizeof(uint32_t));
     for(int i=0;i<s->w*s->h;i++){
       real_pixels[i]=(s->format->palette->colors[s->pixels[i]].a<<24 \
                      |s->format->palette->colors[s->pixels[i]].r<<16 \
@@ -97,9 +98,9 @@ void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
   }else{
     real_pixels=(uint32_t *)s->pixels;
   }
-  // printf("xywh %d %d %d %d\n",x,y,w,h);
+
   NDL_DrawRect((uint32_t *)real_pixels,x,y,w,h);
-  free(real_pixels);
+  if(s->format->palette!=NULL) free(real_pixels);
 }
 
 // APIs below are already implemented.
