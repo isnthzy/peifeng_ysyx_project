@@ -70,7 +70,7 @@ void do_syscall(Context *c) {
     case SYS_exit:
       strace_log(a[0],-1,a[1],a[2],a[3]);
       // halt(c->GPRx);
-      naive_uload(NULL,"/bin/menu");
+      naive_uload(NULL,"/bin/nterm");
       c->GPRx=0;
       break;
     case SYS_yield:
