@@ -36,22 +36,26 @@ int SDL_PollEvent(SDL_Event *ev) {
     // printf("%d %d",ev->type,ev->key.keysym.sym);
     return 1;
   }
+  ev->type=SDL_KEYUP;
   return 0;
 }
 
 int SDL_WaitEvent(SDL_Event *event) {
-  char event_buf[64];
-  while(NDL_PollEvent(event_buf,sizeof(event_buf)));
-  //返回值为1有效，0无效
-  char key_name[60];
-  char key_command[4];
-  sscanf(event_buf, "%s %s\n", key_command, key_name);
-  if(!strcmp(key_command,"kd")) event->type=SDL_KEYDOWN;
-  else if(!strcmp(key_command,"ku")) event->type=SDL_KEYUP;
-  // else printf("触发了未准备的事件");
+  while (1) {
+    char event_buf[64];
+    if (NDL_PollEvent(event_buf, sizeof(event_buf))) {
+      char key_name[60];
+      char key_command[4];
+      sscanf(event_buf, "%s %s\n", key_command, key_name);
+      if(!strcmp(key_command,"kd")) event->type=SDL_KEYDOWN;
+      else if(!strcmp(key_command,"ku")) event->type=SDL_KEYUP;
+      else event->type=SDL_KEYDOWN;
+      // else printf("触发了未准备的事件");
 
-  event->key.keysym.sym=get_SDL_keynum(key_name);
-  return 1;
+      event->key.keysym.sym=get_SDL_keynum(key_name);
+      return 1;
+    }
+  }
 }
 
 int SDL_PeepEvents(SDL_Event *ev, int numevents, int action, uint32_t mask) {
