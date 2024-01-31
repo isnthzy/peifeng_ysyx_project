@@ -73,6 +73,8 @@ size_t fs_read(int fd, void *buf, size_t len){
   return len;
 }
 int fs_close(int fd){
+  file_table[fd].open_offset=0;
+  //被这个坑了，笑死，之前居然忘了给偏移量清0导致再打开这个文件的时候读取出现问题
   return 0;
 }
 size_t fs_write(int fd, const void *buf, size_t len){

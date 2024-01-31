@@ -96,12 +96,12 @@ void init_elf(const char *elf_file,const char *elf_name){
         }
     }
     fclose(file);
-    if(have_guest_program){
-        if(!strcmp(elf_name,"guest_program")) return;
-        //递归实现加载多个elf文件，如果guest_program已经加载了，就退出不再加载
-        init_elf(guest_file,"guest_program");
-        have_guest_program=false;
-    }
+    // if(have_guest_program){
+    //     if(!strcmp(elf_name,"guest_program")) return;
+    //     //递归实现加载多个elf文件，如果guest_program已经加载了，就退出不再加载
+    //     init_elf(guest_file,"guest_program");
+    //     have_guest_program=false;
+    // }
 #endif
     return;
 }

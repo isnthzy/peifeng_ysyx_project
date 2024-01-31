@@ -1,11 +1,13 @@
 #include <common.h>
 #include <unistd.h>
 #include "syscall.h"
+#include <proc.h>
 int fs_open(const char *pathname, int flags, int mode);
 size_t fs_read(int fd, void *buf, size_t len);
 size_t fs_write(int fd, const void *buf, size_t len);
 size_t fs_lseek(int fd, size_t offset, int whence);
 int fs_close(int fd);
+void naive_uload(PCB *pcb, const char *filename);
 #define FILE_NAME_NUM 128
 char* file_names[FILE_NAME_NUM]={"stdin","stdout","stderr","/dev/fb","/dev/events","/proc/dispinfo"};
 
@@ -36,6 +38,7 @@ void strace_log(int gpr,int fd,int a1,int a2,int a3){
   case SYS_open:  syscall_name="SYS_open";  break;
   case SYS_lseek: syscall_name="SYS_lseek"; break;
   case SYS_close: syscall_name="SYS_close"; break; 
+  case SYS_execve:syscall_name="SYS_execve";break;
   case SYS_gettimeofday: syscall_name="SYS_gettimeofday"; break;
   default:
     panic("Unhandled syscall ID  = %d by strace", gpr);
@@ -66,7 +69,10 @@ void do_syscall(Context *c) {
   switch (a[0]) {
     case SYS_exit:
       strace_log(a[0],-1,a[1],a[2],a[3]);
-      halt(c->GPRx); break;
+      // halt(c->GPRx);
+      naive_uload(NULL,"/bin/menu");
+      c->GPRx=0;
+      break;
     case SYS_yield:
       strace_log(a[0],-1,a[1],a[2],a[3]);
       yield(); c->GPRx=0; break;
@@ -94,6 +100,11 @@ void do_syscall(Context *c) {
       strace_log(a[0],a[1],a[1],a[2],a[3]);
       c->GPRx=fs_close(a[1]);
       break;  
+    case SYS_execve:
+      strace_log(a[0],-1,a[1],a[2],a[3]);
+      naive_uload(NULL,(const char *)a[1]);
+      c->GPRx=0;
+      break;
     case SYS_gettimeofday:
       // strace_log(a[0],-1,a[1],a[2],a[3]);
       c->GPRx=sys_gettimeofday((struct sys_timeval *)a[1]);
