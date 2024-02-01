@@ -42,7 +42,15 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
 }
 
 Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
-  return NULL;
+  assert(kstack.start!=NULL&&kstack.end!=NULL);
+  assert(kstack.start<kstack.end);
+  assert(entry!=NULL);
+  Context *cp=kstack.start;
+  cp->mcause=0xb;
+  cp->mstatus=0x1800;
+  cp->mepc=(uintptr_t)entry;
+
+  return cp;
 }
 
 void yield() {
