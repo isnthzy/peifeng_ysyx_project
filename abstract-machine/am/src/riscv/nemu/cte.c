@@ -45,7 +45,7 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   assert(kstack.start!=NULL&&kstack.end!=NULL);
   assert(kstack.start<kstack.end);
   assert(entry!=NULL);
-  Context *cp=(Context *)kstack.end-1;
+  Context *cp=(Context *)kstack.start;
   cp->mcause=0xb;
   cp->mstatus=0x1800;
   cp->mepc=(uintptr_t)entry;
