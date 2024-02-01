@@ -47,7 +47,7 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   assert(entry!=NULL);
   Context *cp=(Context *)kstack.end-1;
   //在kstack的底部创建一个以entry为入口的上下文结构
-  cp->GPR3=(uintptr_t)arg;
+  cp->GPR4=(uintptr_t)arg;
   cp->mstatus=0x1800;
   cp->mepc=(uintptr_t)entry;
   return cp;
