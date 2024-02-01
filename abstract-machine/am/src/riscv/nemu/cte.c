@@ -42,7 +42,15 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
 }
 
 Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
-  return NULL;
+  assert(kstack.start!=NULL&&kstack.end!=NULL);
+  assert(kstack.start<kstack.end);
+  assert(entry!=NULL);
+  Context *cp=(Context *)kstack.end-1;
+  //在kstack的底部创建一个以entry为入口的上下文结构
+  cp->GPR2=(uintptr_t)arg;
+  cp->mstatus=0x1800;
+  cp->mepc=(uintptr_t)entry;
+  return cp;
 }
 
 void yield() {
