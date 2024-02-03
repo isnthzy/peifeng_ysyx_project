@@ -61,7 +61,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       case 'd':
         d=va_arg(ap, int);
         char d_tmp[128];
-        itoa(d,d_tmp,10);
+        am_itoa(d,d_tmp,10);
         int d_length=strlen(d_tmp);
         if(d_length<width) strcat(out,gSpaces(width-d_length,g_char));
         strcat(out,d_tmp);
@@ -134,7 +134,7 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
       case 'd':
         d=va_arg(ap, int);
         char d_tmp[128];
-        itoa(d,d_tmp,10);
+        am_itoa(d,d_tmp,10);
         int d_length=strlen(d_tmp);
         if(d_length<width) strcat(out,gSpaces(width-d_length,g_char));
         strcat(out,d_tmp);
