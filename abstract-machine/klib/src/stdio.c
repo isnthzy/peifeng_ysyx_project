@@ -4,6 +4,7 @@
 #include <stdarg.h>
 
 #define OUR_BUF_SIZE 8192
+//注意缓冲区的大小
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 int printf(const char *fmt, ...) {
@@ -34,7 +35,7 @@ char* gSpaces(int glength,char g_char) { //空格生成器
 int vsprintf(char *out, const char *fmt, va_list ap) {
   *out='\0';
   char *s,c;
-  int d,i,x;
+  int d,i,x,ld;
   void *p;
   for (i=0;fmt[i]!='\0';i++) {
     if (fmt[i]!='%') {
@@ -87,6 +88,19 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
         if (p_length < width) strcat(out, gSpaces(width - p_length, g_char));
         strcat(out, p_tmp);
         break;
+      case 'l':
+        if(fmt[i+1]=='d'){
+          ld=va_arg(ap, int);
+          char ld_tmp[128];
+          am_itoa(ld,ld_tmp,10);
+          int ld_length=strlen(d_tmp);
+          if(ld_length<width) strcat(out,gSpaces(width-ld_length,g_char));
+          strcat(out,ld_tmp);
+        }else{
+          char default_tmp[]="打印该字符串功能暂未实现，请检查库函数";
+          strcat(out,default_tmp);
+        }
+        break;
       default:
         char default_tmp[]="打印该字符串功能暂未实现，请检查库函数";
         strcat(out,default_tmp);
@@ -95,7 +109,6 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
   }
   int out_len=strlen(out);
   if(out_len>OUR_BUF_SIZE) assert(0);
-  assert(0);
   return out_len;
 }
 
