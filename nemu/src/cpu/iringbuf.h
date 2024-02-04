@@ -8,7 +8,7 @@
 #define DTRACE_LOGBUF_SIZE 10
 #define ETRACE_LOGBUF_SIZE 10
 typedef struct {
-    char buffer[128][MAX_STRING_LENGTH];
+    char buffer[1280][MAX_STRING_LENGTH];
     int head;     // 指向队列头部的指针
     int tail;     // 指向队列尾部的指针
     int size;     // 缓冲区有多大
