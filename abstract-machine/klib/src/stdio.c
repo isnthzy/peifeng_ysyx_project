@@ -3,7 +3,7 @@
 #include <klib-macros.h>
 #include <stdarg.h>
 
-#define OUR_BUF_SIZE 2048
+#define OUR_BUF_SIZE 4096
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 int printf(const char *fmt, ...) {
@@ -15,7 +15,6 @@ int printf(const char *fmt, ...) {
   //传入的参数是va_list类型还是 ...类型还是有区别的
   putstr(out_buffer);
   va_end(args);
-  free(out_buffer);
   return len;
 }
 
