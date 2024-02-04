@@ -9,7 +9,6 @@ Context* __am_irq_handle(Context *c) {
     Event ev = {0};
     switch (c->mcause) {
       case 0xb: //11 Environment call from M-mode
-        printf("gpr1:%d\n\n\n\n",c->GPR1);
         if(c->GPR1==-1){
           ev.event=EVENT_YIELD;
           c->mepc+=4; //做pa3.2的时候发现这里没有处理，，，难绷
