@@ -22,8 +22,8 @@ char* gSpaces(int glength,char g_char) { //空格生成器
   if (glength < 0) {
     assert(0); 
   }
-  static char spaces[256]; // 假设最大长度为 128
-  if(glength>256) assert(0); 
+  static char spaces[1024]; // 假设最大长度为 128
+  if(glength>1024) assert(0); 
   for (int i=0;i<glength;i++) {
     spaces[i]=g_char;
   }
@@ -95,6 +95,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
   }
   int out_len=strlen(out);
   if(out_len>OUR_BUF_SIZE) assert(0);
+  assert(0);
   return out_len;
 }
 
