@@ -17,6 +17,7 @@ Context* __am_irq_handle(Context *c) {
           c->mepc+=4;
         }else{
           printf("abstract-machine/am/src/riscv/nemu/cte.c传入了未知的type");
+          assert(0);
         }
         break;
       default: ev.event = EVENT_ERROR; break;
