@@ -3,7 +3,7 @@
 #include <klib-macros.h>
 #include <stdarg.h>
 
-#define OUR_BUF_SIZE 4096
+#define OUR_BUF_SIZE 2048
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 int printf(const char *fmt, ...) {
@@ -21,7 +21,7 @@ int printf(const char *fmt, ...) {
 
 char* gSpaces(int glength,char g_char) { //空格生成器
   if (glength < 0) {
-    return NULL;
+    assert(0); 
   }
   static char spaces[256]; // 假设最大长度为 128
   if(glength>256) assert(0); 
@@ -171,6 +171,7 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
   } //总感觉这个函数有问题，强行截断‘\0’,但是写入依然是溢出写入的，还是会越界
   int ret=strlen(out);
   if(n>0) out[n-1]='\0';
+  if(ret>OUR_BUF_SIZE) assert(0);
   return ret;
 }
 
