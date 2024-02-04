@@ -3,10 +3,11 @@
 #include <klib-macros.h>
 #include <stdarg.h>
 
-#define OUR_BUF_SIZE 2000
+#define OUR_BUF_SIZE 4096
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 int printf(const char *fmt, ...) {
+  assert(0);
   char out_buffer[OUR_BUF_SIZE];
   va_list args;
   va_start(args,fmt);
