@@ -3,17 +3,19 @@
 #include <klib-macros.h>
 #include <stdarg.h>
 
+#define OUR_BUF_SIZE 4096
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 int printf(const char *fmt, ...) {
-  char out_buffer[4096];
+  char out_buffer[OUR_BUF_SIZE];
   va_list args;
   va_start(args,fmt);
   int len=vsprintf(out_buffer,fmt,args);
-  if (len>4096)  strcpy(out_buffer,"am/stdio printf函数输出超过缓冲区\n");
+  // if (len>4096)  strcpy(out_buffer,"am/stdio printf函数输出超过缓冲区\n");
   //传入的参数是va_list类型还是 ...类型还是有区别的
   putstr(out_buffer);
   va_end(args);
+  free(out_buffer);
   return len;
 }
 
@@ -22,7 +24,7 @@ char* gSpaces(int glength,char g_char) { //空格生成器
     return NULL;
   }
   static char spaces[256]; // 假设最大长度为 128
-  if(glength>256) strcpy(spaces, "am/stdio空格生成器输出超过缓冲区\n");
+  if(glength>256) assert(0); 
   for (int i=0;i<glength;i++) {
     spaces[i]=g_char;
   }
@@ -92,7 +94,9 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
         break;
     }
   }
-  return strlen(out);
+  int out_len=strlen(out);
+  if(out_len>OUR_BUF_SIZE) assert(0);
+  return out_len;
 }
 
 int sprintf(char *out, const char *fmt, ...) { //fmt可以当个字符串处理
