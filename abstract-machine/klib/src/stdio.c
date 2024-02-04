@@ -3,14 +3,16 @@
 #include <klib-macros.h>
 #include <stdarg.h>
 
+#define OUR_BUF_SIZE 8192
+//注意缓冲区的大小
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 int printf(const char *fmt, ...) {
-  char out_buffer[2048];
+  char out_buffer[OUR_BUF_SIZE];
   va_list args;
   va_start(args,fmt);
   int len=vsprintf(out_buffer,fmt,args);
-  if (len>2048)  strcpy(out_buffer,"am/stdio printf函数输出超过缓冲区\n");
+  // if (len>4096)  strcpy(out_buffer,"am/stdio printf函数输出超过缓冲区\n");
   //传入的参数是va_list类型还是 ...类型还是有区别的
   putstr(out_buffer);
   va_end(args);
@@ -19,10 +21,10 @@ int printf(const char *fmt, ...) {
 
 char* gSpaces(int glength,char g_char) { //空格生成器
   if (glength < 0) {
-    return NULL;
+    assert(0); 
   }
-  static char spaces[256]; // 假设最大长度为 128
-  if(glength>256) strcpy(spaces, "am/stdio空格生成器输出超过缓冲区\n");
+  static char spaces[1024]; // 假设最大长度为 128
+  if(glength>1024) assert(0); 
   for (int i=0;i<glength;i++) {
     spaces[i]=g_char;
   }
@@ -33,7 +35,7 @@ char* gSpaces(int glength,char g_char) { //空格生成器
 int vsprintf(char *out, const char *fmt, va_list ap) {
   *out='\0';
   char *s,c;
-  int d,i,x;
+  int d,i,x,ld;
   void *p;
   for (i=0;fmt[i]!='\0';i++) {
     if (fmt[i]!='%') {
@@ -61,7 +63,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       case 'd':
         d=va_arg(ap, int);
         char d_tmp[128];
-        itoa(d,d_tmp,10);
+        am_itoa(d,d_tmp,10);
         int d_length=strlen(d_tmp);
         if(d_length<width) strcat(out,gSpaces(width-d_length,g_char));
         strcat(out,d_tmp);
@@ -86,13 +88,28 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
         if (p_length < width) strcat(out, gSpaces(width - p_length, g_char));
         strcat(out, p_tmp);
         break;
+      case 'l':
+        if(fmt[i+1]=='d'){
+          ld=va_arg(ap, int);
+          char ld_tmp[128];
+          am_itoa(ld,ld_tmp,10);
+          int ld_length=strlen(d_tmp);
+          if(ld_length<width) strcat(out,gSpaces(width-ld_length,g_char));
+          strcat(out,ld_tmp);
+        }else{
+          char default_tmp[]="打印该字符串功能暂未实现，请检查库函数";
+          strcat(out,default_tmp);
+        }
+        break;
       default:
         char default_tmp[]="打印该字符串功能暂未实现，请检查库函数";
         strcat(out,default_tmp);
         break;
     }
   }
-  return strlen(out);
+  int out_len=strlen(out);
+  if(out_len>OUR_BUF_SIZE) assert(0);
+  return out_len;
 }
 
 int sprintf(char *out, const char *fmt, ...) { //fmt可以当个字符串处理
@@ -134,7 +151,7 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
       case 'd':
         d=va_arg(ap, int);
         char d_tmp[128];
-        itoa(d,d_tmp,10);
+        am_itoa(d,d_tmp,10);
         int d_length=strlen(d_tmp);
         if(d_length<width) strcat(out,gSpaces(width-d_length,g_char));
         strcat(out,d_tmp);
@@ -167,6 +184,7 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
   } //总感觉这个函数有问题，强行截断‘\0’,但是写入依然是溢出写入的，还是会越界
   int ret=strlen(out);
   if(n>0) out[n-1]='\0';
+  if(ret>OUR_BUF_SIZE) assert(0);
   return ret;
 }
 

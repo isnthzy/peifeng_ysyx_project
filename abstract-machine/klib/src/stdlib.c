@@ -40,7 +40,7 @@ void reverse(char *s, int len){
     end--;
   }
 }
-char *itoa(int value,char * str,int radix){
+char *am_itoa(int value,char * str,int radix){
   bool neg=false;
   int i=0; 
   if(value<0){
