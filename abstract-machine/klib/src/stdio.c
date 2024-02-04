@@ -6,11 +6,11 @@
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 int printf(const char *fmt, ...) {
-  char out_buffer[2048];
+  char out_buffer[4096];
   va_list args;
   va_start(args,fmt);
   int len=vsprintf(out_buffer,fmt,args);
-  if (len>2048)  strcpy(out_buffer,"am/stdio printf函数输出超过缓冲区\n");
+  if (len>4096)  strcpy(out_buffer,"am/stdio printf函数输出超过缓冲区\n");
   //传入的参数是va_list类型还是 ...类型还是有区别的
   putstr(out_buffer);
   va_end(args);
