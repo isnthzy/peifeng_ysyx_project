@@ -86,9 +86,9 @@ CFLAGS   += -MMD $(INCFLAGS) -static -D__NAVY__ \
             -D__ISA__=\"$(ISA)\" -D__ISA_$(shell echo $(ISA) | tr a-z A-Z)__ \
             -fno-asynchronous-unwind-tables -fno-builtin -fno-stack-protector
 
-# CFLAGS   += -O2
-CFLAGS   += -g -Og
-#修改此处为调试增加gdb信息
+CFLAGS   += -O2
+#CFLAGS   += -ggdb3 -O2
+#修改此处为调试增加gdb信息,警告：开启Og优化会导致读取键盘事件卡住
 CXXFLAGS +=  $(CFLAGS) -ffreestanding -fno-rtti -fno-exceptions
 ASFLAGS  +=  $(CFLAGS)
 
