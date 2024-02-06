@@ -114,6 +114,8 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF,0);
 }
 void reg_ref_display(CPU_state *ref_r){
+  printf("ref->mstatus:0x%8x\nref->mepc   :0x%8x\nref_r->mtvec  :0x%8x\nref_r->mcause :0x%8x\n",\
+  ref_r->mstatus,ref_r->mepc,ref_r->mtvec,ref_r->mcause);
   int i;
   printf("name   value   name   value   name   value   name   value\n");
   for(i=0;i<32;i+=4){
@@ -123,10 +125,6 @@ void reg_ref_display(CPU_state *ref_r){
   // printf("pc:%x\n",ref_r->pc);
 }
 static void checkregs(CPU_state *ref, vaddr_t pc,vaddr_t npc) {
-  // puts("----------------------------ref----------------------------");
-  // reg_ref_display(ref);
-  // puts("----------------------------dut----------------------------");
-  // reg_dut_display();
   if (!isa_difftest_checkregs(ref, pc, npc)) {
     npc_state.state = NPC_ABORT;
     npc_state.halt_pc = npc;
