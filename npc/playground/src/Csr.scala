@@ -39,11 +39,12 @@ class CsrFile extends Module{
   val mcause =RegInit(0.U(DATA_WIDTH.W))
   val mtval  =RegInit(0.U(DATA_WIDTH.W))
   val wdata  =dontTouch(Wire(UInt(DATA_WIDTH.W)))
+  val csr_data=dontTouch(Wire(UInt(DATA_WIDTH.W)))
   
   val csr_assert_wen=WireDefault(false.B)
   io.epc:=WireDefault(0.U(ADDR_WIDTH.W))
 
-  io.out:=MuxLookup(io.csr_addr,0.U)(Seq(
+  csr_data:=MuxLookup(io.csr_addr,0.U)(Seq(
     CSR.MTVEC->mtvec,
     CSR.MSTATUS->mstatus,
     CSR.MEPC->mepc,
@@ -53,10 +54,10 @@ class CsrFile extends Module{
 
   wdata:=MuxLookup(io.csr_cmd,0.U)(Seq(
     CSR.W->io.in,
-    CSR.S->(io.out|io.in),
+    CSR.S->(csr_data|io.in),
     CSR.ECALL->io.in
   ))
-
+  io.out:=wdata
 
   when(io.csr_cmd=/=CSR.N){
     when(io.csr_cmd===CSR.ECALL){
