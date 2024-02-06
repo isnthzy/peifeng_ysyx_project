@@ -73,7 +73,7 @@ class CsrFile extends Module{
         mtvec:=wdata }
       .elsewhen(io.csr_addr===CSR.MSTATUS){ mstatus:=wdata }
       .elsewhen(io.csr_addr===CSR.MEPC)   { mepc:=wdata    }
-      .elsewhen(io.csr_addr===CSR.MCAUSE) { mcause:=wdata  }
+      .elsewhen(io.csr_addr===CSR.MCAUSE) { mcause:=0xb.U  }
       .elsewhen(io.csr_addr===CSR.MTVAL)  { mtval:=wdata   }
       .otherwise{ csr_assert_wen:=true.B }
     }
