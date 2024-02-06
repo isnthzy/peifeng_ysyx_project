@@ -1,4 +1,4 @@
-import "DPI-C" function void get_inst(input int raddr);
+import "DPI-C" function int get_inst(input int raddr);
 import "DPI-C" function void get_pc(input int pc,input int nextpc);
 // import "DPI-C" function void pmem_write(input int waddr, input int wdata, input byte wmask);
 
