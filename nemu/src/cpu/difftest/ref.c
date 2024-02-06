@@ -35,12 +35,20 @@ __EXPORT void difftest_regcpy(void *dut, bool direction,vaddr_t skip_target) {
     }
     if(skip_target==0) cpu.pc=dut_t->pc;
     else cpu.pc=skip_target;
+    cpu.mstatus=dut_t->mstatus;
+    cpu.mepc=dut_t->mepc;
+    cpu.mtvec=dut_t->mtvec;
+    cpu.mcause=dut_t->mcause;
 
   }else{
     for(int i=0;i<32;i++){
       dut_t->gpr[i]=cpu.gpr[i];
     }
     dut_t->pc=cpu.pc;
+    dut_t->mstatus=cpu.mstatus;
+    dut_t->mepc=cpu.mepc;
+    dut_t->mtvec=cpu.mtvec;
+    dut_t->mcause=cpu.mcause;
   }
   // assert(0);
 }
