@@ -2,10 +2,15 @@ import chisel3._
 import chisel3.util._  
 import config.Configs._
 
-class wb_bus extends Bundle{
+class wb_to_id_bus extends Bundle{
   val waddr=UInt(5.W)
   val wdata=UInt(DATA_WIDTH.W)
   val wen=Bool()
+}
+
+class wb_to_if_bus extends Bundle{
+  val csr_epc=UInt(ADDR_WIDTH.W)
+  val epc_wen=Bool()
 }
 
 class br_bus extends Bundle{
@@ -21,6 +26,11 @@ class if_to_id_bus extends Bundle{
 
 
 class id_to_ex_bus extends Bundle{
+  val pc_sel=Bool()
+  val csr_addr=UInt(12.W)
+  val csr_cmd=UInt(5.W)
+  val rs1_addr=UInt(5.W)
+  //csr
   val st_type=UInt(8.W)
   val ld_type=UInt(3.W)
   val ebreak_flag=Bool()
@@ -39,6 +49,11 @@ class id_to_ex_bus extends Bundle{
 }
 
 class ex_to_ls_bus extends Bundle{
+  val pc_sel=Bool()
+  val csr_addr=UInt(12.W)
+  val csr_cmd=UInt(5.W)
+  val rs1_addr=UInt(5.W)
+  //csr
   val st_type=UInt(8.W)
   val ld_type=UInt(3.W)
   val ebreak_flag=Bool()
@@ -53,6 +68,11 @@ class ex_to_ls_bus extends Bundle{
 }
 
 class ls_to_wb_bus extends Bundle{
+  val pc_sel=Bool()
+  val csr_addr=UInt(12.W)
+  val csr_cmd=UInt(5.W)
+  val rs1_addr=UInt(5.W)
+  //csr
   val ebreak_flag=Bool()
   val wen   =Bool()
   val rd    =UInt(5.W)

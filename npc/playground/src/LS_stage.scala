@@ -27,13 +27,19 @@ class LS_stage extends Module {
     LD_LBU-> Zext(dpi_ls.io.rdata( 7,0),32)
   ))
   
+  LS.to_wb.pc_sel:=LS.IO.pc_sel
+  LS.to_wb.csr_addr:=LS.IO.csr_addr
+  LS.to_wb.csr_cmd :=LS.IO.csr_cmd
+  LS.to_wb.rs1_addr:=LS.IO.rs1_addr
+  //csr
   LS.to_wb.ebreak_flag:=LS.IO.ebreak_flag
   LS.to_wb.wen:=LS.IO.wen
   LS.to_wb.rd :=LS.IO.rd
   LS.to_wb.result:=MuxLookup(LS.IO.wb_sel,0.U)(Seq(
     WB_ALU ->  LS.IO.result,
     WB_MEM ->  ram_data,
-    WB_PC4 -> (LS.IO.pc+4.U)
+    WB_PC4 -> (LS.IO.pc+4.U),
+    WB_CSR ->  LS.IO.result
   ))
   LS.to_wb.pc:=LS.IO.pc
   LS.to_wb.inst:=LS.IO.inst

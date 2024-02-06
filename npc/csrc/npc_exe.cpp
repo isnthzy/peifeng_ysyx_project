@@ -70,6 +70,10 @@ extern "C" void prt_debug(const svBitVecVal* debug_1,int debug_2){
   printf("debug_1: %x debug_2: %x\n",*debug_1,debug_2);
 }
 
+
+extern "C" void Csr_assert(){
+  panic("csr寄存器异常读写");
+}
 //----------------------------dpi-c----------------------------
 void npc_quit(){
   reg_dut_display();

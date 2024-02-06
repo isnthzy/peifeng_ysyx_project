@@ -45,6 +45,7 @@ class Alu extends Module {
     ALU_SRA -> alu_sra,
     ALU_SLT -> alu_slt,
     ALU_SLTU-> alu_sltu,
+    ALU_COPY_A -> io.src1,
     ALU_LUI -> alu_lui
   ))
 }
