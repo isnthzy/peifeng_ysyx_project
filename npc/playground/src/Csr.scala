@@ -33,11 +33,11 @@ class CsrFile extends Module{
   // in写入csr的值，out用于写入rd寄存器的值
   io.out_wen:=(io.csr_cmd===CSR.W)||(io.csr_cmd===CSR.S)
   val csr_wen=(io.csr_cmd===CSR.W)||(io.csr_cmd===CSR.S)
-  val mtvec  =Reg(UInt(DATA_WIDTH.W))
+  val mtvec  =RegInit(0.U(DATA_WIDTH.W))
   val mstatus=RegInit("h1800".U(DATA_WIDTH.W))
-  val mepc   =Reg(UInt(DATA_WIDTH.W))
-  val mcause =Reg(UInt(DATA_WIDTH.W))
-  val mtval  =Reg(UInt(DATA_WIDTH.W))
+  val mepc   =RegInit(0.U(DATA_WIDTH.W))
+  val mcause =RegInit(0.U(DATA_WIDTH.W))
+  val mtval  =RegInit(0.U(DATA_WIDTH.W))
   
   val csr_assert_wen=WireDefault(false.B)
   io.epc:=WireDefault(0.U(ADDR_WIDTH.W))
