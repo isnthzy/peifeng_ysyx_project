@@ -61,9 +61,13 @@ module CsrFile(	// @[<stdin>:1131:3]
         end
         else	// @[playground/src/Csr.scala:63:33, :71:18, :72:36]
           mepc <= wdata;	// @[playground/src/Csr.scala:38:22, :41:29]
+        if (~csr_wen | _GEN_0 | _GEN_1 | _GEN_3 | ~_GEN_4) begin	// @[playground/src/Csr.scala:35:35, :63:33, :71:18, :72:{23,36}, :74:{28,43}, :75:{28,43}, :76:{28,43}]
+          if (_GEN)	// @[playground/src/Csr.scala:63:20]
+            mcause <= wdata;	// @[playground/src/Csr.scala:39:22, :41:29]
+        end
+        else	// @[playground/src/Csr.scala:63:33, :71:18, :72:36]
+          mcause <= 32'hB;	// @[playground/src/Csr.scala:39:22, :76:51]
       end
-      if ((|io_csr_cmd) & (csr_wen & ~(_GEN_0 | _GEN_1 | _GEN_3) & _GEN_4 | _GEN))	// @[playground/src/Csr.scala:35:35, :39:22, :62:{18,27}, :63:{20,33}, :65:13, :71:18, :72:{23,36}, :74:{28,43}, :75:{28,43}, :76:{28,43,51}]
-        mcause <= wdata;	// @[playground/src/Csr.scala:39:22, :41:29]
       if (~_GEN_2 | _GEN_6 | ~_GEN_5) begin	// @[playground/src/Csr.scala:37:22, :40:22, :62:27, :71:18, :72:36, :74:43, :75:43, :76:43, :77:{28,43}]
       end
       else	// @[playground/src/Csr.scala:40:22, :62:27, :71:18, :72:36]
