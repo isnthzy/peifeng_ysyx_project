@@ -6,6 +6,7 @@ void cpy_reg() {
   cpu.mstatus=top->rootp->SimTop__DOT__WB_stage__DOT__Csrfile__DOT__mstatus;
   cpu.mepc=top->rootp->SimTop__DOT__WB_stage__DOT__Csrfile__DOT__mepc;
   cpu.mtvec=top->rootp->SimTop__DOT__WB_stage__DOT__Csrfile__DOT__mtvec;
+  if(top->rootp->SimTop__DOT__WB_stage__DOT__Csrfile__DOT__mtvec==6) printf("111111111\n\n\n\n");
   cpu.mcause=top->rootp->SimTop__DOT__WB_stage__DOT__Csrfile__DOT__mcause;
 
   cpu.gpr[0]=0;
