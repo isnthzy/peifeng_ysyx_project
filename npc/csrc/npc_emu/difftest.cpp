@@ -18,7 +18,7 @@
 #define DIFFTEST_TO_REF 1
 #define DIFFTEST_TO_DUT 0
 #define DIFF_CHECK(addr1, addr2, atpc,name) if(addr1!=addr2){\
-  wLog("The %s is different\ntrue:0x%08x false:0x%08x",name,addr1,addr2); \
+  wLog("The %s is different\nref:0x%08x dut:0x%08x",name,addr1,addr2); \
   wLog("at pc:0x%08x",atpc); \
   return false;\
 }
