@@ -7,7 +7,7 @@ class ID_stage extends Module {
   val ID=IO(new Bundle {
     val IO    =Input(new if_to_id_bus())
     val to_ex =Output(new id_to_ex_bus())
-    val wb_bus=Input(new wb_bus())
+    val wb_bus=Input(new wb_to_id_bus())
   })
   val dc=Module(new Decode())
   val ImmGen=Module(new ImmGen())
@@ -17,6 +17,7 @@ class ID_stage extends Module {
   val funct3=dontTouch(Wire(UInt(3.W)))
   val rd=dontTouch(Wire(UInt(5.W)))
   val opcode=dontTouch(Wire(UInt(7.W)))
+  val csr_addr=dontTouch(Wire(UInt(12.W)))
 
 
   dc.io.inst:=ID.IO.inst
@@ -30,10 +31,11 @@ class ID_stage extends Module {
   funct3 := ID.IO.inst(14, 12)
   rd := ID.IO.inst(11, 7)
   opcode := ID.IO.inst(6, 0)
+  csr_addr := ID.IO.inst(31, 20)
 
   val Regfile=Module(new RegFile())
   Regfile.io.raddr1:=rs1
-  Regfile.io.raddr2:=Mux(dc.io.csr_cmd===CSR.B,10.U,rs2)
+  Regfile.io.raddr2:=Mux(dc.io.csr_cmd===CSR.BREAK,10.U,rs2)
   //当ebreak时，算出reg(10)+0的结果并通知dpi-c，即reg(10)==return
 
   val src1=MuxLookup(dc.io.A_sel,0.U)(Seq(
@@ -48,9 +50,14 @@ class ID_stage extends Module {
   Regfile.io.wdata:=ID.wb_bus.wdata
   Regfile.io.wen  :=ID.wb_bus.wen
 
+  ID.to_ex.pc_sel:=dc.io.pc_sel
+  ID.to_ex.csr_addr:=csr_addr
+  ID.to_ex.csr_cmd:=dc.io.csr_cmd
+  ID.to_ex.rs1_addr:=rs1
+  //csr
   ID.to_ex.st_type:=dc.io.st_type
   ID.to_ex.ld_type:=dc.io.ld_type
-  ID.to_ex.ebreak_flag:=(dc.io.csr_cmd===CSR.B)
+  ID.to_ex.ebreak_flag:=(dc.io.csr_cmd===CSR.BREAK)
   ID.to_ex.wb_sel :=dc.io.wb_sel
   ID.to_ex.br_type:=dc.io.br_type
   ID.to_ex.wen :=dc.io.wb_en

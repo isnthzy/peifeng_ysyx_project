@@ -7,5 +7,7 @@
 
 // external module dpi_ls
 
+// external module csr_debug_dpic
+
 // external module dpi_ebreak
 

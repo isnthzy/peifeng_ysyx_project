@@ -36,6 +36,7 @@ class SimTop extends Module {
   val WB_stage = Module(new WB_stage())
 // IF begin
   IF_stage.IF.br_bus:=EX_stage.EX.br_bus
+  IF_stage.IF.epc_bus:=WB_stage.WB.to_if
 // ID begin
   ID_stage.ID.IO:=IF_stage.IF.IO
   ID_stage.ID.wb_bus:=WB_stage.WB.to_id

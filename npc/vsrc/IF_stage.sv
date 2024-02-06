@@ -4,28 +4,31 @@ module IF_stage(	// @[<stdin>:11:3]
                 reset,	// @[<stdin>:13:11]
                 IF_br_bus_is_jump,	// @[playground/src/IF_stage.scala:6:12]
   input  [31:0] IF_br_bus_dnpc,	// @[playground/src/IF_stage.scala:6:12]
+                IF_epc_bus_csr_epc,	// @[playground/src/IF_stage.scala:6:12]
+  input         IF_epc_bus_epc_wen,	// @[playground/src/IF_stage.scala:6:12]
   output [31:0] IF_IO_nextpc,	// @[playground/src/IF_stage.scala:6:12]
                 IF_IO_pc,	// @[playground/src/IF_stage.scala:6:12]
                 IF_IO_inst	// @[playground/src/IF_stage.scala:6:12]
 );
 
-  reg  [31:0] REGpc;	// @[playground/src/IF_stage.scala:10:24]
-  wire [31:0] snpc = REGpc + 32'h4;	// @[playground/src/IF_stage.scala:10:24, :11:31, :15:18]
-  wire [31:0] nextpc = IF_br_bus_is_jump ? IF_br_bus_dnpc : snpc;	// @[playground/src/IF_stage.scala:11:31, :12:31, :16:15]
+  reg  [31:0] REGpc;	// @[playground/src/IF_stage.scala:11:24]
+  wire [31:0] snpc = REGpc + 32'h4;	// @[playground/src/IF_stage.scala:11:24, :12:31, :17:18]
+  wire [31:0] dnpc = IF_epc_bus_epc_wen ? IF_epc_bus_csr_epc : IF_br_bus_dnpc;	// @[playground/src/IF_stage.scala:13:31, :18:15]
+  wire [31:0] nextpc = IF_br_bus_is_jump ? dnpc : snpc;	// @[playground/src/IF_stage.scala:12:31, :13:31, :14:31, :19:15]
   always @(posedge clock) begin	// @[<stdin>:12:11]
     if (reset)	// @[<stdin>:12:11]
-      REGpc <= 32'h7FFFFFFC;	// @[playground/src/IF_stage.scala:10:24]
+      REGpc <= 32'h7FFFFFFC;	// @[playground/src/IF_stage.scala:11:24]
     else	// @[<stdin>:12:11]
-      REGpc <= nextpc;	// @[playground/src/IF_stage.scala:10:24, :12:31]
+      REGpc <= nextpc;	// @[playground/src/IF_stage.scala:11:24, :14:31]
   end // always @(posedge)
-  read_inst Fetch (	// @[playground/src/IF_stage.scala:13:23]
+  read_inst Fetch (	// @[playground/src/IF_stage.scala:15:23]
     .clock  (clock),
     .reset  (reset),
-    .nextpc (nextpc),	// @[playground/src/IF_stage.scala:12:31]
-    .pc     (REGpc),	// @[playground/src/IF_stage.scala:10:24]
+    .nextpc (nextpc),	// @[playground/src/IF_stage.scala:14:31]
+    .pc     (REGpc),	// @[playground/src/IF_stage.scala:11:24]
     .inst   (IF_IO_inst)
   );
-  assign IF_IO_nextpc = nextpc;	// @[<stdin>:11:3, playground/src/IF_stage.scala:12:31]
-  assign IF_IO_pc = REGpc;	// @[<stdin>:11:3, playground/src/IF_stage.scala:10:24]
+  assign IF_IO_nextpc = nextpc;	// @[<stdin>:11:3, playground/src/IF_stage.scala:14:31]
+  assign IF_IO_pc = REGpc;	// @[<stdin>:11:3, playground/src/IF_stage.scala:11:24]
 endmodule
 

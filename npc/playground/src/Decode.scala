@@ -1,15 +1,6 @@
 import chisel3._
 import chisel3.util._
 
-object CSR {
-  val N = 0.U(3.W)
-  val W = 1.U(3.W)
-  val S = 2.U(3.W)
-  val C = 3.U(3.W)
-  val P = 4.U(3.W)
-  val B = 5.U(3.W)
-}
-
 object Alus{
   val ALU_ADD = 0.U(4.W)
   val ALU_SUB = 1.U(4.W)
@@ -23,8 +14,9 @@ object Alus{
   val ALU_SRA = 9.U(4.W)
   val ALU_COPY_A = 10.U(4.W)
   val ALU_LUI = 11.U(4.W)
-  val ALU_XXX = 15.U(4.W)
+  val ALU_XXX = 12.U(4.W)
 }
+
 
 object Instructions {
   // Loads
@@ -78,17 +70,11 @@ object Instructions {
   // CSR Access
   def CSRRW = BitPat("b?????????????????001?????1110011")
   def CSRRS = BitPat("b?????????????????010?????1110011")
-  def CSRRC = BitPat("b?????????????????011?????1110011")
-  def CSRRWI = BitPat("b?????????????????101?????1110011")
-  def CSRRSI = BitPat("b?????????????????110?????1110011")
-  def CSRRCI = BitPat("b?????????????????111?????1110011")
   // Change Level
   def ECALL = BitPat("b00000000000000000000000001110011")
   def EBREAK = BitPat("b00000000000100000000000001110011")
-  def ERET = BitPat("b00010000000000000000000001110011")
-  def WFI = BitPat("b00010000001000000000000001110011")
+  def MRET = BitPat("b00110000001000000000000001110011")
 
-  def NOP = BitPat.bitPatToUInt(BitPat("b00000000000000000000000000010011"))
 }
 
 object Control {
@@ -156,7 +142,7 @@ object Control {
   //                                                               kill                        wb_en  illegal?
   //             pc_sel    A_sel   B_sel  imm_sel   alu_op   br_type  |  st_type ld_type wb_sel  | csr_cmd |
   //               |         |       |     |          |          |    |     |       |       |    |  |      |
-             List(PC_XXX  , A_XXX,  B_XXX, IMM_X, ALU_XXX   , BR_XXX, N, ST_XXX, LD_XXX, WB_ALU, N, CSR.N, Y)
+             List(PC_XXX  , A_XXX,  B_XXX, IMM_X, ALU_XXX   , BR_XXX, N, ST_XXX, LD_XXX, WB_ALU, N, CSR.N   , Y)
   val map = Array(
     LUI   -> List(PC_XXX  , A_XXX,  B_IMM, IMM_U, ALU_LUI   , BR_XXX, N, ST_XXX, LD_XXX, WB_ALU, Y, CSR.N, N),
     AUIPC -> List(PC_XXX  , A_PC,   B_IMM, IMM_U, ALU_ADD   , BR_XXX, N, ST_XXX, LD_XXX, WB_ALU, Y, CSR.N, N),
@@ -195,18 +181,14 @@ object Control {
     SRA   -> List(PC_XXX  , A_RS1,  B_RS2, IMM_X, ALU_SRA   , BR_XXX, N, ST_XXX, LD_XXX, WB_ALU, Y, CSR.N, N),
     OR    -> List(PC_XXX  , A_RS1,  B_RS2, IMM_X, ALU_OR    , BR_XXX, N, ST_XXX, LD_XXX, WB_ALU, Y, CSR.N, N),
     AND   -> List(PC_XXX  , A_RS1,  B_RS2, IMM_X, ALU_AND   , BR_XXX, N, ST_XXX, LD_XXX, WB_ALU, Y, CSR.N, N),
-    // FENCE -> List(PC_XXX  , A_XXX,  B_XXX, IMM_X, ALU_XXX   , BR_XXX, N, ST_XXX, LD_XXX, WB_ALU, N, CSR.N, N),
-    // FENCEI-> List(PC_XXX  , A_XXX,  B_XXX, IMM_X, ALU_XXX   , BR_XXX, Y, ST_XXX, LD_XXX, WB_ALU, N, CSR.N, N),
-    // CSRRW -> List(PC_XXX  , A_RS1,  B_XXX, IMM_X, ALU_COPY_A, BR_XXX, Y, ST_XXX, LD_XXX, WB_CSR, Y, CSR.W, N),
-    // CSRRS -> List(PC_XXX  , A_RS1,  B_XXX, IMM_X, ALU_COPY_A, BR_XXX, Y, ST_XXX, LD_XXX, WB_CSR, Y, CSR.S, N),
-    // CSRRC -> List(PC_XXX  , A_RS1,  B_XXX, IMM_X, ALU_COPY_A, BR_XXX, Y, ST_XXX, LD_XXX, WB_CSR, Y, CSR.C, N),
-    // CSRRWI-> List(PC_XXX  , A_XXX,  B_XXX, IMM_Z, ALU_XXX   , BR_XXX, Y, ST_XXX, LD_XXX, WB_CSR, Y, CSR.W, N),
-    // CSRRSI-> List(PC_XXX  , A_XXX,  B_XXX, IMM_Z, ALU_XXX   , BR_XXX, Y, ST_XXX, LD_XXX, WB_CSR, Y, CSR.S, N),
-    // CSRRCI-> List(PC_XXX  , A_XXX,  B_XXX, IMM_Z, ALU_XXX   , BR_XXX, Y, ST_XXX, LD_XXX, WB_CSR, Y, CSR.C, N),
-    // ECALL -> List(PC_XXX  , A_XXX,  B_XXX, IMM_X, ALU_XXX   , BR_XXX, N, ST_XXX, LD_XXX, WB_CSR, N, CSR.P, N),
-    EBREAK-> List(PC_XXX  , A_RS1,  B_RS2, IMM_X, ALU_ADD   , BR_XXX, N, ST_XXX, LD_XXX, WB_CSR, N, CSR.B, N))
-    // ERET  -> List(PC_EPC  , A_XXX,  B_XXX, IMM_X, ALU_XXX   , BR_XXX, Y, ST_XXX, LD_XXX, WB_CSR, N, CSR.P, N),
-    // WFI   -> List(PC_XXX  , A_XXX,  B_XXX, IMM_X, ALU_XXX   , BR_XXX, N, ST_XXX, LD_XXX, WB_ALU, N, CSR.N, N))
+    //
+    CSRRW -> List(PC_XXX  , A_RS1,  B_XXX, IMM_X, ALU_COPY_A, BR_XXX, Y, ST_XXX, LD_XXX, WB_CSR, Y, CSR.W    , N),
+    CSRRS -> List(PC_XXX  , A_RS1,  B_XXX, IMM_X, ALU_COPY_A, BR_XXX, Y, ST_XXX, LD_XXX, WB_CSR, Y, CSR.S    , N),
+    //
+    MRET  -> List(PC_EPC  , A_XXX,  B_XXX, IMM_X, ALU_XXX   , BR_XXX, Y, ST_XXX, LD_XXX, WB_CSR, N, CSR.MRET , N),
+    ECALL -> List(PC_EPC  , A_XXX,  B_XXX, IMM_X, ALU_XXX   , BR_XXX, N, ST_XXX, LD_XXX, WB_CSR, N, CSR.ECALL, N),
+    //
+    EBREAK-> List(PC_XXX  , A_RS1,  B_RS2, IMM_X, ALU_ADD   , BR_XXX, N, ST_XXX, LD_XXX, WB_CSR, N, CSR.BREAK, N))
   // format: on
 }
 
@@ -223,7 +205,7 @@ class DecodeSignals extends Bundle {
   val ld_type = Output(UInt(3.W))
   val wb_sel = Output(UInt(2.W))
   val wb_en = Output(Bool())
-  val csr_cmd = Output(UInt(3.W))
+  val csr_cmd = Output(UInt(5.W))
   val illegal = Output(Bool())
 }
 
