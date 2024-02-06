@@ -29,10 +29,9 @@ class CsrFile extends Module{
     val out_wen=Output(Bool())
     val out=Output(UInt(DATA_WIDTH.W))
     val epc=Output(UInt(ADDR_WIDTH.W))
-    // csr_addr，csr寄存器的地址，
-    // in写入csr的值，out用于写入rd寄存器的值
   })
-  
+  // csr_addr，csr寄存器的地址，
+  // in写入csr的值，out用于写入rd寄存器的值
   io.out_wen:=(io.csr_cmd===CSR.W)||(io.csr_cmd===CSR.S)
   val csr_wen=(io.csr_cmd===CSR.W)||(io.csr_cmd===CSR.S)
   val mtvec  =Reg(UInt(DATA_WIDTH.W))
