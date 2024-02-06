@@ -24,6 +24,7 @@ void cpy_reg() {
   cpu.gpr[13]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_13;
   cpu.gpr[14]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_14;
   cpu.gpr[15]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_15;
+#ifndef CONFIG_RVE
   cpu.gpr[16]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_16;
   cpu.gpr[17]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_17;
   cpu.gpr[18]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_18;
@@ -40,7 +41,7 @@ void cpy_reg() {
   cpu.gpr[29]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_29;
   cpu.gpr[30]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_30;
   cpu.gpr[31]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_31;
-
+#endif
 }
 
 
