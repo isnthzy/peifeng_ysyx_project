@@ -37,13 +37,13 @@ bool isa_difftest_checkregs(CPU_state *ref_r,vaddr_t pc,vaddr_t npc){
           /*真机的pc要慢一拍,因为nemu的寄存器写入是瞬间写，npc是延迟一拍后写
           所以要用pc指示相应的reg不同*/
       wLog("The reg:%s(rf_%d) is different\nref:0x%08x dut:0x%08x",regs[i],i,ref_r->gpr[i],gpr(i));
-      wLog("at pc:0x%08x",pc);
       return false;
     }
   }
   DIFF_CHECK(ref_r->pc,npc,"pc");
   DIFF_CHECK(ref_r->mtvec,cpu.mtvec,"mtvec");
   DIFF_CHECK(ref_r->mepc ,cpu.mepc ,"mepc ");
+  wLog("at pc:0x%08x",pc);
   // DIFF_CHECK(ref_r->mstatus,cpu.mstatus,"mstatus"); mret实现不完整
   // DIFF_CHECK(ref_r->mcause ,cpu.mcause ,"mcause");
   return true;
