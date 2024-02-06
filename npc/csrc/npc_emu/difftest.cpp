@@ -17,8 +17,9 @@
 #include "../include/npc_common.h"
 #define DIFFTEST_TO_REF 1
 #define DIFFTEST_TO_DUT 0
-#define DIFF_CHECK(addr1, addr2, name) if(addr1!=addr2){\
+#define DIFF_CHECK(addr1, addr2, atpc,name) if(addr1!=addr2){\
   wLog("The %s is different\ntrue:0x%08x false:0x%08x",name,addr1,addr2); \
+  wLog("at pc:0x%08x",atpc); \
   return false;\
 }
 uint8_t* guest_to_host(paddr_t paddr);
@@ -37,13 +38,13 @@ bool isa_difftest_checkregs(CPU_state *ref_r,vaddr_t pc,vaddr_t npc){
           /*真机的pc要慢一拍,因为nemu的寄存器写入是瞬间写，npc是延迟一拍后写
           所以要用pc指示相应的reg不同*/
       wLog("The reg:%s(rf_%d) is different\nref:0x%08x dut:0x%08x",regs[i],i,ref_r->gpr[i],gpr(i));
+      wLog("at pc:0x%08x",pc);
       return false;
     }
   }
-  DIFF_CHECK(ref_r->pc,npc,"pc");
-  DIFF_CHECK(ref_r->mtvec,cpu.mtvec,"mtvec");
-  DIFF_CHECK(ref_r->mepc ,cpu.mepc ,"mepc ");
-  wLog("at pc:0x%08x",pc);
+  DIFF_CHECK(ref_r->pc,npc, pc,"pc");
+  DIFF_CHECK(ref_r->mtvec,cpu.mtvec, pc,"mtvec");
+  DIFF_CHECK(ref_r->mepc ,cpu.mepc , pc,"mepc ");
   // DIFF_CHECK(ref_r->mstatus,cpu.mstatus,"mstatus"); mret实现不完整
   // DIFF_CHECK(ref_r->mcause ,cpu.mcause ,"mcause");
   return true;
