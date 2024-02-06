@@ -186,7 +186,7 @@ object Control {
     CSRRS -> List(PC_XXX  , A_RS1,  B_XXX, IMM_X, ALU_COPY_A, BR_XXX, Y, ST_XXX, LD_XXX, WB_CSR, Y, CSR.S    , N),
     //
     MRET  -> List(PC_EPC  , A_XXX,  B_XXX, IMM_X, ALU_XXX   , BR_XXX, Y, ST_XXX, LD_XXX, WB_CSR, N, CSR.MRET , N),
-    ECALL -> List(PC_EPC  , A_XXX,  B_XXX, IMM_X, ALU_XXX   , BR_XXX, N, ST_XXX, LD_XXX, WB_CSR, N, CSR.ECALL, N),
+    ECALL -> List(PC_EPC  , A_XXX,  B_XXX, IMM_X, ALU_ADD   , BR_XXX, N, ST_XXX, LD_XXX, WB_CSR, N, CSR.ECALL, N),
     //
     EBREAK-> List(PC_XXX  , A_RS1,  B_RS2, IMM_X, ALU_ADD   , BR_XXX, N, ST_XXX, LD_XXX, WB_CSR, N, CSR.BREAK, N))
   // format: on

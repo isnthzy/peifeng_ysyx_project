@@ -53,14 +53,15 @@ class CsrFile extends Module{
 
   wdata:=MuxLookup(io.csr_cmd,0.U)(Seq(
     CSR.W->io.in,
-    CSR.S->(io.out|io.in)
+    CSR.S->(io.out|io.in),
+    CSR.ECALL->io.in
   ))
 
 
   when(io.csr_cmd=/=CSR.N){
     when(io.csr_cmd===CSR.ECALL){
       mepc:=io.pc
-      mcause:=0xb.U(32.W)
+      mcause:=wdata
       io.epc:=mtvec
     }
     when(io.csr_cmd===CSR.MRET){

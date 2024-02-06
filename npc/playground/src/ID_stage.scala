@@ -35,8 +35,12 @@ class ID_stage extends Module {
 
   val Regfile=Module(new RegFile())
   Regfile.io.raddr1:=rs1
-  Regfile.io.raddr2:=Mux(dc.io.csr_cmd===CSR.BREAK,10.U,rs2)
+  Regfile.io.raddr2:=MuxLookup(dc.io.csr_cmd,rs2)(Seq(
+    CSR.BREAK->10.U,
+    CSR.ECALL->RISCV32E_ECALLREG
+  ))
   //当ebreak时，算出reg(10)+0的结果并通知dpi-c，即reg(10)==return
+  //当ecall时，算出reg(ECALL_REG)+0的结果并传递给WB的csr处理
 
   val src1=MuxLookup(dc.io.A_sel,0.U)(Seq(
     A_RS1 -> Regfile.io.rdata1,
