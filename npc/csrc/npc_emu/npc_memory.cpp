@@ -60,9 +60,10 @@ void out_of_bound(paddr_t addr) {
       addr, PMEM_LEFT, PMEM_RIGHT,cpu_info.nextpc);
 }
 //----------------------------dpi-c----------------------------
-extern "C" void get_inst(int raddr, int *rdata) {
-  *rdata=paddr_read(raddr,4,0);
-  cpu_info.inst=*rdata;
+extern "C" int get_inst(int raddr) {
+  word_t rdata=paddr_read(raddr,4,0);
+  cpu_info.inst=rdata;
+  return rdata;
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 extern "C" void pmem_read(int raddr, int *rdata) {

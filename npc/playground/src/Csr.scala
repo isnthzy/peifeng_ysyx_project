@@ -68,7 +68,6 @@ class CsrFile extends Module{
     }
     when(csr_wen){
       when(io.csr_addr===CSR.MTVEC){ 
-        printf("111111111111111111");
         mtvec:=wdata }
       .elsewhen(io.csr_addr===CSR.MSTATUS){ mstatus:=wdata }
       .elsewhen(io.csr_addr===CSR.MEPC)   { mepc:=wdata    }
