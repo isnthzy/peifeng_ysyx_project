@@ -57,7 +57,8 @@ class CsrFile extends Module{
     CSR.S->(csr_data|io.in),
     CSR.ECALL->io.in
   ))
-  io.out:=wdata
+  io.out:=Mux(io.csr_addr===CSR.MCAUSE,0xb.U,wdata)
+  //对m模式的特殊处理
 
   when(io.csr_cmd=/=CSR.N){
     when(io.csr_cmd===CSR.ECALL){
