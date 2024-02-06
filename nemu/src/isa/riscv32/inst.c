@@ -60,7 +60,6 @@ static char* get_csrname(word_t csr_addr){
     case MSTATUS: return "mstatus";
     case MEPC:    return "mepc";
     case MCAUSE:  return "mcause";
-    case MTVAL:   return "mtval";
     default:
       wLog("unknow CSR reg: 0x%x",csr_addr);
       panic("访问了未知的CSR寄存器");
@@ -87,10 +86,6 @@ static word_t tran_csr(word_t csr_addr,word_t data,bool is_write){
       tmp_csr=0xb;
       if(is_write) cpu.mcause=0xb;
       break; //因为nemu始终为m模式
-    case MTVAL:
-      tmp_csr=cpu.mtval;
-      if(is_write) cpu.mtval=data;
-      break; 
     default:
       wLog("unknow CSR reg: 0x%x",csr_addr);
       panic("访问了未知的CSR寄存器");
