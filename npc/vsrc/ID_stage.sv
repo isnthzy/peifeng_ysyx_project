@@ -41,11 +41,10 @@ module ID_stage(	// @[<stdin>:806:3]
   wire [4:0]  rd = ID_IO_inst[11:7];	// @[playground/src/ID_stage.scala:18:24, :32:19]
   wire [6:0]  opcode = ID_IO_inst[6:0];	// @[playground/src/ID_stage.scala:19:28, :33:23]
   wire [11:0] csr_addr = ID_IO_inst[31:20];	// @[playground/src/ID_stage.scala:20:30, :34:25]
-  wire        _ID_to_ex_ebreak_flag_T = _dc_io_csr_cmd == 5'h5;	// @[playground/src/ID_stage.scala:12:16, :38:39]
   wire [31:0] imm;	// @[playground/src/ID_stage.scala:14:25]
-  reg         inv_flag;	// @[playground/src/ID_stage.scala:77:19]
+  reg         inv_flag;	// @[playground/src/ID_stage.scala:81:19]
   always @(posedge clock)	// @[<stdin>:807:11]
-    inv_flag <= _dc_io_illegal & ID_IO_nextpc != 32'h80000000;	// @[playground/src/ID_stage.scala:12:16, :77:19, :78:{27,41}]
+    inv_flag <= _dc_io_illegal & ID_IO_nextpc != 32'h80000000;	// @[playground/src/ID_stage.scala:12:16, :81:19, :82:{27,41}]
   Decode dc (	// @[playground/src/ID_stage.scala:12:16]
     .io_inst    (ID_IO_inst),
     .io_pc_sel  (ID_to_ex_pc_sel),
@@ -72,23 +71,23 @@ module ID_stage(	// @[<stdin>:806:3]
     .io_waddr  (ID_wb_bus_waddr),
     .io_wdata  (ID_wb_bus_wdata),
     .io_raddr1 (rs1),	// @[playground/src/ID_stage.scala:15:25]
-    .io_raddr2 (_ID_to_ex_ebreak_flag_T ? 5'hA : rs2),	// @[playground/src/ID_stage.scala:16:25, :38:{25,39}]
+    .io_raddr2 (_dc_io_csr_cmd == 5'h4 ? 5'hF : _dc_io_csr_cmd == 5'h5 ? 5'hA : rs2),	// @[playground/src/ID_stage.scala:12:16, :16:25, :38:50]
     .io_wen    (ID_wb_bus_wen),
     .io_rdata1 (_Regfile_io_rdata1),
     .io_rdata2 (_Regfile_io_rdata2)
   );
-  inv_break inv_break (	// @[playground/src/ID_stage.scala:76:23]
+  inv_break inv_break (	// @[playground/src/ID_stage.scala:80:23]
     .clock    (clock),
     .reset    (reset),
-    .inv_flag (inv_flag),	// @[playground/src/ID_stage.scala:77:19]
+    .inv_flag (inv_flag),	// @[playground/src/ID_stage.scala:81:19]
     .pc       (ID_IO_nextpc)
   );
   assign ID_to_ex_csr_addr = csr_addr;	// @[<stdin>:806:3, playground/src/ID_stage.scala:20:30]
   assign ID_to_ex_csr_cmd = _dc_io_csr_cmd;	// @[<stdin>:806:3, playground/src/ID_stage.scala:12:16]
-  assign ID_to_ex_ebreak_flag = _ID_to_ex_ebreak_flag_T;	// @[<stdin>:806:3, playground/src/ID_stage.scala:38:39]
+  assign ID_to_ex_ebreak_flag = _dc_io_csr_cmd == 5'h5;	// @[<stdin>:806:3, playground/src/ID_stage.scala:12:16, :38:50, :64:39]
   assign ID_to_ex_rd = rd;	// @[<stdin>:806:3, playground/src/ID_stage.scala:18:24]
-  assign ID_to_ex_src1 = _dc_io_A_sel ? _Regfile_io_rdata1 : ID_IO_pc;	// @[<stdin>:806:3, playground/src/ID_stage.scala:12:16, :36:21, :41:38]
-  assign ID_to_ex_src2 = _dc_io_B_sel ? _Regfile_io_rdata2 : imm;	// @[<stdin>:806:3, playground/src/ID_stage.scala:12:16, :14:25, :36:21, :45:38]
+  assign ID_to_ex_src1 = _dc_io_A_sel ? _Regfile_io_rdata1 : ID_IO_pc;	// @[<stdin>:806:3, playground/src/ID_stage.scala:12:16, :36:21, :45:38]
+  assign ID_to_ex_src2 = _dc_io_B_sel ? _Regfile_io_rdata2 : imm;	// @[<stdin>:806:3, playground/src/ID_stage.scala:12:16, :14:25, :36:21, :49:38]
   assign ID_to_ex_rdata1 = _Regfile_io_rdata1;	// @[<stdin>:806:3, playground/src/ID_stage.scala:36:21]
   assign ID_to_ex_rdata2 = _Regfile_io_rdata2;	// @[<stdin>:806:3, playground/src/ID_stage.scala:36:21]
   assign ID_to_ex_nextpc = ID_IO_nextpc;	// @[<stdin>:806:3]
