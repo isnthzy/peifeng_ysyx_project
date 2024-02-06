@@ -67,12 +67,14 @@ class CsrFile extends Module{
       io.epc:=mepc
     }
     when(csr_wen){
-      when(io.csr_addr===CSR.MTVEC){ mtvec:=wdata }.
-      elsewhen(io.csr_addr===CSR.MSTATUS){ mstatus:=wdata }.
-      elsewhen(io.csr_addr===CSR.MEPC)   { mepc:=wdata }.
-      elsewhen(io.csr_addr===CSR.MCAUSE) { mcause:=wdata }.
-      elsewhen(io.csr_addr===CSR.MTVAL)  { mtval:=wdata }.
-      otherwise{ csr_assert_wen:=true.B }
+      when(io.csr_addr===CSR.MTVEC){ 
+        printf("11111111111111");
+        mtvec:=wdata }
+      .elsewhen(io.csr_addr===CSR.MSTATUS){ mstatus:=wdata }
+      .elsewhen(io.csr_addr===CSR.MEPC)   { mepc:=wdata    }
+      .elsewhen(io.csr_addr===CSR.MCAUSE) { mcause:=wdata  }
+      .elsewhen(io.csr_addr===CSR.MTVAL)  { mtval:=wdata   }
+      .otherwise{ csr_assert_wen:=true.B }
     }
   }
 
