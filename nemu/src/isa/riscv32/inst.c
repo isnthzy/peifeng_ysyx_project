@@ -24,7 +24,7 @@
 #define Mw vaddr_write
 #define XLEN 32 //代整数寄存器的宽度
 
-#ifdef __riscv_e
+#ifdef CONFIG_RVE
 #define ECALL_REG 15 // a5
 #else
 #define ECALL_REG 17 // a7
@@ -60,7 +60,6 @@ static char* get_csrname(word_t csr_addr){
     case MSTATUS: return "mstatus";
     case MEPC:    return "mepc";
     case MCAUSE:  return "mcause";
-    case MTVAL:   return "mtval";
     default:
       wLog("unknow CSR reg: 0x%x",csr_addr);
       panic("访问了未知的CSR寄存器");
@@ -87,10 +86,6 @@ static word_t tran_csr(word_t csr_addr,word_t data,bool is_write){
       tmp_csr=0xb;
       if(is_write) cpu.mcause=0xb;
       break; //因为nemu始终为m模式
-    case MTVAL:
-      tmp_csr=cpu.mtval;
-      if(is_write) cpu.mtval=data;
-      break; 
     default:
       wLog("unknow CSR reg: 0x%x",csr_addr);
       panic("访问了未知的CSR寄存器");
@@ -222,7 +217,7 @@ static int decode_exec(Decode *s) {
                                                                   wLog("\t%s",etrace_logbuf);
                                                                   enqueueIRingBuffer(&etrace_buffer,etrace_logbuf);
                                                                 )); //mret没有实现完毕
-  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , I, s->dnpc=isa_raise_intr(Reg(ECALL_REG),s->pc);
+  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , I, s->dnpc=isa_raise_intr(Reg(15),s->pc);
                                                                 IFDEF(CONFIG_ETRACE, 
                                                                   char etrace_logbuf[128]; 
                                                                   sprintf(etrace_logbuf,"pc:0x%08x ecall!!!",cpu.pc); 

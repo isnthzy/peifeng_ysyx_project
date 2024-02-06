@@ -17,8 +17,9 @@
 #include "../include/npc_common.h"
 #define DIFFTEST_TO_REF 1
 #define DIFFTEST_TO_DUT 0
-#define DIFF_CHECK(addr1, addr2, name) if(addr1!=addr2){\
-  wLog("The %s is different\ntrue:0x%08x false:0x%08x",name,addr1,addr2); \
+#define DIFF_CHECK(addr1, addr2, atpc,name) if(addr1!=addr2){\
+  wLog("The %s is different\nref:0x%08x dut:0x%08x",name,addr1,addr2); \
+  wLog("at pc:0x%08x",atpc); \
   return false;\
 }
 uint8_t* guest_to_host(paddr_t paddr);
@@ -41,11 +42,11 @@ bool isa_difftest_checkregs(CPU_state *ref_r,vaddr_t pc,vaddr_t npc){
       return false;
     }
   }
-  DIFF_CHECK(ref_r->pc,npc,"pc");
-  // DIFF_CHECK(ref_r->mtvec,cpu.mtvec,"mtvec");
-  // DIFF_CHECK(ref_r->mepc ,cpu.mepc ,"mepc ");
-  // DIFF_CHECK(ref_r->mstatus,cpu.mstatus,"mstatus"); mret实现不完整
-  // DIFF_CHECK(ref_r->mcause ,cpu.mcause ,"mcause");
+  DIFF_CHECK(ref_r->pc,npc, pc,"pc");
+  DIFF_CHECK(ref_r->mtvec,cpu.mtvec, pc,"mtvec");
+  DIFF_CHECK(ref_r->mepc ,cpu.mepc , pc,"mepc ");
+  DIFF_CHECK(ref_r->mstatus,cpu.mstatus, pc,"mstatus"); //mret实现不完整
+  DIFF_CHECK(ref_r->mcause ,cpu.mcause , pc,"mcause");
   return true;
 }
 
@@ -113,6 +114,8 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF,0);
 }
 void reg_ref_display(CPU_state *ref_r){
+  printf("ref->mstatus:0x%08x\nref->mepc   :0x%08x\nref->mtvec  :0x%08x\nref->mcause :0x%08x\n",\
+  ref_r->mstatus,ref_r->mepc,ref_r->mtvec,ref_r->mcause);
   int i;
   printf("name   value   name   value   name   value   name   value\n");
   for(i=0;i<32;i+=4){
@@ -122,10 +125,6 @@ void reg_ref_display(CPU_state *ref_r){
   // printf("pc:%x\n",ref_r->pc);
 }
 static void checkregs(CPU_state *ref, vaddr_t pc,vaddr_t npc) {
-  // puts("----------------------------ref----------------------------");
-  // reg_ref_display(ref);
-  // puts("----------------------------dut----------------------------");
-  // reg_dut_display();
   if (!isa_difftest_checkregs(ref, pc, npc)) {
     npc_state.state = NPC_ABORT;
     npc_state.halt_pc = npc;

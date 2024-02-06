@@ -10,7 +10,8 @@ void reg_dut_display();
 void cpy_reg();
 uint64_t get_time();
 // CPU_state cpu;
-CPU_state cpu = { .pc=RESET_VECTOR};//解锁新用法
+CPU_state cpu = { .pc=RESET_VECTOR , .mstatus=0x1800};//解锁新用法
+CPU_info cpu_info={};
 extern bool ftrace_flag;
 extern bool difftest_flag;
 static bool g_print_step = false;
@@ -63,7 +64,7 @@ extern "C" void cpu_use_func(int pc,int nextpc,int inst,svBit is_jal,int rd){
 extern "C" void get_pc(int pc,int nextpc){
   // printf("pc: %x\n",pc);
   cpu.pc=pc;
-  cpu.nextpc=nextpc;
+  cpu_info.nextpc=nextpc;
 }
 
 extern "C" void prt_debug(const svBitVecVal* debug_1,int debug_2){
@@ -105,14 +106,15 @@ void putIringbuf(){
   }
 }
 
-static bool first_diff=true;
+
 static void trace_and_difftest(word_t this_pc,word_t next_pc){
   g_nr_guest_inst++; //记录总共执行了多少步
   #ifdef CONFIG_DIFFTEST
+  static bool first_diff=true;
   if(difftest_flag){
     /*第一次不进行diff,因为nemu的寄存器写入是瞬间写，npc是延迟一拍后写
     因此diff时机是npc执行结束了，进入下一排执行了，reg能取出来了，进行diff*/
-    if(!first_diff) difftest_step(cpu.pc,cpu.nextpc);
+    if(!first_diff) difftest_step(cpu.pc,cpu_info.nextpc);
     first_diff=false;
   }
   #endif
@@ -122,7 +124,7 @@ static void trace_and_difftest(word_t this_pc,word_t next_pc){
   static char tmp_dis[64];
   static word_t tmp_inst;
   #ifdef CONFIG_TRACE
-  tmp_inst=cpu.inst;
+  tmp_inst=cpu_info.inst;
   disassemble(tmp_dis, sizeof(tmp_dis),next_pc, (uint8_t*)&tmp_inst,4);
   sprintf(logbuf,"[%ld]\t0x%08x: %08x\t%s",g_nr_guest_inst,next_pc,tmp_inst,tmp_dis);
   #ifdef CONFIG_ITRACE
@@ -141,7 +143,7 @@ static void npc_execute(uint64_t n) {
 
     step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
     cpy_reg();
-    trace_and_difftest(cpu.pc,cpu.nextpc);
+    trace_and_difftest(cpu.pc,cpu_info.nextpc);
     IFDEF(CONFIG_DEVICE, device_update());
     /*------------------------分割线每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次*/
   

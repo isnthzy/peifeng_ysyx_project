@@ -8,4 +8,6 @@ object Configs {
   val DATA_WIDTH = 32 // 数据位宽
   val DATA_WIDTH_H = 16   // 半字数据位宽
   val DATA_WIDTH_B = 8    // 字节数据位宽
+  val RISCV32E_ECALLREG = 15.U
+  val RISCV32_ECALLREG = 17.U
 }

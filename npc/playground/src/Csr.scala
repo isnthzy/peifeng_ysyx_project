@@ -33,16 +33,18 @@ class CsrFile extends Module{
   // in写入csr的值，out用于写入rd寄存器的值
   io.out_wen:=(io.csr_cmd===CSR.W)||(io.csr_cmd===CSR.S)
   val csr_wen=(io.csr_cmd===CSR.W)||(io.csr_cmd===CSR.S)
-  val mtvec  =Reg(UInt(DATA_WIDTH.W))
-  val mstatus=Reg(UInt(DATA_WIDTH.W))
-  val mepc   =Reg(UInt(DATA_WIDTH.W))
-  val mcause =Reg(UInt(DATA_WIDTH.W))
-  val mtval  =Reg(UInt(DATA_WIDTH.W))
+  val mtvec  =RegInit(0.U(DATA_WIDTH.W))
+  val mstatus=RegInit("h1800".U(DATA_WIDTH.W))
+  val mepc   =RegInit(0.U(DATA_WIDTH.W))
+  val mcause =RegInit(0.U(DATA_WIDTH.W))
+  val mtval  =RegInit(0.U(DATA_WIDTH.W))
+  val wdata  =dontTouch(Wire(UInt(DATA_WIDTH.W)))
+  val csr_data=dontTouch(Wire(UInt(DATA_WIDTH.W)))
   
   val csr_assert_wen=WireDefault(false.B)
   io.epc:=WireDefault(0.U(ADDR_WIDTH.W))
 
-  io.out:=MuxLookup(io.csr_addr,0.U)(Seq(
+  csr_data:=MuxLookup(io.csr_addr,0.U)(Seq(
     CSR.MTVEC->mtvec,
     CSR.MSTATUS->mstatus,
     CSR.MEPC->mepc,
@@ -50,28 +52,31 @@ class CsrFile extends Module{
     CSR.MTVAL->mtval
   ))
 
-  val wdata=MuxLookup(io.csr_cmd,0.U)(Seq(
+  wdata:=MuxLookup(io.csr_cmd,0.U)(Seq(
     CSR.W->io.in,
-    CSR.S->(io.out|io.in)
+    CSR.S->(csr_data|io.in),
+    CSR.ECALL->io.in
   ))
-
+  io.out:=Mux(io.csr_addr===CSR.MCAUSE,0xb.U,wdata)
+  //对m模式的特殊处理
 
   when(io.csr_cmd=/=CSR.N){
     when(io.csr_cmd===CSR.ECALL){
       mepc:=io.pc
-      mcause:=0xb.U(32.W)
+      mcause:=wdata
       io.epc:=mtvec
     }
     when(io.csr_cmd===CSR.MRET){
       io.epc:=mepc
     }
     when(csr_wen){
-      when(io.csr_addr===CSR.MTVEC){ mtvec:=wdata }.
-      elsewhen(io.csr_addr===CSR.MSTATUS){ mstatus:=wdata }.
-      elsewhen(io.csr_addr===CSR.MEPC)   { mepc:=wdata }.
-      elsewhen(io.csr_addr===CSR.MCAUSE) { mcause:=wdata }.
-      elsewhen(io.csr_addr===CSR.MTVAL)  { mtval:=wdata }.
-      otherwise{ csr_assert_wen:=true.B }
+      when(io.csr_addr===CSR.MTVEC){ 
+        mtvec:=wdata }
+      .elsewhen(io.csr_addr===CSR.MSTATUS){ mstatus:=wdata }
+      .elsewhen(io.csr_addr===CSR.MEPC)   { mepc:=wdata    }
+      .elsewhen(io.csr_addr===CSR.MCAUSE) { mcause:=0xb.U  }
+      .elsewhen(io.csr_addr===CSR.MTVAL)  { mtval:=wdata   }
+      .otherwise{ csr_assert_wen:=true.B }
     }
   }
 
@@ -90,7 +95,7 @@ class csr_debug_dpic extends BlackBox with HasBlackBoxInline {
     val csr_valid=Input(Bool())
     val assert_wen=Input(Bool())
   })
-  setInline("inv_break.v",
+  setInline("csr_debug_dpic.v",
     """
       |import "DPI-C" function void Csr_assert();
       |module csr_debug_dpic(

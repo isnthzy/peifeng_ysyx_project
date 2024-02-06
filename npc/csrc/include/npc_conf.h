@@ -1,12 +1,13 @@
 
 
 #define CONFIG_ISA_riscv 1
+#define CONFIG_RVE
 //isa选择
 /*---------------------------------------------------------------------------------*/
-// #define CONFIG_TRACE 1
-// #define CONFIG_ITRACE 1
+#define CONFIG_TRACE 1
+#define CONFIG_ITRACE 1
 // #define CONFIG_FTRACE 1
-// #define CONFIG_MTRACE 1
+#define CONFIG_MTRACE 1
 #define CONFIG_DIFFTEST 1
 //TRACE开关
 /*---------------------------------------------------------------------------------*/
@@ -24,8 +25,9 @@
 #define ITRACE_LOGBUF_SIZE 10
 #define DTRACE_LOGBUF_SIZE 10
 #define ETRACE_LOGBUF_SIZE 10
-//trace最多开128个,因为我只给了128个
+#define IRINGBUF_MAX_NUM 128
+//trace最多开多少IRINGBUF_MAX_NUM给多少
 /*---------------------------------------------------------------------------------*/
-#define CONFIG_PC_RESET_OFFSET 0x4
+#define CONFIG_PC_RESET_OFFSET 0x0
 //pc重置偏移
 /*---------------------------------------------------------------------------------*/
