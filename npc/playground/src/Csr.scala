@@ -34,7 +34,7 @@ class CsrFile extends Module{
   io.out_wen:=(io.csr_cmd===CSR.W)||(io.csr_cmd===CSR.S)
   val csr_wen=(io.csr_cmd===CSR.W)||(io.csr_cmd===CSR.S)
   val mtvec  =Reg(UInt(DATA_WIDTH.W))
-  val mstatus=Reg(UInt(DATA_WIDTH.W))
+  val mstatus=RegInit("h1800".U(DATA_WIDTH.W))
   val mepc   =Reg(UInt(DATA_WIDTH.W))
   val mcause =Reg(UInt(DATA_WIDTH.W))
   val mtval  =Reg(UInt(DATA_WIDTH.W))
