@@ -114,7 +114,7 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF,0);
 }
 void reg_ref_display(CPU_state *ref_r){
-  printf("ref->mstatus:0x%8x\nref->mepc   :0x%8x\nref_r->mtvec  :0x%8x\nref_r->mcause :0x%8x\n",\
+  printf("ref->mstatus:0x%08x\nref->mepc   :0x%08x\nref->mtvec  :0x%08x\nref->mcause :0x%08x\n",\
   ref_r->mstatus,ref_r->mepc,ref_r->mtvec,ref_r->mcause);
   int i;
   printf("name   value   name   value   name   value   name   value\n");
