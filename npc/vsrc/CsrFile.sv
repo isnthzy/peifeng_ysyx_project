@@ -26,7 +26,7 @@ module CsrFile(	// @[<stdin>:1128:3]
           ? mcause
           : io_csr_addr == 12'h341
               ? mepc
-              : io_csr_addr == 12'h300 ? mstatus : io_csr_addr == 12'h305 ? mtvec : 32'h0;	// @[playground/src/Csr.scala:36:18, :37:18, :38:18, :39:18, :40:18, :43:19, :45:37]
+              : io_csr_addr == 12'h300 ? mstatus : io_csr_addr == 12'h305 ? mtvec : 32'h0;	// @[playground/src/Csr.scala:36:18, :37:18, :38:18, :39:18, :40:18, :43:22, :45:37]
   wire        _GEN = io_csr_cmd == 5'h4;	// @[playground/src/Csr.scala:60:20]
   wire        _GEN_0 = io_csr_addr == 12'h305;	// @[playground/src/Csr.scala:45:37, :69:23]
   wire        _GEN_1 = io_csr_addr == 12'h300;	// @[playground/src/Csr.scala:45:37, :70:27]
@@ -45,7 +45,7 @@ module CsrFile(	// @[<stdin>:1128:3]
       else if (_wdata_T_1)	// @[playground/src/Csr.scala:53:38]
         mtvec <= io_in;	// @[playground/src/Csr.scala:36:18]
       else	// @[playground/src/Csr.scala:53:38]
-        mtvec <= 32'h0;	// @[playground/src/Csr.scala:36:18, :43:19]
+        mtvec <= 32'h0;	// @[playground/src/Csr.scala:36:18, :43:22]
     end
     if (~_GEN_2 | _GEN_0 | ~_GEN_1) begin	// @[playground/src/Csr.scala:37:18, :59:27, :68:18, :69:{23,36}, :70:{27,42}]
     end
@@ -54,7 +54,7 @@ module CsrFile(	// @[<stdin>:1128:3]
     else if (_wdata_T_1)	// @[playground/src/Csr.scala:53:38]
       mstatus <= io_in;	// @[playground/src/Csr.scala:37:18]
     else	// @[playground/src/Csr.scala:53:38]
-      mstatus <= 32'h0;	// @[playground/src/Csr.scala:37:18, :43:19]
+      mstatus <= 32'h0;	// @[playground/src/Csr.scala:37:18, :43:22]
     if (|io_csr_cmd) begin	// @[playground/src/Csr.scala:59:18]
       if (~csr_wen | _GEN_0 | _GEN_1 | ~_GEN_3) begin	// @[playground/src/Csr.scala:35:35, :60:33, :68:18, :69:{23,36}, :70:{27,42}, :71:{27,42}]
         if (_GEN)	// @[playground/src/Csr.scala:60:20]
@@ -65,7 +65,7 @@ module CsrFile(	// @[<stdin>:1128:3]
       else if (_wdata_T_1)	// @[playground/src/Csr.scala:53:38]
         mepc <= io_in;	// @[playground/src/Csr.scala:38:18]
       else	// @[playground/src/Csr.scala:53:38]
-        mepc <= 32'h0;	// @[playground/src/Csr.scala:38:18, :43:19]
+        mepc <= 32'h0;	// @[playground/src/Csr.scala:38:18, :43:22]
       if (~csr_wen | _GEN_0 | _GEN_1 | _GEN_3 | ~_GEN_4) begin	// @[playground/src/Csr.scala:35:35, :60:33, :68:18, :69:{23,36}, :70:{27,42}, :71:{27,42}, :72:{27,42}]
         if (_GEN)	// @[playground/src/Csr.scala:60:20]
           mcause <= 32'hB;	// @[playground/src/Csr.scala:39:18, :62:13]
@@ -75,7 +75,7 @@ module CsrFile(	// @[<stdin>:1128:3]
       else if (_wdata_T_1)	// @[playground/src/Csr.scala:53:38]
         mcause <= io_in;	// @[playground/src/Csr.scala:39:18]
       else	// @[playground/src/Csr.scala:53:38]
-        mcause <= 32'h0;	// @[playground/src/Csr.scala:39:18, :43:19]
+        mcause <= 32'h0;	// @[playground/src/Csr.scala:39:18, :43:22]
     end
     if (~_GEN_2 | _GEN_6 | ~_GEN_5) begin	// @[playground/src/Csr.scala:37:18, :40:18, :59:27, :68:18, :69:36, :70:42, :71:42, :72:42, :73:{27,42}]
     end
@@ -84,17 +84,17 @@ module CsrFile(	// @[<stdin>:1128:3]
     else if (_wdata_T_1)	// @[playground/src/Csr.scala:53:38]
       mtval <= io_in;	// @[playground/src/Csr.scala:40:18]
     else	// @[playground/src/Csr.scala:53:38]
-      mtval <= 32'h0;	// @[playground/src/Csr.scala:40:18, :43:19]
+      mtval <= 32'h0;	// @[playground/src/Csr.scala:40:18, :43:22]
   end // always @(posedge)
   csr_debug_dpic csr_dpic (	// @[playground/src/Csr.scala:78:22]
     .clock      (clock),
     .reset      (reset),
     .csr_valid  (|io_csr_cmd),	// @[playground/src/Csr.scala:59:18]
-    .assert_wen (_GEN_2 & ~_GEN_6 & ~_GEN_5)	// @[playground/src/Csr.scala:36:18, :37:18, :40:18, :42:30, :59:27, :68:18, :69:36, :70:42, :71:42, :72:42, :73:{27,42}, :74:32]
+    .assert_wen (_GEN_2 & ~_GEN_6 & ~_GEN_5)	// @[playground/src/Csr.scala:36:18, :37:18, :40:18, :42:33, :59:27, :68:18, :69:36, :70:42, :71:42, :72:42, :73:{27,42}, :74:32]
   );
   assign io_out_wen = _csr_wen_T | _csr_wen_T_1;	// @[<stdin>:1128:3, playground/src/Csr.scala:34:{26,35,48}]
   assign io_out = _io_out_output;	// @[<stdin>:1128:3, playground/src/Csr.scala:45:37]
   assign io_epc =
-    (|io_csr_cmd) ? (io_csr_cmd == 5'h3 ? mepc : _GEN ? mtvec : 32'h0) : 32'h0;	// @[<stdin>:1128:3, playground/src/Csr.scala:36:18, :38:18, :43:{9,19}, :59:{18,27}, :60:{20,33}, :63:13, :65:{20,32}, :66:13]
+    (|io_csr_cmd) ? (io_csr_cmd == 5'h3 ? mepc : _GEN ? mtvec : 32'h0) : 32'h0;	// @[<stdin>:1128:3, playground/src/Csr.scala:36:18, :38:18, :43:{9,22}, :59:{18,27}, :60:{20,33}, :63:13, :65:{20,32}, :66:13]
 endmodule
 
