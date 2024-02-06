@@ -33,9 +33,15 @@ void sdb_mainloop();
 typedef struct {
   word_t gpr[MUXDEF(CONFIG_RVE, 16, 32)];
   vaddr_t pc;
-  vaddr_t nextpc;
-  word_t inst;
+  word_t mstatus;
+  word_t mepc;
+  word_t mtvec;
+  word_t mcause;
 }CPU_state;
 
+typedef struct {
+  vaddr_t nextpc;
+  word_t inst;
+}CPU_info;
 #include "npc_debug.h"
 #endif

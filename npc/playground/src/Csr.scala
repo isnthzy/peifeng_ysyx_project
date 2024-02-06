@@ -38,9 +38,9 @@ class CsrFile extends Module{
   val mepc   =Reg(UInt(DATA_WIDTH.W))
   val mcause =Reg(UInt(DATA_WIDTH.W))
   val mtval  =Reg(UInt(DATA_WIDTH.W))
-
-  val csr_assert_wen=WireInit(false.B)
-  io.epc:=WireInit(0.U(ADDR_WIDTH.W))
+  
+  val csr_assert_wen=WireDefault(false.B)
+  io.epc:=WireDefault(0.U(ADDR_WIDTH.W))
 
   io.out:=MuxLookup(io.csr_addr,0.U)(Seq(
     CSR.MTVEC->mtvec,
@@ -90,7 +90,7 @@ class csr_debug_dpic extends BlackBox with HasBlackBoxInline {
     val csr_valid=Input(Bool())
     val assert_wen=Input(Bool())
   })
-  setInline("inv_break.v",
+  setInline("csr_debug_dpic.v",
     """
       |import "DPI-C" function void Csr_assert();
       |module csr_debug_dpic(

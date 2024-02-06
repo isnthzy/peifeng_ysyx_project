@@ -6,6 +6,7 @@ void paddr_write(paddr_t addr, int len, word_t data);
 extern  void  device_write(paddr_t addr,int len,word_t data);
 extern word_t device_read(paddr_t addr,int len);
 extern CPU_state cpu;
+extern CPU_info cpu_info;
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN={};
 // static uint8_t pmem[CONFIG_MSIZE];
 extern IRingBuffer mtrace_buffer;
@@ -56,12 +57,12 @@ void mputIringbuf(){
 void out_of_bound(paddr_t addr) {
   IFDEF(CONFIG_ITRACE,putIringbuf()); 
   panic("(npc)address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
-      addr, PMEM_LEFT, PMEM_RIGHT,cpu.nextpc);
+      addr, PMEM_LEFT, PMEM_RIGHT,cpu_info.nextpc);
 }
 //----------------------------dpi-c----------------------------
 extern "C" void get_inst(int raddr, int *rdata) {
   *rdata=paddr_read(raddr,4,0);
-  cpu.inst=*rdata;
+  cpu_info.inst=*rdata;
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 extern "C" void pmem_read(int raddr, int *rdata) {
@@ -90,7 +91,7 @@ word_t paddr_read(paddr_t addr, int len,int model) {
   if(model==1){
     if(likely(in_pmem(addr))){
       char mtrace_logbuf[120];
-      sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",cpu.nextpc,addr,pmem_rdata);
+      sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",cpu_info.nextpc,addr,pmem_rdata);
       enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
     }
   }
@@ -110,7 +111,7 @@ void paddr_write(paddr_t addr, int len, word_t data) {
 
   #ifdef CONFIG_MTRACE
   char mtrace_logbuf[120];
-  sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x wdata:0x%08x len:%d",cpu.nextpc,addr,data,len);
+  sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x wdata:0x%08x len:%d",cpu_info.nextpc,addr,data,len);
   enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
   // printf("%s\n",mtrace_logbuf);
   #endif

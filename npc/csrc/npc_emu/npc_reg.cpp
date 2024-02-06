@@ -3,6 +3,8 @@
 extern CPU_state cpu;
 
 void cpy_reg() {
+  
+
   cpu.gpr[0]=0;
   cpu.gpr[1]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_1;
   cpu.gpr[2]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_2;
