@@ -217,7 +217,7 @@ static int decode_exec(Decode *s) {
                                                                   wLog("\t%s",etrace_logbuf);
                                                                   enqueueIRingBuffer(&etrace_buffer,etrace_logbuf);
                                                                 )); //mret没有实现完毕
-  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , I, s->dnpc=isa_raise_intr(Reg(ECALL_REG),s->pc);
+  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , I, s->dnpc=isa_raise_intr(Reg(15),s->pc);
                                                                 IFDEF(CONFIG_ETRACE, 
                                                                   char etrace_logbuf[128]; 
                                                                   sprintf(etrace_logbuf,"pc:0x%08x ecall!!!",cpu.pc); 
