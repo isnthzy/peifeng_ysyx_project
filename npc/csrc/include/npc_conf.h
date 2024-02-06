@@ -21,11 +21,11 @@
 #define CONFIG_VGA_SIZE_400x300 1
 //设备开关
 /*---------------------------------------------------------------------------------*/
-#define MTRACE_LOGBUF_SIZE 1280
+#define MTRACE_LOGBUF_SIZE 10
 #define ITRACE_LOGBUF_SIZE 10
 #define DTRACE_LOGBUF_SIZE 10
 #define ETRACE_LOGBUF_SIZE 10
-#define IRINGBUF_MAX_NUM 1280
+#define IRINGBUF_MAX_NUM 128
 //trace最多开多少IRINGBUF_MAX_NUM给多少
 /*---------------------------------------------------------------------------------*/
 #define CONFIG_PC_RESET_OFFSET 0x0
