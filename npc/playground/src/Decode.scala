@@ -17,14 +17,6 @@ object Alus{
   val ALU_XXX = 12.U(4.W)
 }
 
-object CSR {
-  val N = 0.U(5.W)
-  val W = 1.U(5.W)
-  val S = 2.U(5.W)
-  val MRET  = 3.U(5.W)
-  val ECALL = 4.U(5.W)
-  val BREAK = 5.U(5.W)
-}
 
 object Instructions {
   // Loads

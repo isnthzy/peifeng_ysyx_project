@@ -20,7 +20,7 @@ class WB_stage extends Module {
   Csrfile.io.rs1_addr:=WB.IO.rs1_addr
   Csrfile.io.in:=WB.IO.result
   WB.to_if.epc_wen:=(WB.IO.pc_sel===PC_EPC)
-  WB.to_if.csr_epc:=Csrfile.io.csr_epc
+  WB.to_if.csr_epc:=Csrfile.io.epc
 
   WB.to_id.waddr:=WB.IO.rd
   WB.to_id.wdata:=Mux(Csrfile.io.out_wen,Csrfile.io.out,WB.IO.result)
