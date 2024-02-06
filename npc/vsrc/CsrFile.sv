@@ -46,7 +46,7 @@ module CsrFile(	// @[<stdin>:1128:3]
   `ifndef SYNTHESIS	// @[playground/src/Csr.scala:71:15]
     always @(posedge clock) begin	// @[playground/src/Csr.scala:71:15]
       if ((`PRINTF_COND_) & _GEN_0 & _GEN_1 & ~reset)	// @[playground/src/Csr.scala:69:18, :70:23, :71:15]
-        $fwrite(32'h80000002, "11111111111111");	// @[playground/src/Csr.scala:71:15]
+        $fwrite(32'h80000002, "111111111111111111");	// @[playground/src/Csr.scala:71:15]
     end // always @(posedge)
   `endif // not def SYNTHESIS
   wire        _GEN_2 = io_csr_addr == 12'h300;	// @[playground/src/Csr.scala:46:37, :73:28]
