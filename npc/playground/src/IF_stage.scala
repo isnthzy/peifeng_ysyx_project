@@ -16,7 +16,7 @@ class IF_stage extends Module {
 // pc在这里用dpi-c进行取指
   snpc  := REGpc + 4.U
   dnpc  := Mux(IF.epc_bus.epc_wen, IF.epc_bus.csr_epc, IF.br_bus.dnpc)
-  nextpc:= Mux(IF.br_bus.is_jump, dnpc, snpc)
+  nextpc:= Mux(IF.br_bus.is_jump||IF.epc_bus.epc_wen, dnpc, snpc)
   
   Fetch.io.clock:=clock
   Fetch.io.reset:=reset
