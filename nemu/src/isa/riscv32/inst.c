@@ -24,7 +24,7 @@
 #define Mw vaddr_write
 #define XLEN 32 //代整数寄存器的宽度
 
-#ifdef __riscv_e
+#ifdef CONFIG_RVE
 #define ECALL_REG 15 // a5
 #else
 #define ECALL_REG 17 // a7
