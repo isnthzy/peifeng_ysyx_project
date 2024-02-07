@@ -147,7 +147,7 @@ void init_monitor(int argc, char *argv[]) {
                                "bad"))) "-pc-linux-gnu"
   ));
 #endif
-  printf("\n\n\n nemupc:%x\n\n\n",cpu.pc);
+
   /* Display welcome message. */
   welcome();
 }
