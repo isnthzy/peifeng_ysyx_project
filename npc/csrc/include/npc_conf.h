@@ -1,8 +1,9 @@
 
 
 #define CONFIG_ISA_riscv 1
-#define CONFIG_RVE
-//isa选择
+#define CONFIG_RVE 1
+//isa选择,请注意，当nemu没有开启E扩展而npc开启时，会因为寄存器大小不同导致与nemu的difftest初始化通信拷贝异常而无法正确启动(初始化)
+//因此仅仅是使用ARCH=riscv32e这个行为是无效的使用前请确保nemu和npc的E扩展都开启！
 /*---------------------------------------------------------------------------------*/
 #define CONFIG_TRACE 1
 #define CONFIG_ITRACE 1
