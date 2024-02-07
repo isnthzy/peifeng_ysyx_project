@@ -51,7 +51,7 @@ static inline void update_screen() {
   SDL_RenderPresent(renderer);
 }
 
-#endif
+
 
 void vga_update_screen() {
   if(vgactl_port_base[1]) update_screen();
@@ -59,7 +59,7 @@ void vga_update_screen() {
   // TODO: call `update_screen()` when the sync register is non-zero,
   // then zero out the sync register
 }
-
+#endif
 void init_vga() {
   vgactl_port_base[0] = (screen_width() << 16) | screen_height();
   IFDEF(CONFIG_HAS_VGA, init_screen());
