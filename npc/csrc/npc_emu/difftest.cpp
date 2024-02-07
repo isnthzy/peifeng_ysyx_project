@@ -33,7 +33,7 @@ void (*ref_difftest_exec)(uint64_t n) = NULL;
 void (*ref_difftest_raise_intr)(uint64_t NO) = NULL;
 #ifdef CONFIG_DIFFTEST
 bool isa_difftest_checkregs(CPU_state *ref_r,vaddr_t pc,vaddr_t npc){
-  for(int i=0;i<32;i++){
+  for(int i=0;i<MUXDEF(CONFIG_RVE, 16, 32);i++){
     if(ref_r->gpr[i]!=gpr(i)){
           /*真机的pc要慢一拍,因为nemu的寄存器写入是瞬间写，npc是延迟一拍后写
           所以要用pc指示相应的reg不同*/
@@ -112,13 +112,14 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   ref_difftest_init(port);
   ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF,0);
+  printf("\n\n\n npcpc:\n\n\n",cpu.pc);
 }
 void reg_ref_display(CPU_state *ref_r){
   printf("ref->mstatus:0x%08x\nref->mepc   :0x%08x\nref->mtvec  :0x%08x\nref->mcause :0x%08x\n",\
   ref_r->mstatus,ref_r->mepc,ref_r->mtvec,ref_r->mcause);
   int i;
   printf("name   value   name   value   name   value   name   value\n");
-  for(i=0;i<32;i+=4){
+  for(i=0;i<MUXDEF(CONFIG_RVE, 16, 32);i+=4){
     printf("%3s 0x%08x %3s 0x%08x %3s 0x%08x %3s 0x%08x\n",\
     regs[i],ref_r->gpr[i],regs[i+1],ref_r->gpr[i+1],regs[i+2],ref_r->gpr[i+2],regs[i+3],ref_r->gpr[i+3]);
   }

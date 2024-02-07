@@ -46,7 +46,7 @@ void cpy_reg() {
 
 
 int check_reg_idx(int idx) {
-  assert(idx >= 0 && idx <32);
+  assert(idx >= 0 && idx <MUXDEF(CONFIG_RVE, 16, 32));
   return idx;
 }
 
