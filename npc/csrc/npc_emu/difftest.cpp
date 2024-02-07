@@ -111,8 +111,8 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
 
   ref_difftest_init(port);
   ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
-  ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF,0);
   printf("\n\n\n npcpc:%x\n\n\n",cpu.pc);
+  ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF,0);
 }
 void reg_ref_display(CPU_state *ref_r){
   printf("ref->mstatus:0x%08x\nref->mepc   :0x%08x\nref->mtvec  :0x%08x\nref->mcause :0x%08x\n",\
