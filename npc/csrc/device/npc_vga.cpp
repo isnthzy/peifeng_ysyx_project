@@ -23,7 +23,7 @@ uint32_t screen_size() {
 static uint8_t vmem[VMEM_SIZE];
 static uint32_t vgactl_port_base[2];
 
-#ifdef CONFIG_VGA_SHOW_SCREEN
+#ifdef CONFIG_HAS_VGA
 #include <SDL2/SDL.h>
 
 static SDL_Renderer *renderer = NULL;
@@ -51,7 +51,7 @@ static inline void update_screen() {
   SDL_RenderPresent(renderer);
 }
 
-#endif
+
 
 void vga_update_screen() {
   if(vgactl_port_base[1]) update_screen();
@@ -59,18 +59,20 @@ void vga_update_screen() {
   // TODO: call `update_screen()` when the sync register is non-zero,
   // then zero out the sync register
 }
-
+#endif
 void init_vga() {
   vgactl_port_base[0] = (screen_width() << 16) | screen_height();
-  IFDEF(CONFIG_VGA_SHOW_SCREEN, init_screen());
-  IFDEF(CONFIG_VGA_SHOW_SCREEN, memset(vmem, 0, screen_size()));
+  IFDEF(CONFIG_HAS_VGA, init_screen());
+  IFDEF(CONFIG_HAS_VGA, memset(vmem, 0, screen_size()));
 }
 
 uint32_t get_vga_vgactl(){
+  IFNDEF(CONFIG_HAS_VGA,panic("Device vga is not open"));
   return vgactl_port_base[0];
 }
 
 void change_vga_sync(word_t data){
+  IFNDEF(CONFIG_HAS_VGA,panic("Device vga is not open"));
   vgactl_port_base[1]=data;
   return;
 }
@@ -97,10 +99,12 @@ static inline void vhost_write(void *addr, int len, uint32_t data) {
 uint8_t* guest_to_vhost(paddr_t paddr) { return vmem + paddr - FB_ADDR; }
 
 word_t vmem_read(paddr_t addr, int len) {
+  IFNDEF(CONFIG_HAS_VGA,panic("Device vga is not open"));
   word_t ret = vhost_read(guest_to_vhost(addr), len);
   return ret;
 }
 
 void vmem_write(paddr_t addr, int len, word_t data) {
+  IFNDEF(CONFIG_HAS_VGA,panic("Device vga is not open"));
   vhost_write(guest_to_vhost(addr), len, data);
 }

@@ -39,6 +39,7 @@ static void key_enqueue(uint32_t am_scancode) {
 }
 
 uint32_t key_dequeue() {
+  IFNDEF(DEVICE_HAS_KEYBOARD,panic("Device keyboard is not open"));
   uint32_t key = NPC_KEY_NONE;
   if (key_f != key_r) {
     key = key_queue[key_f];
