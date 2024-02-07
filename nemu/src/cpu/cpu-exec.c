@@ -144,7 +144,6 @@ void assert_fail_msg() {
 /* Simulate how the CPU works. */
 bool init_iringbuf_f=false;
 void cpu_exec(uint64_t n,bool is_ref) {
-  printf("\n\n\n nemupc:%x\n\n\n",cpu.pc);
   #ifdef CONFIG_TRACE
   if(!init_iringbuf_f){
     init_iringbuf_f=true;
