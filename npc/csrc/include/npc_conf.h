@@ -1,7 +1,7 @@
 
 
 #define CONFIG_ISA_riscv 1
-#define CONFIG_RVE
+#define CONFIG_RVE 1
 //isa选择
 /*---------------------------------------------------------------------------------*/
 #define CONFIG_TRACE 1
