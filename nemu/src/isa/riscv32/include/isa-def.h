@@ -19,7 +19,7 @@
 #include <common.h>
 
 typedef struct {
-  word_t gpr[MUXDEF(1, 16, 32)];
+  word_t gpr[MUXDEF(0, 16, 32)];
   word_t pc;
   word_t mstatus;
   word_t mepc;
