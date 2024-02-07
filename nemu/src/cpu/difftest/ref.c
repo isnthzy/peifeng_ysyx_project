@@ -50,7 +50,6 @@ __EXPORT void difftest_regcpy(void *dut, bool direction,vaddr_t skip_target) {
     dut_t->mtvec=cpu.mtvec;
     dut_t->mcause=cpu.mcause;
   }
-  printf("\n\n\n nemupc:%x dut->pc:%x\n\n\n",cpu.pc,dut_t->pc);
   // assert(0);
 }
 
