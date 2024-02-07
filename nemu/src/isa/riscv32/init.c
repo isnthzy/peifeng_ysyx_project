@@ -40,4 +40,5 @@ void init_isa() {
 
   /* Initialize this virtual computer system. */
   restart();
+  printf("nemupc:%x\n\n\n",cpu.pc);
 }
