@@ -39,7 +39,7 @@ void init_log(const char *log_file) {
 }
 bool log_enable() {
   return MUXDEF(CONFIG_TRACE, (g_nr_guest_inst >= 0) &&
-         (g_nr_guest_inst <= 10000), false); //限制log的输出数，最多输出10000条
+         (g_nr_guest_inst <= NPCLOG_NUM), false); //限制log的输出数，最多输出NPCLOG_NUM条
 }
 //分割线
 

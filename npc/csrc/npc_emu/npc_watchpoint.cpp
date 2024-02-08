@@ -1,5 +1,5 @@
 #include "../include/npc_common.h"
-#define NR_WP 32
+#define NR_WP MUXDEF(CONFIG_RVE, 16, 32)
 
 typedef struct watchpoint {
   int NO;
