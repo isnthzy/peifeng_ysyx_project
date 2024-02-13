@@ -5,8 +5,9 @@ import Control._
 
 class ID_stage extends Module {
   val ID=IO(new Bundle {
-    val IO    =Input(new if_to_id_bus())
-    val to_ex =Output(new id_to_ex_bus())
+    // val IO    =Input(new if_to_id_bus())
+    val IO = Flipped(Decoupled(new if_to_id_bus()))
+    val to_ex =Decoupled(new id_to_ex_bus())
     val wb_bus=Input(new wb_to_id_bus())
   })
   val dc=Module(new Decode())
@@ -20,18 +21,18 @@ class ID_stage extends Module {
   val csr_addr=dontTouch(Wire(UInt(12.W)))
 
 
-  dc.io.inst:=ID.IO.inst
+  dc.io.inst:=ID.IO.bits.inst
 
-  ImmGen.io.inst:=ID.IO.inst
+  ImmGen.io.inst:=ID.IO.bits.inst
   ImmGen.io.sel :=dc.io.imm_sel
 
   imm := ImmGen.io.out
-  rs2 := ID.IO.inst(24, 20)
-  rs1 := ID.IO.inst(19, 15)
-  funct3 := ID.IO.inst(14, 12)
-  rd := ID.IO.inst(11, 7)
-  opcode := ID.IO.inst(6, 0)
-  csr_addr := ID.IO.inst(31, 20)
+  rs2 := ID.IO.bits.inst(24, 20)
+  rs1 := ID.IO.bits.inst(19, 15)
+  funct3 := ID.IO.bits.inst(14, 12)
+  rd := ID.IO.bits.inst(11, 7)
+  opcode := ID.IO.bits.inst(6, 0)
+  csr_addr := ID.IO.bits.inst(31, 20)
 
   val Regfile=Module(new RegFile())
   Regfile.io.raddr1:=rs1
@@ -44,7 +45,7 @@ class ID_stage extends Module {
 
   val src1=MuxLookup(dc.io.A_sel,0.U)(Seq(
     A_RS1 -> Regfile.io.rdata1,
-    A_PC  -> ID.IO.pc
+    A_PC  -> ID.IO.bits.pc
   ))
   val src2=MuxLookup(dc.io.B_sel,0.U)(Seq(
     B_RS2 -> Regfile.io.rdata2,
@@ -54,35 +55,35 @@ class ID_stage extends Module {
   Regfile.io.wdata:=ID.wb_bus.wdata
   Regfile.io.wen  :=ID.wb_bus.wen
 
-  ID.to_ex.pc_sel:=dc.io.pc_sel
-  ID.to_ex.csr_addr:=csr_addr
-  ID.to_ex.csr_cmd:=dc.io.csr_cmd
-  ID.to_ex.rs1_addr:=rs1
+  ID.to_ex.bits.pc_sel:=dc.io.pc_sel
+  ID.to_ex.bits.csr_addr:=csr_addr
+  ID.to_ex.bits.csr_cmd:=dc.io.csr_cmd
+  ID.to_ex.bits.rs1_addr:=rs1
   //csr
-  ID.to_ex.st_type:=dc.io.st_type
-  ID.to_ex.ld_type:=dc.io.ld_type
-  ID.to_ex.ebreak_flag:=(dc.io.csr_cmd===CSR.BREAK)
-  ID.to_ex.wb_sel :=dc.io.wb_sel
-  ID.to_ex.br_type:=dc.io.br_type
-  ID.to_ex.wen :=dc.io.wb_en
-  ID.to_ex.rd  :=rd
-  ID.to_ex.alu_op:=dc.io.alu_op
-  ID.to_ex.src1:=src1
-  ID.to_ex.src2:=src2
-  ID.to_ex.rdata1:=Regfile.io.rdata1
-  ID.to_ex.rdata2:=Regfile.io.rdata2
-  ID.to_ex.inst:=ID.IO.inst
-  ID.to_ex.pc  :=ID.IO.pc
-  ID.to_ex.nextpc:=ID.IO.nextpc
+  ID.to_ex.bits.st_type:=dc.io.st_type
+  ID.to_ex.bits.ld_type:=dc.io.ld_type
+  ID.to_ex.bits.ebreak_flag:=(dc.io.csr_cmd===CSR.BREAK)
+  ID.to_ex.bits.wb_sel :=dc.io.wb_sel
+  ID.to_ex.bits.br_type:=dc.io.br_type
+  ID.to_ex.bits.wen :=dc.io.wb_en
+  ID.to_ex.bits.rd  :=rd
+  ID.to_ex.bits.alu_op:=dc.io.alu_op
+  ID.to_ex.bits.src1:=src1
+  ID.to_ex.bits.src2:=src2
+  ID.to_ex.bits.rdata1:=Regfile.io.rdata1
+  ID.to_ex.bits.rdata2:=Regfile.io.rdata2
+  ID.to_ex.bits.inst:=ID.IO.bits.inst
+  ID.to_ex.bits.pc  :=ID.IO.bits.pc
+  ID.to_ex.bits.nextpc:=ID.IO.bits.nextpc
 
 
   
   val inv_break=Module(new inv_break())
   val inv_flag=Reg(Bool())
-  inv_flag:=(dc.io.illegal&&ID.IO.nextpc=/="h80000000".U)
+  inv_flag:=(dc.io.illegal&&ID.IO.bits.nextpc=/="h80000000".U)
   inv_break.io.clock:=clock
   inv_break.io.reset:=reset
-  inv_break.io.pc:=ID.IO.nextpc
+  inv_break.io.pc:=ID.IO.bits.nextpc
   inv_break.io.inv_flag:=inv_flag
 }
 

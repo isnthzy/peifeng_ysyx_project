@@ -5,7 +5,8 @@ import Control._
 
 class WB_stage extends Module {
   val WB=IO(new Bundle {
-    val IO    =Input(new ls_to_wb_bus())
+    // val IO    =Input(new ls_to_wb_bus())
+    val IO    =Flipped(Decoupled(new ls_to_wb_bus()))
     val to_id =Output(new wb_to_id_bus())
     val to_if =Output(new wb_to_if_bus())
     val debug_waddr=Output(UInt(5.W))
@@ -14,18 +15,18 @@ class WB_stage extends Module {
   })
 
   val Csrfile=Module(new CsrFile())
-  Csrfile.io.csr_cmd:=WB.IO.csr_cmd
-  Csrfile.io.pc:=WB.IO.pc
-  Csrfile.io.csr_addr:=WB.IO.csr_addr
-  Csrfile.io.rs1_addr:=WB.IO.rs1_addr
-  Csrfile.io.in:=WB.IO.result
-  WB.to_if.epc_wen:=(WB.IO.pc_sel===PC_EPC)
+  Csrfile.io.csr_cmd:=WB.IO.bits.csr_cmd
+  Csrfile.io.pc:=WB.IO.bits.pc
+  Csrfile.io.csr_addr:=WB.IO.bits.csr_addr
+  Csrfile.io.rs1_addr:=WB.IO.bits.rs1_addr
+  Csrfile.io.in:=WB.IO.bits.result
+  WB.to_if.epc_wen:=(WB.IO.bits.pc_sel===PC_EPC)
   WB.to_if.csr_epc:=Csrfile.io.epc
 
-  WB.to_id.waddr:=WB.IO.rd
-  WB.to_id.wdata:=Mux(Csrfile.io.out_wen,Csrfile.io.out,WB.IO.result)
+  WB.to_id.waddr:=WB.IO.bits.rd
+  WB.to_id.wdata:=Mux(Csrfile.io.out_wen,Csrfile.io.out,WB.IO.bits.result)
   //如果是csr写入寄存器操作，相应的都要修改成csr寄存器的值
-  WB.to_id.wen  :=WB.IO.wen
+  WB.to_id.wen  :=WB.IO.bits.wen
   WB.debug_waddr:=WB.to_id.waddr
   WB.debug_wdata:=WB.to_id.wdata
   WB.debug_wen  :=WB.to_id.wen
@@ -33,8 +34,8 @@ class WB_stage extends Module {
   val dpi_ebreak=Module(new dpi_ebreak())
   dpi_ebreak.io.clock:=clock
   dpi_ebreak.io.reset:=reset
-  dpi_ebreak.io.pc:=WB.IO.nextpc
-  dpi_ebreak.io.ebreak_flag:=WB.IO.ebreak_flag
+  dpi_ebreak.io.pc:=WB.IO.bits.nextpc
+  dpi_ebreak.io.ebreak_flag:=WB.IO.bits.ebreak_flag
   dpi_ebreak.io.ret_reg:=WB.to_id.wdata
 }
 

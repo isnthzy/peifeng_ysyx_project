@@ -2,27 +2,6 @@ import chisel3._
 import chisel3.util._
 import config.Configs._
 
-// class Message extends Bundle {
-//   val inst = Output(UInt(32.W))
-//   val pc   = Output(UInt(32.W))
-// }
-// class IFU extends Module {
-//   val io = IO(new Bundle {
-//     val inst=Input(UInt(32.W))
-//     val out = Decoupled(new Message)
-//   })
-
-//   io.out.bits.inst :=io.inst
-//   io.out.bits.pc := 4.U
-//   io.out.valid := true.B
-// }
-// class IDU extends Module {
-//   val io = IO(new Bundle {
-//     val in = Flipped(Decoupled(new Message))
-//   })
-//   io.in.ready:=true.B
-//   // ...
-// }
 class SimTop extends Module {
   val io = IO(new Bundle {
     val debug_waddr=Output(UInt(5.W))
@@ -38,14 +17,15 @@ class SimTop extends Module {
   IF_stage.IF.br_bus:=EX_stage.EX.br_bus
   IF_stage.IF.epc_bus:=WB_stage.WB.to_if
 // ID begin
-  ID_stage.ID.IO:=IF_stage.IF.IO
+  StageConnect(IF_stage.IF.IO,ID_stage.ID.IO) //左边是left（out），右边是right(in)
   ID_stage.ID.wb_bus:=WB_stage.WB.to_id
 // EX begin
-  EX_stage.EX.IO:=ID_stage.ID.to_ex
+  StageConnect(ID_stage.ID.to_ex,EX_stage.EX.IO)
 // lS begin
-  LS_stage.LS.IO:=EX_stage.EX.to_ls
+  StageConnect(EX_stage.EX.to_ls,LS_stage.LS.IO)
 // WB begin
-  WB_stage.WB.IO:=LS_stage.LS.to_wb
+  StageConnect(LS_stage.LS.to_wb,WB_stage.WB.IO)
+
 
 //debug
   io.debug_waddr:=WB_stage.WB.debug_waddr
@@ -53,3 +33,13 @@ class SimTop extends Module {
   io.debug_wen  :=WB_stage.WB.debug_wen
 }
 
+object StageConnect {
+  def apply[T <: Data](left: DecoupledIO[T], right: DecoupledIO[T]) = {
+    val arch = "single"
+    // 为展示抽象的思想, 此处代码省略了若干细节
+    if      (arch == "single")   { right.bits := left.bits }
+    else if (arch == "multi")    { right <> left }
+    // else if (arch == "pipeline") { right <> RegEnable(left, left.fire) }
+    // else if (arch == "ooo")      { right <> Queue(left, 16) }
+  }
+}

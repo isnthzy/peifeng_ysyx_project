@@ -1,6 +1,4 @@
 
-import "DPI-C" function void pmem_read (input int raddr, output int rdata);
-import "DPI-C" function void pmem_write(input int waddr, input  int wdata, input byte wmask);
 module dpi_ls(
    input        clock,
    input        reset,
@@ -12,20 +10,33 @@ module dpi_ls(
    input [31:0] waddr,
    input [31:0] wdata
 );
- 
-always_latch @(*) begin
-  if(~reset)begin
-    if(ld_wen&&clock) begin
-      pmem_read (raddr,rdata);
-    end
-    else begin
-      rdata[31:0]=0;
-    end
-
-    if(st_wen&&clock) begin
-      pmem_write(waddr,wdata,wmask);
-    end
-  end
- end
+   reg [31:0] mem2[255:0];
+   reg [31:0] rdata_reg;
+   // 时序逻辑：处理读和写操作
+   always @(posedge clock or negedge reset) begin
+       if (!reset) begin
+           // 复位逻辑，初始化 rdata_reg
+           rdata_reg <= 0;
+           // 复位逻辑，初始化内存（如果需要）
+           // 例如：for (int i = 0; i < 256; i++) mem2[i] <= 0;
+       end else begin
+           if (ld_wen) begin
+               // 在读使能有效时读取数据
+               rdata_reg <= mem2[raddr];
+           end
+           if (st_wen) begin
+               // 在写使能有效时写入数据
+               mem2[waddr] <= wdata;
+           end
+       end
+   end
+   // 组合逻辑：输出读数据
+   always_comb begin
+       if (ld_wen) begin
+           rdata <= mem2[raddr];
+       end else begin
+           rdata <= rdata_reg;
+       end
+   end
 endmodule
     
