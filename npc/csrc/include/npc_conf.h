@@ -5,11 +5,11 @@
 
 /*---------------------------------------------------------------------------------*/
 
-#define CONFIG_TRACE 1
-#define CONFIG_ITRACE 1
+// #define CONFIG_TRACE 1
+// #define CONFIG_ITRACE 1
 // #define CONFIG_FTRACE 1
 // #define CONFIG_MTRACE 1
-#define CONFIG_DIFFTEST 1
+// #define CONFIG_DIFFTEST 1
 #define NPCLOG_NUM 10000 //trace最多记录多少个log
 //TRACE开关
 
@@ -24,7 +24,7 @@
 // #define DEVICE_HAS_KEYBOARD 1
 // #define CONFIG_HAS_VGA 1
 // #define CONFIG_VGA_SIZE_400x300 1
-//设备开关
+//设备开关,默认串口输出打开
 
 /*---------------------------------------------------------------------------------*/
 

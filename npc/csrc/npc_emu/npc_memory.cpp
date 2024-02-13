@@ -68,12 +68,11 @@ extern "C" int get_inst(int raddr) {
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 extern "C" void pmem_read(int raddr, int *rdata) {
-  raddr=raddr & ~0x3u;
   *rdata=paddr_read(raddr,4,1);
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 extern "C" void pmem_write(int waddr, int wdata, char wmask) {
-  waddr=waddr & ~0x3u;
+  // waddr=waddr & ~0x3u;
   if(wmask==0x1) paddr_write(waddr,1,wdata);
   else if(wmask==0x3) paddr_write(waddr,2,wdata);
   else if(wmask==0xf) paddr_write(waddr,4,wdata);
