@@ -38,7 +38,7 @@ object StageConnect {
     val arch = "single"
     // 为展示抽象的思想, 此处代码省略了若干细节
     if      (arch == "single"){ 
-      in.ready:=true.B
+      in.valid:=true.B
       in.bits :=out.bits 
     }
     else if (arch == "multi"){ 
