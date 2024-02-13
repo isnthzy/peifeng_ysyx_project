@@ -17,7 +17,7 @@ class SimTop extends Module {
   IF_stage.IF.br_bus:=EX_stage.EX.br_bus
   IF_stage.IF.epc_bus:=WB_stage.WB.to_if
 // ID begin
-  StageConnect(IF_stage.IF.IO,ID_stage.ID.IO) //左边是left（out），右边是right(in)
+  StageConnect(IF_stage.IF.IO,ID_stage.ID.IO) //左边是out，右边是in
   ID_stage.ID.wb_bus:=WB_stage.WB.to_id
 // EX begin
   StageConnect(ID_stage.ID.to_ex,EX_stage.EX.IO)
@@ -34,14 +34,17 @@ class SimTop extends Module {
 }
 
 object StageConnect {
-  def apply[T <: Data](left: DecoupledIO[T], right: DecoupledIO[T]) = {
+  def apply[T <: Data](out: DecoupledIO[T], in: DecoupledIO[T]) = {
     val arch = "multi"
     // 为展示抽象的思想, 此处代码省略了若干细节
-    if      (arch == "single")   { 
-      right.bits := left.bits 
+    if      (arch == "single"){ 
+      in.ready:=true.B
+      in.bits :=out.bits 
     }
-    else if (arch == "multi")    { right <> left }
-    // else if (arch == "pipeline") { right <> RegEnable(left, left.fire) }
-    // else if (arch == "ooo")      { right <> Queue(left, 16) }
+    else if (arch == "multi"){ 
+      in <> out
+    }
+    // else if (arch == "pipeline") { in <> RegEnable(in, in.fire) }
+    // else if (arch == "ooo")      { in <> Queue(in, 16) }
   }
 }
