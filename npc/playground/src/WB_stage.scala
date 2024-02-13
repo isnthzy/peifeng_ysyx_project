@@ -13,6 +13,10 @@ class WB_stage extends Module {
     val debug_wdata=Output(UInt(DATA_WIDTH.W))
     val debug_wen  =Output(Bool())
   })
+  WB.IO.ready:=false.B
+
+
+  
 
   val Csrfile=Module(new CsrFile())
   Csrfile.io.csr_cmd:=WB.IO.bits.csr_cmd

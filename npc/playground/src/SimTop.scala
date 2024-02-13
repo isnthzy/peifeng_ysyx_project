@@ -35,7 +35,7 @@ class SimTop extends Module {
 
 object StageConnect {
   def apply[T <: Data](left: DecoupledIO[T], right: DecoupledIO[T]) = {
-    val arch = "multi"
+    val arch = "single"
     // 为展示抽象的思想, 此处代码省略了若干细节
     if      (arch == "single")   { 
       right.bits := left.bits 

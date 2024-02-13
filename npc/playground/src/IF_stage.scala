@@ -9,6 +9,9 @@ class IF_stage extends Module {
     val br_bus=Input(new br_bus())
     val epc_bus=Input(new wb_to_if_bus())
   })
+  IF.IO.valid:=true.B
+
+
   val REGpc   = RegInit(START_ADDR)
   val snpc    = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
   val dnpc    = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
