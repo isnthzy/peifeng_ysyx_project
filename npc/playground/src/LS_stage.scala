@@ -48,6 +48,54 @@ class LS_stage extends Module {
 
 }
 
+// class dpi_ls extends BlackBox with HasBlackBoxInline {
+//   val io = IO(new Bundle {
+//     val clock=Input(Clock())
+//     val reset=Input(Bool())
+//     val ld_wen=Input(Bool())
+//     val st_wen=Input(Bool())
+//     val raddr =Input(UInt(32.W))
+//     val rdata =Output(UInt(32.W))
+//     val wmask =Input(UInt(8.W))
+//     val waddr =Input(UInt(32.W))
+//     val wdata =Input(UInt(32.W))
+//   })
+//   setInline("dpi_ls.v",
+//     """
+//       |import "DPI-C" function void pmem_read (input int raddr, output int rdata);
+//       |import "DPI-C" function void pmem_write(input int waddr, input  int wdata, input byte wmask);
+//       |module dpi_ls(
+//       |   input        clock,
+//       |   input        reset,
+//       |   input        ld_wen,
+//       |   input        st_wen,
+//       |   input [31:0] raddr,
+//       |   output[31:0] rdata,
+//       |   input [ 7:0] wmask,
+//       |   input [31:0] waddr,
+//       |   input [31:0] wdata
+//       |);
+//       | 
+//       |always_latch @(*) begin
+//       |  if(~reset)begin
+//       |    if(ld_wen&&clock) begin
+//       |      pmem_read (raddr,rdata);
+//       |    end
+//       |    else begin
+//       |      rdata[31:0]=0;
+//       |    end
+//       |
+//       |    if(st_wen&&clock) begin
+//       |      pmem_write(waddr,wdata,wmask);
+//       |    end
+//       |  end
+//       | end
+//       |endmodule
+//     """.stripMargin)
+// }
+
+
+//yosys_test
 class dpi_ls extends BlackBox with HasBlackBoxInline {
   val io = IO(new Bundle {
     val clock=Input(Clock())
@@ -62,8 +110,6 @@ class dpi_ls extends BlackBox with HasBlackBoxInline {
   })
   setInline("dpi_ls.v",
     """
-      |import "DPI-C" function void pmem_read (input int raddr, output int rdata);
-      |import "DPI-C" function void pmem_write(input int waddr, input  int wdata, input byte wmask);
       |module dpi_ls(
       |   input        clock,
       |   input        reset,
@@ -75,18 +121,18 @@ class dpi_ls extends BlackBox with HasBlackBoxInline {
       |   input [31:0] waddr,
       |   input [31:0] wdata
       |);
-      | 
+      |reg [31:0] mem2[255:0];
       |always_latch @(*) begin
       |  if(~reset)begin
       |    if(ld_wen&&clock) begin
-      |      pmem_read (raddr,rdata);
+      |      rdata[31:0]<=mem2[raddr];
       |    end
       |    else begin
       |      rdata[31:0]=0;
       |    end
       |
       |    if(st_wen&&clock) begin
-      |      pmem_write(waddr,wdata,wmask);
+      |      mem2[waddr]<=wdata;
       |    end
       |  end
       | end
