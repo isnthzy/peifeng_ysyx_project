@@ -24,8 +24,19 @@ class if_to_id_bus extends Bundle{
   val inst=UInt(32.W)
 }
 
+class To_wb_dpic_bus extends Bundle{
+  val id_inv_flag=Bool()
+
+  val ex_func_flag=Bool()
+  val ex_is_jal=Bool()
+  val ex_is_ret=Bool()
+  val ex_is_rd0=Bool()
+}
 
 class id_to_ex_bus extends Bundle{
+  val dpic_bundle=new To_wb_dpic_bus()
+  //传递到wb级进行交给dpic处理
+
   val pc_sel=Bool()
   val csr_addr=UInt(12.W)
   val csr_cmd=UInt(5.W)
@@ -49,6 +60,9 @@ class id_to_ex_bus extends Bundle{
 }
 
 class ex_to_ls_bus extends Bundle{
+  val dpic_bundle=new To_wb_dpic_bus()
+   //传递到wb级进行交给dpic处理
+
   val pc_sel=Bool()
   val csr_addr=UInt(12.W)
   val csr_cmd=UInt(5.W)
@@ -68,6 +82,9 @@ class ex_to_ls_bus extends Bundle{
 }
 
 class ls_to_wb_bus extends Bundle{
+  val dpic_bundle=new To_wb_dpic_bus()
+   //传递到wb级进行交给dpic处理
+
   val pc_sel=Bool()
   val csr_addr=UInt(12.W)
   val csr_cmd=UInt(5.W)

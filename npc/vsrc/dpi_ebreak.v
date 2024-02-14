@@ -1,15 +1,16 @@
 
-import "DPI-C" function void sim_break(input int pc,input int ret_reg);
+import "DPI-C" function void sim_break(input int pc,input int ret_reg_data);
 module dpi_ebreak(
     input        clock,
     input        reset,
-    input        ebreak_flag,
+    input        dpi_valid,
+    input        is_ebreak,
     input [31:0] pc,
-    input [31:0] ret_reg
+    input [31:0] ret_reg_data
 );
  always @(posedge clock)begin
    if(~reset)begin
-     if(ebreak_flag)  sim_break(pc,ret_reg);
+     if(is_ebreak&&dpi_valid)  sim_break(pc,ret_reg_data);
    end
   end
 endmodule

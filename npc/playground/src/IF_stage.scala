@@ -4,10 +4,20 @@ import config.Configs._
 
 class IF_stage extends Module {
   val IF=IO(new Bundle {
-    val IO    =Output(new if_to_id_bus())
+    // val IO    =Output(new if_to_id_bus())
+    val IO    =Decoupled(new if_to_id_bus())
     val br_bus=Input(new br_bus())
     val epc_bus=Input(new wb_to_if_bus())
   })
+  val if_valid=dontTouch(RegInit(false.B))
+  val if_ready_go=dontTouch(Wire(Bool()))
+  if_ready_go:=true.B
+  when(reset.asBool=/=true.B){
+    if_valid:=true.B
+  }
+  IF.IO.valid:=if_valid && if_ready_go
+
+
   val REGpc   = RegInit(START_ADDR)
   val snpc    = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
   val dnpc    = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
@@ -22,11 +32,10 @@ class IF_stage extends Module {
   Fetch.io.reset:=reset
   Fetch.io.pc   :=REGpc
   Fetch.io.nextpc:=nextpc
-  IF.IO.inst:=Fetch.io.inst
-
+  IF.IO.bits.inst:=Fetch.io.inst
   REGpc := nextpc //reg类型，更新慢一拍
-  IF.IO.pc  :=REGpc
-  IF.IO.nextpc:=nextpc
+  IF.IO.bits.pc  :=REGpc
+  IF.IO.bits.nextpc:=nextpc
 }
 
 class read_inst extends BlackBox with HasBlackBoxPath{
