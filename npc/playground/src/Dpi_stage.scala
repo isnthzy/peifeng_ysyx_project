@@ -86,10 +86,6 @@ class dpi_getpc extends BlackBox with HasBlackBoxInline {
     """.stripMargin)
 }  
 
-
-
-
-
 class dpi_inv extends BlackBox with HasBlackBoxInline {
   val io = IO(new Bundle {
     val clock=Input(Clock())
