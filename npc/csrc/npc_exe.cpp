@@ -32,8 +32,8 @@ void step_and_dump_wave(){
 }
 
 //----------------------------dpi-c----------------------------
-extern "C" void sim_break(int nextpc,int ret_reg){
-  npc_state.halt_ret=ret_reg;
+extern "C" void sim_break(int nextpc,int ret_reg_data){
+  npc_state.halt_ret=ret_reg_data;
   npc_state.halt_pc=nextpc;
   npc_state.state=NPC_END;
 }
@@ -42,19 +42,19 @@ extern "C" void inv_break(int nextpc){
   npc_state.state=NPC_ABORT;
 }
 
-extern "C" void cpu_use_func(int pc,int nextpc,int inst,svBit is_jal,int rd){
+extern "C" void cpu_use_func(int pc,int nextpc,svBit is_ret,svBit is_jal,svBit is_rd0){
   //调用cpu_use_func后，is_jal=1 jal,is_jal=0 jalr
   #ifdef CONFIG_FTRACE
   if(ftrace_flag){
     if(is_jal){ //jal指令
-      if(rd==1) func_call(pc,nextpc,false);
+      func_call(pc,nextpc,false);
     }else{   //jalr指令
-      if(inst==0x00008067){
+      if(is_ret){
         func_ret(pc);
-      }else if(rd==1){ //jalr是跳转,jr不是(jr被编译器优化为尾调用)
-        func_call(pc,nextpc,false);
-      }else if(rd==0){
+      }else if(is_rd0){ //jalr是跳转,jr不是(jr被编译器优化为尾调用)
         func_call(pc,nextpc,true);
+      }else{
+        func_call(pc,nextpc,false);
       }
     }
   }

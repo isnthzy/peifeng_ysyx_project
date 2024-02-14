@@ -86,39 +86,11 @@ class ID_stage extends Module {
   ID.to_ex.bits.pc  :=ID.IO.bits.pc
   ID.to_ex.bits.nextpc:=ID.IO.bits.nextpc
 
-
-  
-  // val inv_break=Module(new inv_break())
-  // val inv_flag=Reg(Bool())
-  // inv_flag:=(dc.io.illegal&&ID.IO.bits.nextpc=/="h80000000".U)
-  // inv_break.io.clock:=clock
-  // inv_break.io.reset:=reset
-  // inv_break.io.pc:=ID.IO.bits.nextpc
-  // inv_break.io.inv_flag:=inv_flag
+  /*---------------------传递信号到wb级再由wb级处理dpi信号----------------------*/
+  ID.to_ex.bits.dpic_bundle.id_inv_flag:=(dc.io.illegal&&ID.IO.bits.nextpc=/="h80000000".U)
+  ID.to_ex.bits.dpic_bundle.ex_func_flag:=false.B
+  ID.to_ex.bits.dpic_bundle.ex_is_jal:=false.B
+  ID.to_ex.bits.dpic_bundle.ex_is_ret:=false.B
+  ID.to_ex.bits.dpic_bundle.ex_is_rd0:=false.B
 }
 
-
-// class inv_break extends BlackBox with HasBlackBoxInline {
-//   val io = IO(new Bundle {
-//     val clock=Input(Clock())
-//     val reset=Input(Bool())
-//     val inv_flag=Input(Bool())
-//     val pc      =Input(UInt(32.W))
-//   })
-//   setInline("inv_break.v",
-//     """
-//       |import "DPI-C" function void inv_break(input int pc);
-//       |module inv_break(
-//       |    input        clock,
-//       |    input        reset,
-//       |    input        inv_flag,
-//       |    input [31:0] pc
-//       |);
-//       | always @(posedge clock)begin
-//       |   if(~reset)begin
-//       |     if(inv_flag)  inv_break(pc);
-//       |   end
-//       |  end
-//       |endmodule
-//     """.stripMargin)
-// }  

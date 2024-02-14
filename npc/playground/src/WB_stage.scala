@@ -40,38 +40,20 @@ class WB_stage extends Module {
   WB.debug_wdata:=WB.to_id.wdata
   WB.debug_wen  :=WB.to_id.wen
 
-  val dpi_ebreak=Module(new dpi_ebreak())
-  dpi_ebreak.io.clock:=clock
-  dpi_ebreak.io.reset:=reset
-  dpi_ebreak.io.pc:=WB.IO.bits.nextpc
-  dpi_ebreak.io.ebreak_flag:=WB.IO.bits.ebreak_flag
-  dpi_ebreak.io.ret_reg:=WB.to_id.wdata
+
+
+  val DPI_stage=Module(new DPI_stage())
+  DPI_stage.DPI.wb_valid:=wb_valid
+  DPI_stage.DPI.pc:=WB.IO.bits.pc
+  DPI_stage.DPI.nextpc:=WB.IO.bits.nextpc
+  DPI_stage.DPI.inv_flag:=WB.IO.bits.dpic_bundle.id_inv_flag
+  DPI_stage.DPI.func_flag:=WB.IO.bits.dpic_bundle.ex_func_flag
+  DPI_stage.DPI.is_jal:=WB.IO.bits.dpic_bundle.ex_is_jal
+  DPI_stage.DPI.is_ret:=WB.IO.bits.dpic_bundle.ex_is_ret
+  DPI_stage.DPI.is_rd0:=WB.IO.bits.dpic_bundle.ex_is_rd0
+  DPI_stage.DPI.is_ebreak:=WB.IO.bits.ebreak_flag
+  DPI_stage.DPI.ret_reg_data:=WB.to_id.wdata
+
 }
 
 
-class dpi_ebreak extends BlackBox with HasBlackBoxInline {
-  val io = IO(new Bundle {
-    val clock=Input(Clock())
-    val reset=Input(Bool())
-    val ebreak_flag=Input(Bool())
-    val pc         =Input(UInt(32.W))
-    val ret_reg    =Input(UInt(32.W))
-  })
-  setInline("dpi_ebreak.v",
-    """
-      |import "DPI-C" function void sim_break(input int pc,input int ret_reg);
-      |module dpi_ebreak(
-      |    input        clock,
-      |    input        reset,
-      |    input        ebreak_flag,
-      |    input [31:0] pc,
-      |    input [31:0] ret_reg
-      |);
-      | always @(posedge clock)begin
-      |   if(~reset)begin
-      |     if(ebreak_flag)  sim_break(pc,ret_reg);
-      |   end
-      |  end
-      |endmodule
-    """.stripMargin)
-}

@@ -71,6 +71,17 @@ void reset(int n){
   top->reset=0;
 }
 
+void pipe_init(){
+  //让流水线初始化第一条指令到wb级，以实现到wb级si就执行一次的功能
+  int n=4;
+  while(n--){
+    top->clock=1;
+    step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
+    top->clock=0;
+    step_and_dump_wave();
+  }
+}
+
 void init_sim(){
   contextp = new VerilatedContext;
   top = new VSimTop;
@@ -159,6 +170,9 @@ void init_monitor(int argc, char *argv[]) {
 
   reset(2);
   //初始化reset
+
+  pipe_init();
+  //初始化流水线
 
   /* Open the log file. */
   init_log(log_file);

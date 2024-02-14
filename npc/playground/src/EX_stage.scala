@@ -67,47 +67,21 @@ class EX_stage extends Module {
   EX.to_ls.bits.inst:=EX.IO.bits.inst
   EX.to_ls.bits.nextpc:=EX.IO.bits.nextpc
 
-  val dpi_func=Module(new dpi_func())
-  dpi_func.io.clock:=clock
-  dpi_func.io.reset:=reset
-  dpi_func.io.func_flag:=(EX.IO.bits.br_type===BR_JAL)|(EX.IO.bits.br_type===BR_JR)
-  dpi_func.io.is_jal:=(EX.IO.bits.br_type===BR_JAL)
-  dpi_func.io.pc:=EX.IO.bits.nextpc
-  dpi_func.io.nextpc:=0.U
-  dpi_func.io.rd:=EX.IO.bits.rd
-  dpi_func.io.inst:=EX.IO.bits.inst
+  /*---------------------传递信号到wb级再由wb级处理dpi信号----------------------*/
+  EX.to_ls.bits.dpic_bundle.id_inv_flag:=EX.IO.bits.dpic_bundle.id_inv_flag
+  EX.to_ls.bits.dpic_bundle.ex_func_flag:=(EX.IO.bits.br_type===BR_JAL)|(EX.IO.bits.br_type===BR_JR)
+  EX.to_ls.bits.dpic_bundle.ex_is_jal:=EX.IO.bits.br_type===BR_JAL
+  EX.to_ls.bits.dpic_bundle.ex_is_ret:=EX.IO.bits.inst===0x00008067.U
+  EX.to_ls.bits.dpic_bundle.ex_is_rd0:=EX.IO.bits.rd===0.U
+  // val dpi_func=Module(new dpi_func())
+  // dpi_func.io.clock:=clock
+  // dpi_func.io.reset:=reset
+  // dpi_func.io.func_flag:=(EX.IO.bits.br_type===BR_JAL)|(EX.IO.bits.br_type===BR_JR)
+  // dpi_func.io.is_jal:=(EX.IO.bits.br_type===BR_JAL)
+  // dpi_func.io.pc:=EX.IO.bits.nextpc
+  // dpi_func.io.nextpc:=0.U
+  // dpi_func.io.rd:=EX.IO.bits.rd
+  // dpi_func.io.inst:=EX.IO.bits.inst
 
 }
 
-class dpi_func extends BlackBox with HasBlackBoxInline {
-  val io = IO(new Bundle {
-    val clock=Input(Clock())
-    val reset=Input(Bool())
-    val func_flag=Input(Bool())
-    val is_jal   =Input(Bool())
-    val pc       =Input(UInt(32.W))
-    val nextpc   =Input(UInt(32.W))
-    val rd       =Input(UInt(32.W))
-    val inst     =Input(UInt(32.W))
-  })
-  setInline("dpi_func.v",
-    """
-      |import "DPI-C" function void cpu_use_func(input int pc,input int nextpc,input int inst,input bit is_jal,input int rd);
-      |module dpi_func(
-      |    input        clock,
-      |    input        reset,
-      |    input        func_flag,
-      |    input        is_jal,
-      |    input [31:0] pc,
-      |    input [31:0] nextpc,
-      |    input [31:0] rd,
-      |    input [31:0] inst
-      |);
-      | always @(posedge clock)begin
-      |   if(~reset)begin
-      |     if(func_flag)   cpu_use_func(pc,nextpc,inst,is_jal,rd);
-      |   end
-      |  end
-      |endmodule
-    """.stripMargin)
-}
