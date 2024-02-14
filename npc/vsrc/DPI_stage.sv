@@ -15,7 +15,7 @@ module DPI_stage(	// @[<stdin>:1283:3]
                DPI_ret_reg_data	// @[playground/src/Dpi_stage.scala:13:13]
 );
 
-  dpi_getinfo dpi_getpc (	// @[playground/src/Dpi_stage.scala:26:23]
+  dpi_getinfo dpi_getinfo (	// @[playground/src/Dpi_stage.scala:26:25]
     .clock     (clock),
     .reset     (reset),
     .dpi_valid (DPI_wb_valid),
