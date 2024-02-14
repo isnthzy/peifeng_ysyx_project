@@ -11,8 +11,7 @@ module Decode(	// @[<stdin>:49:3]
   output [2:0]  io_ld_type,	// @[playground/src/Decode.scala:213:14]
   output [1:0]  io_wb_sel,	// @[playground/src/Decode.scala:213:14]
   output        io_wb_en,	// @[playground/src/Decode.scala:213:14]
-  output [4:0]  io_csr_cmd,	// @[playground/src/Decode.scala:213:14]
-  output        io_illegal	// @[playground/src/Decode.scala:213:14]
+  output [4:0]  io_csr_cmd	// @[playground/src/Decode.scala:213:14]
 );
 
   wire        _ctrlSignals_T_1 = io_inst[6:0] == 7'h37;	// @[src/main/scala/chisel3/util/Lookup.scala:31:38]
@@ -238,17 +237,5 @@ module Decode(	// @[<stdin>:49:3]
               : _ctrlSignals_T_332
                   ? 5'h3
                   : _ctrlSignals_T_85 ? 5'h4 : _ctrlSignals_T_166 ? 5'h5 : 5'h0;	// @[<stdin>:49:3, src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
-  assign io_illegal =
-    ~(_ctrlSignals_T_1 | _ctrlSignals_T_3 | _ctrlSignals_T_5 | _ctrlSignals_T_7
-      | _ctrlSignals_T_9 | _ctrlSignals_T_11 | _ctrlSignals_T_13 | _ctrlSignals_T_15
-      | _ctrlSignals_T_17 | _ctrlSignals_T_19 | _ctrlSignals_T_21 | _ctrlSignals_T_23
-      | _ctrlSignals_T_25 | _ctrlSignals_T_27 | _ctrlSignals_T_29 | _ctrlSignals_T_31
-      | _ctrlSignals_T_33 | _ctrlSignals_T_35 | _ctrlSignals_T_37 | _ctrlSignals_T_39
-      | _ctrlSignals_T_41 | _ctrlSignals_T_43 | _ctrlSignals_T_45 | _ctrlSignals_T_47
-      | _ctrlSignals_T_49 | _ctrlSignals_T_51 | _ctrlSignals_T_53 | _ctrlSignals_T_55
-      | _ctrlSignals_T_57 | _ctrlSignals_T_59 | _ctrlSignals_T_61 | _ctrlSignals_T_63
-      | _ctrlSignals_T_65 | _ctrlSignals_T_67 | _ctrlSignals_T_69 | _ctrlSignals_T_71
-      | _ctrlSignals_T_73 | _ctrlSignals_T_75 | _ctrlSignals_T_497 | _ctrlSignals_T_332
-      | _ctrlSignals_T_85) & ~_ctrlSignals_T_166;	// @[<stdin>:49:3, src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
 endmodule
 
