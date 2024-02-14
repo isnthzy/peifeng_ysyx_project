@@ -9,7 +9,13 @@ class IF_stage extends Module {
     val br_bus=Input(new br_bus())
     val epc_bus=Input(new wb_to_if_bus())
   })
-  IF.IO.valid:=true.B
+  val if_valid=dontTouch(RegInit(false.B))
+  val if_ready_go=dontTouch(Wire(Bool()))
+  if_ready_go:=true.B
+  when(reset.asBool=/=true.B){
+    if_valid:=true.B
+  }
+  IF.IO.valid:=if_valid && if_ready_go
 
 
   val REGpc   = RegInit(START_ADDR)
@@ -27,7 +33,11 @@ class IF_stage extends Module {
   Fetch.io.pc   :=REGpc
   Fetch.io.nextpc:=nextpc
   IF.IO.bits.inst:=Fetch.io.inst
-  REGpc := nextpc //reg类型，更新慢一拍
+
+  when(IF.IO.valid){
+    REGpc := nextpc //reg类型，更新慢一拍
+  }
+  
   IF.IO.bits.pc  :=REGpc
   IF.IO.bits.nextpc:=nextpc
 }

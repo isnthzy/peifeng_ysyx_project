@@ -35,7 +35,7 @@ class SimTop extends Module {
 
 object StageConnect {
   def apply[T <: Data](out: DecoupledIO[T], in: DecoupledIO[T]) = {
-    val arch = "multi"
+    val arch = "pipeline"
     // 为展示抽象的思想, 此处代码省略了若干细节
     if      (arch == "single"){ 
       in.valid:=true.B
@@ -45,7 +45,9 @@ object StageConnect {
     else if (arch == "multi"){ 
       in <> out
     }
-    // else if (arch == "pipeline") { in <> RegEnable(in, in.fire) }
-    // else if (arch == "ooo")      { in <> Queue(in, 16) }
+    else if (arch == "pipeline") { 
+      in.bits <> RegEnable(out.bits, out.fire) 
+    }
+    // else if (arch == "ooo")      { in <> Queue(out, 16) }
   }
 }

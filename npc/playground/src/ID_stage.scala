@@ -10,9 +10,15 @@ class ID_stage extends Module {
     val to_ex =Decoupled(new id_to_ex_bus())
     val wb_bus=Input(new wb_to_id_bus())
   })
-  ID.to_ex.valid:=true.B
-  ID.IO.ready:=false.B
 
+  val id_valid=dontTouch(RegInit(false.B))
+  val id_ready_go=dontTouch(Wire(Bool()))
+  id_ready_go:=true.B
+  ID.IO.ready := !id_valid || id_ready_go && ID.to_ex.ready
+  when(ID.IO.ready){
+    id_valid:=ID.IO.valid
+  }
+  ID.to_ex.valid:=id_valid && id_ready_go
 
   val dc=Module(new Decode())
   val ImmGen=Module(new ImmGen())

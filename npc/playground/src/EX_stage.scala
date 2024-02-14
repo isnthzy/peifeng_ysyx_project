@@ -9,8 +9,15 @@ class EX_stage extends Module {
     val to_ls =Decoupled(new ex_to_ls_bus())
     val br_bus=Output(new br_bus())
   })
-  EX.to_ls.valid:=true.B
-  EX.IO.ready:=false.B
+  
+  val ex_valid=dontTouch(RegInit(false.B))
+  val ex_ready_go=dontTouch(Wire(Bool()))
+  ex_ready_go:=true.B
+  EX.IO.ready := !ex_valid || ex_ready_go && EX.to_ls.ready
+  when(EX.IO.ready){
+    ex_valid:=EX.IO.valid
+  }
+  EX.to_ls.valid:=ex_valid && ex_ready_go
 
 
   val Alu=Module(new Alu())

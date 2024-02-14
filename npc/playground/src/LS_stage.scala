@@ -9,8 +9,14 @@ class LS_stage extends Module {
     val IO    =Flipped(Decoupled(new ex_to_ls_bus()))
     val to_wb =Decoupled(new ls_to_wb_bus())
   })
-  LS.to_wb.valid:=true.B
-  LS.IO.ready:=false.B
+  val ls_valid=dontTouch(RegInit(false.B))
+  val ls_ready_go=dontTouch(Wire(Bool()))
+  ls_ready_go:=true.B
+  LS.IO.ready := !ls_valid || ls_ready_go &&LS.to_wb.ready
+  when(LS.IO.ready){
+    ls_valid:=LS.IO.valid
+  }
+  LS.to_wb.valid:=ls_valid && ls_ready_go
 
 
   val ram_data=dontTouch(Wire(UInt(32.W)))
