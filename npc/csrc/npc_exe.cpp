@@ -63,6 +63,7 @@ extern "C" void cpu_use_func(int pc,int nextpc,svBit is_ret,svBit is_jal,svBit i
 
 extern "C" void get_info(int pc,int nextpc,int inst){
   // printf("pc: %x\n",pc);
+  printf("get_info1\n");
   cpu.pc=pc;
   cpu_info.nextpc=nextpc;
   cpu_info.inst=inst;
@@ -120,7 +121,7 @@ static void trace_and_difftest(word_t this_pc,word_t next_pc){
   }
   #endif
   // cpu.pc=this_pc;
-  
+  printf("get_info2\n");
   static char logbuf[128];
   static char tmp_dis[64];
   static word_t tmp_inst;
