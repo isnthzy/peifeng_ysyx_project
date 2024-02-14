@@ -43,6 +43,7 @@ module EX_stage(	// @[<stdin>:954:3]
                 EX_to_ls_bits_result,	// @[playground/src/EX_stage.scala:6:12]
                 EX_to_ls_bits_nextpc,	// @[playground/src/EX_stage.scala:6:12]
                 EX_to_ls_bits_pc,	// @[playground/src/EX_stage.scala:6:12]
+                EX_to_ls_bits_inst,	// @[playground/src/EX_stage.scala:6:12]
   output        EX_br_bus_is_jump,	// @[playground/src/EX_stage.scala:6:12]
   output [31:0] EX_br_bus_dnpc	// @[playground/src/EX_stage.scala:6:12]
 );
@@ -89,6 +90,7 @@ module EX_stage(	// @[<stdin>:954:3]
   assign EX_to_ls_bits_result = _Alu_io_result;	// @[<stdin>:954:3, playground/src/EX_stage.scala:23:17]
   assign EX_to_ls_bits_nextpc = EX_IO_bits_nextpc;	// @[<stdin>:954:3]
   assign EX_to_ls_bits_pc = EX_IO_bits_pc;	// @[<stdin>:954:3]
+  assign EX_to_ls_bits_inst = EX_IO_bits_inst;	// @[<stdin>:954:3]
   assign EX_br_bus_is_jump =
     _EX_to_ls_bits_dpic_bundle_ex_is_jal_T | _EX_to_ls_bits_dpic_bundle_ex_func_flag_T_1
     | EX_IO_bits_br_type == 4'h3 & rs1_eq_rs2 | EX_IO_bits_br_type == 4'h6 & ~rs1_eq_rs2

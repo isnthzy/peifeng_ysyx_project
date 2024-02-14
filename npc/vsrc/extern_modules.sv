@@ -5,7 +5,7 @@
 
 // external module csr_debug_dpic
 
-// external module dpi_getpc
+// external module dpi_getinfo
 
 // external module dpi_inv
 
