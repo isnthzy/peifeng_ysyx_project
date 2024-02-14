@@ -7,6 +7,8 @@ class EX_stage extends Module {
     // val IO    =Input(new id_to_ex_bus())
     val IO    =Flipped(Decoupled(new id_to_ex_bus()))
     val to_ls =Decoupled(new ex_to_ls_bus())
+    val to_id =Output(new forward_to_id_bus())
+    val id_no_valid=Output(Bool())
     val br_bus=Output(new br_bus())
   })
   
@@ -38,6 +40,7 @@ class EX_stage extends Module {
                       | ((EX.IO.bits.br_type===BR_LTU)&& rs1_lt_rs2_u)
                       | ((EX.IO.bits.br_type===BR_GE) && !rs1_lt_rs2_s)
                       | ((EX.IO.bits.br_type===BR_GEU)&& !rs1_lt_rs2_u))
+  EX.id_no_valid:=EX.br_bus.is_jump
   EX.br_bus.dnpc:=MuxLookup(EX.IO.bits.br_type,0.U)(Seq(
     BR_XXX -> 0.U,
     BR_LTU -> Alu.io.result,
@@ -50,11 +53,19 @@ class EX_stage extends Module {
     BR_JR  -> Cat(Alu.io.result(31,1),0.U(1.W))
   ))
   
+  //前递
+  EX.to_id.addr:=Mux(ex_valid && EX.to_ls.bits.wen , EX.to_ls.bits.rd , 0.U)
+  EX.to_id.data:=EX.to_ls.bits.result
+
+
+  //csr
   EX.to_ls.bits.pc_sel:=EX.IO.bits.pc_sel
   EX.to_ls.bits.csr_addr:=EX.IO.bits.csr_addr
   EX.to_ls.bits.csr_cmd:=EX.IO.bits.csr_cmd
   EX.to_ls.bits.rs1_addr:=EX.IO.bits.rs1_addr
-  //csr
+  
+
+
   EX.to_ls.bits.st_type:=EX.IO.bits.st_type
   EX.to_ls.bits.ld_type:=EX.IO.bits.ld_type
   EX.to_ls.bits.ebreak_flag:=EX.IO.bits.ebreak_flag

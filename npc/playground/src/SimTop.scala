@@ -18,7 +18,11 @@ class SimTop extends Module {
   IF_stage.IF.epc_bus:=WB_stage.WB.to_if
 // ID begin
   StageConnect(IF_stage.IF.IO,ID_stage.ID.IO) //左边是out，右边是in
+  ID_stage.ID.ex_fw:=EX_stage.EX.to_id
+  ID_stage.ID.ls_fw:=LS_stage.LS.to_id
   ID_stage.ID.wb_bus:=WB_stage.WB.to_id
+
+  ID_stage.ID.id_no_valid:=EX_stage.EX.id_no_valid
 // EX begin
   StageConnect(ID_stage.ID.to_ex,EX_stage.EX.IO)
 // lS begin

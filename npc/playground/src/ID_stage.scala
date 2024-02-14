@@ -8,7 +8,10 @@ class ID_stage extends Module {
     // val IO    =Input(new if_to_id_bus())
     val IO = Flipped(Decoupled(new if_to_id_bus()))
     val to_ex =Decoupled(new id_to_ex_bus())
+    val ex_fw=Input(new forward_to_id_bus())
+    val ls_fw=Input(new forward_to_id_bus())
     val wb_bus=Input(new wb_to_id_bus())
+    val id_no_valid=Input(Bool())
   })
 
   val id_valid=dontTouch(RegInit(false.B))
@@ -16,7 +19,7 @@ class ID_stage extends Module {
   id_ready_go:=true.B
   ID.IO.ready := !id_valid || id_ready_go && ID.to_ex.ready
   when(ID.IO.ready){
-    id_valid:=ID.IO.valid
+    id_valid:=Mux(ID.id_no_valid,false.B,ID.IO.valid)
   }
   ID.to_ex.valid:=id_valid && id_ready_go
 
@@ -52,6 +55,27 @@ class ID_stage extends Module {
   ))
   //当ebreak时，算出reg(10)+0的结果并通知dpi-c，即reg(10)==return
   //当ecall时，算出reg(ECALL_REG)+0的结果并传递给WB的csr处理
+
+  //前递处理
+  val rdata1=dontTouch(Wire(UInt(DATA_WIDTH.W)))
+  val rdata2=dontTouch(Wire(UInt(DATA_WIDTH.W)))
+  val rs1_is_forward= (Regfile.io.raddr1=/=0.U) && ((Regfile.io.raddr1===ID.ex_fw.addr) ||
+                      (Regfile.io.raddr1===ID.ls_fw.addr) || 
+                      (ID.wb_bus.wen && (Regfile.io.raddr1===ID.wb_bus.waddr)))
+  val rs2_is_forward= (Regfile.io.raddr2=/=0.U) && ((Regfile.io.raddr2===ID.ex_fw.addr) ||
+                      (Regfile.io.raddr2===ID.ls_fw.addr) ||
+                      (ID.wb_bus.wen && (Regfile.io.raddr2===ID.wb_bus.waddr)))
+  rdata1:=Mux(rs1_is_forward,
+            Mux(Regfile.io.raddr1===ID.ex_fw.addr,ID.ex_fw.data,
+            Mux(Regfile.io.raddr1===ID.ls_fw.addr,ID.ls_fw.data,
+                                                  ID.wb_bus.wdata)),
+                                                  Regfile.io.rdata1)
+  rdata2:=Mux(rs2_is_forward,
+            Mux(Regfile.io.raddr2===ID.ex_fw.addr,ID.ex_fw.data,
+            Mux(Regfile.io.raddr2===ID.ls_fw.addr,ID.ls_fw.data,
+                                                  ID.wb_bus.wdata)),
+                                                  Regfile.io.rdata2)
+
 
   val src1=MuxLookup(dc.io.A_sel,0.U)(Seq(
     A_RS1 -> Regfile.io.rdata1,

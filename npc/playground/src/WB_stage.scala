@@ -35,7 +35,7 @@ class WB_stage extends Module {
   WB.to_id.waddr:=WB.IO.bits.rd
   WB.to_id.wdata:=Mux(Csrfile.io.out_wen,Csrfile.io.out,WB.IO.bits.result)
   //如果是csr写入寄存器操作，相应的都要修改成csr寄存器的值
-  WB.to_id.wen  :=WB.IO.bits.wen
+  WB.to_id.wen  :=WB.IO.bits.wen&&wb_valid
   WB.debug_waddr:=WB.to_id.waddr
   WB.debug_wdata:=WB.to_id.wdata
   WB.debug_wen  :=WB.to_id.wen
