@@ -32,14 +32,14 @@ class DPI_stage extends Module {
   val dpi_inv=Module(new dpi_inv())
   dpi_inv.io.clock:=clock
   dpi_inv.io.reset:=reset
-  dpi_getpc.io.dpi_valid:=DPI.wb_valid
+  dpi_inv.io.dpi_valid:=DPI.wb_valid
   dpi_inv.io.inv_flag:=DPI.inv_flag
   dpi_inv.io.pc:=DPI.nextpc
 
   val dpi_func=Module(new dpi_func())
   dpi_func.io.clock:=clock
   dpi_func.io.reset:=reset
-  dpi_getpc.io.dpi_valid:=DPI.wb_valid 
+  dpi_func.io.dpi_valid:=DPI.wb_valid 
   dpi_func.io.func_flag:=DPI.func_flag
   dpi_func.io.is_jal:=DPI.is_jal
   dpi_func.io.pc:=DPI.pc
@@ -50,7 +50,7 @@ class DPI_stage extends Module {
   val dpi_ebreak=Module(new dpi_ebreak())
   dpi_ebreak.io.clock:=clock
   dpi_ebreak.io.reset:=reset  
-  dpi_getpc.io.dpi_valid:=DPI.wb_valid
+  dpi_ebreak.io.dpi_valid:=DPI.wb_valid
   dpi_ebreak.io.is_ebreak:=DPI.is_ebreak
   dpi_ebreak.io.pc:=DPI.nextpc
   dpi_ebreak.io.ret_reg_data:=DPI.ret_reg_data
