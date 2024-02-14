@@ -68,7 +68,7 @@ class dpi_getpc extends BlackBox with HasBlackBoxInline {
   })
   setInline("dpi_getpc.v",
     """
-      |import "DPI-C" function void getpc(input int pc,input int nextpc);
+      |import "DPI-C" function void get_pc(input int pc,input int nextpc);
       |module dpi_getpc(
       |    input        clock,
       |    input        reset,

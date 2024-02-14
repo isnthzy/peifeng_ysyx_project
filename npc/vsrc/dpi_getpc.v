@@ -1,5 +1,5 @@
 
-import "DPI-C" function void dpi_getpc(input int pc,input int nextpc);
+import "DPI-C" function void getpc(input int pc,input int nextpc);
 module dpi_getpc(
     input        clock,
     input        reset,
