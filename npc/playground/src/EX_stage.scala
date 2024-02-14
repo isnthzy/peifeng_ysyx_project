@@ -68,11 +68,11 @@ class EX_stage extends Module {
   EX.to_ls.bits.nextpc:=EX.IO.bits.nextpc
 
   /*---------------------传递信号到wb级再由wb级处理dpi信号----------------------*/
-  EX.to_ls.bits.dpic_bundle.id_inv_flag:=EX.IO.bits.dpic_bundle.id_inv_flag
-  EX.to_ls.bits.dpic_bundle.ex_func_flag:=(EX.IO.bits.br_type===BR_JAL)|(EX.IO.bits.br_type===BR_JR)
-  EX.to_ls.bits.dpic_bundle.ex_is_jal:=EX.IO.bits.br_type===BR_JAL
-  EX.to_ls.bits.dpic_bundle.ex_is_ret:=EX.IO.bits.inst===0x00008067.U
-  EX.to_ls.bits.dpic_bundle.ex_is_rd0:=EX.IO.bits.rd===0.U
+  EX.to_ls.bits.id_inv_flag:=EX.IO.bits.id_inv_flag
+  EX.to_ls.bits.ex_func_flag:=(EX.IO.bits.br_type===BR_JAL)|(EX.IO.bits.br_type===BR_JR)
+  EX.to_ls.bits.ex_is_jal:=EX.IO.bits.br_type===BR_JAL
+  EX.to_ls.bits.ex_is_ret:=EX.IO.bits.inst===0x00008067.U
+  EX.to_ls.bits.ex_is_rd0:=EX.IO.bits.rd===0.U
   // val dpi_func=Module(new dpi_func())
   // dpi_func.io.clock:=clock
   // dpi_func.io.reset:=reset

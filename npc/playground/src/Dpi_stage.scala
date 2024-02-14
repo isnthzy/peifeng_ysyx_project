@@ -12,8 +12,8 @@ import config.Configs._
 class DPI_stage extends Module {
   val DPI=IO(new Bundle {
     val wb_valid=Input(Bool())
-    val pc=Input(UInt(32.W))
-    val nextpc=Input(UInt(32.W))
+    val pc=Input(UInt(ADDR_WIDTH.W))
+    val nextpc=Input(UInt(ADDR_WIDTH.W))
     val inv_flag=Input(Bool())
     val func_flag=Input(Bool())
     val is_jal=Input(Bool())
@@ -63,8 +63,8 @@ class dpi_getpc extends BlackBox with HasBlackBoxInline {
     val clock=Input(Clock())
     val reset=Input(Bool())
     val dpi_valid=Input(Bool())
-    val pc      =Input(UInt(32.W))
-    val nextpc  =Input(UInt(32.W))
+    val pc      =Input(UInt(ADDR_WIDTH.W))
+    val nextpc  =Input(UInt(ADDR_WIDTH.W))
   })
   setInline("dpi_getpc.v",
     """
@@ -96,7 +96,7 @@ class dpi_inv extends BlackBox with HasBlackBoxInline {
     val reset=Input(Bool())
     val dpi_valid=Input(Bool())
     val inv_flag=Input(Bool())
-    val pc      =Input(UInt(32.W))
+    val pc      =Input(UInt(ADDR_WIDTH.W))
   })
   setInline("dpi_inv.v",
     """
@@ -124,8 +124,8 @@ class dpi_func extends BlackBox with HasBlackBoxInline {
     val dpi_valid=Input(Bool())
     val func_flag=Input(Bool())
     val is_jal   =Input(Bool())
-    val pc       =Input(UInt(32.W))
-    val nextpc   =Input(UInt(32.W))
+    val pc       =Input(UInt(ADDR_WIDTH.W))
+    val nextpc   =Input(UInt(ADDR_WIDTH.W))
     val is_rd0   =Input(Bool())
     val is_ret   =Input(Bool())
   })
@@ -159,8 +159,8 @@ class dpi_ebreak extends BlackBox with HasBlackBoxInline {
     val reset=Input(Bool())
     val dpi_valid=Input(Bool())
     val is_ebreak=Input(Bool())
-    val pc       =Input(UInt(32.W))
-    val ret_reg_data=Input(UInt(32.W))
+    val pc       =Input(UInt(ADDR_WIDTH.W))
+    val ret_reg_data=Input(UInt(ADDR_WIDTH.W))
   })
   setInline("dpi_ebreak.v",
     """
