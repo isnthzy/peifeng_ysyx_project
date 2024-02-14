@@ -14,7 +14,6 @@ module IF_stage(	// @[<stdin>:11:3]
 
   wire        if_ready_go = 1'h1;	// @[playground/src/IF_stage.scala:13:33, :14:14]
   reg         if_valid;	// @[playground/src/IF_stage.scala:12:33]
-  wire        _IF_IO_valid_output = if_valid & if_ready_go;	// @[playground/src/IF_stage.scala:12:33, :13:33, :18:25]
   reg  [31:0] REGpc;	// @[playground/src/IF_stage.scala:21:24]
   wire [31:0] snpc = REGpc + 32'h4;	// @[playground/src/IF_stage.scala:21:24, :22:31, :27:18]
   wire [31:0] dnpc = IF_epc_bus_epc_wen ? IF_epc_bus_csr_epc : IF_br_bus_dnpc;	// @[playground/src/IF_stage.scala:23:31, :28:15]
@@ -26,8 +25,7 @@ module IF_stage(	// @[<stdin>:11:3]
     end
     else begin	// @[<stdin>:12:11]
       if_valid <= ~reset | if_valid;	// @[playground/src/IF_stage.scala:12:33, :15:{20,30}, :16:13]
-      if (_IF_IO_valid_output)	// @[playground/src/IF_stage.scala:18:25]
-        REGpc <= nextpc;	// @[playground/src/IF_stage.scala:21:24, :24:31]
+      REGpc <= nextpc;	// @[playground/src/IF_stage.scala:21:24, :24:31]
     end
   end // always @(posedge)
   read_inst Fetch (	// @[playground/src/IF_stage.scala:25:23]
@@ -37,7 +35,7 @@ module IF_stage(	// @[<stdin>:11:3]
     .pc     (REGpc),	// @[playground/src/IF_stage.scala:21:24]
     .inst   (IF_IO_bits_inst)
   );
-  assign IF_IO_valid = _IF_IO_valid_output;	// @[<stdin>:11:3, playground/src/IF_stage.scala:18:25]
+  assign IF_IO_valid = if_valid & if_ready_go;	// @[<stdin>:11:3, playground/src/IF_stage.scala:12:33, :13:33, :18:25]
   assign IF_IO_bits_nextpc = nextpc;	// @[<stdin>:11:3, playground/src/IF_stage.scala:24:31]
   assign IF_IO_bits_pc = REGpc;	// @[<stdin>:11:3, playground/src/IF_stage.scala:21:24]
 endmodule
