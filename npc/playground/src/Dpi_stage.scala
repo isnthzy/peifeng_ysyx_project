@@ -23,13 +23,13 @@ class DPI_stage extends Module {
     val is_ebreak=Input(Bool())
     val ret_reg_data=Input(Bool())
   })
-  val dpi_getpc=Module(new dpi_getinfo())
-  dpi_getpc.io.clock:=clock
-  dpi_getpc.io.reset:=reset
-  dpi_getpc.io.dpi_valid:=DPI.wb_valid
-  dpi_getpc.io.pc:=DPI.pc
-  dpi_getpc.io.nextpc:=DPI.nextpc
-  dpi_getpc.io.inst:=DPI.inst
+  val dpi_getinfo=Module(new dpi_getinfo())
+  dpi_getinfo.io.clock:=clock
+  dpi_getinfo.io.reset:=reset
+  dpi_getinfo.io.dpi_valid:=DPI.wb_valid
+  dpi_getinfo.io.pc:=DPI.pc
+  dpi_getinfo.io.nextpc:=DPI.nextpc
+  dpi_getinfo.io.inst:=DPI.inst
 
   val dpi_inv=Module(new dpi_inv())
   dpi_inv.io.clock:=clock
