@@ -140,8 +140,8 @@ class dpi_func extends BlackBox with HasBlackBoxInline {
       |    input        is_jal,
       |    input [31:0] pc,
       |    input [31:0] nextpc,
-      |    input [31:0] is_rd0,
-      |    input [31:0] is_ret
+      |    input        is_rd0,
+      |    input        is_ret
       |);
       | always @(posedge clock)begin
       |   if(~reset)begin
