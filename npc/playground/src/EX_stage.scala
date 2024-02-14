@@ -73,15 +73,6 @@ class EX_stage extends Module {
   EX.to_ls.bits.dpic_bundle.ex_is_jal:=EX.IO.bits.br_type===BR_JAL
   EX.to_ls.bits.dpic_bundle.ex_is_ret:=EX.IO.bits.inst===0x00008067.U
   EX.to_ls.bits.dpic_bundle.ex_is_rd0:=EX.IO.bits.rd===0.U
-  // val dpi_func=Module(new dpi_func())
-  // dpi_func.io.clock:=clock
-  // dpi_func.io.reset:=reset
-  // dpi_func.io.func_flag:=(EX.IO.bits.br_type===BR_JAL)|(EX.IO.bits.br_type===BR_JR)
-  // dpi_func.io.is_jal:=(EX.IO.bits.br_type===BR_JAL)
-  // dpi_func.io.pc:=EX.IO.bits.nextpc
-  // dpi_func.io.nextpc:=0.U
-  // dpi_func.io.rd:=EX.IO.bits.rd
-  // dpi_func.io.inst:=EX.IO.bits.inst
 
 }
 
