@@ -14,6 +14,7 @@ class DPI_stage extends Module {
     val wb_valid=Input(Bool())
     val pc=Input(UInt(ADDR_WIDTH.W))
     val nextpc=Input(UInt(ADDR_WIDTH.W))
+    val inst=Input(UInt(32.W))
     val inv_flag=Input(Bool())
     val func_flag=Input(Bool())
     val is_jal=Input(Bool())
@@ -22,12 +23,13 @@ class DPI_stage extends Module {
     val is_ebreak=Input(Bool())
     val ret_reg_data=Input(Bool())
   })
-  val dpi_getpc=Module(new dpi_getpc())
+  val dpi_getpc=Module(new dpi_getinfo())
   dpi_getpc.io.clock:=clock
   dpi_getpc.io.reset:=reset
   dpi_getpc.io.dpi_valid:=DPI.wb_valid
   dpi_getpc.io.pc:=DPI.pc
   dpi_getpc.io.nextpc:=DPI.nextpc
+  dpi_getpc.io.inst:=DPI.inst
 
   val dpi_inv=Module(new dpi_inv())
   dpi_inv.io.clock:=clock
@@ -58,28 +60,30 @@ class DPI_stage extends Module {
 
 
 
-class dpi_getpc extends BlackBox with HasBlackBoxInline {
+class dpi_getinfo extends BlackBox with HasBlackBoxInline {
   val io = IO(new Bundle {
     val clock=Input(Clock())
     val reset=Input(Bool())
     val dpi_valid=Input(Bool())
     val pc      =Input(UInt(ADDR_WIDTH.W))
     val nextpc  =Input(UInt(ADDR_WIDTH.W))
+    val inst    =Input(UInt(32.W))
   })
-  setInline("dpi_getpc.v",
+  setInline("dpi_getinfo.v",
     """
-      |import "DPI-C" function void get_pc(input int pc,input int nextpc);
-      |module dpi_getpc(
+      |import "DPI-C" function void get_info(input int pc,input int nextpc,input int inst);
+      |module dpi_getinfo(
       |    input        clock,
       |    input        reset,
       |    input        dpi_valid,
       |    input [31:0] pc,
-      |    input [31:0] nextpc
+      |    input [31:0] nextpc,
+      |    input [31:0] inst
       |    
       |);
       | always @(posedge clock)begin
       |   if(~reset)begin
-      |     if(dpi_valid) get_pc(pc,nextpc);
+      |     if(dpi_valid) get_info(pc,nextpc,inst);
       |   end
       |  end
       |endmodule

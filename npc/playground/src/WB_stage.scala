@@ -46,6 +46,7 @@ class WB_stage extends Module {
   DPI_stage.DPI.wb_valid:=wb_valid
   DPI_stage.DPI.pc:=WB.IO.bits.pc
   DPI_stage.DPI.nextpc:=WB.IO.bits.nextpc
+  DPI_stage.DPI.inst:=WB.IO.bits.inst
   DPI_stage.DPI.inv_flag:=WB.IO.bits.dpic_bundle.id_inv_flag
   DPI_stage.DPI.func_flag:=WB.IO.bits.dpic_bundle.ex_func_flag
   DPI_stage.DPI.is_jal:=WB.IO.bits.dpic_bundle.ex_is_jal

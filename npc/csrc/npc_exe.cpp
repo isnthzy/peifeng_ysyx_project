@@ -61,10 +61,11 @@ extern "C" void cpu_use_func(int pc,int nextpc,svBit is_ret,svBit is_jal,svBit i
   #endif
 }
 
-extern "C" void get_pc(int pc,int nextpc){
+extern "C" void get_info(int pc,int nextpc,int inst){
   // printf("pc: %x\n",pc);
   cpu.pc=pc;
   cpu_info.nextpc=nextpc;
+  cpu_info.inst=inst;
 }
 
 extern "C" void prt_debug(const svBitVecVal* debug_1,int debug_2){

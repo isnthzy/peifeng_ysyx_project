@@ -10,7 +10,6 @@ module read_inst(
 ); 
 always @(posedge clock) begin  
   if(~reset)begin
-    // get_pc(pc,nextpc);
     inst<=get_inst(nextpc);
   end
 end
