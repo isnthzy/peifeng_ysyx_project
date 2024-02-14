@@ -88,37 +88,37 @@ class ID_stage extends Module {
 
 
   
-  val inv_break=Module(new inv_break())
-  val inv_flag=Reg(Bool())
-  inv_flag:=(dc.io.illegal&&ID.IO.bits.nextpc=/="h80000000".U)
-  inv_break.io.clock:=clock
-  inv_break.io.reset:=reset
-  inv_break.io.pc:=ID.IO.bits.nextpc
-  inv_break.io.inv_flag:=inv_flag
+  // val inv_break=Module(new inv_break())
+  // val inv_flag=Reg(Bool())
+  // inv_flag:=(dc.io.illegal&&ID.IO.bits.nextpc=/="h80000000".U)
+  // inv_break.io.clock:=clock
+  // inv_break.io.reset:=reset
+  // inv_break.io.pc:=ID.IO.bits.nextpc
+  // inv_break.io.inv_flag:=inv_flag
 }
 
 
-class inv_break extends BlackBox with HasBlackBoxInline {
-  val io = IO(new Bundle {
-    val clock=Input(Clock())
-    val reset=Input(Bool())
-    val inv_flag=Input(Bool())
-    val pc      =Input(UInt(32.W))
-  })
-  setInline("inv_break.v",
-    """
-      |import "DPI-C" function void inv_break(input int pc);
-      |module inv_break(
-      |    input        clock,
-      |    input        reset,
-      |    input        inv_flag,
-      |    input [31:0] pc
-      |);
-      | always @(posedge clock)begin
-      |   if(~reset)begin
-      |     if(inv_flag)  inv_break(pc);
-      |   end
-      |  end
-      |endmodule
-    """.stripMargin)
-}  
+// class inv_break extends BlackBox with HasBlackBoxInline {
+//   val io = IO(new Bundle {
+//     val clock=Input(Clock())
+//     val reset=Input(Bool())
+//     val inv_flag=Input(Bool())
+//     val pc      =Input(UInt(32.W))
+//   })
+//   setInline("inv_break.v",
+//     """
+//       |import "DPI-C" function void inv_break(input int pc);
+//       |module inv_break(
+//       |    input        clock,
+//       |    input        reset,
+//       |    input        inv_flag,
+//       |    input [31:0] pc
+//       |);
+//       | always @(posedge clock)begin
+//       |   if(~reset)begin
+//       |     if(inv_flag)  inv_break(pc);
+//       |   end
+//       |  end
+//       |endmodule
+//     """.stripMargin)
+// }  
