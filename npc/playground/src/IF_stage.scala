@@ -33,11 +33,7 @@ class IF_stage extends Module {
   Fetch.io.pc   :=REGpc
   Fetch.io.nextpc:=nextpc
   IF.IO.bits.inst:=Fetch.io.inst
-
-  when(IF.IO.valid){
-    REGpc := nextpc //reg类型，更新慢一拍
-  }
-  
+  REGpc := nextpc //reg类型，更新慢一拍
   IF.IO.bits.pc  :=REGpc
   IF.IO.bits.nextpc:=nextpc
 }
