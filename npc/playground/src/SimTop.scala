@@ -46,6 +46,8 @@ object StageConnect {
       in <> out
     }
     else if (arch == "pipeline") { 
+      out.ready:=in.ready
+      in.valid:=out.valid
       in.bits <> RegEnable(out.bits, out.fire) 
     }
     // else if (arch == "ooo")      { in <> Queue(out, 16) }
