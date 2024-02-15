@@ -142,7 +142,7 @@ static void trace_and_difftest(word_t this_pc,word_t next_pc){
 static void npc_execute(uint64_t n) {
   static vaddr_t lastpc=0;
   for (;n > 0; n --) {
-    while(cpu.pc==lastpc){
+    do{
       top->clock=1;
 
       step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
@@ -156,7 +156,7 @@ static void npc_execute(uint64_t n) {
       step_and_dump_wave();
       lastpc=cpu.pc;
       if (npc_state.state != NPC_RUNNING) break;
-    }
+    }while(cpu.pc==lastpc);
   }
 }
 
