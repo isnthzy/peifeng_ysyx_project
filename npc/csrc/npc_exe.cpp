@@ -172,7 +172,7 @@ void npc_exev(uint64_t step){ //之所以不用int因为int是有符号的，批
   } //初始化iringbuffer,只初始化一次
   g_print_step = (step<MAX_INST_TO_PRINT);
   switch (npc_state.state) {
-    case NPC_END: case NPC_ABORT:
+    case NPC_END: case NPC_ABORT: case NPC_QUIT:
       printf("Program execution has ended. To restart the program, exit NPC and run again.\n");
       return;
     default: npc_state.state = NPC_RUNNING;
