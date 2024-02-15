@@ -35,7 +35,7 @@ class IF_stage extends Module {
   Fetch.io.fetch_wen:=if_ready_go
 
   IF.IO.bits.inst:=Fetch.io.inst
-  when(if_ready_go){
+  when(if_ready_go){ //if级控制不用if_valid信号（if级有点特殊）
     REGpc := nextpc //reg类型，更新慢一拍
   }
   //如果遇到阻塞情况，那么if级也要发生阻塞
