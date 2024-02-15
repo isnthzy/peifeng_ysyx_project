@@ -232,6 +232,7 @@ module SimTop(	// @[<stdin>:1410:3]
   ID_stage ID_stage (	// @[playground/src/SimTop.scala:12:24]
     .clock                                 (clock),
     .reset                                 (reset),
+    .ID_IO_valid                           (_IF_stage_IF_IO_valid),	// @[playground/src/SimTop.scala:11:24]
     .ID_IO_bits_nextpc                     (ID_stage_ID_IO_bits_r_nextpc),	// @[playground/src/SimTop.scala:57:27]
     .ID_IO_bits_pc                         (ID_stage_ID_IO_bits_r_pc),	// @[playground/src/SimTop.scala:57:27]
     .ID_IO_bits_inst                       (ID_stage_ID_IO_bits_r_inst),	// @[playground/src/SimTop.scala:57:27]

@@ -2,6 +2,7 @@
 module ID_stage(	// @[<stdin>:810:3]
   input         clock,	// @[<stdin>:811:11]
                 reset,	// @[<stdin>:812:11]
+                ID_IO_valid,	// @[playground/src/ID_stage.scala:7:12]
   input  [31:0] ID_IO_bits_nextpc,	// @[playground/src/ID_stage.scala:7:12]
                 ID_IO_bits_pc,	// @[playground/src/ID_stage.scala:7:12]
                 ID_IO_bits_inst,	// @[playground/src/ID_stage.scala:7:12]
@@ -75,7 +76,7 @@ module ID_stage(	// @[<stdin>:810:3]
     if (reset)	// @[<stdin>:811:11]
       id_valid <= 1'h0;	// @[playground/src/ID_stage.scala:17:33]
     else if (_ID_IO_ready_output)	// @[playground/src/ID_stage.scala:20:28]
-      id_valid <= _ID_IO_ready_output;	// @[playground/src/ID_stage.scala:17:33, :20:28]
+      id_valid <= ID_IO_valid;	// @[playground/src/ID_stage.scala:17:33]
   end // always @(posedge)
   Decode dc (	// @[playground/src/ID_stage.scala:26:16]
     .io_inst    (ID_IO_bits_inst),
