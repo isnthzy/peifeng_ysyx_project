@@ -14,14 +14,12 @@ module IF_stage(	// @[<stdin>:11:3]
                 IF_IO_bits_inst	// @[playground/src/IF_stage.scala:6:12]
 );
 
-  wire [31:0] _Fetch_inst;	// @[playground/src/IF_stage.scala:26:23]
   wire        if_ready_go = IF_IO_ready;	// @[playground/src/IF_stage.scala:14:33]
   reg         if_valid;	// @[playground/src/IF_stage.scala:13:33]
   reg  [31:0] REGpc;	// @[playground/src/IF_stage.scala:22:24]
   wire [31:0] snpc = REGpc + 32'h4;	// @[playground/src/IF_stage.scala:22:24, :23:31, :28:18]
   wire [31:0] dnpc = IF_epc_bus_epc_wen ? IF_epc_bus_csr_epc : IF_br_bus_dnpc;	// @[playground/src/IF_stage.scala:24:31, :29:15]
   wire [31:0] nextpc = IF_br_bus_is_jump | IF_epc_bus_epc_wen ? dnpc : snpc;	// @[playground/src/IF_stage.scala:23:31, :24:31, :25:31, :30:{15,33}]
-  reg  [31:0] inst_buffer;	// @[playground/src/IF_stage.scala:37:22]
   always @(posedge clock) begin	// @[<stdin>:12:11]
     if (reset) begin	// @[<stdin>:12:11]
       if_valid <= 1'h0;	// @[playground/src/IF_stage.scala:13:33]
@@ -32,18 +30,16 @@ module IF_stage(	// @[<stdin>:11:3]
       if (if_ready_go)	// @[playground/src/IF_stage.scala:14:33]
         REGpc <= nextpc;	// @[playground/src/IF_stage.scala:22:24, :25:31]
     end
-    inst_buffer <= _Fetch_inst;	// @[playground/src/IF_stage.scala:26:23, :37:22]
   end // always @(posedge)
   read_inst Fetch (	// @[playground/src/IF_stage.scala:26:23]
     .clock     (clock),
     .reset     (reset),
     .nextpc    (nextpc),	// @[playground/src/IF_stage.scala:25:31]
     .fetch_wen (if_ready_go),	// @[playground/src/IF_stage.scala:14:33]
-    .inst      (_Fetch_inst)
+    .inst      (IF_IO_bits_inst)
   );
   assign IF_IO_valid = ~IF_flush & if_valid & if_ready_go;	// @[<stdin>:11:3, playground/src/IF_stage.scala:13:33, :14:33, :19:19]
   assign IF_IO_bits_nextpc = nextpc;	// @[<stdin>:11:3, playground/src/IF_stage.scala:25:31]
   assign IF_IO_bits_pc = REGpc;	// @[<stdin>:11:3, playground/src/IF_stage.scala:22:24]
-  assign IF_IO_bits_inst = if_ready_go ? _Fetch_inst : inst_buffer;	// @[<stdin>:11:3, playground/src/IF_stage.scala:14:33, :26:23, :37:22, :40:23]
 endmodule
 
