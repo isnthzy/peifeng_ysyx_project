@@ -5,11 +5,11 @@ module read_inst(
     input         clock,
     input         reset,
     input  [31:0] nextpc,
-    input  [31:0] pc,
-    output reg [31:0] inst
+    output reg [31:0] inst,
+    input         fetch_wen
 ); 
 always @(posedge clock) begin  
-  if(~reset)begin
+  if(~reset&&fetch_wen)begin
     inst<=get_inst(nextpc);
   end
 end

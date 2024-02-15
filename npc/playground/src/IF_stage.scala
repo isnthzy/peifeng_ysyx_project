@@ -12,10 +12,10 @@ class IF_stage extends Module {
   })
   val if_valid=dontTouch(RegInit(false.B))
   val if_ready_go=dontTouch(Wire(Bool()))
-  val if_allowin=dontTouch(Wire(Bool()))
+  val if_ready=dontTouch(Wire(Bool()))
   if_ready_go:=true.B
-  if_allowin:= !if_valid || if_ready_go && IF.IO.ready
-  when(if_allowin){
+  if_ready:= !if_valid || if_ready_go && IF.IO.ready
+  when(if_ready){
     if_valid:=true.B
   }
   IF.IO.valid:=Mux(IF.flush, false.B ,if_valid && if_ready_go)
@@ -33,10 +33,18 @@ class IF_stage extends Module {
   
   Fetch.io.clock:=clock
   Fetch.io.reset:=reset
-  Fetch.io.pc   :=REGpc
   Fetch.io.nextpc:=nextpc
-  IF.IO.bits.inst:=Fetch.io.inst
-  REGpc := nextpc //reg类型，更新慢一拍
+  Fetch.io.fetch_wen:=if_ready
+
+  val inst_buffer=Reg(UInt(32.W))
+  inst_buffer:=Fetch.io.inst
+
+  IF.IO.bits.inst:=Mux(if_ready,Fetch.io.inst,inst_buffer);
+  when(if_ready){
+    REGpc := nextpc //reg类型，更新慢一拍
+  }
+  //如果遇到阻塞情况，那么if级也要发生阻塞
+
   IF.IO.bits.pc  :=REGpc
   IF.IO.bits.nextpc:=nextpc
 }
@@ -46,8 +54,8 @@ class read_inst extends BlackBox with HasBlackBoxPath{
     val clock =Input(Clock())
     val reset =Input(Bool())
     val nextpc=Input(UInt(ADDR_WIDTH.W))
-    val pc    =Input(UInt(ADDR_WIDTH.W))
     val inst  =Output(UInt(32.W))
+    val fetch_wen=Output(Bool())
   })
   addPath("playground/src/dpi-c/read_inst.sv")
 }
