@@ -92,8 +92,8 @@ module LS_stage(	// @[<stdin>:1106:3]
   dpi_ls dpi_ls (	// @[playground/src/LS_stage.scala:24:20]
     .clock  (clock),
     .reset  (reset),
-    .ld_wen (|LS_IO_bits_ld_type),	// @[playground/src/LS_stage.scala:27:46]
-    .st_wen (|LS_IO_bits_st_type),	// @[playground/src/LS_stage.scala:28:46]
+    .ld_wen ((|LS_IO_bits_ld_type) & ls_valid),	// @[playground/src/LS_stage.scala:13:33, :27:{47,54}]
+    .st_wen ((|LS_IO_bits_st_type) & ls_valid),	// @[playground/src/LS_stage.scala:13:33, :28:{47,54}]
     .raddr  (LS_IO_bits_result),
     .wmask  (LS_IO_bits_st_type),
     .waddr  (LS_IO_bits_result),

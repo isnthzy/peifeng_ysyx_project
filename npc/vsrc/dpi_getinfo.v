@@ -1,5 +1,5 @@
 
-import "DPI-C" function void get_info(input int pc,input int nextpc,input int inst);
+import "DPI-C" function void get_info(input int pc,input int nextpc,input int inst,input bit dpi_valid);
 module dpi_getinfo(
     input        clock,
     input        reset,
@@ -11,7 +11,8 @@ module dpi_getinfo(
 );
  always @(posedge clock)begin
    if(~reset)begin
-     if(dpi_valid) get_info(pc,nextpc,inst);
+     get_info(pc,nextpc,inst,dpi_valid);
+     //有可能因为阻塞等传递了无效的数据，需要在仿真环境中处理这些情况
    end
   end
 endmodule
