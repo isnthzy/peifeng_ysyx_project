@@ -34,10 +34,7 @@ class IF_stage extends Module {
   Fetch.io.nextpc:=nextpc
   Fetch.io.fetch_wen:=if_ready_go
 
-  val inst_buffer=Reg(UInt(32.W))
-  inst_buffer:=Fetch.io.inst
-
-  IF.IO.bits.inst:=Mux(if_ready_go,Fetch.io.inst,inst_buffer);
+  IF.IO.bits.inst:=Fetch.io.inst
   when(if_ready_go){
     REGpc := nextpc //reg类型，更新慢一拍
   }
