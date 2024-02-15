@@ -11,6 +11,12 @@ static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN={};
 // static uint8_t pmem[CONFIG_MSIZE];
 extern IRingBuffer mtrace_buffer;
 
+
+void init_mem() {
+  IFDEF(CONFIG_MEM_RANDOM, memset(pmem, rand(), CONFIG_MSIZE));
+  Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]", PMEM_LEFT, PMEM_RIGHT);
+}
+
 static inline uint32_t host_read(void *addr, int len) {
   switch (len) {
     case 1: return *(uint8_t  *)addr;
