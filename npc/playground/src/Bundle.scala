@@ -2,6 +2,13 @@ import chisel3._
 import chisel3.util._  
 import config.Configs._
 
+class forward_to_id_bus extends Bundle{
+  val addr=UInt(5.W)
+  val data=UInt(DATA_WIDTH.W)
+  //传递到id级防止写后读（前递）
+}
+
+
 class wb_to_id_bus extends Bundle{
   val waddr=UInt(5.W)
   val wdata=UInt(DATA_WIDTH.W)
