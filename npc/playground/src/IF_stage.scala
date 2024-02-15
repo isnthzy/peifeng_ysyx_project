@@ -8,6 +8,7 @@ class IF_stage extends Module {
     val IO    =Decoupled(new if_to_id_bus())
     val br_bus=Input(new br_bus())
     val epc_bus=Input(new wb_to_if_bus())
+    val flush=Input(Bool())
   })
   val if_valid=dontTouch(RegInit(false.B))
   val if_ready_go=dontTouch(Wire(Bool()))
@@ -15,7 +16,7 @@ class IF_stage extends Module {
   when(reset.asBool=/=true.B){
     if_valid:=true.B
   }
-  IF.IO.valid:=if_valid && if_ready_go
+  IF.IO.valid:=Mux(IF.flush, false.B ,if_valid && if_ready_go)
 
 
   val REGpc   = RegInit(START_ADDR)

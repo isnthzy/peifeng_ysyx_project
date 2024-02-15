@@ -11,7 +11,7 @@ class ID_stage extends Module {
     val ex_fw=Input(new forward_to_id_bus())
     val ls_fw=Input(new forward_to_id_bus())
     val wb_bus=Input(new wb_to_id_bus())
-    val id_no_valid=Input(Bool())
+    val flush=Input(Bool())
   })
 
   val id_valid=dontTouch(RegInit(false.B))
@@ -19,9 +19,9 @@ class ID_stage extends Module {
   id_ready_go:=true.B
   ID.IO.ready := !id_valid || id_ready_go && ID.to_ex.ready
   when(ID.IO.ready){
-    id_valid:=Mux(ID.id_no_valid,false.B,ID.IO.valid)
+    id_valid:=false.B
   }
-  ID.to_ex.valid:=id_valid && id_ready_go
+  ID.to_ex.valid:=Mux(ID.flush, false.B ,id_valid && id_ready_go)
 
   val dc=Module(new Decode())
   val ImmGen=Module(new ImmGen())
@@ -99,7 +99,7 @@ class ID_stage extends Module {
   ID.to_ex.bits.ebreak_flag:=(dc.io.csr_cmd===CSR.BREAK)
   ID.to_ex.bits.wb_sel :=dc.io.wb_sel
   ID.to_ex.bits.br_type:=dc.io.br_type
-  ID.to_ex.bits.wen :=dc.io.wb_en
+  ID.to_ex.bits.wen :=dc.io.wb_en&&id_valid
   ID.to_ex.bits.rd  :=rd
   ID.to_ex.bits.alu_op:=dc.io.alu_op
   ID.to_ex.bits.src1:=src1

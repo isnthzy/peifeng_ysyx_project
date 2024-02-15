@@ -8,13 +8,13 @@ class EX_stage extends Module {
     val IO    =Flipped(Decoupled(new id_to_ex_bus()))
     val to_ls =Decoupled(new ex_to_ls_bus())
     val to_id =Output(new forward_to_id_bus())
-    val id_no_valid=Output(Bool())
+    val flush_out =Output(Bool())
     val br_bus=Output(new br_bus())
   })
   
   val ex_valid=dontTouch(RegInit(false.B))
   val ex_ready_go=dontTouch(Wire(Bool()))
-  ex_ready_go:=Mux(EX.br_bus.is_jump,false.B,true.B)
+  ex_ready_go:=true.B
   EX.IO.ready := !ex_valid || ex_ready_go && EX.to_ls.ready
   when(EX.IO.ready){
     ex_valid:=EX.IO.valid
@@ -39,8 +39,9 @@ class EX_stage extends Module {
                       | ((EX.IO.bits.br_type===BR_LT) && rs1_lt_rs2_s)
                       | ((EX.IO.bits.br_type===BR_LTU)&& rs1_lt_rs2_u)
                       | ((EX.IO.bits.br_type===BR_GE) && !rs1_lt_rs2_s)
-                      | ((EX.IO.bits.br_type===BR_GEU)&& !rs1_lt_rs2_u))
-  EX.id_no_valid:=EX.br_bus.is_jump
+                      | ((EX.IO.bits.br_type===BR_GEU)&& !rs1_lt_rs2_u))&&ex_valid
+  EX.flush_out:=EX.br_bus.is_jump
+
   EX.br_bus.dnpc:=MuxLookup(EX.IO.bits.br_type,0.U)(Seq(
     BR_XXX -> 0.U,
     BR_LTU -> Alu.io.result,
