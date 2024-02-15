@@ -19,7 +19,7 @@ class ID_stage extends Module {
   id_ready_go:=true.B
   ID.IO.ready := !id_valid || id_ready_go && ID.to_ex.ready
   when(ID.IO.ready){
-    id_valid:=ID.IO.ready
+    id_valid:=ID.IO.valid
   }
   ID.to_ex.valid:=Mux(ID.flush, false.B ,id_valid && id_ready_go)
 
