@@ -42,7 +42,6 @@ typedef struct {
 typedef struct {
   vaddr_t nextpc;
   word_t inst;
-  bool valid;
 }CPU_info;
 #include "npc_debug.h"
 #endif

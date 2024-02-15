@@ -63,10 +63,11 @@ extern "C" void cpu_use_func(int pc,int nextpc,svBit is_ret,svBit is_jal,svBit i
 
 extern "C" void get_info(int pc,int nextpc,int inst,svBit dpi_valid){
   // printf("pc: %x\n",pc);
-  cpu.pc=pc;
-  cpu_info.nextpc=nextpc;
-  cpu_info.inst=inst;
-  cpu_info.valid=dpi_valid;
+  if(dpi_valid){
+    cpu.pc=pc;
+    cpu_info.nextpc=nextpc;
+    cpu_info.inst=inst;
+  }
 }
 
 extern "C" void prt_debug(const svBitVecVal* debug_1,int debug_2){
@@ -139,9 +140,9 @@ static void trace_and_difftest(word_t this_pc,word_t next_pc){
 
 
 static void npc_execute(uint64_t n) {
+  static vaddr_t lastpc=cpu.pc;
   for (;n > 0; n --) {
-    printf("cpu_valid %d",cpu_info.valid);
-    while(cpu_info.valid){
+    while(cpu.pc==lastpc){
       top->clock=1;
 
       step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
@@ -153,6 +154,7 @@ static void npc_execute(uint64_t n) {
 
       top->clock=0;
       step_and_dump_wave();
+      lastpc=cpu.pc;
       if (npc_state.state != NPC_RUNNING) break;
     }
   }
