@@ -19,9 +19,9 @@ class ID_stage extends Module {
   id_ready_go:=true.B
   ID.IO.ready := !id_valid || id_ready_go && ID.to_ex.ready
   when(ID.IO.ready){
-    id_valid:=Mux(ID.id_no_valid,false.B,ID.IO.valid)
+    id_valid:=ID.IO.valid
   }
-  ID.to_ex.valid:=id_valid && id_ready_go
+  ID.to_ex.valid:=Mux(ID.id_no_valid, false.B,id_valid && id_ready_go)
 
   val dc=Module(new Decode())
   val ImmGen=Module(new ImmGen())
