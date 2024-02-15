@@ -78,11 +78,11 @@ class ID_stage extends Module {
 
 
   val src1=MuxLookup(dc.io.A_sel,0.U)(Seq(
-    A_RS1 -> Regfile.io.rdata1,
+    A_RS1 -> rdata1,
     A_PC  -> ID.IO.bits.pc
   ))
   val src2=MuxLookup(dc.io.B_sel,0.U)(Seq(
-    B_RS2 -> Regfile.io.rdata2,
+    B_RS2 -> rdata2,
     B_IMM -> imm
   ))
   Regfile.io.waddr:=ID.wb_bus.waddr
