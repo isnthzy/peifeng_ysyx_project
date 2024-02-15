@@ -2,7 +2,6 @@ import chisel3._
 import chisel3.util._
 import config.Configs._
 import Control._
-import firrtl.transforms.DontTouchAnnotation
 
 class ID_stage extends Module {
   val ID=IO(new Bundle {
