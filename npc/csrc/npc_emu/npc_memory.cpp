@@ -14,8 +14,8 @@ extern IRingBuffer mtrace_buffer;
 
 void init_mem() {
   IFDEF(CONFIG_MEM_RANDOM, memset(pmem, rand(), CONFIG_MSIZE));
+  Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]", PMEM_LEFT, PMEM_RIGHT);
 }
-
 
 static inline uint32_t host_read(void *addr, int len) {
   switch (len) {

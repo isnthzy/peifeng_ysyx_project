@@ -167,6 +167,9 @@ void init_monitor(int argc, char *argv[]) {
   /* Parse arguments. */
   parse_args(argc, argv);
 
+  /* Open the log file. */
+  init_log(log_file);
+  
   /* init the mem. */
   //把物理内存初始化为随机数，方便快速定位访问的问题
   //这可能会导致与ref（difftest）通信不一致
@@ -184,9 +187,6 @@ void init_monitor(int argc, char *argv[]) {
 
   pipe_init();
   //初始化流水线
-
-  /* Open the log file. */
-  init_log(log_file);
 
   // /* Open the ${IMAGE}.elf file */
   IFDEF(CONFIG_FTRACE,init_elf(elf_file));
