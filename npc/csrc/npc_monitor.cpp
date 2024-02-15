@@ -111,21 +111,22 @@ static char *elf_file = NULL;
 static int difftest_port = 1234;
 
 static long load_img() {
-  if (img_file == NULL) {
-    printf("\033[0m\033[1;31m img=NULL -> use init_img \033[0m\n");
-    memcpy(guest_to_host(START_ADDR),defaultImg, sizeof(defaultImg));
-    return 4096; // built-in image size
-  }
+  // if (img_file == NULL) {
+  //   printf("\033[0m\033[1;31m img=NULL -> use init_img \033[0m\n");
+  //   memcpy(guest_to_host(START_ADDR),defaultImg, sizeof(defaultImg));
+  //   return 4096; // built-in image size
+  // }
 
-  FILE *fp = fopen(img_file, "rb");
-  fseek(fp, 0, SEEK_END);
-  long size = ftell(fp);
-  printf("The image is %s, size = %ld\n", img_file, size);
-  fseek(fp, 0, SEEK_SET);
-  int ret = fread(guest_to_host(START_ADDR), size, 1, fp);
-  assert(ret == 1);
-  fclose(fp);
-  return size;
+  // FILE *fp = fopen(img_file, "rb");
+  // fseek(fp, 0, SEEK_END);
+  // long size = ftell(fp);
+  // printf("The image is %s, size = %ld\n", img_file, size);
+  // fseek(fp, 0, SEEK_SET);
+  // int ret = fread(guest_to_host(START_ADDR), size, 1, fp);
+  // assert(ret == 1);
+  // fclose(fp);
+  // return size;
+  return 0;
 }
 
 static int parse_args(int argc, char *argv[]) {
