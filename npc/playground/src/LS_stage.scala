@@ -24,8 +24,8 @@ class LS_stage extends Module {
   val dpi_ls=Module(new dpi_ls())
   dpi_ls.io.clock:=clock
   dpi_ls.io.reset:=reset
-  dpi_ls.io.ld_wen:=LS.IO.bits.ld_type.asUInt=/=0.U
-  dpi_ls.io.st_wen:=LS.IO.bits.st_type.asUInt=/=0.U
+  dpi_ls.io.ld_wen:=(LS.IO.bits.ld_type.asUInt=/=0.U)&&ls_valid
+  dpi_ls.io.st_wen:=(LS.IO.bits.st_type.asUInt=/=0.U)&&ls_valid
   dpi_ls.io.raddr:=LS.IO.bits.result
   dpi_ls.io.wmask:=LS.IO.bits.st_type
   dpi_ls.io.waddr:=LS.IO.bits.result
