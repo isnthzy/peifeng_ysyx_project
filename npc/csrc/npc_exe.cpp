@@ -140,7 +140,7 @@ static void trace_and_difftest(word_t this_pc,word_t next_pc){
 
 
 static void npc_execute(uint64_t n) {
-  static vaddr_t lastpc=cpu.pc;
+  static vaddr_t lastpc=0;
   for (;n > 0; n --) {
     while(cpu.pc==lastpc){
       top->clock=1;
