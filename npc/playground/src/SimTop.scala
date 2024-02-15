@@ -20,9 +20,9 @@ class SimTop extends Module {
   IF_stage.IF.flush:=EX_stage.EX.flush_out
 // ID begin
   StageConnect(IF_stage.IF.IO,ID_stage.ID.IO) //左边是out，右边是in
-  ID_stage.ID.ex_fw:=EX_stage.EX.to_id
-  ID_stage.ID.ls_fw:=LS_stage.LS.to_id
-  ID_stage.ID.wb_bus:=WB_stage.WB.to_id
+  ID_stage.ID.ex_fw:=EX_stage.EX.bypass_id
+  ID_stage.ID.ls_fw:=LS_stage.LS.bypass_id
+  ID_stage.ID.wb_bus:=WB_stage.WB.to_rf
 
   ID_stage.ID.flush:=EX_stage.EX.flush_out
 // EX begin

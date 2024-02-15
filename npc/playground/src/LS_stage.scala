@@ -7,7 +7,7 @@ class LS_stage extends Module {
   val LS=IO(new Bundle {
     // val IO    =Input(new ex_to_ls_bus())
     val IO    =Flipped(Decoupled(new ex_to_ls_bus()))
-    val to_id =Output(new forward_to_id_bus())
+    val bypass_id=Output(new forward_to_id_bus())
     val to_wb =Decoupled(new ls_to_wb_bus())
   })
   val ls_valid=dontTouch(RegInit(false.B))
@@ -58,8 +58,8 @@ class LS_stage extends Module {
   LS.to_wb.bits.nextpc:=LS.IO.bits.nextpc
 
   //前递
-  LS.to_id.addr:=Mux(ls_valid && LS.to_wb.bits.wen , LS.to_wb.bits.rd , 0.U)
-  LS.to_id.data:=LS.to_wb.bits.result
+  LS.bypass_id.addr:=Mux(ls_valid && LS.to_wb.bits.wen , LS.to_wb.bits.rd , 0.U)
+  LS.bypass_id.data:=LS.to_wb.bits.result
 
   /*---------------------传递信号到wb级再由wb级处理dpi信号----------------------*/
   LS.to_wb.bits.dpic_bundle<>LS.IO.bits.dpic_bundle

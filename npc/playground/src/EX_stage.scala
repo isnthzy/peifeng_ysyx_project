@@ -7,8 +7,9 @@ class EX_stage extends Module {
     // val IO    =Input(new id_to_ex_bus())
     val IO    =Flipped(Decoupled(new id_to_ex_bus()))
     val to_ls =Decoupled(new ex_to_ls_bus())
-    val to_id =Output(new forward_to_id_bus())
-    val flush_out =Output(Bool())
+    val bypass_id=Output(new forward_to_id_bus())
+    val clog_id  =Output(Bool())
+    val flush_out=Output(Bool())
     val br_bus=Output(new br_bus())
   })
   
@@ -40,7 +41,8 @@ class EX_stage extends Module {
                       | ((EX.IO.bits.br_type===BR_LTU)&& rs1_lt_rs2_u)
                       | ((EX.IO.bits.br_type===BR_GE) && !rs1_lt_rs2_s)
                       | ((EX.IO.bits.br_type===BR_GEU)&& !rs1_lt_rs2_u))&&ex_valid
-  EX.flush_out:= EX.br_bus.is_jump
+  //重构后分支要放在jal，jr放在id级，b指令放在ex级
+
 
   EX.br_bus.dnpc:=MuxLookup(EX.IO.bits.br_type,0.U)(Seq(
     BR_XXX -> 0.U,
@@ -54,9 +56,17 @@ class EX_stage extends Module {
     BR_JR  -> Cat(Alu.io.result(31,1),0.U(1.W))
   ))
   
+
+  //如果是跳转，发起flush
+  EX.flush_out:=EX.br_bus.is_jump&&ex_valid 
+  
+  //对id发起阻塞
+  EX.clog_id:=(EX.IO.bits.ld_type=/=0.U)&&ex_valid 
+
+
   //前递
-  EX.to_id.addr:=Mux(ex_valid && EX.to_ls.bits.wen , EX.to_ls.bits.rd , 0.U)
-  EX.to_id.data:=EX.to_ls.bits.result
+  EX.bypass_id.addr:=Mux(ex_valid && EX.to_ls.bits.wen , EX.to_ls.bits.rd , 0.U)
+  EX.bypass_id.data:=EX.to_ls.bits.result
 
 
   //csr
