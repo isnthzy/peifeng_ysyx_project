@@ -68,6 +68,7 @@ extern "C" void get_info(int pc,int nextpc,int inst,svBit dpi_valid){
     cpu_info.nextpc=nextpc;
     cpu_info.inst=inst;
   }
+  cpu_info.valid=dpi_valid;
 }
 
 extern "C" void prt_debug(const svBitVecVal* debug_1,int debug_2){
@@ -147,8 +148,10 @@ static void npc_execute(uint64_t n) {
 
       step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
       cpy_reg();
-      trace_and_difftest(cpu.pc,cpu_info.nextpc);
-      IFDEF(CONFIG_DEVICE, device_update());
+      if(cpu_info.valid){
+        trace_and_difftest(cpu.pc,cpu_info.nextpc);
+        IFDEF(CONFIG_DEVICE, device_update());
+      }
       /*------------------------分割线每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次*/
     
 
