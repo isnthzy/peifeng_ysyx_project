@@ -74,8 +74,8 @@ module ID_stage(	// @[<stdin>:810:3]
   always @(posedge clock) begin	// @[<stdin>:811:11]
     if (reset)	// @[<stdin>:811:11]
       id_valid <= 1'h0;	// @[playground/src/ID_stage.scala:17:33]
-    else	// @[<stdin>:811:11]
-      id_valid <= ~_ID_IO_ready_output & id_valid;	// @[playground/src/ID_stage.scala:17:33, :20:28, :21:20, :22:13]
+    else if (_ID_IO_ready_output)	// @[playground/src/ID_stage.scala:20:28]
+      id_valid <= _ID_IO_ready_output;	// @[playground/src/ID_stage.scala:17:33, :20:28]
   end // always @(posedge)
   Decode dc (	// @[playground/src/ID_stage.scala:26:16]
     .io_inst    (ID_IO_bits_inst),
