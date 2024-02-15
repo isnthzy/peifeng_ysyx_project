@@ -16,7 +16,7 @@ class ID_stage extends Module {
 
   val id_valid=dontTouch(RegInit(false.B))
   val id_ready_go=dontTouch(Wire(Bool()))
-  id_ready_go:=Mux(ID.id_no_valid,false.B,true.B)
+  id_ready_go:=true.B
   ID.IO.ready := !id_valid || id_ready_go && ID.to_ex.ready
   when(ID.IO.ready){
     id_valid:=Mux(ID.id_no_valid,false.B,ID.IO.valid)
