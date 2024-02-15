@@ -9,7 +9,7 @@ module dpi_getinfo(
     input [31:0] inst
     
 );
- always @(posedge clock)begin
+ always @(*)begin
    if(~reset)begin
      get_info(pc,nextpc,inst,dpi_valid);
      //有可能因为阻塞等传递了无效的数据，需要在仿真环境中处理这些情况

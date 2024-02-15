@@ -75,7 +75,7 @@ void reset(int n){
 
 void pipe_init(){
   //让流水线初始化第一条指令到wb级，以实现到wb级si就执行一次的功能
-  int n=5;
+  int n=4;
   while(n--){
     top->clock=1;
     step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
