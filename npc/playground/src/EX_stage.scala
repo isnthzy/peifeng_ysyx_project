@@ -40,7 +40,7 @@ class EX_stage extends Module {
                       | ((EX.IO.bits.br_type===BR_LTU)&& rs1_lt_rs2_u)
                       | ((EX.IO.bits.br_type===BR_GE) && !rs1_lt_rs2_s)
                       | ((EX.IO.bits.br_type===BR_GEU)&& !rs1_lt_rs2_u))&&ex_valid
-  EX.flush_out:=EX.br_bus.is_jump
+  EX.flush_out:= EX.br_bus.is_jump
 
   EX.br_bus.dnpc:=MuxLookup(EX.IO.bits.br_type,0.U)(Seq(
     BR_XXX -> 0.U,
