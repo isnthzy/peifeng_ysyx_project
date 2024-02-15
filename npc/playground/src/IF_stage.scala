@@ -55,7 +55,7 @@ class read_inst extends BlackBox with HasBlackBoxPath{
     val reset =Input(Bool())
     val nextpc=Input(UInt(ADDR_WIDTH.W))
     val inst  =Output(UInt(32.W))
-    val fetch_wen=Output(Bool())
+    val fetch_wen=Input(Bool())
   })
   addPath("playground/src/dpi-c/read_inst.sv")
 }
