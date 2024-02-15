@@ -17,8 +17,6 @@ class IF_stage extends Module {
   if_allowin:= !if_valid || if_ready_go && IF.IO.ready
   when(if_allowin){
     if_valid:=true.B
-  }.otherwise{
-    if_valid:=false.B
   }
   IF.IO.valid:=Mux(IF.flush, false.B ,if_valid && if_ready_go)
 
