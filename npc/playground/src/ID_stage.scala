@@ -2,6 +2,7 @@ import chisel3._
 import chisel3.util._
 import config.Configs._
 import Control._
+import firrtl.transforms.DontTouchAnnotation
 
 class ID_stage extends Module {
   val ID=IO(new Bundle {
@@ -59,12 +60,14 @@ class ID_stage extends Module {
   //前递处理
   val rdata1=dontTouch(Wire(UInt(DATA_WIDTH.W)))
   val rdata2=dontTouch(Wire(UInt(DATA_WIDTH.W)))
-  val rs1_is_forward= (Regfile.io.raddr1=/=0.U) && ((Regfile.io.raddr1===ID.ex_fw.addr) ||
-                      (Regfile.io.raddr1===ID.ls_fw.addr) || 
-                      (ID.wb_bus.wen && (Regfile.io.raddr1===ID.wb_bus.waddr)))
-  val rs2_is_forward= (Regfile.io.raddr2=/=0.U) && ((Regfile.io.raddr2===ID.ex_fw.addr) ||
-                      (Regfile.io.raddr2===ID.ls_fw.addr) ||
-                      (ID.wb_bus.wen && (Regfile.io.raddr2===ID.wb_bus.waddr)))
+  val rs1_is_forward=dontTouch(Wire(Bool()))
+  val rs2_is_forward=dontTouch(Wire(Bool()))
+  rs1_is_forward:=(Regfile.io.raddr1=/=0.U) && ((Regfile.io.raddr1===ID.ex_fw.addr) ||
+                  (Regfile.io.raddr1===ID.ls_fw.addr) || 
+                  (ID.wb_bus.wen && (Regfile.io.raddr1===ID.wb_bus.waddr)))
+  rs2_is_forward:=(Regfile.io.raddr2=/=0.U) && ((Regfile.io.raddr2===ID.ex_fw.addr) ||
+                  (Regfile.io.raddr2===ID.ls_fw.addr) ||
+                  (ID.wb_bus.wen && (Regfile.io.raddr2===ID.wb_bus.waddr)))
   rdata1:=Mux(rs1_is_forward,
             Mux(Regfile.io.raddr1===ID.ex_fw.addr,ID.ex_fw.data,
             Mux(Regfile.io.raddr1===ID.ls_fw.addr,ID.ls_fw.data,
