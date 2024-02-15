@@ -157,7 +157,7 @@ static void npc_execute(uint64_t n) {
 
       top->clock=0;
       step_and_dump_wave();
-      if (npc_state.state != NPC_RUNNING) break;
+      if (npc_state.state != NPC_RUNNING) return;
     }while(cpu.pc==lastpc);
     lastpc=cpu.pc;
   }
