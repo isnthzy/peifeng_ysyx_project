@@ -12,10 +12,8 @@ class IF_stage extends Module {
   })
   val if_valid=dontTouch(RegInit(false.B))
   val if_ready_go=dontTouch(Wire(Bool()))
-  val if_ready=dontTouch(Wire(Bool()))
-  if_ready_go:=true.B
-  if_ready:= !if_valid || if_ready_go && IF.IO.ready
-  when(if_ready){
+  if_ready_go:=IF.IO.ready
+  when(if_ready_go){
     if_valid:=true.B
   }
   IF.IO.valid:=Mux(IF.flush, false.B ,if_valid && if_ready_go)
@@ -34,13 +32,13 @@ class IF_stage extends Module {
   Fetch.io.clock:=clock
   Fetch.io.reset:=reset
   Fetch.io.nextpc:=nextpc
-  Fetch.io.fetch_wen:=if_ready
+  Fetch.io.fetch_wen:=if_ready_go
 
   val inst_buffer=Reg(UInt(32.W))
   inst_buffer:=Fetch.io.inst
 
-  IF.IO.bits.inst:=Mux(if_ready,Fetch.io.inst,inst_buffer);
-  when(if_ready){
+  IF.IO.bits.inst:=Mux(if_ready_go,Fetch.io.inst,inst_buffer);
+  when(if_ready_go){
     REGpc := nextpc //reg类型，更新慢一拍
   }
   //如果遇到阻塞情况，那么if级也要发生阻塞
