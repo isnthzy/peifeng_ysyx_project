@@ -10,21 +10,25 @@ class LS_stage extends Module {
     val bypass_id=Output(new forward_to_id_bus())
     val to_wb =Decoupled(new ls_to_wb_bus())
   })
+  val is_ld=Wire(Bool())
+
   val ls_valid=dontTouch(RegInit(false.B))
   val ls_ready_go=dontTouch(Wire(Bool()))
-  ls_ready_go:=true.B
+  ls_ready_go:=Mux(is_ld,false.B,true.B)
   LS.IO.ready := !ls_valid || ls_ready_go &&LS.to_wb.ready
   when(LS.IO.ready){
     ls_valid:=LS.IO.valid
   }
   LS.to_wb.valid:=ls_valid && ls_ready_go
 
+  
+  is_ld:=Mux(LS.IO.bits.ld_type.asUInt=/=0.U, true.B,false.B)
 
   val ram_data=dontTouch(Wire(UInt(32.W)))
   val dpi_ls=Module(new dpi_ls())
   dpi_ls.io.clock:=clock
   dpi_ls.io.reset:=reset
-  dpi_ls.io.ld_wen:=(LS.IO.bits.ld_type.asUInt=/=0.U)&&ls_valid
+  dpi_ls.io.ld_wen:=is_ld
   dpi_ls.io.st_wen:=(LS.IO.bits.st_type.asUInt=/=0.U)&&ls_valid
   dpi_ls.io.raddr:=LS.IO.bits.result
   dpi_ls.io.wmask:=LS.IO.bits.st_type
