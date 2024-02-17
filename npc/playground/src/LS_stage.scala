@@ -22,7 +22,7 @@ class LS_stage extends Module {
   LS.to_wb.valid:=ls_valid && ls_ready_go
 
   
-  is_ld:=Mux(LS.IO.bits.ld_type.asUInt=/=0.U, true.B,false.B)
+  is_ld:=(LS.IO.bits.st_type.asUInt=/=0.U)&&ls_valid
 
   val ram_data=dontTouch(Wire(UInt(32.W)))
   val dpi_ls=Module(new dpi_ls())
