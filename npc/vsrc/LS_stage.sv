@@ -44,12 +44,14 @@ module LS_stage(	// @[<stdin>:1116:3]
                 LS_to_wb_bits_inst	// @[playground/src/LS_stage.scala:7:12]
 );
 
+  wire        is_ld;	// @[playground/src/LS_stage.scala:25:43]
   wire [31:0] _dpi_ls_rdata;	// @[playground/src/LS_stage.scala:28:20]
   reg  [31:0] casez_tmp;	// @[playground/src/LS_stage.scala:38:46]
   reg  [31:0] casez_tmp_0;	// @[playground/src/LS_stage.scala:54:57]
   reg         ls_valid;	// @[playground/src/LS_stage.scala:15:33]
-  wire        ls_ready_go = ~(|LS_IO_bits_ld_type);	// @[playground/src/LS_stage.scala:15:33, :16:33, :17:19, :25:39]
+  wire        ls_ready_go = ~is_ld;	// @[playground/src/LS_stage.scala:15:33, :16:33, :17:19, :25:43]
   wire        _LS_IO_ready_output = ~ls_valid | ls_ready_go & LS_to_wb_ready;	// @[playground/src/LS_stage.scala:15:33, :16:33, :18:{18,28,43}]
+  assign is_ld = (|LS_IO_bits_st_type) & ls_valid;	// @[playground/src/LS_stage.scala:15:33, :25:{36,43}]
   always_comb begin	// @[playground/src/LS_stage.scala:38:46]
     casez (LS_IO_bits_ld_type)	// @[playground/src/LS_stage.scala:38:46]
       3'b000:
@@ -92,8 +94,8 @@ module LS_stage(	// @[<stdin>:1116:3]
   dpi_ls dpi_ls (	// @[playground/src/LS_stage.scala:28:20]
     .clock  (clock),
     .reset  (reset),
-    .ld_wen (|LS_IO_bits_ld_type),	// @[playground/src/LS_stage.scala:25:39]
-    .st_wen ((|LS_IO_bits_st_type) & ls_valid),	// @[playground/src/LS_stage.scala:15:33, :32:{47,54}]
+    .ld_wen (is_ld),	// @[playground/src/LS_stage.scala:25:43]
+    .st_wen ((|LS_IO_bits_st_type) & ls_valid),	// @[playground/src/LS_stage.scala:15:33, :25:36, :32:54]
     .raddr  (LS_IO_bits_result),
     .wmask  (LS_IO_bits_st_type),
     .waddr  (LS_IO_bits_result),
