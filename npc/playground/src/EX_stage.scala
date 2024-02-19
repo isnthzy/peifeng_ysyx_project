@@ -61,7 +61,7 @@ class EX_stage extends Module {
   EX.flush_out:=EX.br_bus.is_jump&&ex_valid 
   
   //对id发起阻塞
-  EX.clog_id:=false.B
+  EX.clog_id:=(EX.IO.bits.ld_type=/=0.U)&&ex_valid
 
 
   //前递
