@@ -10,22 +10,30 @@ module dpi_ls(
    output[31:0] rdata,
    input [ 7:0] wmask,
    input [31:0] waddr,
-   input [31:0] wdata
+   input [31:0] wdata,
+   Output reg rdata_ok,
+   Output reg wdata_ok
 );
  
 always @(posedge clock) begin
   if(~reset)begin
-    if(ld_wen&&clock) begin
+    if(ld_wen) begin
       pmem_read (raddr,rdata);
+      rdata_ok<=1;
     end
     else begin
+      rdata_ok<=0;
       rdata[31:0]=0;
     end
 
-    if(st_wen&&clock) begin
+    if(st_wen) begin
       pmem_write(waddr,wdata,wmask);
+      wdata_ok<=1;
     end
-  end
+    else begin
+      wdata_ok<=0;
+    end
  end
+end
 endmodule
     
