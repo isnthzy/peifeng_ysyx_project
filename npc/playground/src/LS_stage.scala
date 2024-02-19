@@ -10,30 +10,32 @@ class LS_stage extends Module {
     val bypass_id=Output(new forward_to_id_bus())
     val to_wb =Decoupled(new ls_to_wb_bus())
   })
-  val ld_wen=dontTouch(Wire(Bool()))
+  val rdata_ok=dontTouch(Wire(Bool()))
+  val wdata_ok=dontTouch(Wire(Bool()))
   
 
   val ls_valid=dontTouch(RegInit(false.B))
   val ls_ready_go=dontTouch(Wire(Bool()))
-  ls_ready_go:=Mux(ld_wen,false.B,true.B)
+  ls_ready_go:=true.B
   LS.IO.ready := !ls_valid || ls_ready_go &&LS.to_wb.ready
   when(LS.IO.ready){
     ls_valid:=LS.IO.valid
   }
   LS.to_wb.valid:=ls_valid && ls_ready_go
 
-  ld_wen:=(LS.IO.bits.ld_type.asUInt=/=0.U)&&ls_valid
 
   val ram_data=dontTouch(Wire(UInt(32.W)))
   val dpi_ls=Module(new dpi_ls())
   dpi_ls.io.clock:=clock
   dpi_ls.io.reset:=reset
-  dpi_ls.io.ld_wen:=ld_wen
+  dpi_ls.io.ld_wen:=(LS.IO.bits.ld_type.asUInt=/=0.U)&&ls_valid
   dpi_ls.io.st_wen:=(LS.IO.bits.st_type.asUInt=/=0.U)&&ls_valid
   dpi_ls.io.raddr:=LS.IO.bits.result
   dpi_ls.io.wmask:=LS.IO.bits.st_type
   dpi_ls.io.waddr:=LS.IO.bits.result
   dpi_ls.io.wdata:=LS.IO.bits.rdata2
+  rdata_ok:=dpi_ls.io.rdata_ok
+  wdata_ok:=dpi_ls.io.wdata_ok
 
   ram_data:=MuxLookup(LS.IO.bits.ld_type,0.U)(Seq(
     LD_LW -> dpi_ls.io.rdata,
@@ -85,6 +87,8 @@ class dpi_ls extends BlackBox with HasBlackBoxInline {
     val wmask =Input(UInt(8.W))
     val waddr =Input(UInt(32.W))
     val wdata =Input(UInt(32.W))
+    val rdata_ok=Output(Bool())
+    val wdata_ok=Output(Bool())
   })
   setInline("dpi_ls.v",
     """
@@ -99,23 +103,31 @@ class dpi_ls extends BlackBox with HasBlackBoxInline {
       |   output[31:0] rdata,
       |   input [ 7:0] wmask,
       |   input [31:0] waddr,
-      |   input [31:0] wdata
+      |   input [31:0] wdata,
+      |   Output reg rdata_ok,
+      |   Output reg wdata_ok
       |);
       | 
       |always @(posedge clock) begin
       |  if(~reset)begin
-      |    if(ld_wen&&clock) begin
+      |    if(ld_wen) begin
       |      pmem_read (raddr,rdata);
+      |      rdata_ok<=1;
       |    end
       |    else begin
+      |      rdata_ok<=0;
       |      rdata[31:0]=0;
       |    end
       |
-      |    if(st_wen&&clock) begin
+      |    if(st_wen) begin
       |      pmem_write(waddr,wdata,wmask);
+      |      wdata_ok<=1;
       |    end
-      |  end
+      |    else begin
+      |      wdata_ok<=0;
+      |    end
       | end
+      |end
       |endmodule
     """.stripMargin)
 }
