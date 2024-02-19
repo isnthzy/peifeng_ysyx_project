@@ -11,8 +11,8 @@ module dpi_ls(
    input [ 7:0] wmask,
    input [31:0] waddr,
    input [31:0] wdata,
-   Output reg rdata_ok,
-   Output reg wdata_ok
+   output reg rdata_ok,
+   output reg wdata_ok
 );
  
 always @(posedge clock) begin
