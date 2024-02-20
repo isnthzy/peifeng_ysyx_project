@@ -32,13 +32,13 @@ void step_and_dump_wave(){
 }
 
 //----------------------------dpi-c----------------------------
-extern "C" void sim_break(int nextpc,int ret_reg_data){
+extern "C" void sim_break(int pc,int ret_reg_data){
   npc_state.halt_ret=ret_reg_data;
-  npc_state.halt_pc=nextpc;
+  npc_state.halt_pc=pc;
   npc_state.state=NPC_END;
 }
-extern "C" void inv_break(int nextpc){
-  npc_state.halt_pc=nextpc;
+extern "C" void inv_break(int pc){
+  npc_state.halt_pc=pc;
   npc_state.state=NPC_ABORT;
 }
 
