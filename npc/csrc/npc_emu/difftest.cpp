@@ -32,7 +32,7 @@ void (*ref_difftest_regcpy)(void *dut, bool direction) = NULL;
 void (*ref_difftest_exec)(uint64_t n) = NULL;
 void (*ref_difftest_raise_intr)(uint64_t NO) = NULL;
 #ifdef CONFIG_DIFFTEST
-bool isa_difftest_checkregs(CPU_state *ref_r,vaddr_t pc,vaddr_t npc){
+bool difftest_checkregs(CPU_state *ref_r,vaddr_t pc){
   for(int i=0;i<MUXDEF(CONFIG_RVE, 16, 32);i++){
     if(ref_r->gpr[i]!=gpr(i)){
           /*真机的pc要慢一拍,因为nemu的寄存器写入是瞬间写，npc是延迟一拍后写
@@ -125,9 +125,9 @@ void reg_ref_display(CPU_state *ref_r){
   // printf("pc:%x\n",ref_r->pc);
 }
 static void checkregs(CPU_state *ref, vaddr_t pc,vaddr_t npc) {
-  if (!isa_difftest_checkregs(ref, pc, npc)) {
+  if (!difftest_checkregs(ref, pc)) {
     npc_state.state = NPC_ABORT;
-    npc_state.halt_pc = npc;
+    npc_state.halt_pc = pc;
     puts("----------------------------ref----------------------------");
     reg_ref_display(ref);
     puts("----------------------------dut----------------------------");
