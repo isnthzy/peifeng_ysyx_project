@@ -31,6 +31,8 @@ void step_and_dump_wave(){
 #endif
 }
 
+
+
 //----------------------------dpi-c----------------------------
 extern "C" void sim_break(int pc,int ret_reg_data){
   npc_state.halt_ret=ret_reg_data;
@@ -80,6 +82,8 @@ extern "C" void Csr_assert(){
   panic("csr寄存器异常读写");
 }
 //----------------------------dpi-c----------------------------
+
+
 void npc_quit(){
   reg_dut_display();
   npc_state.halt_pc=cpu.pc;
@@ -111,7 +115,7 @@ void putIringbuf(){
 }
 
 
-static void trace_and_difftest(word_t this_pc,word_t next_pc){
+static void trace_and_difftest(){
   g_nr_guest_inst++; //记录总共执行了多少步
   #ifdef CONFIG_DIFFTEST
   static bool first_diff=true;
@@ -122,14 +126,14 @@ static void trace_and_difftest(word_t this_pc,word_t next_pc){
     first_diff=false;
   }
   #endif
-  // cpu.pc=this_pc;
+
   static char logbuf[128];
   static char tmp_dis[64];
-  static word_t tmp_inst;
   #ifdef CONFIG_TRACE
+  static word_t tmp_inst;
   tmp_inst=cpu_info.inst;
-  disassemble(tmp_dis, sizeof(tmp_dis),this_pc, (uint8_t*)&tmp_inst,4);
-  sprintf(logbuf,"[%ld]\t0x%08x: %08x\t%s",g_nr_guest_inst,this_pc,tmp_inst,tmp_dis);
+  disassemble(tmp_dis, sizeof(tmp_dis),cpu.pc, (uint8_t*)&tmp_inst,4);
+  sprintf(logbuf,"[%ld]\t0x%08x: %08x\t%s",g_nr_guest_inst,cpu.pc,tmp_inst,tmp_dis);
   #ifdef CONFIG_ITRACE
   log_write("%s\n",logbuf);
   enqueueIRingBuffer(&iring_buffer,logbuf); //入队环形缓冲区
@@ -142,6 +146,7 @@ static void trace_and_difftest(word_t this_pc,word_t next_pc){
 
 static void npc_execute(uint64_t n) {
   static vaddr_t lastpc=0;
+  //用于跳过阻塞，无效的指令
   for (;n > 0; n --) {
     do{
       top->clock=1;
@@ -149,7 +154,7 @@ static void npc_execute(uint64_t n) {
       step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
       cpy_reg();
       if(cpu_info.valid){
-        trace_and_difftest(cpu.pc,cpu_info.nextpc);
+        trace_and_difftest();
         IFDEF(CONFIG_DEVICE, device_update());
       }
       /*------------------------分割线每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次*/
@@ -194,7 +199,7 @@ void npc_exev(uint64_t step){ //之所以不用int因为int是有符号的，批
           (npc_state.state == NPC_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED):
            (npc_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_CYAN):
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
-          cpu.pc);
+          npc_state.halt_pc);
     case NPC_QUIT: statistic();
   }
 
