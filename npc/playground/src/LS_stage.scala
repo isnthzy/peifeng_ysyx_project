@@ -9,6 +9,7 @@ class LS_stage extends Module {
     val IO    =Flipped(Decoupled(new ex_to_ls_bus()))
     val bypass_id=Output(new forward_to_id_bus())
     val to_wb =Decoupled(new ls_to_wb_bus())
+    val clog_id=Output(Bool())
   })
   val rdata_ok=dontTouch(Wire(Bool()))
   val wdata_ok=dontTouch(Wire(Bool()))
@@ -23,6 +24,8 @@ class LS_stage extends Module {
   }
   LS.to_wb.valid:=ls_valid && ls_ready_go
 
+  LS.clog_id:=(LS.IO.bits.ld_type.asUInt=/=0.U)&&ls_valid&&(!rdata_ok && !wdata_ok)
+  //当为load指令时，在ls级前递，但ls级还没有准备好数据，发起阻塞
 
   val ram_data=dontTouch(Wire(UInt(32.W)))
   val dpi_ls=Module(new dpi_ls())

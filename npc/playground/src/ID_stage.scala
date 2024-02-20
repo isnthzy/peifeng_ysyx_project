@@ -12,12 +12,15 @@ class ID_stage extends Module {
     val ls_fw=Input(new forward_to_id_bus())
     val wb_bus=Input(new wb_to_id_bus())
     val flush=Input(Bool())
-    val clog=Input(Bool())
+    val for_ex_clog=Input(Bool())
+    val for_ls_clog=Input(Bool())
   })
+  val id_clog=dontTouch(Wire(Bool()))
+  id_clog:=ID.for_ex_clog || ID.for_ls_clog
 
   val id_valid=dontTouch(RegInit(false.B))
   val id_ready_go=dontTouch(Wire(Bool()))
-  id_ready_go:=Mux(ID.clog,false.B,true.B)
+  id_ready_go:=Mux(id_clog,false.B,true.B)
   ID.IO.ready := !id_valid || id_ready_go && ID.to_ex.ready
   when(ID.IO.ready){
     id_valid:=ID.IO.valid
@@ -63,12 +66,12 @@ class ID_stage extends Module {
   val rs1_is_forward=dontTouch(Wire(Bool()))
   val rs2_is_forward=dontTouch(Wire(Bool()))
   rs1_is_forward:=((Regfile.io.raddr1=/=0.U) && 
-                  (ID.clog===false.B) &&
+                  (id_clog===false.B) &&  //从lw传来的数据
                   ((Regfile.io.raddr1===ID.ex_fw.addr) ||
                   (Regfile.io.raddr1===ID.ls_fw.addr) || 
                   (ID.wb_bus.wen && (Regfile.io.raddr1===ID.wb_bus.waddr))))
   rs2_is_forward:=((Regfile.io.raddr2=/=0.U) &&
-                  (ID.clog===false.B) &&
+                  (id_clog===false.B) &&
                   ((Regfile.io.raddr2===ID.ex_fw.addr) ||
                   (Regfile.io.raddr2===ID.ls_fw.addr) ||
                   (ID.wb_bus.wen && (Regfile.io.raddr2===ID.wb_bus.waddr))))
