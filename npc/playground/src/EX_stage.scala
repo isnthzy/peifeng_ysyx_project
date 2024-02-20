@@ -29,13 +29,21 @@ class EX_stage extends Module {
   Alu.io.src2:=EX.IO.bits.src2
   
   //分支跳转
-  val Br=Module(new Br_cond())
-  Br.io.br_type:=EX.IO.bits.br_type
-  Br.io.rdata1:=EX.IO.bits.rdata1
-  Br.io.rdata2:=EX.IO.bits.rdata2
-  Br.io.result:=Alu.io.result
-  EX.br_bus.taken:=Br.io.taken&&ex_valid
-  EX.br_bus.target:=Br.io.target
+  // val Br=Module(new Br_cond())
+  // Br.io.br_type:=EX.IO.bits.br_type
+  // Br.io.rdata1:=EX.IO.bits.rdata1
+  // Br.io.rdata2:=EX.IO.bits.rdata2
+  // Br.io.result:=Alu.io.result
+  EX.br_bus.taken:=EX.IO.bits.b_taken&&ex_valid
+  EX.br_bus.target:=MuxLookup(EX.IO.bits.br_type,0.U)(Seq(
+                      BR_XXX -> 0.U,
+                      BR_LTU -> Alu.io.result,
+                      BR_LT  -> Alu.io.result,
+                      BR_EQ  -> Alu.io.result,
+                      BR_GEU -> Alu.io.result,
+                      BR_GE  -> Alu.io.result,
+                      BR_NE  -> Alu.io.result,
+                    ))
 
 
   //如果是跳转，发起flush

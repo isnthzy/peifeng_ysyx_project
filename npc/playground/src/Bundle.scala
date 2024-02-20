@@ -49,6 +49,7 @@ class id_to_ex_bus extends Bundle{
   val csr_cmd=UInt(5.W)
   val rs1_addr=UInt(5.W)
   //csr
+  val b_taken=Bool()
   val st_type=UInt(8.W)
   val ld_type=UInt(3.W)
   val ebreak_flag=Bool()

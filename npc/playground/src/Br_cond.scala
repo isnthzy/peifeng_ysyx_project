@@ -3,14 +3,12 @@ import chisel3.util._
 import config.Configs._
 import Control._
 
-class Br_cond extends Module {
+class Br_b extends Module{
   val io=IO(new Bundle {
     val br_type=Input(UInt(4.W))
-    val result=Input(UInt(32.W))
     val rdata1=Input(UInt(DATA_WIDTH.W))
     val rdata2=Input(UInt(DATA_WIDTH.W))
     val taken=Output(Bool())
-    val target=Output(UInt(ADDR_WIDTH.W))
   })
   val rs1_eq_rs2   = io.rdata1 === io.rdata2
   val rs1_lt_rs2_s = io.rdata1.asSInt < io.rdata2.asSInt
@@ -22,20 +20,40 @@ class Br_cond extends Module {
             | ((io.br_type===BR_LTU)&& rs1_lt_rs2_u)
             | ((io.br_type===BR_GE) && !rs1_lt_rs2_s)
             | ((io.br_type===BR_GEU)&& !rs1_lt_rs2_u))
-  //重构后分支要放在jal，jr放在id级，b指令放在ex级
 
+}//b跳转分为两个阶段，在id级计算是否跳转，在ex级得到跳转地址发起跳转
 
-  io.target:=MuxLookup(io.br_type,0.U)(Seq(
-    BR_XXX -> 0.U,
-    BR_LTU -> io.result,
-    BR_LT  -> io.result,
-    BR_EQ  -> io.result,
-    BR_GEU -> io.result,
-    BR_GE  -> io.result,
-    BR_NE  -> io.result,
-  ))
+// class Br_cond extends Module {
+//   val io=IO(new Bundle {
+//     val br_type=Input(UInt(4.W))
+//     val result=Input(UInt(32.W))
+//     val rdata1=Input(UInt(DATA_WIDTH.W))
+//     val rdata2=Input(UInt(DATA_WIDTH.W))
+//     val taken=Output(Bool())
+//     val target=Output(UInt(ADDR_WIDTH.W))
+//   })
+//   val rs1_eq_rs2   = io.rdata1 === io.rdata2
+//   val rs1_lt_rs2_s = io.rdata1.asSInt < io.rdata2.asSInt
+//   val rs1_lt_rs2_u = io.rdata1  <  io.rdata2
+
+//   io.taken :=(((io.br_type===BR_EQ) && rs1_eq_rs2)
+//             | ((io.br_type===BR_NE) && !rs1_eq_rs2)
+//             | ((io.br_type===BR_LT) && rs1_lt_rs2_s)
+//             | ((io.br_type===BR_LTU)&& rs1_lt_rs2_u)
+//             | ((io.br_type===BR_GE) && !rs1_lt_rs2_s)
+//             | ((io.br_type===BR_GEU)&& !rs1_lt_rs2_u))
+
+//   io.target:=MuxLookup(io.br_type,0.U)(Seq(
+//     BR_XXX -> 0.U,
+//     BR_LTU -> io.result,
+//     BR_LT  -> io.result,
+//     BR_EQ  -> io.result,
+//     BR_GEU -> io.result,
+//     BR_GE  -> io.result,
+//     BR_NE  -> io.result,
+//   ))
   
-}
+// }
 
 
 class Br_j extends Module {

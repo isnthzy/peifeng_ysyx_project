@@ -103,6 +103,7 @@ class ID_stage extends Module {
 
   //j分支跳转
   val J_cond=Module(new Br_j())
+  val B_cond=Module(new Br_b())
   J_cond.io.br_type:=dc.io.br_type
   J_cond.io.src1:=src1
   J_cond.io.src2:=src2
@@ -110,11 +111,18 @@ class ID_stage extends Module {
   ID.j_cond.target:=J_cond.io.target
   ID.flush_out:=J_cond.io.taken&&id_valid 
 
+  B_cond.io.br_type:=dc.io.br_type
+  B_cond.io.rdata1:=rdata1
+  B_cond.io.rdata2:=rdata2
+
+
   ID.flush_out:=(J_cond.io.taken 
-             || (dc.io.br_type=/=0.U && ~J_cond.io.taken))&&id_valid
+             ||  B_cond.io.taken)&&id_valid
   //如果是j跳转，id级向if级发起flush     (损失一个周期)
   //如果是b跳转，id和ex级向if级发起flush (损失两个周期，b跳转在ex级计算)
+  //b跳转分为两个阶段，在id级计算是否跳转，在ex级得到跳转地址发起跳转
 
+  ID.to_ex.bits.b_taken:=B_cond.io.taken&&id_valid
   ID.to_ex.bits.pc_sel:=dc.io.pc_sel
   ID.to_ex.bits.csr_addr:=csr_addr
   ID.to_ex.bits.csr_cmd:=dc.io.csr_cmd
