@@ -72,11 +72,7 @@ class LS_stage extends Module {
 
   /*---------------------传递信号到wb级再由wb级处理dpi信号----------------------*/
   LS.to_wb.bits.dpic_bundle<>LS.IO.bits.dpic_bundle
-  // LS.to_wb.bits.dpic_bundle.id_inv_flag:=LS.IO.bits.dpic_bundle.id_inv_flag
-  // LS.to_wb.bits.dpic_bundle.ex_func_flag:=LS.IO.bits.dpic_bundle.ex_func_flag
-  // LS.to_wb.bits.dpic_bundle.ex_is_jal:=LS.IO.bits.dpic_bundle.ex_is_jal
-  // LS.to_wb.bits.dpic_bundle.ex_is_ret:=LS.IO.bits.dpic_bundle.ex_is_ret
-  // LS.to_wb.bits.dpic_bundle.ex_is_rd0:=LS.IO.bits.dpic_bundle.ex_is_rd0
+
 }
 
 class dpi_ls extends BlackBox with HasBlackBoxInline {
