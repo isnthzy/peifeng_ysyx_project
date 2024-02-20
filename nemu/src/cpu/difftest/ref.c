@@ -27,14 +27,12 @@ __EXPORT void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction)
 }
 //`direction`为`DIFFTEST_TO_DUT`时, 获取REF的寄存器状态到`dut`
 //`direction`为`DIFFTEST_TO_REF`时, 设置REF的寄存器状态为`dut`
-__EXPORT void difftest_regcpy(void *dut, bool direction,vaddr_t skip_target) {
+__EXPORT void difftest_regcpy(void *dut, bool direction) {
   CPU_state* dut_t=dut; 
   if (direction == DIFFTEST_TO_REF) {
     for(int i=0;i<MUXDEF(CONFIG_RVE, 16, 32);i++){
       cpu.gpr[i]=dut_t->gpr[i];
     }
-    // if(skip_target==0) cpu.pc=dut_t->pc;
-    // else cpu.pc=skip_target;
     cpu.pc=dut_t->pc;
     cpu.mstatus=dut_t->mstatus;
     cpu.mepc=dut_t->mepc;
