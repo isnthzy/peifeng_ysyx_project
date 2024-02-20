@@ -16,9 +16,7 @@ class Br_cond extends Module {
   val rs1_lt_rs2_s = io.rdata1.asSInt < io.rdata2.asSInt
   val rs1_lt_rs2_u = io.rdata1  <  io.rdata2
 
-  io.taken := ((io.br_type===BR_JAL)
-            | (io.br_type===BR_JR)
-            | ((io.br_type===BR_EQ) && rs1_eq_rs2)
+  io.taken :=(((io.br_type===BR_EQ) && rs1_eq_rs2)
             | ((io.br_type===BR_NE) && !rs1_eq_rs2)
             | ((io.br_type===BR_LT) && rs1_lt_rs2_s)
             | ((io.br_type===BR_LTU)&& rs1_lt_rs2_u)
@@ -35,8 +33,6 @@ class Br_cond extends Module {
     BR_GEU -> io.result,
     BR_GE  -> io.result,
     BR_NE  -> io.result,
-    // BR_JAL -> br.result,
-    // BR_JR  -> Cat(br.result(31,1),0.U(1.W))
   ))
   
 }
