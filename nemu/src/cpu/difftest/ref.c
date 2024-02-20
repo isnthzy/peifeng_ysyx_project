@@ -33,8 +33,9 @@ __EXPORT void difftest_regcpy(void *dut, bool direction,vaddr_t skip_target) {
     for(int i=0;i<MUXDEF(CONFIG_RVE, 16, 32);i++){
       cpu.gpr[i]=dut_t->gpr[i];
     }
-    if(skip_target==0) cpu.pc=dut_t->pc;
-    else cpu.pc=skip_target;
+    // if(skip_target==0) cpu.pc=dut_t->pc;
+    // else cpu.pc=skip_target;
+    cpu.pc=dut_t->pc;
     cpu.mstatus=dut_t->mstatus;
     cpu.mepc=dut_t->mepc;
     cpu.mtvec=dut_t->mtvec;
