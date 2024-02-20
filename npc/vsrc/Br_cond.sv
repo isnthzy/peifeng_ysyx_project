@@ -12,14 +12,13 @@ module Br_cond(	// @[<stdin>:1030:3]
   wire rs1_lt_rs2_s = $signed(io_rdata1) < $signed(io_rdata2);	// @[playground/src/Br_cond.scala:16:39]
   wire rs1_lt_rs2_u = io_rdata1 < io_rdata2;	// @[playground/src/Br_cond.scala:17:33]
   assign io_taken =
-    io_br_type == 4'h7 | io_br_type == 4'h8 | io_br_type == 4'h3 & rs1_eq_rs2
-    | io_br_type == 4'h6 & ~rs1_eq_rs2 | io_br_type == 4'h2 & rs1_lt_rs2_s
-    | io_br_type == 4'h1 & rs1_lt_rs2_u | io_br_type == 4'h5 & ~rs1_lt_rs2_s
-    | io_br_type == 4'h4 & ~rs1_lt_rs2_u;	// @[<stdin>:1030:3, playground/src/Br_cond.scala:15:32, :16:39, :17:33, :19:27, :20:26, :21:{27,37}, :22:{27,37,40}, :23:{27,37}, :24:{27,37}, :25:{27,37,40}, :26:{13,27,37,40}]
+    io_br_type == 4'h3 & rs1_eq_rs2 | io_br_type == 4'h6 & ~rs1_eq_rs2
+    | io_br_type == 4'h2 & rs1_lt_rs2_s | io_br_type == 4'h1 & rs1_lt_rs2_u
+    | io_br_type == 4'h5 & ~rs1_lt_rs2_s | io_br_type == 4'h4 & ~rs1_lt_rs2_u;	// @[<stdin>:1030:3, playground/src/Br_cond.scala:15:32, :16:39, :17:33, :19:{27,37}, :20:{27,37,40}, :21:{27,37}, :22:{27,37}, :23:{27,37,40}, :24:{13,27,37,40}]
   assign io_target =
     io_br_type == 4'h6 | io_br_type == 4'h5 | io_br_type == 4'h4 | io_br_type == 4'h3
     | io_br_type == 4'h2 | io_br_type == 4'h1
       ? io_result
-      : 32'h0;	// @[<stdin>:1030:3, playground/src/Br_cond.scala:21:27, :22:27, :23:27, :24:27, :25:27, :26:27, :30:39]
+      : 32'h0;	// @[<stdin>:1030:3, playground/src/Br_cond.scala:19:27, :20:27, :21:27, :22:27, :23:27, :24:27, :28:39]
 endmodule
 
