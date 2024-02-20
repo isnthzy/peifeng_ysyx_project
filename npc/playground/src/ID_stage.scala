@@ -28,6 +28,7 @@ class ID_stage extends Module {
     id_valid:=ID.IO.valid
   }
   ID.to_ex.valid:=Mux(ID.flush, false.B ,id_valid && id_ready_go)
+  //flush是将下一级置为无效
 
   val dc=Module(new Decode())
   val ImmGen=Module(new ImmGen())
@@ -106,11 +107,11 @@ class ID_stage extends Module {
   J_cond.io.br_type:=dc.io.br_type
   J_cond.io.rdata1:=src1
   J_cond.io.rdata2:=src2
-  ID.j_cond.taken:=J_cond.io.taken&&id_valid
+  ID.j_cond.taken:=J_cond.io.taken&&id_valid&& ~ID.flush
   ID.j_cond.target:=J_cond.io.target
-  ID.flush_out:=J_cond.io.taken&&id_valid
+  ID.flush_out:=J_cond.io.taken&&id_valid && ~ID.flush
   
-  
+
   ID.to_ex.bits.pc_sel:=dc.io.pc_sel
   ID.to_ex.bits.csr_addr:=csr_addr
   ID.to_ex.bits.csr_cmd:=dc.io.csr_cmd
