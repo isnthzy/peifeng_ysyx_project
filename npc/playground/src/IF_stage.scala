@@ -26,8 +26,8 @@ class IF_stage extends Module {
   val Fetch   = Module(new read_inst())
 // pc在这里用dpi-c进行取指
   snpc  := REGpc + 4.U
-  dnpc  := Mux(IF.epc_bus.epc_wen, IF.epc_bus.csr_epc, IF.br_bus.dnpc)
-  nextpc:= Mux(IF.br_bus.is_jump||IF.epc_bus.epc_wen, dnpc, snpc)
+  dnpc  := Mux(IF.epc_bus.epc_wen, IF.epc_bus.csr_epc, IF.br_bus.target)
+  nextpc:= Mux(IF.br_bus.taken||IF.epc_bus.epc_wen, dnpc, snpc)
   
   Fetch.io.clock:=clock
   Fetch.io.reset:=reset

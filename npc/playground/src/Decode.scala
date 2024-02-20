@@ -146,8 +146,8 @@ object Control {
   val map = Array(
     LUI   -> List(PC_XXX  , A_XXX,  B_IMM, IMM_U, ALU_LUI   , BR_XXX, N, ST_XXX, LD_XXX, WB_ALU, Y, CSR.N, N),
     AUIPC -> List(PC_XXX  , A_PC,   B_IMM, IMM_U, ALU_ADD   , BR_XXX, N, ST_XXX, LD_XXX, WB_ALU, Y, CSR.N, N),
-    JAL   -> List(PC_XXX  , A_PC,   B_IMM, IMM_J, ALU_ADD   , BR_JAL, Y, ST_XXX, LD_XXX, WB_PC4, Y, CSR.N, N),
-    JALR  -> List(PC_XXX  , A_RS1,  B_IMM, IMM_I, ALU_ADD   , BR_JR , Y, ST_XXX, LD_XXX, WB_PC4, Y, CSR.N, N),    
+    JAL   -> List(PC_XXX  , A_PC,   B_IMM, IMM_J, ALU_XXX   , BR_JAL, Y, ST_XXX, LD_XXX, WB_PC4, Y, CSR.N, N),
+    JALR  -> List(PC_XXX  , A_RS1,  B_IMM, IMM_I, ALU_XXX   , BR_JR , Y, ST_XXX, LD_XXX, WB_PC4, Y, CSR.N, N),    
     BEQ   -> List(PC_XXX  , A_PC,   B_IMM, IMM_B, ALU_ADD   , BR_EQ , N, ST_XXX, LD_XXX, WB_ALU, N, CSR.N, N),
     BNE   -> List(PC_XXX  , A_PC,   B_IMM, IMM_B, ALU_ADD   , BR_NE , N, ST_XXX, LD_XXX, WB_ALU, N, CSR.N, N),
     BLT   -> List(PC_XXX  , A_PC,   B_IMM, IMM_B, ALU_ADD   , BR_LT , N, ST_XXX, LD_XXX, WB_ALU, N, CSR.N, N),

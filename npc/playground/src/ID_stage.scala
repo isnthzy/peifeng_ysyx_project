@@ -12,6 +12,8 @@ class ID_stage extends Module {
     val ls_fw=Input(new forward_to_id_bus())
     val wb_bus=Input(new wb_to_id_bus())
     val flush=Input(Bool())
+    val flush_out=Output(Bool())
+    val j_cond=Output(new br_bus())
     val for_ex_clog=Input(Bool())
     val for_ls_clog=Input(Bool())
   })
@@ -99,10 +101,22 @@ class ID_stage extends Module {
   Regfile.io.wdata:=ID.wb_bus.wdata
   Regfile.io.wen  :=ID.wb_bus.wen
 
+  //j分支跳转
+  val J_cond=Module(new Br_j())
+  J_cond.io.br_type:=dc.io.br_type
+  J_cond.io.rdata1:=src1
+  J_cond.io.rdata2:=src2
+  ID.j_cond.taken:=J_cond.io.taken&&id_valid
+  ID.j_cond.target:=J_cond.io.target
+  ID.flush_out:=J_cond.io.taken&&id_valid
+  
+  
   ID.to_ex.bits.pc_sel:=dc.io.pc_sel
   ID.to_ex.bits.csr_addr:=csr_addr
   ID.to_ex.bits.csr_cmd:=dc.io.csr_cmd
   ID.to_ex.bits.rs1_addr:=rs1
+
+
   //csr
   ID.to_ex.bits.st_type:=dc.io.st_type
   ID.to_ex.bits.ld_type:=dc.io.ld_type

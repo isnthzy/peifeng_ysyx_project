@@ -29,36 +29,17 @@ class EX_stage extends Module {
   Alu.io.src2:=EX.IO.bits.src2
   
   //分支跳转
-  val rs1_eq_rs2   = EX.IO.bits.rdata1 === EX.IO.bits.rdata2
-  val rs1_lt_rs2_s = EX.IO.bits.rdata1.asSInt < EX.IO.bits.rdata2.asSInt
-  val rs1_lt_rs2_u = EX.IO.bits.rdata1  <  EX.IO.bits.rdata2
+  val Br=Module(new Br_cond())
+  Br.io.br_type:=EX.IO.bits.br_type
+  Br.io.rdata1:=EX.IO.bits.rdata1
+  Br.io.rdata2:=EX.IO.bits.rdata2
+  Br.io.result:=Alu.io.result
+  EX.br_bus.taken:=Br.io.taken&&ex_valid
+  EX.br_bus.target:=Br.io.target
 
-  EX.br_bus.is_jump := ((EX.IO.bits.br_type===BR_JAL)
-                      | (EX.IO.bits.br_type===BR_JR)
-                      | ((EX.IO.bits.br_type===BR_EQ) && rs1_eq_rs2)
-                      | ((EX.IO.bits.br_type===BR_NE) && !rs1_eq_rs2)
-                      | ((EX.IO.bits.br_type===BR_LT) && rs1_lt_rs2_s)
-                      | ((EX.IO.bits.br_type===BR_LTU)&& rs1_lt_rs2_u)
-                      | ((EX.IO.bits.br_type===BR_GE) && !rs1_lt_rs2_s)
-                      | ((EX.IO.bits.br_type===BR_GEU)&& !rs1_lt_rs2_u))&&ex_valid
-  //重构后分支要放在jal，jr放在id级，b指令放在ex级
-
-
-  EX.br_bus.dnpc:=MuxLookup(EX.IO.bits.br_type,0.U)(Seq(
-    BR_XXX -> 0.U,
-    BR_LTU -> Alu.io.result,
-    BR_LT  -> Alu.io.result,
-    BR_EQ  -> Alu.io.result,
-    BR_GEU -> Alu.io.result,
-    BR_GE  -> Alu.io.result,
-    BR_NE  -> Alu.io.result,
-    BR_JAL -> Alu.io.result,
-    BR_JR  -> Cat(Alu.io.result(31,1),0.U(1.W))
-  ))
-  
 
   //如果是跳转，发起flush
-  EX.flush_out:=EX.br_bus.is_jump&&ex_valid 
+  EX.flush_out:=EX.br_bus.taken&&ex_valid 
   
   //对id发起阻塞
   EX.clog_id:=(EX.IO.bits.ld_type=/=0.U)&&ex_valid
