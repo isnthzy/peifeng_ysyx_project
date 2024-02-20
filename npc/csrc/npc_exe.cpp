@@ -111,7 +111,7 @@ void putIringbuf(){
 }
 
 
-static void trace_and_difftest(word_t this_pc,word_t next_pc){
+static void trace_and_difftest(word_t this_pc){
   g_nr_guest_inst++; //记录总共执行了多少步
   #ifdef CONFIG_DIFFTEST
   static bool first_diff=true;
@@ -125,11 +125,11 @@ static void trace_and_difftest(word_t this_pc,word_t next_pc){
   // cpu.pc=this_pc;
   static char logbuf[128];
   static char tmp_dis[64];
-  static word_t tmp_inst;
   #ifdef CONFIG_TRACE
+  static word_t tmp_inst;
   tmp_inst=cpu_info.inst;
-  disassemble(tmp_dis, sizeof(tmp_dis),this_pc, (uint8_t*)&tmp_inst,4);
-  sprintf(logbuf,"[%ld]\t0x%08x: %08x\t%s",g_nr_guest_inst,this_pc,tmp_inst,tmp_dis);
+  disassemble(tmp_dis, sizeof(tmp_dis),cpu.pc, (uint8_t*)&tmp_inst,4);
+  sprintf(logbuf,"[%ld]\t0x%08x: %08x\t%s",g_nr_guest_inst,cpu.pc,tmp_inst,tmp_dis);
   #ifdef CONFIG_ITRACE
   log_write("%s\n",logbuf);
   enqueueIRingBuffer(&iring_buffer,logbuf); //入队环形缓冲区
@@ -149,7 +149,7 @@ static void npc_execute(uint64_t n) {
       step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
       cpy_reg();
       if(cpu_info.valid){
-        trace_and_difftest(cpu.pc,cpu_info.nextpc);
+        trace_and_difftest(cpu.pc);
         IFDEF(CONFIG_DEVICE, device_update());
       }
       /*------------------------分割线每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次*/
