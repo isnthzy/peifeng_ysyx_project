@@ -11,6 +11,12 @@ static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN={};
 // static uint8_t pmem[CONFIG_MSIZE];
 extern IRingBuffer mtrace_buffer;
 
+
+void init_mem() {
+  IFDEF(CONFIG_MEM_RANDOM, memset(pmem, rand(), CONFIG_MSIZE));
+  Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]", PMEM_LEFT, PMEM_RIGHT);
+}
+
 static inline uint32_t host_read(void *addr, int len) {
   switch (len) {
     case 1: return *(uint8_t  *)addr;
@@ -82,9 +88,9 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
 //----------------------------dpi-c----------------------------
 static uint64_t read_cnt=0;
 word_t paddr_read(paddr_t addr, int len,int model) {
-  if(model==1){read_cnt++;
-  if(read_cnt%2==1) return 0; }
-  //这是一串自我欺骗代码，因为触发沿是*而不是clock,在实现总线之前暂时用这个达到访问一次的效果
+  // if(model==1){read_cnt++;
+  // if(read_cnt%2==1) return 0; }
+  // //这是一串自我欺骗代码，因为触发沿是*而不是clock,在实现总线之前暂时用这个达到访问一次的效果
 
   word_t pmem_rdata;
   if (likely(in_pmem(addr))) pmem_rdata=pmem_read(addr,4);
@@ -106,9 +112,9 @@ word_t paddr_read(paddr_t addr, int len,int model) {
 }
 static uint64_t write_cnt=0;
 void paddr_write(paddr_t addr, int len, word_t data) {
-  write_cnt++;
-  if(write_cnt%2==1) return; 
-  //这是一串自我欺骗代码，因为触发沿是*而不是clock,在实现总线之前暂时用这个达到访问一次的效果
+  // write_cnt++;
+  // if(write_cnt%2==1) return; 
+  // //这是一串自我欺骗代码，因为触发沿是*而不是clock,在实现总线之前暂时用这个达到访问一次的效果
 
   #ifdef CONFIG_MTRACE
   char mtrace_logbuf[120];

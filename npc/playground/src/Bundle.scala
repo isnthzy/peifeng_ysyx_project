@@ -21,8 +21,8 @@ class wb_to_if_bus extends Bundle{
 }
 
 class br_bus extends Bundle{
-  val is_jump=Bool()
-  val dnpc   =UInt(ADDR_WIDTH.W)
+  val taken=Bool()
+  val target=UInt(ADDR_WIDTH.W)
 }
 
 class if_to_id_bus extends Bundle{

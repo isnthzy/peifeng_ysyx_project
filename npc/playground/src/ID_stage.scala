@@ -12,16 +12,23 @@ class ID_stage extends Module {
     val ls_fw=Input(new forward_to_id_bus())
     val wb_bus=Input(new wb_to_id_bus())
     val flush=Input(Bool())
+    val flush_out=Output(Bool())
+    val j_cond=Output(new br_bus())
+    val for_ex_clog=Input(Bool())
+    val for_ls_clog=Input(Bool())
   })
+  val id_clog=dontTouch(Wire(Bool()))
+  id_clog:=ID.for_ex_clog || ID.for_ls_clog
 
   val id_valid=dontTouch(RegInit(false.B))
   val id_ready_go=dontTouch(Wire(Bool()))
-  id_ready_go:=true.B
+  id_ready_go:=Mux(id_clog,false.B,true.B)
   ID.IO.ready := !id_valid || id_ready_go && ID.to_ex.ready
   when(ID.IO.ready){
     id_valid:=ID.IO.valid
   }
   ID.to_ex.valid:=Mux(ID.flush, false.B ,id_valid && id_ready_go)
+  //flush是将下一级置为无效
 
   val dc=Module(new Decode())
   val ImmGen=Module(new ImmGen())
@@ -59,12 +66,18 @@ class ID_stage extends Module {
   //前递处理
   val rdata1=dontTouch(Wire(UInt(DATA_WIDTH.W)))
   val rdata2=dontTouch(Wire(UInt(DATA_WIDTH.W)))
-  val rs1_is_forward= (Regfile.io.raddr1=/=0.U) && ((Regfile.io.raddr1===ID.ex_fw.addr) ||
-                      (Regfile.io.raddr1===ID.ls_fw.addr) || 
-                      (ID.wb_bus.wen && (Regfile.io.raddr1===ID.wb_bus.waddr)))
-  val rs2_is_forward= (Regfile.io.raddr2=/=0.U) && ((Regfile.io.raddr2===ID.ex_fw.addr) ||
-                      (Regfile.io.raddr2===ID.ls_fw.addr) ||
-                      (ID.wb_bus.wen && (Regfile.io.raddr2===ID.wb_bus.waddr)))
+  val rs1_is_forward=dontTouch(Wire(Bool()))
+  val rs2_is_forward=dontTouch(Wire(Bool()))
+  rs1_is_forward:=((Regfile.io.raddr1=/=0.U) && 
+                  (id_clog===false.B) &&  //从lw传来的数据
+                  ((Regfile.io.raddr1===ID.ex_fw.addr) ||
+                  (Regfile.io.raddr1===ID.ls_fw.addr) || 
+                  (ID.wb_bus.wen && (Regfile.io.raddr1===ID.wb_bus.waddr))))
+  rs2_is_forward:=((Regfile.io.raddr2=/=0.U) &&
+                  (id_clog===false.B) &&
+                  ((Regfile.io.raddr2===ID.ex_fw.addr) ||
+                  (Regfile.io.raddr2===ID.ls_fw.addr) ||
+                  (ID.wb_bus.wen && (Regfile.io.raddr2===ID.wb_bus.waddr))))
   rdata1:=Mux(rs1_is_forward,
             Mux(Regfile.io.raddr1===ID.ex_fw.addr,ID.ex_fw.data,
             Mux(Regfile.io.raddr1===ID.ls_fw.addr,ID.ls_fw.data,
@@ -89,10 +102,22 @@ class ID_stage extends Module {
   Regfile.io.wdata:=ID.wb_bus.wdata
   Regfile.io.wen  :=ID.wb_bus.wen
 
+  //j分支跳转
+  val J_cond=Module(new Br_j())
+  J_cond.io.br_type:=dc.io.br_type
+  J_cond.io.src1:=src1
+  J_cond.io.src2:=src2
+  ID.j_cond.taken:=J_cond.io.taken&&id_valid&& ~ID.flush
+  ID.j_cond.target:=J_cond.io.target
+  ID.flush_out:=J_cond.io.taken&&id_valid && ~ID.flush
+  
+
   ID.to_ex.bits.pc_sel:=dc.io.pc_sel
   ID.to_ex.bits.csr_addr:=csr_addr
   ID.to_ex.bits.csr_cmd:=dc.io.csr_cmd
   ID.to_ex.bits.rs1_addr:=rs1
+
+
   //csr
   ID.to_ex.bits.st_type:=dc.io.st_type
   ID.to_ex.bits.ld_type:=dc.io.ld_type
@@ -104,8 +129,8 @@ class ID_stage extends Module {
   ID.to_ex.bits.alu_op:=dc.io.alu_op
   ID.to_ex.bits.src1:=src1
   ID.to_ex.bits.src2:=src2
-  ID.to_ex.bits.rdata1:=Regfile.io.rdata1
-  ID.to_ex.bits.rdata2:=Regfile.io.rdata2
+  ID.to_ex.bits.rdata1:=rdata1
+  ID.to_ex.bits.rdata2:=rdata2
   ID.to_ex.bits.inst:=ID.IO.bits.inst
   ID.to_ex.bits.pc  :=ID.IO.bits.pc
   ID.to_ex.bits.nextpc:=ID.IO.bits.nextpc

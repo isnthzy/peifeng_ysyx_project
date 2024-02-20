@@ -7,7 +7,7 @@ class WB_stage extends Module {
   val WB=IO(new Bundle {
     // val IO    =Input(new ls_to_wb_bus())
     val IO    =Flipped(Decoupled(new ls_to_wb_bus()))
-    val to_id =Output(new wb_to_id_bus())
+    val to_rf =Output(new wb_to_id_bus())
     val to_if =Output(new wb_to_if_bus())
     val debug_waddr=Output(UInt(5.W))
     val debug_wdata=Output(UInt(DATA_WIDTH.W))
@@ -32,13 +32,13 @@ class WB_stage extends Module {
   WB.to_if.epc_wen:=(WB.IO.bits.pc_sel===PC_EPC)
   WB.to_if.csr_epc:=Csrfile.io.epc
 
-  WB.to_id.waddr:=WB.IO.bits.rd
-  WB.to_id.wdata:=Mux(Csrfile.io.out_wen,Csrfile.io.out,WB.IO.bits.result)
+  WB.to_rf.waddr:=WB.IO.bits.rd
+  WB.to_rf.wdata:=Mux(Csrfile.io.out_wen,Csrfile.io.out,WB.IO.bits.result)
   //如果是csr写入寄存器操作，相应的都要修改成csr寄存器的值
-  WB.to_id.wen  :=WB.IO.bits.wen&&wb_valid
-  WB.debug_waddr:=WB.to_id.waddr
-  WB.debug_wdata:=WB.to_id.wdata
-  WB.debug_wen  :=WB.to_id.wen
+  WB.to_rf.wen  :=WB.IO.bits.wen&&wb_valid
+  WB.debug_waddr:=WB.to_rf.waddr
+  WB.debug_wdata:=WB.to_rf.wdata
+  WB.debug_wen  :=WB.to_rf.wen
 
 
 
@@ -53,7 +53,7 @@ class WB_stage extends Module {
   DPI_stage.DPI.is_ret:=WB.IO.bits.dpic_bundle.ex_is_ret
   DPI_stage.DPI.is_rd0:=WB.IO.bits.dpic_bundle.ex_is_rd0
   DPI_stage.DPI.is_ebreak:=WB.IO.bits.ebreak_flag
-  DPI_stage.DPI.ret_reg_data:=WB.to_id.wdata
+  DPI_stage.DPI.ret_reg_data:=WB.to_rf.wdata
 
 }
 

@@ -3,6 +3,7 @@
 void step_and_dump_wave();
 void init_difftest(char *ref_so_file, long img_size, int port);
 void init_device();
+void init_mem();
 uint8_t* guest_to_host(paddr_t paddr);
 paddr_t host_to_guest(uint8_t *haddr);
 bool ftrace_flag=false;
@@ -97,6 +98,8 @@ void init_sim(){
   //SimTop+*.bin生成的dump.vcd在npc/build
 }
 
+
+
 #include <getopt.h>
 
 void sdb_set_batch_mode();
@@ -164,6 +167,15 @@ void init_monitor(int argc, char *argv[]) {
   /* Parse arguments. */
   parse_args(argc, argv);
 
+  /* Open the log file. */
+  init_log(log_file);
+  
+  /* init the mem. */
+  //把物理内存初始化为随机数，方便快速定位访问的问题
+  //这可能会导致与ref（difftest）通信不一致
+  init_mem();
+
+
   long img_size=load_img();
   //读入镜像文件
 
@@ -175,9 +187,6 @@ void init_monitor(int argc, char *argv[]) {
 
   pipe_init();
   //初始化流水线
-
-  /* Open the log file. */
-  init_log(log_file);
 
   // /* Open the ${IMAGE}.elf file */
   IFDEF(CONFIG_FTRACE,init_elf(elf_file));
