@@ -45,13 +45,13 @@ module LS_stage(	// @[<stdin>:1164:3]
   output        LS_clog_id	// @[playground/src/LS_stage.scala:7:12]
 );
 
+  wire        wdata_ok;	// @[playground/src/LS_stage.scala:15:30]
   wire [31:0] _dpi_ls_rdata;	// @[playground/src/LS_stage.scala:31:20]
   reg  [31:0] casez_tmp;	// @[playground/src/LS_stage.scala:43:46]
   reg  [31:0] casez_tmp_0;	// @[playground/src/LS_stage.scala:59:57]
   reg         ls_valid;	// @[playground/src/LS_stage.scala:18:33]
-  wire        wdata_ok;	// @[playground/src/LS_stage.scala:15:30]
   wire        rdata_ok;	// @[playground/src/LS_stage.scala:14:30]
-  wire        ls_ready_go = ~((|LS_IO_bits_ld_type) & ls_valid & ~rdata_ok & ~wdata_ok);	// @[playground/src/LS_stage.scala:14:30, :15:30, :18:33, :19:33, :20:{19,46,63,66,79}]
+  wire        ls_ready_go = ~((|LS_IO_bits_ld_type) & ls_valid & ~rdata_ok);	// @[playground/src/LS_stage.scala:14:30, :18:33, :19:33, :20:{19,46,63,66}]
   wire        _LS_IO_ready_output = ~ls_valid | ls_ready_go & LS_to_wb_ready;	// @[playground/src/LS_stage.scala:18:33, :19:33, :21:{18,28,43}]
   always_comb begin	// @[playground/src/LS_stage.scala:43:46]
     casez (LS_IO_bits_ld_type)	// @[playground/src/LS_stage.scala:43:46]
@@ -124,6 +124,6 @@ module LS_stage(	// @[<stdin>:1164:3]
   assign LS_to_wb_bits_nextpc = LS_IO_bits_nextpc;	// @[<stdin>:1164:3]
   assign LS_to_wb_bits_pc = LS_IO_bits_pc;	// @[<stdin>:1164:3]
   assign LS_to_wb_bits_inst = LS_IO_bits_inst;	// @[<stdin>:1164:3]
-  assign LS_clog_id = (|LS_IO_bits_ld_type) & ls_valid & ~rdata_ok & ~wdata_ok;	// @[<stdin>:1164:3, playground/src/LS_stage.scala:14:30, :15:30, :18:33, :20:{46,66,79}, :27:58]
+  assign LS_clog_id = (|LS_IO_bits_ld_type) & ls_valid & ~rdata_ok;	// @[<stdin>:1164:3, playground/src/LS_stage.scala:14:30, :18:33, :20:{46,66}, :27:58]
 endmodule
 

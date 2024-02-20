@@ -17,14 +17,14 @@ class LS_stage extends Module {
 
   val ls_valid=dontTouch(RegInit(false.B))
   val ls_ready_go=dontTouch(Wire(Bool()))
-  ls_ready_go:=Mux((LS.IO.bits.ld_type.asUInt=/=0.U)&&ls_valid&&(!rdata_ok && !wdata_ok),false.B,true.B)
+  ls_ready_go:=Mux((LS.IO.bits.ld_type.asUInt=/=0.U)&&ls_valid&&(!rdata_ok),false.B,true.B)
   LS.IO.ready := !ls_valid || ls_ready_go &&LS.to_wb.ready
   when(LS.IO.ready){
     ls_valid:=LS.IO.valid
   }
   LS.to_wb.valid:=ls_valid && ls_ready_go
 
-  LS.clog_id:=(LS.IO.bits.ld_type.asUInt=/=0.U)&&ls_valid&&(!rdata_ok && !wdata_ok)
+  LS.clog_id:=(LS.IO.bits.ld_type.asUInt=/=0.U)&&ls_valid&&(!rdata_ok)
   //当为load指令时，在ls级前递，但ls级还没有准备好数据，发起阻塞
 
   val ram_data=dontTouch(Wire(UInt(32.W)))
