@@ -127,8 +127,8 @@ module ID_stage(	// @[<stdin>:830:3]
   );
   Br_j J_cond (	// @[playground/src/ID_stage.scala:106:20]
     .io_br_type (_dc_io_br_type),	// @[playground/src/ID_stage.scala:33:16]
-    .io_rdata1  (src1),	// @[playground/src/ID_stage.scala:93:38]
-    .io_rdata2  (src2),	// @[playground/src/ID_stage.scala:97:38]
+    .io_src1    (src1),	// @[playground/src/ID_stage.scala:93:38]
+    .io_src2    (src2),	// @[playground/src/ID_stage.scala:97:38]
     .io_taken   (_J_cond_io_taken),
     .io_target  (ID_j_cond_target)
   );
@@ -144,8 +144,8 @@ module ID_stage(	// @[<stdin>:830:3]
   assign ID_to_ex_bits_rd = rd;	// @[<stdin>:830:3, playground/src/ID_stage.scala:39:24]
   assign ID_to_ex_bits_src1 = src1;	// @[<stdin>:830:3, playground/src/ID_stage.scala:93:38]
   assign ID_to_ex_bits_src2 = src2;	// @[<stdin>:830:3, playground/src/ID_stage.scala:97:38]
-  assign ID_to_ex_bits_rdata1 = _Regfile_io_rdata1;	// @[<stdin>:830:3, playground/src/ID_stage.scala:57:21]
-  assign ID_to_ex_bits_rdata2 = _Regfile_io_rdata2;	// @[<stdin>:830:3, playground/src/ID_stage.scala:57:21]
+  assign ID_to_ex_bits_rdata1 = rdata1;	// @[<stdin>:830:3, playground/src/ID_stage.scala:67:28]
+  assign ID_to_ex_bits_rdata2 = rdata2;	// @[<stdin>:830:3, playground/src/ID_stage.scala:68:28]
   assign ID_to_ex_bits_nextpc = ID_IO_bits_nextpc;	// @[<stdin>:830:3]
   assign ID_to_ex_bits_pc = ID_IO_bits_pc;	// @[<stdin>:830:3]
   assign ID_to_ex_bits_inst = ID_IO_bits_inst;	// @[<stdin>:830:3]
