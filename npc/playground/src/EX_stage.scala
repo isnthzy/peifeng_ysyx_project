@@ -29,6 +29,7 @@ class EX_stage extends Module {
   Alu.io.src2:=EX.IO.bits.src2
   
   //分支跳转
+  
   // val Br=Module(new Br_cond())
   // Br.io.br_type:=EX.IO.bits.br_type
   // Br.io.rdata1:=EX.IO.bits.rdata1
