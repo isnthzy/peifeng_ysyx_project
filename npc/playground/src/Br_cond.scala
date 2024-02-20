@@ -41,8 +41,8 @@ class Br_cond extends Module {
 class Br_j extends Module {
   val io=IO(new Bundle {
     val br_type=Input(UInt(4.W))
-    val rdata1=Input(UInt(DATA_WIDTH.W))
-    val rdata2=Input(UInt(DATA_WIDTH.W))
+    val src1=Input(UInt(DATA_WIDTH.W))
+    val src2=Input(UInt(DATA_WIDTH.W))
     val taken=Output(Bool())
     val target=Output(UInt(ADDR_WIDTH.W))
   })
@@ -50,7 +50,7 @@ class Br_j extends Module {
   io.taken := ((io.br_type===BR_JAL)
             | (io.br_type===BR_JR))
 
-  val result=io.rdata1+io.rdata2
+  val result=io.src1+io.src2
 
   io.target:=MuxLookup(io.br_type,0.U)(Seq(
     BR_XXX -> 0.U,

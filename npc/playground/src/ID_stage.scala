@@ -105,8 +105,8 @@ class ID_stage extends Module {
   //j分支跳转
   val J_cond=Module(new Br_j())
   J_cond.io.br_type:=dc.io.br_type
-  J_cond.io.rdata1:=src1
-  J_cond.io.rdata2:=src2
+  J_cond.io.src1:=src1
+  J_cond.io.src2:=src2
   ID.j_cond.taken:=J_cond.io.taken&&id_valid&& ~ID.flush
   ID.j_cond.target:=J_cond.io.target
   ID.flush_out:=J_cond.io.taken&&id_valid && ~ID.flush
@@ -129,8 +129,8 @@ class ID_stage extends Module {
   ID.to_ex.bits.alu_op:=dc.io.alu_op
   ID.to_ex.bits.src1:=src1
   ID.to_ex.bits.src2:=src2
-  ID.to_ex.bits.rdata1:=Regfile.io.rdata1
-  ID.to_ex.bits.rdata2:=Regfile.io.rdata2
+  ID.to_ex.bits.rdata1:=rdata1
+  ID.to_ex.bits.rdata2:=rdata2
   ID.to_ex.bits.inst:=ID.IO.bits.inst
   ID.to_ex.bits.pc  :=ID.IO.bits.pc
   ID.to_ex.bits.nextpc:=ID.IO.bits.nextpc
