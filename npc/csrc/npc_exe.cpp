@@ -146,6 +146,7 @@ static void trace_and_difftest(){
 
 static void npc_execute(uint64_t n) {
   static vaddr_t lastpc=0;
+  //用于跳过阻塞，无效的指令
   for (;n > 0; n --) {
     do{
       top->clock=1;
