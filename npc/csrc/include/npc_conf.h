@@ -26,9 +26,9 @@
 /*---------------------------------------------------------------------------------*/
 
 #define CONFIG_DEVICE 1
-// #define DEVICE_HAS_KEYBOARD 1
-// #define CONFIG_HAS_VGA 1
-// #define CONFIG_VGA_SIZE_400x300 1
+#define DEVICE_HAS_KEYBOARD 1
+#define CONFIG_HAS_VGA 1
+#define CONFIG_VGA_SIZE_400x300 1
 //设备开关,默认串口输出打开
 
 /*---------------------------------------------------------------------------------*/
