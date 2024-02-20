@@ -30,7 +30,6 @@ class SimTop extends Module {
   ID_stage.ID.ls_fw:=LS_stage.LS.bypass_id
   ID_stage.ID.wb_bus:=WB_stage.WB.to_rf
 
-  ID_stage.ID.flush:=EX_stage.EX.flush_out
   ID_stage.ID.for_ex_clog:=EX_stage.EX.clog_id
   ID_stage.ID.for_ls_clog:=LS_stage.LS.clog_id
 // EX begin

@@ -11,16 +11,16 @@ module ImmGen(	// @[<stdin>:700:3]
       3'b000:
         casez_tmp = 32'h0;	// @[playground/src/ImmGen.scala:19:35]
       3'b001:
-        casez_tmp = {{20{io_inst[31]}}, io_inst[31:20]};	// @[playground/src/Bundle.scala:115:{10,15,37}, playground/src/ImmGen.scala:13:21, :19:35]
+        casez_tmp = {{20{io_inst[31]}}, io_inst[31:20]};	// @[playground/src/Bundle.scala:116:{10,15,37}, playground/src/ImmGen.scala:13:21, :19:35]
       3'b010:
-        casez_tmp = {{20{io_inst[31]}}, io_inst[31:25], io_inst[11:7]};	// @[playground/src/Bundle.scala:115:{10,15,37}, playground/src/ImmGen.scala:14:{25,42}, :19:35]
+        casez_tmp = {{20{io_inst[31]}}, io_inst[31:25], io_inst[11:7]};	// @[playground/src/Bundle.scala:116:{10,15,37}, playground/src/ImmGen.scala:14:{25,42}, :19:35]
       3'b011:
         casez_tmp = {io_inst[31:12], 12'h0};	// @[playground/src/ImmGen.scala:16:{17,25}, :19:35]
       3'b100:
         casez_tmp =
-          {{12{io_inst[31]}}, io_inst[19:12], io_inst[20], io_inst[30:21], 1'h0};	// @[playground/src/Bundle.scala:115:10, playground/src/ImmGen.scala:15:{17,25}, :17:{38,55,68}, :19:35]
+          {{12{io_inst[31]}}, io_inst[19:12], io_inst[20], io_inst[30:21], 1'h0};	// @[playground/src/Bundle.scala:116:10, playground/src/ImmGen.scala:15:{17,25}, :17:{38,55,68}, :19:35]
       3'b101:
-        casez_tmp = {{20{io_inst[31]}}, io_inst[7], io_inst[30:25], io_inst[11:8], 1'h0};	// @[playground/src/Bundle.scala:115:10, playground/src/ImmGen.scala:15:{17,25,38,50,67}, :19:35]
+        casez_tmp = {{20{io_inst[31]}}, io_inst[7], io_inst[30:25], io_inst[11:8], 1'h0};	// @[playground/src/Bundle.scala:116:10, playground/src/ImmGen.scala:15:{17,25,38,50,67}, :19:35]
       3'b110:
         casez_tmp = 32'h0;	// @[playground/src/ImmGen.scala:19:35]
       default:
