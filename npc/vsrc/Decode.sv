@@ -85,12 +85,12 @@ module Decode(	// @[<stdin>:49:3]
     | _ctrlSignals_T_29;	// @[src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
   wire        _GEN_8 = _ctrlSignals_T_1 | _ctrlSignals_T_3;	// @[src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
   wire        _GEN_9 = _ctrlSignals_T_85 | _ctrlSignals_T_166;	// @[src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
-  wire        _GEN_10 =
+  wire        _GEN_10 = _ctrlSignals_T_5 | _ctrlSignals_T_7;	// @[src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
+  wire        _GEN_11 =
     _ctrlSignals_T_31 | _ctrlSignals_T_33 | _ctrlSignals_T_35 | _ctrlSignals_T_37
     | _ctrlSignals_T_39 | _ctrlSignals_T_41 | _ctrlSignals_T_43 | _ctrlSignals_T_45
     | _ctrlSignals_T_47 | _ctrlSignals_T_49 | _ctrlSignals_T_51 | _ctrlSignals_T_53
     | _GEN_4;	// @[src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
-  wire        _GEN_11 = _ctrlSignals_T_5 | _ctrlSignals_T_7;	// @[src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
   assign io_pc_sel =
     ~(_ctrlSignals_T_1 | _ctrlSignals_T_3 | _ctrlSignals_T_5 | _ctrlSignals_T_7
       | _ctrlSignals_T_9 | _ctrlSignals_T_11 | _ctrlSignals_T_13 | _ctrlSignals_T_15
@@ -119,54 +119,58 @@ module Decode(	// @[<stdin>:49:3]
   assign io_alu_op =
     _ctrlSignals_T_1
       ? 4'hB
-      : _ctrlSignals_T_3 | _ctrlSignals_T_5 | _ctrlSignals_T_7 | _ctrlSignals_T_9
-        | _ctrlSignals_T_11 | _ctrlSignals_T_13 | _ctrlSignals_T_15 | _ctrlSignals_T_17
-        | _ctrlSignals_T_19 | _ctrlSignals_T_21 | _ctrlSignals_T_23 | _ctrlSignals_T_25
-        | _ctrlSignals_T_27 | _ctrlSignals_T_29 | _ctrlSignals_T_31 | _ctrlSignals_T_33
-        | _ctrlSignals_T_35 | _ctrlSignals_T_37
+      : _ctrlSignals_T_3
           ? 4'h0
-          : _ctrlSignals_T_39
-              ? 4'h5
-              : _ctrlSignals_T_41
-                  ? 4'h7
-                  : _ctrlSignals_T_43
-                      ? 4'h4
-                      : _ctrlSignals_T_45
-                          ? 4'h3
-                          : _ctrlSignals_T_47
-                              ? 4'h2
-                              : _ctrlSignals_T_49
-                                  ? 4'h6
-                                  : _ctrlSignals_T_51
-                                      ? 4'h8
-                                      : _ctrlSignals_T_53
-                                          ? 4'h9
-                                          : _ctrlSignals_T_55
-                                              ? 4'h0
-                                              : _ctrlSignals_T_57
-                                                  ? 4'h1
-                                                  : _ctrlSignals_T_59
-                                                      ? 4'h6
-                                                      : _ctrlSignals_T_61
-                                                          ? 4'h5
-                                                          : _ctrlSignals_T_63
-                                                              ? 4'h7
-                                                              : _ctrlSignals_T_65
-                                                                  ? 4'h4
-                                                                  : _ctrlSignals_T_67
-                                                                      ? 4'h8
-                                                                      : _ctrlSignals_T_69
-                                                                          ? 4'h9
-                                                                          : _ctrlSignals_T_71
-                                                                              ? 4'h3
-                                                                              : _ctrlSignals_T_73
-                                                                                  ? 4'h2
-                                                                                  : _GEN_1
-                                                                                      ? 4'hA
-                                                                                      : _ctrlSignals_T_332
-                                                                                        | ~_GEN_9
-                                                                                          ? 4'hC
-                                                                                          : 4'h0;	// @[<stdin>:49:3, src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
+          : _GEN_10
+              ? 4'hC
+              : _ctrlSignals_T_9 | _ctrlSignals_T_11 | _ctrlSignals_T_13
+                | _ctrlSignals_T_15 | _ctrlSignals_T_17 | _ctrlSignals_T_19
+                | _ctrlSignals_T_21 | _ctrlSignals_T_23 | _ctrlSignals_T_25
+                | _ctrlSignals_T_27 | _ctrlSignals_T_29 | _ctrlSignals_T_31
+                | _ctrlSignals_T_33 | _ctrlSignals_T_35 | _ctrlSignals_T_37
+                  ? 4'h0
+                  : _ctrlSignals_T_39
+                      ? 4'h5
+                      : _ctrlSignals_T_41
+                          ? 4'h7
+                          : _ctrlSignals_T_43
+                              ? 4'h4
+                              : _ctrlSignals_T_45
+                                  ? 4'h3
+                                  : _ctrlSignals_T_47
+                                      ? 4'h2
+                                      : _ctrlSignals_T_49
+                                          ? 4'h6
+                                          : _ctrlSignals_T_51
+                                              ? 4'h8
+                                              : _ctrlSignals_T_53
+                                                  ? 4'h9
+                                                  : _ctrlSignals_T_55
+                                                      ? 4'h0
+                                                      : _ctrlSignals_T_57
+                                                          ? 4'h1
+                                                          : _ctrlSignals_T_59
+                                                              ? 4'h6
+                                                              : _ctrlSignals_T_61
+                                                                  ? 4'h5
+                                                                  : _ctrlSignals_T_63
+                                                                      ? 4'h7
+                                                                      : _ctrlSignals_T_65
+                                                                          ? 4'h4
+                                                                          : _ctrlSignals_T_67
+                                                                              ? 4'h8
+                                                                              : _ctrlSignals_T_69
+                                                                                  ? 4'h9
+                                                                                  : _ctrlSignals_T_71
+                                                                                      ? 4'h3
+                                                                                      : _ctrlSignals_T_73
+                                                                                          ? 4'h2
+                                                                                          : _GEN_1
+                                                                                              ? 4'hA
+                                                                                              : _ctrlSignals_T_332
+                                                                                                | ~_GEN_9
+                                                                                                  ? 4'hC
+                                                                                                  : 4'h0;	// @[<stdin>:49:3, src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
   assign io_br_type =
     _GEN_8
       ? 4'h0
@@ -206,18 +210,18 @@ module Decode(	// @[<stdin>:49:3]
   assign io_wb_sel =
     _GEN_8
       ? 2'h0
-      : _GEN_11
+      : _GEN_10
           ? 2'h2
           : _GEN_3
               ? 2'h0
               : _GEN_7
                   ? 2'h1
-                  : _GEN_10
+                  : _GEN_11
                       ? 2'h0
                       : {2{_ctrlSignals_T_75 | _ctrlSignals_T_497 | _ctrlSignals_T_332
                              | _GEN_9}};	// @[<stdin>:49:3, src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
   assign io_wb_en =
-    _ctrlSignals_T_1 | _ctrlSignals_T_3 | _GEN_11 | ~_GEN_3
+    _ctrlSignals_T_1 | _ctrlSignals_T_3 | _GEN_10 | ~_GEN_3
     & (_GEN_7 | ~_GEN_6
        & (_ctrlSignals_T_37 | _ctrlSignals_T_39 | _ctrlSignals_T_41 | _ctrlSignals_T_43
           | _ctrlSignals_T_45 | _ctrlSignals_T_47 | _ctrlSignals_T_49 | _ctrlSignals_T_51
@@ -229,7 +233,7 @@ module Decode(	// @[<stdin>:49:3]
     _ctrlSignals_T_1 | _ctrlSignals_T_3 | _ctrlSignals_T_5 | _ctrlSignals_T_7
     | _ctrlSignals_T_9 | _ctrlSignals_T_11 | _ctrlSignals_T_13 | _ctrlSignals_T_15
     | _ctrlSignals_T_17 | _ctrlSignals_T_19 | _ctrlSignals_T_21 | _ctrlSignals_T_23
-    | _ctrlSignals_T_25 | _ctrlSignals_T_27 | _ctrlSignals_T_29 | _GEN_10
+    | _ctrlSignals_T_25 | _ctrlSignals_T_27 | _ctrlSignals_T_29 | _GEN_11
       ? 5'h0
       : _ctrlSignals_T_75
           ? 5'h1
