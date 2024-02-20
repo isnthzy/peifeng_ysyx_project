@@ -31,6 +31,8 @@ void step_and_dump_wave(){
 #endif
 }
 
+
+
 //----------------------------dpi-c----------------------------
 extern "C" void sim_break(int pc,int ret_reg_data){
   npc_state.halt_ret=ret_reg_data;
@@ -80,6 +82,8 @@ extern "C" void Csr_assert(){
   panic("csr寄存器异常读写");
 }
 //----------------------------dpi-c----------------------------
+
+
 void npc_quit(){
   reg_dut_display();
   npc_state.halt_pc=cpu.pc;
@@ -194,7 +198,7 @@ void npc_exev(uint64_t step){ //之所以不用int因为int是有符号的，批
           (npc_state.state == NPC_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED):
            (npc_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_CYAN):
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
-          cpu.pc);
+          npc_state.halt_pc);
     case NPC_QUIT: statistic();
   }
 
