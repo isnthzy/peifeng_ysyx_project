@@ -14,7 +14,8 @@ class LS_stage extends Module {
   })
   val rdata_ok=dontTouch(Wire(Bool()))
   val wdata_ok=dontTouch(Wire(Bool()))
-  
+  rdata_ok:=LS.data_sram.rdata_ok
+  wdata_ok:=LS.data_sram.wdata_ok
 
   val ls_valid=dontTouch(RegInit(false.B))
   val ls_ready_go=dontTouch(Wire(Bool()))
