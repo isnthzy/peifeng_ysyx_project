@@ -11,6 +11,7 @@ class EX_stage extends Module {
     val clog_id  =Output(Bool())
     val flush_out=Output(Bool())
     val br_bus=Output(new br_bus())
+    val data_sram=Output(new data_sram_bus_ex())
   })
   
   val ex_valid=dontTouch(RegInit(false.B))
@@ -57,6 +58,13 @@ class EX_stage extends Module {
   //前递
   EX.bypass_id.addr:=Mux(ex_valid && EX.to_ls.bits.wen , EX.to_ls.bits.rd , 0.U)
   EX.bypass_id.data:=EX.to_ls.bits.result
+
+  //EX级发起访存
+  EX.data_sram.st_wen:=(EX.IO.bits.st_type=/=0.U)&&ex_valid
+  EX.data_sram.ld_wen:=(EX.IO.bits.ld_type=/=0.U)&&ex_valid
+  EX.data_sram.addr:=Alu.io.result
+  EX.data_sram.wmask:=EX.IO.bits.st_type
+  EX.data_sram.wdata:=EX.IO.bits.rdata2
 
 
   //csr
