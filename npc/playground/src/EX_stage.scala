@@ -11,6 +11,7 @@ class EX_stage extends Module {
     val clog_id  =Output(Bool())
     val flush_out=Output(Bool())
     val br_bus=Output(new br_bus())
+    val data_sram=Output(new data_sram_bus_ex())
   })
   
   val ex_valid=dontTouch(RegInit(false.B))
@@ -58,6 +59,18 @@ class EX_stage extends Module {
   EX.bypass_id.addr:=Mux(ex_valid && EX.to_ls.bits.wen , EX.to_ls.bits.rd , 0.U)
   EX.bypass_id.data:=EX.to_ls.bits.result
 
+  //EX级发起访存
+  val ld_wen=dontTouch(Wire(Bool()))
+  val st_wen=dontTouch(Wire(Bool()))
+  ld_wen:=(EX.IO.bits.st_type=/=0.U)&&ex_valid
+  st_wen:=(EX.IO.bits.ld_type=/=0.U)&&ex_valid
+
+  EX.data_sram.st_wen:=ld_wen
+  EX.data_sram.ld_wen:=st_wen
+  EX.data_sram.addr:=Alu.io.result
+  EX.data_sram.wmask:=EX.IO.bits.st_type
+  EX.data_sram.wdata:=EX.IO.bits.rdata2
+
 
   //csr
   EX.to_ls.bits.pc_sel:=EX.IO.bits.pc_sel
@@ -67,13 +80,13 @@ class EX_stage extends Module {
   
 
 
-  EX.to_ls.bits.st_type:=EX.IO.bits.st_type
+  EX.to_ls.bits.st_wen:=st_wen
+  EX.to_ls.bits.ld_wen:=ld_wen
   EX.to_ls.bits.ld_type:=EX.IO.bits.ld_type
   EX.to_ls.bits.ebreak_flag:=EX.IO.bits.ebreak_flag
   EX.to_ls.bits.wb_sel:=EX.IO.bits.wb_sel
   EX.to_ls.bits.wen :=EX.IO.bits.wen
   EX.to_ls.bits.rd:=EX.IO.bits.rd
-  EX.to_ls.bits.rdata2:=EX.IO.bits.rdata2
   EX.to_ls.bits.result:=Alu.io.result
   EX.to_ls.bits.pc  :=EX.IO.bits.pc
   EX.to_ls.bits.inst:=EX.IO.bits.inst

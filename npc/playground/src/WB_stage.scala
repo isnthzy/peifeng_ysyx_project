@@ -43,7 +43,7 @@ class WB_stage extends Module {
 
 
   val DPI_stage=Module(new DPI_stage())
-  DPI_stage.DPI.wb_valid:=wb_valid
+  DPI_stage.DPI.wb_valid:=wb_valid //只需要知道wb_valid信号是否有效就知道这条信号用不用与difftest通信
   DPI_stage.DPI.pc:=WB.IO.bits.pc
   DPI_stage.DPI.nextpc:=WB.IO.bits.nextpc
   DPI_stage.DPI.inst:=WB.IO.bits.inst

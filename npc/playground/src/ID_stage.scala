@@ -14,10 +14,9 @@ class ID_stage extends Module {
     val flush_out=Output(Bool())
     val j_cond=Output(new br_bus())
     val for_ex_clog=Input(Bool())
-    val for_ls_clog=Input(Bool())
   })
   val id_clog=dontTouch(Wire(Bool()))
-  id_clog:=ID.for_ex_clog || ID.for_ls_clog
+  id_clog:=ID.for_ex_clog
 
   val id_valid=dontTouch(RegInit(false.B))
   val id_ready_go=dontTouch(Wire(Bool()))

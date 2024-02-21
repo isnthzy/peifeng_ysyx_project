@@ -1,7 +1,7 @@
 
 import "DPI-C" function void pmem_read (input int raddr, output int rdata);
 import "DPI-C" function void pmem_write(input int waddr, input  int wdata, input byte wmask);
-module dpi_ls(
+module dpi_sram(
    input        clock,
    input        reset,
    input        ld_wen,

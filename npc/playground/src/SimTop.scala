@@ -14,6 +14,7 @@ class SimTop extends Module {
   val LS_stage = Module(new LS_stage())
   val WB_stage = Module(new WB_stage())
   val Br_option=Module(new Br_option())
+  val Sram = Module(new Sram())
 
   Br_option.io.Btype:=EX_stage.EX.br_bus
   Br_option.io.Jtype:=ID_stage.ID.j_cond
@@ -31,11 +32,12 @@ class SimTop extends Module {
   ID_stage.ID.wb_bus:=WB_stage.WB.to_rf
 
   ID_stage.ID.for_ex_clog:=EX_stage.EX.clog_id
-  ID_stage.ID.for_ls_clog:=LS_stage.LS.clog_id
 // EX begin
   StageConnect(ID_stage.ID.to_ex,EX_stage.EX.IO)
+  Sram.io.in:=EX_stage.EX.data_sram
 // lS begin
   StageConnect(EX_stage.EX.to_ls,LS_stage.LS.IO)
+  LS_stage.LS.data_sram:=Sram.io.out
 // WB begin
   StageConnect(LS_stage.LS.to_wb,WB_stage.WB.IO)
 

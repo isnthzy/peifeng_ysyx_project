@@ -2,6 +2,21 @@ import chisel3._
 import chisel3.util._  
 import config.Configs._
 
+class data_sram_bus_ex extends Bundle{
+  val st_wen=Bool()
+  val ld_wen=Bool()
+  val addr=UInt(ADDR_WIDTH.W)
+  val wmask=UInt(8.W)
+  val wdata=UInt(DATA_WIDTH.W)
+}
+
+class data_sram_bus_ls extends Bundle{
+  val rdata=UInt(DATA_WIDTH.W)
+  val rdata_ok=Bool()
+  val wdata_ok=Bool()
+}
+
+
 class forward_to_id_bus extends Bundle{
   val addr=UInt(5.W)
   val data=UInt(DATA_WIDTH.W)
@@ -76,13 +91,13 @@ class ex_to_ls_bus extends Bundle{
   val csr_cmd=UInt(5.W)
   val rs1_addr=UInt(5.W)
   //csr
-  val st_type=UInt(8.W)
+  val st_wen=Bool()
+  val ld_wen=Bool() //不需要st_type原因是st_type在ex级被处理
   val ld_type=UInt(3.W)
   val ebreak_flag=Bool()
   val wb_sel =UInt(2.W)
   val wen   =Bool()
   val rd    =UInt(5.W)
-  val rdata2=UInt(DATA_WIDTH.W)
   val result=UInt(DATA_WIDTH.W)
   val nextpc=UInt(ADDR_WIDTH.W)
   val pc  =UInt(ADDR_WIDTH.W)
