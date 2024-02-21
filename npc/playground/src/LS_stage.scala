@@ -19,7 +19,7 @@ class LS_stage extends Module {
   val ls_valid=dontTouch(RegInit(false.B))
   val ls_ready_go=dontTouch(Wire(Bool()))
   ls_ready_go:=true.B
-  // ls_ready_go:=Mux((LS.IO.bits.ld_type.asUInt=/=0.U)&&ls_valid&&(!rdata_ok),false.B,true.B)
+  //未来用rdata_ok或者wdata_ok信号控制ls_ready_go
   LS.IO.ready := !ls_valid || ls_ready_go &&LS.to_wb.ready
   when(LS.IO.ready){
     ls_valid:=LS.IO.valid
