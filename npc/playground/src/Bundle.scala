@@ -91,13 +91,13 @@ class ex_to_ls_bus extends Bundle{
   val csr_cmd=UInt(5.W)
   val rs1_addr=UInt(5.W)
   //csr
-  val st_type=UInt(8.W)
+  val st_wen=Bool()
+  val ld_wen=Bool() //不需要st_type原因是st_type在ex级被处理
   val ld_type=UInt(3.W)
   val ebreak_flag=Bool()
   val wb_sel =UInt(2.W)
   val wen   =Bool()
   val rd    =UInt(5.W)
-  val rdata2=UInt(DATA_WIDTH.W)
   val result=UInt(DATA_WIDTH.W)
   val nextpc=UInt(ADDR_WIDTH.W)
   val pc  =UInt(ADDR_WIDTH.W)
