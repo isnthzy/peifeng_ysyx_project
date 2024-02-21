@@ -12,7 +12,7 @@ module Sram(	// @[<stdin>:1481:3]
                 io_out_wdata_ok	// @[playground/src/Sram.scala:6:12]
 );
 
-  dpi_sram dpi_sram (	// @[playground/src/Sram.scala:12:22]
+  dpi_sram dpi_sram (	// @[playground/src/Sram.scala:11:22]
     .clock    (clock),
     .reset    (reset),
     .ld_wen   (io_in_ld_wen),
