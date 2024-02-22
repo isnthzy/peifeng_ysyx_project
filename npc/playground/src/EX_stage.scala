@@ -11,6 +11,8 @@ class EX_stage extends Module {
     val clog_id  =Output(Bool())
     val flush_out=Output(Bool())
     val br_bus=Output(new br_bus())
+    val to_if=Output(new ex_to_if_bus())
+    val to_csr=Output(new ex_to_csr_bus())
     val data_sram=Output(new data_sram_bus_ex())
   })
   
@@ -31,11 +33,6 @@ class EX_stage extends Module {
   
   //分支跳转
   
-  // val Br=Module(new Br_cond())
-  // Br.io.br_type:=EX.IO.bits.br_type
-  // Br.io.rdata1:=EX.IO.bits.rdata1
-  // Br.io.rdata2:=EX.IO.bits.rdata2
-  // Br.io.result:=Alu.io.result
   EX.br_bus.taken:=EX.IO.bits.b_taken&&ex_valid
   EX.br_bus.target:=MuxLookup(EX.IO.bits.br_type,0.U)(Seq(
                       BR_XXX -> 0.U,
@@ -49,7 +46,9 @@ class EX_stage extends Module {
 
 
   //如果是跳转，发起flush
-  EX.flush_out:=EX.br_bus.taken&&ex_valid 
+  EX.flush_out:=(EX.br_bus.taken
+              || EX.IO.bits.ecpt_ecall
+              || EX.IO.bits.is_mret)&&ex_valid 
   
   //对id发起阻塞
   EX.clog_id:=(EX.IO.bits.ld_type=/=0.U)&&ex_valid
@@ -73,10 +72,24 @@ class EX_stage extends Module {
 
 
   //csr
-  EX.to_ls.bits.pc_sel:=EX.IO.bits.pc_sel
-  EX.to_ls.bits.csr_addr:=EX.IO.bits.csr_addr
-  EX.to_ls.bits.csr_cmd:=EX.IO.bits.csr_cmd
-  EX.to_ls.bits.rs1_addr:=EX.IO.bits.rs1_addr
+  val Csr_alu=Module(new Csr_alu())
+  Csr_alu.io.csr_cmd:=EX.IO.bits.csr_cmd
+  Csr_alu.io.in_csr:=Alu.io.result
+  Csr_alu.io.in_rdata1:=EX.IO.bits.rdata1
+  EX.to_csr.csr_waddr:=EX.IO.bits.csr_addr
+  EX.to_csr.csr_wen:=Csr_alu.io.wen&&ex_valid
+  EX.to_csr.csr_wdata:=Csr_alu.io.out
+  EX.to_csr.ecpt.ecpt_wen:=EX.IO.bits.ecpt_ecall
+  EX.to_csr.ecpt.exception_no:=11.U
+  EX.to_csr.ecpt.mepc:=EX.IO.bits.pc
+  
+  EX.to_if.csr_epc:=Mux(EX.IO.bits.is_mret,EX.IO.bits.csr_global.mepc,
+                      Mux(EX.IO.bits.ecpt_ecall,EX.IO.bits.csr_global.mtvec,0.U))
+  EX.to_if.epc_wen:=(EX.IO.bits.pc_sel===PC_EPC)
+  // EX.to_ls.bits.pc_sel:=EX.IO.bits.pc_sel
+  // EX.to_ls.bits.csr_addr:=EX.IO.bits.csr_addr
+  // EX.to_ls.bits.csr_cmd:=EX.IO.bits.csr_cmd
+  // EX.to_ls.bits.rs1_addr:=EX.IO.bits.rs1_addr
   
 
 

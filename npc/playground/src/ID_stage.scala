@@ -11,6 +11,7 @@ class ID_stage extends Module {
     val ex_fw=Input(new forward_to_id_bus())
     val ls_fw=Input(new forward_to_id_bus())
     val wb_bus=Input(new wb_to_id_bus())
+    val csr_bus=Input(new ex_to_csr_bus())
     val flush_out=Output(Bool())
     val j_cond=Output(new br_bus())
     val for_ex_clog=Input(Bool())
@@ -37,7 +38,9 @@ class ID_stage extends Module {
   val rd=dontTouch(Wire(UInt(5.W)))
   val opcode=dontTouch(Wire(UInt(7.W)))
   val csr_addr=dontTouch(Wire(UInt(12.W)))
-
+  
+  val ecpt_ecall=dontTouch(Wire(Bool())) //exception_ecall
+  val is_mret=dontTouch(Wire(Bool()))
 
   dc.io.inst:=ID.IO.bits.inst
 
@@ -88,13 +91,42 @@ class ID_stage extends Module {
                                                   Regfile.io.rdata2)
 
 
+  //在id级实例化CSR，通过ex前递写回
+  ecpt_ecall:=(dc.io.csr_cmd===CSR.ECALL)
+  is_mret:=(dc.io.csr_cmd===CSR.MRET)
+  val csr_out_data=dontTouch(Wire(UInt(DATA_WIDTH.W)))
+  val Csrfile=Module(new CsrFile())
+  Csrfile.io.csr_cmd:=dc.io.csr_cmd
+  csr_out_data:=Mux(csr_addr===ID.csr_bus.csr_waddr,ID.csr_bus.csr_wdata,Csrfile.io.out)
+  //简化的csr实现，先用前递代替，实际上应该是清空
+  Csrfile.io.csr_raddr:=csr_addr
+  Csrfile.io.csr_wen:=ID.csr_bus.csr_wen
+  Csrfile.io.csr_waddr:=ID.csr_bus.csr_waddr
+  Csrfile.io.csr_wdata:=ID.csr_bus.csr_wdata
+  Csrfile.io.ecpt_wen:=ID.csr_bus.ecpt.ecpt_wen
+  Csrfile.io.mepc_in:=ID.csr_bus.ecpt.mepc
+  Csrfile.io.mcause_in:=ID.csr_bus.ecpt.exception_no
+
+  ID.to_ex.bits.csr_addr:=csr_addr
+  ID.to_ex.bits.csr_cmd:=dc.io.csr_cmd
+  ID.to_ex.bits.is_mret:=is_mret
+  ID.to_ex.bits.ecpt_ecall:=ecpt_ecall
+  ID.to_ex.bits.pc_sel:=dc.io.pc_sel
+  ID.to_ex.bits.csr_global<>Csrfile.io.global
+  // ID.to_ex.bits.csr_addr:=csr_addr
+  // ID.to_ex.bits.csr_cmd:=dc.io.csr_cmd
+  // ID.to_ex.bits.rs1_addr:=rs1
+
+
+
   val src1=MuxLookup(dc.io.A_sel,0.U)(Seq(
     A_RS1 -> rdata1,
     A_PC  -> ID.IO.bits.pc
   ))
   val src2=MuxLookup(dc.io.B_sel,0.U)(Seq(
     B_RS2 -> rdata2,
-    B_IMM -> imm
+    B_IMM -> imm,
+    B_CSR -> csr_out_data
   ))
   Regfile.io.waddr:=ID.wb_bus.waddr
   Regfile.io.wdata:=ID.wb_bus.wdata
@@ -108,7 +140,9 @@ class ID_stage extends Module {
   J_cond.io.src2:=src2
   ID.j_cond.taken:=J_cond.io.taken&&id_valid
   ID.j_cond.target:=J_cond.io.target
-  ID.flush_out:=J_cond.io.taken&&id_valid 
+  ID.flush_out:=(J_cond.io.taken
+              || ecpt_ecall
+              || is_mret)&&id_valid 
 
   B_cond.io.br_type:=dc.io.br_type
   B_cond.io.rdata1:=rdata1
@@ -122,13 +156,9 @@ class ID_stage extends Module {
   //b跳转分为两个阶段，在id级计算是否跳转，在ex级得到跳转地址发起跳转
 
   ID.to_ex.bits.b_taken:=B_cond.io.taken&&id_valid
-  ID.to_ex.bits.pc_sel:=dc.io.pc_sel
-  ID.to_ex.bits.csr_addr:=csr_addr
-  ID.to_ex.bits.csr_cmd:=dc.io.csr_cmd
-  ID.to_ex.bits.rs1_addr:=rs1
 
 
-  //csr
+
   ID.to_ex.bits.st_type:=dc.io.st_type
   ID.to_ex.bits.ld_type:=dc.io.ld_type
   ID.to_ex.bits.ebreak_flag:=(dc.io.csr_cmd===CSR.BREAK)

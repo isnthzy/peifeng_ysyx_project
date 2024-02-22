@@ -21,30 +21,29 @@ object CSR {
 class CsrFile extends Module{
   val io=IO(new Bundle{
     val csr_cmd=Input(UInt(5.W))
-    val pc=Input(UInt(ADDR_WIDTH.W))
-    val csr_addr=Input(UInt(12.W))
-    val rs1_addr=Input(UInt(5.W))
-    val in=Input(UInt(DATA_WIDTH.W))
-    val out_wen=Output(Bool())
+    val csr_raddr=Input(UInt(12.W))
+    val csr_waddr=Input(UInt(12.W))
+    val csr_wen=Input(Bool())
+    val csr_wdata=Input(UInt(DATA_WIDTH.W))
+    val mepc_in=Input(UInt(ADDR_WIDTH.W))
+    val mcause_in=Input(UInt(ADDR_WIDTH.W))
+    val ecpt_wen=Input(Bool())
+
     val out=Output(UInt(DATA_WIDTH.W))
-    val epc=Output(UInt(ADDR_WIDTH.W))
+    val global=Output(new csr_global())
   })
   // csr_addr，csr寄存器的地址，
   // in写入csr的值，out用于写入rd寄存器的值
-  io.out_wen:=(io.csr_cmd===CSR.W)||(io.csr_cmd===CSR.S)
-  val csr_wen=(io.csr_cmd===CSR.W)||(io.csr_cmd===CSR.S)
   val mtvec  =RegInit(0.U(DATA_WIDTH.W))
   val mstatus=RegInit("h1800".U(DATA_WIDTH.W))
   val mepc   =RegInit(0.U(DATA_WIDTH.W))
   val mcause =RegInit(0.U(DATA_WIDTH.W))
   val mtval  =RegInit(0.U(DATA_WIDTH.W))
-  val wdata  =dontTouch(Wire(UInt(DATA_WIDTH.W)))
-  val csr_data=dontTouch(Wire(UInt(DATA_WIDTH.W)))
   
   val csr_assert_wen=WireDefault(false.B)
-  io.epc:=WireDefault(0.U(ADDR_WIDTH.W))
+  io.global.mtvec:=WireDefault(0.U(ADDR_WIDTH.W))
 
-  csr_data:=MuxLookup(io.csr_addr,0.U)(Seq(
+  io.out:=MuxLookup(io.csr_raddr,0.U)(Seq(
     CSR.MTVEC->mtvec,
     CSR.MSTATUS->mstatus,
     CSR.MEPC->mepc,
@@ -52,39 +51,50 @@ class CsrFile extends Module{
     CSR.MTVAL->mtval
   ))
 
-  wdata:=MuxLookup(io.csr_cmd,0.U)(Seq(
-    CSR.W->io.in,
-    CSR.S->(csr_data|io.in),
-    CSR.ECALL->io.in
-  ))
-  io.out:=Mux(io.csr_addr===CSR.MCAUSE,0xb.U,wdata)
-  //对m模式的特殊处理
 
-  when(io.csr_cmd=/=CSR.N){
-    when(io.csr_cmd===CSR.ECALL){
-      mepc:=io.pc
-      mcause:=wdata
-      io.epc:=mtvec
-    }
-    when(io.csr_cmd===CSR.MRET){
-      io.epc:=mepc
-    }
-    when(csr_wen){
-      when(io.csr_addr===CSR.MTVEC){ 
-        mtvec:=wdata }
-      .elsewhen(io.csr_addr===CSR.MSTATUS){ mstatus:=wdata }
-      .elsewhen(io.csr_addr===CSR.MEPC)   { mepc:=wdata    }
-      .elsewhen(io.csr_addr===CSR.MCAUSE) { mcause:=0xb.U  }
-      .elsewhen(io.csr_addr===CSR.MTVAL)  { mtval:=wdata   }
-      .otherwise{ csr_assert_wen:=true.B }
-    }
+
+  when(io.ecpt_wen){
+    mepc:=io.mepc_in
+    mcause:=io.mcause_in
+    io.global.mtvec:=mtvec
   }
+  when(io.csr_cmd===CSR.MRET){
+    io.global.mtvec:=mepc
+  }
+  when(io.csr_wen){
+    when(io.csr_waddr===CSR.MTVEC){ 
+      mtvec:=io.csr_wdata }
+    .elsewhen(io.csr_waddr===CSR.MSTATUS){ mstatus:=io.csr_wdata }
+    .elsewhen(io.csr_waddr===CSR.MEPC)   { mepc:=io.csr_wdata    }
+    .elsewhen(io.csr_waddr===CSR.MCAUSE) { mcause:=0xb.U  }
+    .elsewhen(io.csr_waddr===CSR.MTVAL)  { mtval:=io.csr_wdata   }
+    .otherwise{ csr_assert_wen:=true.B }
+  }
+
 
   val csr_dpic=Module(new csr_debug_dpic())
   csr_dpic.io.clock:=clock
   csr_dpic.io.reset:=reset
   csr_dpic.io.csr_valid:=io.csr_cmd=/=CSR.N
   csr_dpic.io.assert_wen:=csr_assert_wen
+}
+
+
+
+class Csr_alu extends Module{
+  val io=IO(new Bundle{
+    val csr_cmd=Input(UInt(5.W))
+    val in_csr=Input(UInt(DATA_WIDTH.W))
+    val in_rdata1=Input(UInt(DATA_WIDTH.W))
+    val wen=Output(Bool())
+    val out=Output(UInt(DATA_WIDTH.W))
+  })
+  io.wen:= (io.csr_cmd===CSR.W
+         || io.csr_cmd===CSR.S)
+  io.out:=MuxLookup(io.csr_cmd,0.U)(Seq(
+    CSR.W->io.in_rdata1,
+    CSR.S->(io.in_csr|io.in_rdata1),
+  ))
 }
 
 
