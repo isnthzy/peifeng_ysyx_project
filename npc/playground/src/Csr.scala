@@ -28,7 +28,6 @@ class CsrFile extends Module{
     val mepc_in=Input(UInt(ADDR_WIDTH.W))
     val mcause_in=Input(UInt(ADDR_WIDTH.W))
     val ecpt_wen=Input(Bool())
-    val mret_wen=Input(Bool())
 
     val out=Output(UInt(DATA_WIDTH.W))
     val global=Output(new csr_global())
@@ -66,7 +65,7 @@ class CsrFile extends Module{
   when(io.csr_cmd===CSR.MRET){
     io.global.mepc:=mepc
   }
-  
+
   when(io.csr_wen){
     when(io.csr_waddr===CSR.MTVEC){ 
       mtvec:=io.csr_wdata }
