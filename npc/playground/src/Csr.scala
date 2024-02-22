@@ -48,7 +48,7 @@ class CsrFile extends Module{
     CSR.MTVEC->mtvec,
     CSR.MSTATUS->mstatus,
     CSR.MEPC->mepc,
-    CSR.MCAUSE->mcause,
+    CSR.MCAUSE->0xb.U,
     CSR.MTVAL->mtval
   ))
 
