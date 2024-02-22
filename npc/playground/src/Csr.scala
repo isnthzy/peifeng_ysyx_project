@@ -42,6 +42,7 @@ class CsrFile extends Module{
   
   val csr_assert_wen=WireDefault(false.B)
   io.global.mtvec:=WireDefault(0.U(ADDR_WIDTH.W))
+  io.global.mepc:=WireDefault(0.U(ADDR_WIDTH.W))
 
   io.out:=MuxLookup(io.csr_raddr,0.U)(Seq(
     CSR.MTVEC->mtvec,
