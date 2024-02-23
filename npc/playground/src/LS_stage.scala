@@ -36,11 +36,7 @@ class LS_stage extends Module {
     LD_LBU-> Zext(LS.data_sram.rdata( 7,0),32)
   ))
   
-  LS.to_wb.bits.pc_sel:=LS.IO.bits.pc_sel
-  LS.to_wb.bits.csr_addr:=LS.IO.bits.csr_addr
-  LS.to_wb.bits.csr_cmd :=LS.IO.bits.csr_cmd
-  LS.to_wb.bits.rs1_addr:=LS.IO.bits.rs1_addr
-  //csr
+
   LS.to_wb.bits.ebreak_flag:=LS.IO.bits.ebreak_flag
   LS.to_wb.bits.wen:=LS.IO.bits.wen
   LS.to_wb.bits.rd :=LS.IO.bits.rd

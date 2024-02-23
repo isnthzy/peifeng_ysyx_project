@@ -7,7 +7,7 @@ class IF_stage extends Module {
     // val IO    =Output(new if_to_id_bus())
     val IO    =Decoupled(new if_to_id_bus())
     val br_bus=Input(new br_bus())
-    val epc_bus=Input(new wb_to_if_bus())
+    val epc_bus=Input(new ex_to_if_bus())
     val flush=Input(Bool())
   })
   val if_valid=dontTouch(RegInit(false.B))

@@ -8,7 +8,6 @@ class WB_stage extends Module {
     // val IO    =Input(new ls_to_wb_bus())
     val IO    =Flipped(Decoupled(new ls_to_wb_bus()))
     val to_rf =Output(new wb_to_id_bus())
-    val to_if =Output(new wb_to_if_bus())
     val debug_waddr=Output(UInt(5.W))
     val debug_wdata=Output(UInt(DATA_WIDTH.W))
     val debug_wen  =Output(Bool())
@@ -23,17 +22,8 @@ class WB_stage extends Module {
   }
 
 
-  val Csrfile=Module(new CsrFile())
-  Csrfile.io.csr_cmd:=WB.IO.bits.csr_cmd
-  Csrfile.io.pc:=WB.IO.bits.pc
-  Csrfile.io.csr_addr:=WB.IO.bits.csr_addr
-  Csrfile.io.rs1_addr:=WB.IO.bits.rs1_addr
-  Csrfile.io.in:=WB.IO.bits.result
-  WB.to_if.epc_wen:=(WB.IO.bits.pc_sel===PC_EPC)
-  WB.to_if.csr_epc:=Csrfile.io.epc
-
   WB.to_rf.waddr:=WB.IO.bits.rd
-  WB.to_rf.wdata:=Mux(Csrfile.io.out_wen,Csrfile.io.out,WB.IO.bits.result)
+  WB.to_rf.wdata:=WB.IO.bits.result
   //如果是csr写入寄存器操作，相应的都要修改成csr寄存器的值
   WB.to_rf.wen  :=WB.IO.bits.wen&&wb_valid
   WB.debug_waddr:=WB.to_rf.waddr

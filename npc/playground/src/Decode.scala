@@ -12,7 +12,7 @@ object Alus{
   val ALU_SLTU = 7.U(4.W)
   val ALU_SRL = 8.U(4.W)
   val ALU_SRA = 9.U(4.W)
-  val ALU_COPY_A = 10.U(4.W)
+  val ALU_COPY_B = 10.U(4.W)
   val ALU_LUI = 11.U(4.W)
   val ALU_XXX = 12.U(4.W)
 }
@@ -91,9 +91,10 @@ object Control {
   val A_RS1 = 1.U(1.W)
 
   // B_sel
-  val B_XXX = 0.U(1.W)
-  val B_IMM = 0.U(1.W)
-  val B_RS2 = 1.U(1.W)
+  val B_XXX = 0.U(2.W)
+  val B_IMM = 0.U(2.W)
+  val B_RS2 = 1.U(2.W)
+  val B_CSR = 2.U(2.W)
 
   // imm_sel
   val IMM_X = 0.U(3.W)
@@ -182,8 +183,8 @@ object Control {
     OR    -> List(PC_XXX  , A_RS1,  B_RS2, IMM_X, ALU_OR    , BR_XXX, N, ST_XXX, LD_XXX, WB_ALU, Y, CSR.N, N),
     AND   -> List(PC_XXX  , A_RS1,  B_RS2, IMM_X, ALU_AND   , BR_XXX, N, ST_XXX, LD_XXX, WB_ALU, Y, CSR.N, N),
     //
-    CSRRW -> List(PC_XXX  , A_RS1,  B_XXX, IMM_X, ALU_COPY_A, BR_XXX, Y, ST_XXX, LD_XXX, WB_CSR, Y, CSR.W    , N),
-    CSRRS -> List(PC_XXX  , A_RS1,  B_XXX, IMM_X, ALU_COPY_A, BR_XXX, Y, ST_XXX, LD_XXX, WB_CSR, Y, CSR.S    , N),
+    CSRRW -> List(PC_XXX  , A_XXX,  B_CSR, IMM_X, ALU_COPY_B, BR_XXX, Y, ST_XXX, LD_XXX, WB_CSR, Y, CSR.W    , N),
+    CSRRS -> List(PC_XXX  , A_XXX,  B_CSR, IMM_X, ALU_COPY_B, BR_XXX, Y, ST_XXX, LD_XXX, WB_CSR, Y, CSR.S    , N),
     //
     MRET  -> List(PC_EPC  , A_XXX,  B_XXX, IMM_X, ALU_XXX   , BR_XXX, Y, ST_XXX, LD_XXX, WB_CSR, N, CSR.MRET , N),
     ECALL -> List(PC_EPC  , A_RS1,  B_RS2, IMM_X, ALU_ADD   , BR_XXX, N, ST_XXX, LD_XXX, WB_CSR, N, CSR.ECALL, N),
@@ -197,7 +198,7 @@ class DecodeSignals extends Bundle {
   val pc_sel = Output(UInt(1.W))
   val inst_kill = Output(Bool())
   val A_sel = Output(UInt(1.W))
-  val B_sel = Output(UInt(1.W))
+  val B_sel = Output(UInt(2.W))
   val imm_sel = Output(UInt(3.W))
   val alu_op = Output(UInt(4.W))
   val br_type = Output(UInt(4.W))

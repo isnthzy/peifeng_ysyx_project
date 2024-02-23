@@ -21,7 +21,7 @@ class SimTop extends Module {
 
 // IF begin
   IF_stage.IF.br_bus:=Br_option.io.out
-  IF_stage.IF.epc_bus:=WB_stage.WB.to_if
+  IF_stage.IF.epc_bus:=EX_stage.EX.to_if
 
   IF_stage.IF.flush:=EX_stage.EX.flush_out || ID_stage.ID.flush_out
 
@@ -30,6 +30,7 @@ class SimTop extends Module {
   ID_stage.ID.ex_fw:=EX_stage.EX.bypass_id
   ID_stage.ID.ls_fw:=LS_stage.LS.bypass_id
   ID_stage.ID.wb_bus:=WB_stage.WB.to_rf
+  ID_stage.ID.csr_bus:=EX_stage.EX.to_csr
 
   ID_stage.ID.for_ex_clog:=EX_stage.EX.clog_id
 // EX begin

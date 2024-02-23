@@ -2,6 +2,22 @@ import chisel3._
 import chisel3.util._  
 import config.Configs._
 
+
+// class exception_no extends Bundle{
+//   val 
+// }
+
+class csr_global extends Bundle{
+  val mtvec=UInt(DATA_WIDTH.W)
+  val mepc=UInt(DATA_WIDTH.W)
+}
+
+class exception_bus extends Bundle{
+  val ecpt_wen=Bool()
+  val exception_no=UInt(4.W)
+  val mepc=UInt(ADDR_WIDTH.W)
+}
+
 class data_sram_bus_ex extends Bundle{
   val st_wen=Bool()
   val ld_wen=Bool()
@@ -23,6 +39,12 @@ class forward_to_id_bus extends Bundle{
   //传递到id级防止写后读（前递）
 }
 
+class ex_to_csr_bus extends Bundle{
+  val ecpt=new exception_bus()
+  val csr_waddr=UInt(12.W)
+  val csr_wen=Bool()
+  val csr_wdata=UInt(DATA_WIDTH.W)
+}
 
 class wb_to_id_bus extends Bundle{
   val waddr=UInt(5.W)
@@ -30,7 +52,7 @@ class wb_to_id_bus extends Bundle{
   val wen=Bool()
 }
 
-class wb_to_if_bus extends Bundle{
+class ex_to_if_bus extends Bundle{
   val csr_epc=UInt(ADDR_WIDTH.W)
   val epc_wen=Bool()
 }
@@ -62,8 +84,11 @@ class id_to_ex_bus extends Bundle{
   val pc_sel=Bool()
   val csr_addr=UInt(12.W)
   val csr_cmd=UInt(5.W)
-  val rs1_addr=UInt(5.W)
+  val ecpt_ecall=Bool()
+  val is_mret=Bool()
+  val csr_global=new csr_global()
   //csr
+
   val b_taken=Bool()
   val st_type=UInt(8.W)
   val ld_type=UInt(3.W)
@@ -86,11 +111,6 @@ class ex_to_ls_bus extends Bundle{
   val dpic_bundle=new To_wb_dpic_bus()
    //传递到wb级进行交给dpic处理
 
-  val pc_sel=Bool()
-  val csr_addr=UInt(12.W)
-  val csr_cmd=UInt(5.W)
-  val rs1_addr=UInt(5.W)
-  //csr
   val st_wen=Bool()
   val ld_wen=Bool() //不需要st_type原因是st_type在ex级被处理
   val ld_type=UInt(3.W)
@@ -108,11 +128,6 @@ class ls_to_wb_bus extends Bundle{
   val dpic_bundle=new To_wb_dpic_bus()
    //传递到wb级进行交给dpic处理
 
-  val pc_sel=Bool()
-  val csr_addr=UInt(12.W)
-  val csr_cmd=UInt(5.W)
-  val rs1_addr=UInt(5.W)
-  //csr
   val ebreak_flag=Bool()
   val wen   =Bool()
   val rd    =UInt(5.W)
