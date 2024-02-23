@@ -101,7 +101,8 @@ class EX_stage extends Module {
   EX.to_ls.bits.csr_commit.waddr:=EX.to_id.csr.waddr
   EX.to_ls.bits.csr_commit.wen  :=EX.to_id.csr.wen
   EX.to_ls.bits.csr_commit.wdata:=EX.to_id.csr.wdata
-  EX.to_ls.bits.csr_commit.exception<>EX.to_id.csr.ecpt
+  EX.to_ls.bits.csr_commit.exception:=EX.to_id.csr.ecpt
+
 
   EX.to_ls.bits.dpic_bundle.id_inv_flag:=EX.IO.bits.dpic_bundle.id_inv_flag
   EX.to_ls.bits.dpic_bundle.ex_func_flag:=(EX.IO.bits.br_type===BR_JAL)|(EX.IO.bits.br_type===BR_JR)
