@@ -1,6 +1,6 @@
 
 import "DPI-C" function void cpu_use_func(input int pc,input int nextpc,input bit is_ret,input bit is_jal,input bit is_rd0);
-module dpi_func(
+module Dpi_Func(
     input        clock,
     input        reset,
     input        dpi_valid,

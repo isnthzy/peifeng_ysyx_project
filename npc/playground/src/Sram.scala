@@ -37,7 +37,7 @@ class dpi_sram extends BlackBox with HasBlackBoxInline {
     val rdata_ok=Output(Bool())
     val wdata_ok=Output(Bool())
   })
-  setInline("dpi_sram.v",
+  setInline("dpic/DpiSram.v",
     """
       |import "DPI-C" function void pmem_read (input int raddr, output int rdata);
       |import "DPI-C" function void pmem_write(input int waddr, input  int wdata, input byte wmask);

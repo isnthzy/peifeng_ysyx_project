@@ -1,6 +1,6 @@
 
 import "DPI-C" function void sim_break(input int pc,input int ret_reg_data);
-module dpi_ebreak(
+module Dpi_Ebreak(
     input        clock,
     input        reset,
     input        dpi_valid,

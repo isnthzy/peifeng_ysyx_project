@@ -3,13 +3,13 @@
 
 // external module dpi_csrdebug
 
-// external module dpi_getinfo
+// external module Dpi_GetInfo
 
-// external module dpi_inv
+// external module Dpi_Inv
 
-// external module dpi_func
+// external module Dpi_Func
 
-// external module dpi_ebreak
+// external module Dpi_Ebreak
 
 // external module dpi_sram
 

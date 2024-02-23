@@ -111,7 +111,7 @@ class dpi_csrdebug extends BlackBox with HasBlackBoxInline {
     val csr_valid=Input(Bool())
     val assert_wen=Input(Bool())
   })
-  setInline("dpi_csrdebug.v",
+  setInline("dpic/DpiCsrDebug.v",
     """
       |import "DPI-C" function void Csr_assert();
       |module dpi_csrdebug(

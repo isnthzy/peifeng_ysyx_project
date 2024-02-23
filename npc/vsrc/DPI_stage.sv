@@ -15,7 +15,7 @@ module DPI_stage(	// @[<stdin>:1427:3]
                DPI_ret_reg_data	// @[playground/src/Dpi_stage.scala:13:13]
 );
 
-  dpi_getinfo dpi_getinfo (	// @[playground/src/Dpi_stage.scala:26:25]
+  Dpi_GetInfo dpi_getinfo (	// @[playground/src/Dpi_stage.scala:27:25]
     .clock     (clock),
     .reset     (reset),
     .dpi_valid (DPI_wb_valid),
@@ -23,14 +23,14 @@ module DPI_stage(	// @[<stdin>:1427:3]
     .nextpc    (DPI_nextpc),
     .inst      (DPI_inst)
   );
-  dpi_inv dpi_inv (	// @[playground/src/Dpi_stage.scala:34:21]
+  Dpi_Inv dpi_inv (	// @[playground/src/Dpi_stage.scala:35:21]
     .clock     (clock),
     .reset     (reset),
     .dpi_valid (DPI_wb_valid),
     .inv_flag  (DPI_inv_flag),
     .pc        (DPI_pc)
   );
-  dpi_func dpi_func (	// @[playground/src/Dpi_stage.scala:41:22]
+  Dpi_Func dpi_func (	// @[playground/src/Dpi_stage.scala:42:22]
     .clock     (clock),
     .reset     (reset),
     .dpi_valid (DPI_wb_valid),
@@ -41,13 +41,13 @@ module DPI_stage(	// @[<stdin>:1427:3]
     .is_rd0    (DPI_is_rd0),
     .is_ret    (DPI_is_ret)
   );
-  dpi_ebreak dpi_ebreak (	// @[playground/src/Dpi_stage.scala:52:24]
+  Dpi_Ebreak dpi_ebreak (	// @[playground/src/Dpi_stage.scala:53:24]
     .clock        (clock),
     .reset        (reset),
     .dpi_valid    (DPI_wb_valid),
     .is_ebreak    (DPI_is_ebreak),
     .pc           (DPI_pc),
-    .ret_reg_data ({31'h0, DPI_ret_reg_data})	// @[playground/src/Dpi_stage.scala:58:29]
+    .ret_reg_data ({31'h0, DPI_ret_reg_data})	// @[playground/src/Dpi_stage.scala:59:29]
   );
 endmodule
 

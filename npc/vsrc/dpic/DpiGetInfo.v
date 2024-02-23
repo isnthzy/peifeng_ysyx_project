@@ -1,6 +1,6 @@
 
 import "DPI-C" function void get_info(input int pc,input int nextpc,input int inst,input bit dpi_valid);
-module dpi_getinfo(
+module Dpi_GetInfo(
     input        clock,
     input        reset,
     input        dpi_valid,
