@@ -65,6 +65,7 @@ class DPI_stage extends Module {
   dpi_csrcommit.io.csr_wen:=DPI.csr_commit.wen
   dpi_csrcommit.io.waddr:=DPI.csr_commit.waddr
   dpi_csrcommit.io.wdata:=DPI.csr_commit.wdata
+  dpi_csrcommit.io.exception_wen:=DPI.csr_commit.exception.wen
   dpi_csrcommit.io.mcause_in:=DPI.csr_commit.exception.mcause_in
   dpi_csrcommit.io.pc_wb:=DPI.csr_commit.exception.pc_wb
 
