@@ -38,9 +38,6 @@ class ID_stage extends Module {
   val opcode=dontTouch(Wire(UInt(7.W)))
   val csr_addr=dontTouch(Wire(UInt(12.W)))
   
-  val ecpt_ecall=dontTouch(Wire(Bool())) //exception_ecall
-  val is_mret=dontTouch(Wire(Bool()))
-
   dc.io.inst:=ID.IO.bits.inst
 
   ImmGen.io.inst:=ID.IO.bits.inst
@@ -91,8 +88,6 @@ class ID_stage extends Module {
 
 
   //在id级实例化CSR，通过ex前递写回
-  ecpt_ecall:=(dc.io.csr_cmd===CSR.ECALL)
-  is_mret:=(dc.io.csr_cmd===CSR.MRET)
   val csr_out_data=dontTouch(Wire(UInt(DATA_WIDTH.W)))
   val Csrfile=Module(new CsrFile())
   Csrfile.io.csr_cmd:=dc.io.csr_cmd
@@ -102,20 +97,14 @@ class ID_stage extends Module {
   Csrfile.io.csr_wen:=ID.for_ex.csr.wen
   Csrfile.io.csr_waddr:=ID.for_ex.csr.waddr
   Csrfile.io.csr_wdata:=ID.for_ex.csr.wdata
-  Csrfile.io.ecpt_wen:=ID.for_ex.csr.ecpt.ecpt_wen
-  Csrfile.io.mepc_in:=ID.for_ex.csr.ecpt.mepc
-  Csrfile.io.mcause_in:=ID.for_ex.csr.ecpt.exception_no
+  Csrfile.io.ecpt_wen :=ID.for_ex.csr.ecpt.wen
+  Csrfile.io.mepc_in  :=ID.for_ex.csr.ecpt.pc_wb
+  Csrfile.io.mcause_in:=ID.for_ex.csr.ecpt.mcause_in
 
   ID.to_ex.bits.csr_addr:=csr_addr
   ID.to_ex.bits.csr_cmd:=dc.io.csr_cmd
-  ID.to_ex.bits.is_mret:=is_mret
-  ID.to_ex.bits.ecpt_ecall:=ecpt_ecall
   ID.to_ex.bits.pc_sel:=dc.io.pc_sel
   ID.to_ex.bits.csr_global<>Csrfile.io.global
-  // ID.to_ex.bits.csr_addr:=csr_addr
-  // ID.to_ex.bits.csr_cmd:=dc.io.csr_cmd
-  // ID.to_ex.bits.rs1_addr:=rs1
-
 
 
   val src1=MuxLookup(dc.io.A_sel,0.U)(Seq(
@@ -147,8 +136,8 @@ class ID_stage extends Module {
 
   ID.to_if.flush:=(J_cond.io.taken 
                 ||  B_cond.io.taken
-                ||  ecpt_ecall
-                ||  is_mret)&&id_valid
+                ||  (dc.io.csr_cmd===CSR.ECALL)
+                ||  (dc.io.csr_cmd===CSR.MRET))&&id_valid
   //如果是j跳转，id级向if级发起flush     (损失一个周期)
   //如果是b跳转，id和ex级向if级发起flush (损失两个周期，b跳转在ex级计算)
   //b跳转分为两个阶段，在id级计算是否跳转，在ex级得到跳转地址发起跳转
@@ -158,11 +147,11 @@ class ID_stage extends Module {
 
   ID.to_ex.bits.st_type:=dc.io.st_type
   ID.to_ex.bits.ld_type:=dc.io.ld_type
-  ID.to_ex.bits.ebreak_flag:=(dc.io.csr_cmd===CSR.BREAK)
+  ID.to_ex.bits.csr_cmd:=dc.io.csr_cmd
   ID.to_ex.bits.wb_sel :=dc.io.wb_sel
   ID.to_ex.bits.br_type:=dc.io.br_type
-  ID.to_ex.bits.wen :=dc.io.wb_en&&id_valid
-  ID.to_ex.bits.rd  :=rd
+  ID.to_ex.bits.rf_wen :=dc.io.wb_en&&id_valid
+  ID.to_ex.bits.rd     :=rd
   ID.to_ex.bits.alu_op:=dc.io.alu_op
   ID.to_ex.bits.src1:=src1
   ID.to_ex.bits.src2:=src2

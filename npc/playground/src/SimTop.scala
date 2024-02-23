@@ -29,11 +29,11 @@ class SimTop extends Module {
 
 // EX begin
   StageConnect(ID_stage.ID.to_ex,EX_stage.EX.IO)
-  Sram.io.in:=EX_stage.EX.data_sram
+  Sram.io.in<>EX_stage.EX.data_sram
 
 // LS begin
   StageConnect(EX_stage.EX.to_ls,LS_stage.LS.IO)
-  LS_stage.LS.data_sram:=Sram.io.out
+  LS_stage.LS.data_sram<>Sram.io.out
 
 // WB begin
   StageConnect(LS_stage.LS.to_wb,WB_stage.WB.IO)

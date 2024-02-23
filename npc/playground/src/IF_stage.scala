@@ -26,29 +26,29 @@ class IF_stage extends Module {
   br.target:=Mux(IF.for_id.Br_J.taken, IF.for_id.Br_J.target, IF.for_ex.Br_B.target)
 
 
-  val REGpc   = RegInit(START_ADDR)
-  val snpc    = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
-  val dnpc    = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
-  val nextpc  = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
+  val if_pc     = RegInit(START_ADDR)
+  val if_snpc   = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
+  val if_dnpc   = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
+  val if_nextpc = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
   val Fetch   = Module(new read_inst())
 // pc在这里用dpi-c进行取指
-  snpc  := REGpc + 4.U
-  dnpc  := Mux(IF.for_ex.epc.taken, IF.for_ex.epc.target, br.target)
-  nextpc:= Mux(br.taken || IF.for_ex.epc.taken, dnpc, snpc)
+  if_snpc := if_pc + 4.U
+  if_dnpc := Mux(IF.for_ex.epc.taken, IF.for_ex.epc.target, br.target)
+  if_nextpc:= Mux(br.taken || IF.for_ex.epc.taken, if_dnpc, if_snpc)
   
   Fetch.io.clock:=clock
   Fetch.io.reset:=reset
-  Fetch.io.nextpc:=nextpc
+  Fetch.io.nextpc:=if_nextpc
   Fetch.io.fetch_wen:=if_ready_go
 
   IF.to_id.bits.inst:=Fetch.io.inst
   when(if_ready_go){ //if级控制不用if_valid信号（if级有点特殊）
-    REGpc := nextpc //reg类型，更新慢一拍
+    if_pc := if_nextpc //reg类型，更新慢一拍
   }
   //如果遇到阻塞情况，那么if级也要发生阻塞
 
-  IF.to_id.bits.pc  :=REGpc
-  IF.to_id.bits.nextpc:=nextpc
+  IF.to_id.bits.pc    :=if_pc
+  IF.to_id.bits.nextpc:=if_nextpc
 }
 
 class read_inst extends BlackBox with HasBlackBoxPath{

@@ -26,7 +26,7 @@ class WB_stage extends Module {
   WB.to_id.rf.waddr:=WB.IO.bits.rd
   WB.to_id.rf.wdata:=WB.IO.bits.result
   //如果是csr写入寄存器操作，相应的都要修改成csr寄存器的值
-  WB.to_id.rf.wen  :=WB.IO.bits.wen&&wb_valid
+  WB.to_id.rf.wen  :=WB.IO.bits.rf_wen&&wb_valid
   WB.debug_waddr:=WB.to_id.rf.waddr
   WB.debug_wdata:=WB.to_id.rf.wdata
   WB.debug_wen  :=WB.to_id.rf.wen
@@ -43,7 +43,7 @@ class WB_stage extends Module {
   DPI_stage.DPI.is_jal:=WB.IO.bits.dpic_bundle.ex_is_jal
   DPI_stage.DPI.is_ret:=WB.IO.bits.dpic_bundle.ex_is_ret
   DPI_stage.DPI.is_rd0:=WB.IO.bits.dpic_bundle.ex_is_rd0
-  DPI_stage.DPI.is_ebreak:=WB.IO.bits.ebreak_flag
+  DPI_stage.DPI.is_ebreak:=(WB.IO.bits.csr_cmd===CSR.MRET)
   DPI_stage.DPI.ret_reg_data:=WB.IO.bits.result
 }
 

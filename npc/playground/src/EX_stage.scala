@@ -43,15 +43,15 @@ class EX_stage extends Module {
 
   //如果是跳转，发起flush
   EX.to_if.flush:=(EX.to_if.Br_B.taken
-                || EX.IO.bits.ecpt_ecall
-                || EX.IO.bits.is_mret)&&ex_valid 
+                || (EX.IO.bits.csr_cmd===CSR.MRET )
+                || (EX.IO.bits.csr_cmd===CSR.ECALL))&&ex_valid 
   
   //对id发起阻塞
   EX.to_id.clog:=(EX.IO.bits.ld_type=/=0.U)&&ex_valid
 
 
   //前递
-  EX.to_id.fw.addr:=Mux(ex_valid && EX.to_ls.bits.wen , EX.to_ls.bits.rd , 0.U)
+  EX.to_id.fw.addr:=Mux(ex_valid && EX.IO.bits.rf_wen , EX.to_ls.bits.rd , 0.U)
   EX.to_id.fw.data:=EX.to_ls.bits.result
 
   //EX级发起访存
@@ -75,23 +75,22 @@ class EX_stage extends Module {
   EX.to_id.csr.waddr:=EX.IO.bits.csr_addr
   EX.to_id.csr.wen:=Csr_alu.io.wen&&ex_valid
   EX.to_id.csr.wdata:=Csr_alu.io.out
-  EX.to_id.csr.ecpt.ecpt_wen:=EX.IO.bits.ecpt_ecall
-  EX.to_id.csr.ecpt.exception_no:=11.U
-  EX.to_id.csr.ecpt.mepc:=EX.IO.bits.pc
+  EX.to_id.csr.ecpt.wen:=(EX.IO.bits.csr_cmd===CSR.ECALL)&&ex_valid
+  EX.to_id.csr.ecpt.mcause_in:=11.U
+  EX.to_id.csr.ecpt.pc_wb:=EX.IO.bits.pc
   
-  EX.to_if.epc.taken:=Mux(EX.IO.bits.is_mret,EX.IO.bits.csr_global.mepc,
-                      Mux(EX.IO.bits.ecpt_ecall,EX.IO.bits.csr_global.mtvec,0.U))
   EX.to_if.epc.target:=(EX.IO.bits.pc_sel===PC_EPC)&&ex_valid
-
+  EX.to_if.epc.taken:=Mux((EX.IO.bits.csr_cmd===CSR.MRET ),EX.IO.bits.csr_global.mepc,
+                      Mux((EX.IO.bits.csr_cmd===CSR.ECALL),EX.IO.bits.csr_global.mtvec,0.U))
   
 
 
   EX.to_ls.bits.st_wen:=st_wen
   EX.to_ls.bits.ld_wen:=ld_wen
   EX.to_ls.bits.ld_type:=EX.IO.bits.ld_type
-  EX.to_ls.bits.ebreak_flag:=EX.IO.bits.ebreak_flag
+
   EX.to_ls.bits.wb_sel:=EX.IO.bits.wb_sel
-  EX.to_ls.bits.wen :=EX.IO.bits.wen
+  EX.to_ls.bits.rf_wen:=EX.IO.bits.rf_wen
   EX.to_ls.bits.rd:=EX.IO.bits.rd
   EX.to_ls.bits.result:=Alu.io.result
   EX.to_ls.bits.pc  :=EX.IO.bits.pc
@@ -99,6 +98,11 @@ class EX_stage extends Module {
   EX.to_ls.bits.nextpc:=EX.IO.bits.nextpc
 
   /*---------------------传递信号到wb级再由wb级处理dpi信号----------------------*/
+  EX.to_ls.bits.csr_commit.waddr:=EX.to_id.csr.waddr
+  EX.to_ls.bits.csr_commit.wen  :=EX.to_id.csr.wen
+  EX.to_ls.bits.csr_commit.wdata:=EX.to_id.csr.wdata
+  EX.to_ls.bits.csr_commit.exception<>EX.to_id.csr.ecpt
+
   EX.to_ls.bits.dpic_bundle.id_inv_flag:=EX.IO.bits.dpic_bundle.id_inv_flag
   EX.to_ls.bits.dpic_bundle.ex_func_flag:=(EX.IO.bits.br_type===BR_JAL)|(EX.IO.bits.br_type===BR_JR)
   EX.to_ls.bits.dpic_bundle.ex_is_jal:=EX.IO.bits.br_type===BR_JAL
