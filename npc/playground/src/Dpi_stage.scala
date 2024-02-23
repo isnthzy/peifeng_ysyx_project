@@ -22,7 +22,7 @@ class DPI_stage extends Module {
     val is_rd0=Input(Bool())
     val is_ebreak=Input(Bool())
     val ret_reg_data=Input(Bool())
-    val csr_commit=Input(new commit_csr_to_diff())
+    // val csr_commit=Input(new commit_csr_to_diff())
   })
   val dpi_getinfo=Module(new Dpi_GetInfo())
   dpi_getinfo.io.clock:=clock
