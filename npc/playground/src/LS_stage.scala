@@ -56,7 +56,7 @@ class LS_stage extends Module {
   LS.to_id.fw.data:=LS.to_wb.bits.result
 
   /*---------------------传递信号到wb级再由wb级处理dpi信号----------------------*/
-  LS.to_wb.bits.csr_commit:=LS.IO.bits.csr_commit
+  LS.to_wb.bits.csr_commit<>LS.IO.bits.csr_commit
   LS.to_wb.bits.dpic_bundle<>LS.IO.bits.dpic_bundle
 
 }
