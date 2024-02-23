@@ -58,10 +58,15 @@ class DPI_stage extends Module {
   dpi_ebreak.io.pc:=DPI.pc
   dpi_ebreak.io.ret_reg_data:=DPI.ret_reg_data
 
-  val Dpi_CsrCommit=Module(new Dpi_CsrCommit())
-  Dpi_CsrCommit.io.clock:=clock
-  Dpi_CsrCommit.io.reset:=reset
-  Dpi_CsrCommit.io.csr_commit<>DPI.csr_commit
+  val dpi_csrcommit=Module(new Dpi_CsrCommit())
+  dpi_csrcommit.io.clock:=clock
+  dpi_csrcommit.io.reset:=reset
+  dpi_csrcommit.io.dpi_valid:=DPI.wb_valid
+  dpi_csrcommit.io.csr_wen:=DPI.csr_commit.wen
+  dpi_csrcommit.io.waddr:=DPI.csr_commit.waddr
+  dpi_csrcommit.io.wdata:=DPI.csr_commit.wdata
+  dpi_csrcommit.io.mcause_in:=DPI.csr_commit.exception.mcause_in
+  dpi_csrcommit.io.pc_wb:=DPI.csr_commit.exception.pc_wb
 
 }
 
@@ -195,22 +200,31 @@ class Dpi_CsrCommit extends BlackBox with HasBlackBoxInline {
   val io = IO(new Bundle {
     val clock=Input(Clock())
     val reset=Input(Bool())
-    val csr_commit=Input(new commit_csr_to_diff())
+    val dpi_valid=Input(Bool())
+    val csr_wen=Input(Bool())
+    val waddr=Input(UInt(12.W))
+    val wdata=Input(UInt(DATA_WIDTH.W))
+    val exception_wen=Input(Bool())
+    val mcause_in=Input(UInt(DATA_WIDTH.W))
+    val pc_wb=Input(UInt(DATA_WIDTH.W))
   })
   setInline("dpic/DpiCsrCommit.v",
     """
-      |import "DPI-C" function void sim_break(input int pc,input int ret_reg_data);
+      |//import "DPI-C" function void sim_break(input int pc,input int ret_reg_data);
       |module Dpi_CsrCommit(
       |    input        clock,
       |    input        reset,
       |    input        dpi_valid,
-      |    input        is_ebreak,
-      |    input        pc,
-      |    input        ret_reg_data
+      |    input        csr_wen,
+      |    input        waddr,
+      |    input        wdata,
+      |    input        exception_wen,
+      |    input        mcause_in,
+      |    input        pc_wb
       |);
       | always @(posedge clock)begin
       |   if(~reset)begin
-      |     if(is_ebreak&&dpi_valid)  sim_break(pc,ret_reg_data);
+      |     
       |   end
       |  end
       |endmodule

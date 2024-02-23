@@ -11,5 +11,7 @@
 
 // external module Dpi_Ebreak
 
+// external module Dpi_CsrCommit
+
 // external module dpi_sram
 
