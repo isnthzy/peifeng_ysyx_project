@@ -85,7 +85,7 @@ class EX_stage extends Module {
   
   EX.to_if.csr_epc:=Mux(EX.IO.bits.is_mret,EX.IO.bits.csr_global.mepc,
                       Mux(EX.IO.bits.ecpt_ecall,EX.IO.bits.csr_global.mtvec,0.U))
-  EX.to_if.epc_wen:=(EX.IO.bits.pc_sel===PC_EPC)
+  EX.to_if.epc_wen:=(EX.IO.bits.pc_sel===PC_EPC)&&ex_valid
   // EX.to_ls.bits.pc_sel:=EX.IO.bits.pc_sel
   // EX.to_ls.bits.csr_addr:=EX.IO.bits.csr_addr
   // EX.to_ls.bits.csr_cmd:=EX.IO.bits.csr_cmd
