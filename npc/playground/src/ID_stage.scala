@@ -41,6 +41,8 @@ class ID_stage extends Module {
   
   val ecpt_ecall=dontTouch(Wire(Bool())) //exception_ecall
   val is_mret=dontTouch(Wire(Bool()))
+  ecpt_ecall:=(dc.io.csr_cmd===CSR.ECALL)
+  is_mret:=(dc.io.csr_cmd===CSR.MRET)
 
   dc.io.inst:=ID.IO.bits.inst
 
@@ -92,8 +94,6 @@ class ID_stage extends Module {
 
 
   //在id级实例化CSR，通过ex前递写回
-  ecpt_ecall:=(dc.io.csr_cmd===CSR.ECALL)
-  is_mret:=(dc.io.csr_cmd===CSR.MRET)
   val csr_out_data=dontTouch(Wire(UInt(DATA_WIDTH.W)))
   val Csrfile=Module(new CsrFile())
   Csrfile.io.csr_cmd:=dc.io.csr_cmd
