@@ -41,8 +41,6 @@ class ID_stage extends Module {
   
   val ecpt_ecall=dontTouch(Wire(Bool())) //exception_ecall
   val is_mret=dontTouch(Wire(Bool()))
-  ecpt_ecall:=(dc.io.csr_cmd===CSR.ECALL)
-  is_mret:=(dc.io.csr_cmd===CSR.MRET)
 
   dc.io.inst:=ID.IO.bits.inst
 
@@ -94,6 +92,8 @@ class ID_stage extends Module {
 
 
   //在id级实例化CSR，通过ex前递写回
+  ecpt_ecall:=(dc.io.csr_cmd===CSR.ECALL)
+  is_mret:=(dc.io.csr_cmd===CSR.MRET)
   val csr_out_data=dontTouch(Wire(UInt(DATA_WIDTH.W)))
   val Csrfile=Module(new CsrFile())
   Csrfile.io.csr_cmd:=dc.io.csr_cmd
@@ -140,24 +140,22 @@ class ID_stage extends Module {
   J_cond.io.src2:=src2
   ID.j_cond.taken:=J_cond.io.taken&&id_valid
   ID.j_cond.target:=J_cond.io.target
-  ID.flush_out:=(J_cond.io.taken
-              || ecpt_ecall
-              || is_mret)&&id_valid 
-
+  
   B_cond.io.br_type:=dc.io.br_type
   B_cond.io.rdata1:=rdata1
   B_cond.io.rdata2:=rdata2
 
 
   ID.flush_out:=(J_cond.io.taken 
-             ||  B_cond.io.taken)&&id_valid
+             ||  B_cond.io.taken
+             ||  ecpt_ecall
+             ||  is_mret)&&id_valid
   //如果是j跳转，id级向if级发起flush     (损失一个周期)
   //如果是b跳转，id和ex级向if级发起flush (损失两个周期，b跳转在ex级计算)
   //b跳转分为两个阶段，在id级计算是否跳转，在ex级得到跳转地址发起跳转
-
   ID.to_ex.bits.b_taken:=B_cond.io.taken&&id_valid
 
-
+//------------------------------------------
 
   ID.to_ex.bits.st_type:=dc.io.st_type
   ID.to_ex.bits.ld_type:=dc.io.ld_type
