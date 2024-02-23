@@ -4,8 +4,8 @@ import config.Configs._
 import Control._
 class Sram extends Module {
   val io=IO(new Bundle {
-    val in=Input(new data_sram_bus_ex())
-    val out=Output(new data_sram_bus_ls())
+    val in=Input(new data_sram_ex_bus())
+    val out=Output(new data_sram_ls_bus())
   })
   //添加一个sram抽象层，为来再此进行抽象
   val dpi_sram=Module(new dpi_sram())

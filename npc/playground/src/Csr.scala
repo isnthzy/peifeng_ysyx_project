@@ -78,7 +78,7 @@ class CsrFile extends Module{
   }
 
 
-  val csr_dpic=Module(new csr_debug_dpic())
+  val csr_dpic=Module(new dpi_csrdebug())
   csr_dpic.io.clock:=clock
   csr_dpic.io.reset:=reset
   csr_dpic.io.csr_valid:=io.csr_cmd=/=CSR.N
@@ -104,17 +104,17 @@ class Csr_alu extends Module{
 }
 
 
-class csr_debug_dpic extends BlackBox with HasBlackBoxInline {
+class dpi_csrdebug extends BlackBox with HasBlackBoxInline {
   val io = IO(new Bundle {
     val clock=Input(Clock())
     val reset=Input(Bool())
     val csr_valid=Input(Bool())
     val assert_wen=Input(Bool())
   })
-  setInline("csr_debug_dpic.v",
+  setInline("dpi_csrdebug.v",
     """
       |import "DPI-C" function void Csr_assert();
-      |module csr_debug_dpic(
+      |module dpi_csrdebug(
       |    input        clock,
       |    input        reset,
       |    input        csr_valid,

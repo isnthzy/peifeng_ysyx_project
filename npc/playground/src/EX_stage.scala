@@ -4,16 +4,12 @@ import config.Configs._
 import Control._
 class EX_stage extends Module {
   val EX=IO(new Bundle {
-    // val IO    =Input(new id_to_ex_bus())
     val IO    =Flipped(Decoupled(new id_to_ex_bus()))
     val to_ls =Decoupled(new ex_to_ls_bus())
-    val bypass_id=Output(new forward_to_id_bus())
-    val clog_id  =Output(Bool())
-    val flush_out=Output(Bool())
-    val br_bus=Output(new br_bus())
-    val to_if=Output(new ex_to_if_bus())
-    val to_csr=Output(new ex_to_csr_bus())
-    val data_sram=Output(new data_sram_bus_ex())
+
+    val to_id =Output(new ex_to_id_bus())
+    val to_if =Output(new ex_to_if_bus())
+    val data_sram=Output(new data_sram_ex_bus())
   })
   
   val ex_valid=dontTouch(RegInit(false.B))
@@ -33,30 +29,30 @@ class EX_stage extends Module {
   
   //分支跳转
   
-  EX.br_bus.taken:=EX.IO.bits.b_taken&&ex_valid
-  EX.br_bus.target:=MuxLookup(EX.IO.bits.br_type,0.U)(Seq(
-                      BR_XXX -> 0.U,
-                      BR_LTU -> Alu.io.result,
-                      BR_LT  -> Alu.io.result,
-                      BR_EQ  -> Alu.io.result,
-                      BR_GEU -> Alu.io.result,
-                      BR_GE  -> Alu.io.result,
-                      BR_NE  -> Alu.io.result,
-                    ))
+  EX.to_if.Br_B.taken:=EX.IO.bits.b_taken&&ex_valid
+  EX.to_if.Br_B.target:=MuxLookup(EX.IO.bits.br_type,0.U)(Seq(
+                          BR_XXX -> 0.U,
+                          BR_LTU -> Alu.io.result,
+                          BR_LT  -> Alu.io.result,
+                          BR_EQ  -> Alu.io.result,
+                          BR_GEU -> Alu.io.result,
+                          BR_GE  -> Alu.io.result,
+                          BR_NE  -> Alu.io.result,
+  ))
 
 
   //如果是跳转，发起flush
-  EX.flush_out:=(EX.br_bus.taken
-              || EX.IO.bits.ecpt_ecall
-              || EX.IO.bits.is_mret)&&ex_valid 
+  EX.to_if.flush:=(EX.to_if.Br_B.taken
+                || EX.IO.bits.ecpt_ecall
+                || EX.IO.bits.is_mret)&&ex_valid 
   
   //对id发起阻塞
-  EX.clog_id:=(EX.IO.bits.ld_type=/=0.U)&&ex_valid
+  EX.to_id.clog:=(EX.IO.bits.ld_type=/=0.U)&&ex_valid
 
 
   //前递
-  EX.bypass_id.addr:=Mux(ex_valid && EX.to_ls.bits.wen , EX.to_ls.bits.rd , 0.U)
-  EX.bypass_id.data:=EX.to_ls.bits.result
+  EX.to_id.fw.addr:=Mux(ex_valid && EX.to_ls.bits.wen , EX.to_ls.bits.rd , 0.U)
+  EX.to_id.fw.data:=EX.to_ls.bits.result
 
   //EX级发起访存
   val ld_wen=dontTouch(Wire(Bool()))
@@ -76,20 +72,17 @@ class EX_stage extends Module {
   Csr_alu.io.csr_cmd:=EX.IO.bits.csr_cmd
   Csr_alu.io.in_csr:=Alu.io.result
   Csr_alu.io.in_rdata1:=EX.IO.bits.rdata1
-  EX.to_csr.csr_waddr:=EX.IO.bits.csr_addr
-  EX.to_csr.csr_wen:=Csr_alu.io.wen&&ex_valid
-  EX.to_csr.csr_wdata:=Csr_alu.io.out
-  EX.to_csr.ecpt.ecpt_wen:=EX.IO.bits.ecpt_ecall
-  EX.to_csr.ecpt.exception_no:=11.U
-  EX.to_csr.ecpt.mepc:=EX.IO.bits.pc
+  EX.to_id.csr.waddr:=EX.IO.bits.csr_addr
+  EX.to_id.csr.wen:=Csr_alu.io.wen&&ex_valid
+  EX.to_id.csr.wdata:=Csr_alu.io.out
+  EX.to_id.csr.ecpt.ecpt_wen:=EX.IO.bits.ecpt_ecall
+  EX.to_id.csr.ecpt.exception_no:=11.U
+  EX.to_id.csr.ecpt.mepc:=EX.IO.bits.pc
   
-  EX.to_if.csr_epc:=Mux(EX.IO.bits.is_mret,EX.IO.bits.csr_global.mepc,
+  EX.to_if.epc.taken:=Mux(EX.IO.bits.is_mret,EX.IO.bits.csr_global.mepc,
                       Mux(EX.IO.bits.ecpt_ecall,EX.IO.bits.csr_global.mtvec,0.U))
-  EX.to_if.epc_wen:=(EX.IO.bits.pc_sel===PC_EPC)&&ex_valid
-  // EX.to_ls.bits.pc_sel:=EX.IO.bits.pc_sel
-  // EX.to_ls.bits.csr_addr:=EX.IO.bits.csr_addr
-  // EX.to_ls.bits.csr_cmd:=EX.IO.bits.csr_cmd
-  // EX.to_ls.bits.rs1_addr:=EX.IO.bits.rs1_addr
+  EX.to_if.epc.target:=(EX.IO.bits.pc_sel===PC_EPC)&&ex_valid
+
   
 
 

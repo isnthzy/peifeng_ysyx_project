@@ -3,10 +3,6 @@ import chisel3.util._
 import config.Configs._
 
 
-// class exception_no extends Bundle{
-//   val 
-// }
-
 class csr_global extends Bundle{
   val mtvec=UInt(DATA_WIDTH.W)
   val mepc=UInt(DATA_WIDTH.W)
@@ -18,7 +14,7 @@ class exception_bus extends Bundle{
   val mepc=UInt(ADDR_WIDTH.W)
 }
 
-class data_sram_bus_ex extends Bundle{
+class data_sram_ex_bus extends Bundle{
   val st_wen=Bool()
   val ld_wen=Bool()
   val addr=UInt(ADDR_WIDTH.W)
@@ -26,7 +22,7 @@ class data_sram_bus_ex extends Bundle{
   val wdata=UInt(DATA_WIDTH.W)
 }
 
-class data_sram_bus_ls extends Bundle{
+class data_sram_ls_bus extends Bundle{
   val rdata=UInt(DATA_WIDTH.W)
   val rdata_ok=Bool()
   val wdata_ok=Bool()
@@ -41,31 +37,25 @@ class forward_to_id_bus extends Bundle{
 
 class ex_to_csr_bus extends Bundle{
   val ecpt=new exception_bus()
-  val csr_waddr=UInt(12.W)
-  val csr_wen=Bool()
-  val csr_wdata=UInt(DATA_WIDTH.W)
+  val waddr=UInt(12.W)
+  val wen=Bool()
+  val wdata=UInt(DATA_WIDTH.W)
 }
 
-class wb_to_id_bus extends Bundle{
+class wb_to_rf_bus extends Bundle{
   val waddr=UInt(5.W)
   val wdata=UInt(DATA_WIDTH.W)
   val wen=Bool()
 }
 
-class ex_to_if_bus extends Bundle{
-  val csr_epc=UInt(ADDR_WIDTH.W)
-  val epc_wen=Bool()
+class epc_to_if_bus extends Bundle{
+  val target=UInt(ADDR_WIDTH.W)
+  val taken=Bool()
 }
 
 class br_bus extends Bundle{
   val taken=Bool()
   val target=UInt(ADDR_WIDTH.W)
-}
-
-class if_to_id_bus extends Bundle{
-  val nextpc=UInt(ADDR_WIDTH.W)
-  val pc  =UInt(ADDR_WIDTH.W)
-  val inst=UInt(32.W)
 }
 
 class To_wb_dpic_bus extends Bundle{
@@ -76,6 +66,43 @@ class To_wb_dpic_bus extends Bundle{
   val ex_is_ret=Bool()
   val ex_is_rd0=Bool()
 }
+
+
+//----------------to if----------------
+class id_to_if_bus extends Bundle{
+  val Br_J=new br_bus()
+  val flush=Bool()
+}
+class ex_to_if_bus extends Bundle{
+  val epc=new epc_to_if_bus()
+  val Br_B=new br_bus()
+  val flush=Bool()
+}
+
+//----------------to if----------------
+
+
+//----------------to id----------------
+class ex_to_id_bus extends Bundle{
+  val fw=Input(new forward_to_id_bus())
+  val csr=Input(new ex_to_csr_bus()) //csrfile
+  val clog=Input(Bool())
+}
+class ls_to_id_bus extends Bundle{
+  val fw=Input(new forward_to_id_bus())
+}
+class wb_to_id_bus extends Bundle{
+  val rf=Input(new wb_to_rf_bus())
+}
+//----------------to id----------------
+
+
+class if_to_id_bus extends Bundle{
+  val nextpc=UInt(ADDR_WIDTH.W)
+  val pc  =UInt(ADDR_WIDTH.W)
+  val inst=UInt(32.W)
+}
+
 
 class id_to_ex_bus extends Bundle{
   val dpic_bundle=new To_wb_dpic_bus()
