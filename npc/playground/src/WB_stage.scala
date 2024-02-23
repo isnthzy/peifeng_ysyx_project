@@ -43,7 +43,7 @@ class WB_stage extends Module {
   DPI_stage.DPI.is_jal:=WB.IO.bits.dpic_bundle.ex_is_jal
   DPI_stage.DPI.is_ret:=WB.IO.bits.dpic_bundle.ex_is_ret
   DPI_stage.DPI.is_rd0:=WB.IO.bits.dpic_bundle.ex_is_rd0
-  DPI_stage.DPI.is_ebreak:=(WB.IO.bits.csr_cmd===CSR.MRET)
+  DPI_stage.DPI.is_ebreak:=(WB.IO.bits.csr_cmd===CSR.BREAK)
   DPI_stage.DPI.ret_reg_data:=WB.IO.bits.result
   // DPI_stage.DPI.csr_commit<>WB.IO.bits.csr_commit
 }
