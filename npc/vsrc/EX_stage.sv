@@ -124,7 +124,7 @@ module EX_stage(	// @[<stdin>:1193:3]
     EX_IO_bits_is_mret
       ? EX_IO_bits_csr_global_mepc
       : EX_IO_bits_ecpt_ecall ? EX_IO_bits_csr_global_mtvec : 32'h0;	// @[<stdin>:1193:3, playground/src/EX_stage.scala:37:54, :86:24, :87:26]
-  assign EX_to_if_epc_wen = EX_IO_bits_pc_sel;	// @[<stdin>:1193:3]
+  assign EX_to_if_epc_wen = EX_IO_bits_pc_sel & ex_valid;	// @[<stdin>:1193:3, playground/src/EX_stage.scala:19:33, :88:49]
   assign EX_to_csr_ecpt_ecpt_wen = EX_IO_bits_ecpt_ecall;	// @[<stdin>:1193:3]
   assign EX_to_csr_ecpt_mepc = EX_IO_bits_pc;	// @[<stdin>:1193:3]
   assign EX_to_csr_csr_waddr = EX_IO_bits_csr_addr;	// @[<stdin>:1193:3]
