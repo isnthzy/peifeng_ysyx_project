@@ -38,7 +38,7 @@ class LS_stage extends Module {
   ))
   
 
-  LS.to_wb.bits.csr_cmd:=LS.to_wb.bits.csr_cmd
+  LS.to_wb.bits.csr_cmd:=LS.IO.bits.csr_cmd
   LS.to_wb.bits.rf_wen :=LS.IO.bits.rf_wen
   LS.to_wb.bits.rd :=LS.IO.bits.rd
   LS.to_wb.bits.result:=MuxLookup(LS.IO.bits.wb_sel,0.U)(Seq(
@@ -52,7 +52,7 @@ class LS_stage extends Module {
   LS.to_wb.bits.nextpc:=LS.IO.bits.nextpc
 
   //前递
-  LS.to_id.fw.addr:=Mux(ls_valid && LS.IO.bits.rf_wen, LS.to_wb.bits.rd , 0.U)
+  LS.to_id.fw.addr:=Mux(ls_valid && LS.IO.bits.rf_wen, LS.IO.bits.rd , 0.U)
   LS.to_id.fw.data:=LS.to_wb.bits.result
 
   /*---------------------传递信号到wb级再由wb级处理dpi信号----------------------*/
