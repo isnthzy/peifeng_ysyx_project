@@ -6,8 +6,8 @@ import config.Configs._
 class commit_csr_to_diff extends Bundle{
   //从ex级开始流到wb级通过dpic修改仿真环境的csr寄存器，进而进行diff
   //当前的设计是csr寄存器在ex级完成修改
-  val waddr=UInt(12.W)
   val wen=Bool()
+  val waddr=UInt(12.W)
   val wdata=UInt(DATA_WIDTH.W)
   val exception=new exception_bus()
 }

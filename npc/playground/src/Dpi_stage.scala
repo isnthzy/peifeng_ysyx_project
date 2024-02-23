@@ -58,10 +58,10 @@ class DPI_stage extends Module {
   dpi_ebreak.io.pc:=DPI.pc
   dpi_ebreak.io.ret_reg_data:=DPI.ret_reg_data
 
-  // val Dpi_CsrCommit=Module(new Dpi_CsrCommit())
-  // Dpi_CsrCommit.io.clock:=clock
-  // Dpi_CsrCommit.io.reset:=reset
-  // Dpi_CsrCommit.io.csr_commit<>DPI.csr_commit
+  val Dpi_CsrCommit=Module(new Dpi_CsrCommit())
+  Dpi_CsrCommit.io.clock:=clock
+  Dpi_CsrCommit.io.reset:=reset
+  Dpi_CsrCommit.io.csr_commit<>DPI.csr_commit
 
 }
 
