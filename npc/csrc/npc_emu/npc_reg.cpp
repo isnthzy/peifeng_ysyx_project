@@ -3,10 +3,11 @@
 extern CPU_state cpu;
 
 void cpy_reg() {
-  cpu.mstatus=top->rootp->SimTop__DOT__ID_stage__DOT__Csrfile__DOT__mstatus;
-  cpu.mepc=top->rootp->SimTop__DOT__ID_stage__DOT__Csrfile__DOT__mepc;
-  cpu.mtvec=top->rootp->SimTop__DOT__ID_stage__DOT__Csrfile__DOT__mtvec;
-  cpu.mcause=top->rootp->SimTop__DOT__ID_stage__DOT__Csrfile__DOT__mcause;
+  // cpu.mstatus=top->rootp->SimTop__DOT__ID_stage__DOT__Csrfile__DOT__mstatus;
+  // cpu.mepc=top->rootp->SimTop__DOT__ID_stage__DOT__Csrfile__DOT__mepc;
+  // cpu.mtvec=top->rootp->SimTop__DOT__ID_stage__DOT__Csrfile__DOT__mtvec;
+  // cpu.mcause=top->rootp->SimTop__DOT__ID_stage__DOT__Csrfile__DOT__mcause;
+  //csr寄存器通过dpic修改（因为csr指令在ex级处理）
 
   cpu.gpr[0]=0;
   cpu.gpr[1]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_1;

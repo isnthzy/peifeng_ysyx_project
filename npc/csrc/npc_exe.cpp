@@ -77,6 +77,27 @@ extern "C" void prt_debug(const svBitVecVal* debug_1,int debug_2){
   printf("debug_1: %x debug_2: %x\n",*debug_1,debug_2);
 }
 
+#define MTVEC 0x305
+#define MSTATUS 0x300
+#define MEPC 0x341
+#define MCAUSE 0x343
+extern "C" void sync_csrfile_regs(int waddr,int wdata){
+  switch (waddr)
+  {
+  case MTVEC: cpu.mtvec=wdata; break;
+  case MSTATUS: cpu.mstatus=wdata; break;
+  case MEPC: cpu.mepc=wdata; break;
+  case MCAUSE: cpu.mcause=wdata; break;
+  default:
+    panic("unknown csr address");
+    break;
+  }
+}
+
+extern "C" void sync_csr_exception_regs(int mcause_in,int pc_wb){
+  cpu.mcause=mcause_in;
+  cpu.mepc=pc_wb;
+}
 
 extern "C" void Csr_assert(){
   panic("csr寄存器异常读写");
