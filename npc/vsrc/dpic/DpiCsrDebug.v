@@ -1,6 +1,6 @@
 
 import "DPI-C" function void Csr_assert();
-module csr_debug_dpic(
+module dpi_csrdebug(
     input        clock,
     input        reset,
     input        csr_valid,

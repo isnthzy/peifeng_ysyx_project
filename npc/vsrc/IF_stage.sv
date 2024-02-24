@@ -2,44 +2,52 @@
 module IF_stage(	// @[<stdin>:11:3]
   input         clock,	// @[<stdin>:12:11]
                 reset,	// @[<stdin>:13:11]
-                IF_IO_ready,	// @[playground/src/IF_stage.scala:6:12]
-                IF_br_bus_taken,	// @[playground/src/IF_stage.scala:6:12]
-  input  [31:0] IF_br_bus_target,	// @[playground/src/IF_stage.scala:6:12]
-                IF_epc_bus_csr_epc,	// @[playground/src/IF_stage.scala:6:12]
-  input         IF_epc_bus_epc_wen,	// @[playground/src/IF_stage.scala:6:12]
-                IF_flush,	// @[playground/src/IF_stage.scala:6:12]
-  output        IF_IO_valid,	// @[playground/src/IF_stage.scala:6:12]
-  output [31:0] IF_IO_bits_nextpc,	// @[playground/src/IF_stage.scala:6:12]
-                IF_IO_bits_pc,	// @[playground/src/IF_stage.scala:6:12]
-                IF_IO_bits_inst	// @[playground/src/IF_stage.scala:6:12]
+                IF_to_id_ready,	// @[playground/src/IF_stage.scala:6:12]
+                IF_for_id_Br_J_taken,	// @[playground/src/IF_stage.scala:6:12]
+  input  [31:0] IF_for_id_Br_J_target,	// @[playground/src/IF_stage.scala:6:12]
+  input         IF_for_id_flush,	// @[playground/src/IF_stage.scala:6:12]
+  input  [31:0] IF_for_ex_epc_target,	// @[playground/src/IF_stage.scala:6:12]
+  input         IF_for_ex_epc_taken,	// @[playground/src/IF_stage.scala:6:12]
+                IF_for_ex_Br_B_taken,	// @[playground/src/IF_stage.scala:6:12]
+  input  [31:0] IF_for_ex_Br_B_target,	// @[playground/src/IF_stage.scala:6:12]
+  input         IF_for_ex_flush,	// @[playground/src/IF_stage.scala:6:12]
+  output        IF_to_id_valid,	// @[playground/src/IF_stage.scala:6:12]
+  output [31:0] IF_to_id_bits_nextpc,	// @[playground/src/IF_stage.scala:6:12]
+                IF_to_id_bits_pc,	// @[playground/src/IF_stage.scala:6:12]
+                IF_to_id_bits_inst	// @[playground/src/IF_stage.scala:6:12]
 );
 
-  wire        if_ready_go = IF_IO_ready;	// @[playground/src/IF_stage.scala:14:33]
-  reg         if_valid;	// @[playground/src/IF_stage.scala:13:33]
-  reg  [31:0] REGpc;	// @[playground/src/IF_stage.scala:22:24]
-  wire [31:0] snpc = REGpc + 32'h4;	// @[playground/src/IF_stage.scala:22:24, :23:31, :28:18]
-  wire [31:0] dnpc = IF_epc_bus_epc_wen ? IF_epc_bus_csr_epc : IF_br_bus_target;	// @[playground/src/IF_stage.scala:24:31, :29:15]
-  wire [31:0] nextpc = IF_br_bus_taken | IF_epc_bus_epc_wen ? dnpc : snpc;	// @[playground/src/IF_stage.scala:23:31, :24:31, :25:31, :30:{15,31}]
+  wire        if_ready_go = IF_to_id_ready;	// @[playground/src/IF_stage.scala:16:33]
+  wire        if_flush = IF_for_ex_flush | IF_for_id_flush;	// @[playground/src/IF_stage.scala:12:30, :13:29]
+  reg         if_valid;	// @[playground/src/IF_stage.scala:15:33]
+  reg  [31:0] if_pc;	// @[playground/src/IF_stage.scala:29:26]
+  wire [31:0] if_snpc = if_pc + 32'h4;	// @[playground/src/IF_stage.scala:29:26, :30:33, :35:20]
+  wire [31:0] if_dnpc =
+    IF_for_ex_epc_taken
+      ? IF_for_ex_epc_target
+      : IF_for_id_Br_J_taken ? IF_for_id_Br_J_target : IF_for_ex_Br_B_target;	// @[playground/src/IF_stage.scala:26:17, :31:33, :36:17]
+  wire [31:0] if_nextpc =
+    IF_for_id_Br_J_taken | IF_for_ex_Br_B_taken | IF_for_ex_epc_taken ? if_dnpc : if_snpc;	// @[playground/src/IF_stage.scala:30:33, :31:33, :32:33, :37:{18,28}]
   always @(posedge clock) begin	// @[<stdin>:12:11]
     if (reset) begin	// @[<stdin>:12:11]
-      if_valid <= 1'h0;	// @[playground/src/IF_stage.scala:13:33]
-      REGpc <= 32'h7FFFFFFC;	// @[playground/src/IF_stage.scala:22:24]
+      if_valid <= 1'h0;	// @[playground/src/IF_stage.scala:15:33]
+      if_pc <= 32'h7FFFFFFC;	// @[playground/src/IF_stage.scala:29:26]
     end
     else begin	// @[<stdin>:12:11]
-      if_valid <= if_ready_go | if_valid;	// @[playground/src/IF_stage.scala:13:33, :14:33, :16:20, :17:13]
-      if (if_ready_go)	// @[playground/src/IF_stage.scala:14:33]
-        REGpc <= nextpc;	// @[playground/src/IF_stage.scala:22:24, :25:31]
+      if_valid <= if_ready_go | if_valid;	// @[playground/src/IF_stage.scala:15:33, :16:33, :18:20, :19:13]
+      if (if_ready_go)	// @[playground/src/IF_stage.scala:16:33]
+        if_pc <= if_nextpc;	// @[playground/src/IF_stage.scala:29:26, :32:33]
     end
   end // always @(posedge)
-  read_inst Fetch (	// @[playground/src/IF_stage.scala:26:23]
+  read_inst Fetch (	// @[playground/src/IF_stage.scala:33:23]
     .clock     (clock),
     .reset     (reset),
-    .nextpc    (nextpc),	// @[playground/src/IF_stage.scala:25:31]
-    .fetch_wen (if_ready_go),	// @[playground/src/IF_stage.scala:14:33]
-    .inst      (IF_IO_bits_inst)
+    .nextpc    (if_nextpc),	// @[playground/src/IF_stage.scala:32:33]
+    .fetch_wen (if_ready_go),	// @[playground/src/IF_stage.scala:16:33]
+    .inst      (IF_to_id_bits_inst)
   );
-  assign IF_IO_valid = ~IF_flush & if_valid & if_ready_go;	// @[<stdin>:11:3, playground/src/IF_stage.scala:13:33, :14:33, :19:19]
-  assign IF_IO_bits_nextpc = nextpc;	// @[<stdin>:11:3, playground/src/IF_stage.scala:25:31]
-  assign IF_IO_bits_pc = REGpc;	// @[<stdin>:11:3, playground/src/IF_stage.scala:22:24]
+  assign IF_to_id_valid = ~if_flush & if_valid & if_ready_go;	// @[<stdin>:11:3, playground/src/IF_stage.scala:12:30, :15:33, :16:33, :21:22]
+  assign IF_to_id_bits_nextpc = if_nextpc;	// @[<stdin>:11:3, playground/src/IF_stage.scala:32:33]
+  assign IF_to_id_bits_pc = if_pc;	// @[<stdin>:11:3, playground/src/IF_stage.scala:29:26]
 endmodule
 

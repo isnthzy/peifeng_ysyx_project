@@ -7,9 +7,10 @@ class LS_stage extends Module {
   val LS=IO(new Bundle {
     // val IO    =Input(new ex_to_ls_bus())
     val IO    =Flipped(Decoupled(new ex_to_ls_bus()))
-    val bypass_id=Output(new forward_to_id_bus())
     val to_wb =Decoupled(new ls_to_wb_bus())
-    val data_sram=Input(new data_sram_bus_ls())
+
+    val to_id =Output(new ls_to_id_bus())
+    val data_sram=Input(new data_sram_ls_bus())
   })
   val rdata_ok=dontTouch(Wire(Bool()))
   val wdata_ok=dontTouch(Wire(Bool()))
@@ -37,8 +38,8 @@ class LS_stage extends Module {
   ))
   
 
-  LS.to_wb.bits.ebreak_flag:=LS.IO.bits.ebreak_flag
-  LS.to_wb.bits.wen:=LS.IO.bits.wen
+  LS.to_wb.bits.csr_cmd:=LS.IO.bits.csr_cmd
+  LS.to_wb.bits.rf_wen :=LS.IO.bits.rf_wen
   LS.to_wb.bits.rd :=LS.IO.bits.rd
   LS.to_wb.bits.result:=MuxLookup(LS.IO.bits.wb_sel,0.U)(Seq(
     WB_ALU ->  LS.IO.bits.result,
@@ -51,10 +52,11 @@ class LS_stage extends Module {
   LS.to_wb.bits.nextpc:=LS.IO.bits.nextpc
 
   //前递
-  LS.bypass_id.addr:=Mux(ls_valid && LS.to_wb.bits.wen , LS.to_wb.bits.rd , 0.U)
-  LS.bypass_id.data:=LS.to_wb.bits.result
+  LS.to_id.fw.addr:=Mux(ls_valid && LS.IO.bits.rf_wen, LS.IO.bits.rd , 0.U)
+  LS.to_id.fw.data:=LS.to_wb.bits.result
 
   /*---------------------传递信号到wb级再由wb级处理dpi信号----------------------*/
+  LS.to_wb.bits.csr_commit<>LS.IO.bits.csr_commit
   LS.to_wb.bits.dpic_bundle<>LS.IO.bits.dpic_bundle
 
 }

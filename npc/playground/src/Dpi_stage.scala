@@ -22,8 +22,9 @@ class DPI_stage extends Module {
     val is_rd0=Input(Bool())
     val is_ebreak=Input(Bool())
     val ret_reg_data=Input(Bool())
+    val csr_commit=Input(new commit_csr_to_diff())
   })
-  val dpi_getinfo=Module(new dpi_getinfo())
+  val dpi_getinfo=Module(new Dpi_GetInfo())
   dpi_getinfo.io.clock:=clock
   dpi_getinfo.io.reset:=reset
   dpi_getinfo.io.dpi_valid:=DPI.wb_valid
@@ -38,7 +39,7 @@ class DPI_stage extends Module {
   dpi_inv.io.inv_flag:=DPI.inv_flag
   dpi_inv.io.pc:=DPI.pc
 
-  val dpi_func=Module(new dpi_func())
+  val dpi_func=Module(new Dpi_Func())
   dpi_func.io.clock:=clock
   dpi_func.io.reset:=reset
   dpi_func.io.dpi_valid:=DPI.wb_valid 
@@ -49,18 +50,30 @@ class DPI_stage extends Module {
   dpi_func.io.is_ret:=DPI.is_ret
   dpi_func.io.is_rd0:=DPI.is_rd0
 
-  val dpi_ebreak=Module(new dpi_ebreak())
+  val dpi_ebreak=Module(new Dpi_Ebreak())
   dpi_ebreak.io.clock:=clock
   dpi_ebreak.io.reset:=reset  
   dpi_ebreak.io.dpi_valid:=DPI.wb_valid
   dpi_ebreak.io.is_ebreak:=DPI.is_ebreak
   dpi_ebreak.io.pc:=DPI.pc
   dpi_ebreak.io.ret_reg_data:=DPI.ret_reg_data
+
+  val dpi_csrcommit=Module(new Dpi_CsrCommit())
+  dpi_csrcommit.io.clock:=clock
+  dpi_csrcommit.io.reset:=reset
+  dpi_csrcommit.io.dpi_valid:=DPI.wb_valid
+  dpi_csrcommit.io.csr_wen:=DPI.csr_commit.wen
+  dpi_csrcommit.io.waddr:=DPI.csr_commit.waddr
+  dpi_csrcommit.io.wdata:=DPI.csr_commit.wdata
+  dpi_csrcommit.io.exception_wen:=DPI.csr_commit.exception.wen
+  dpi_csrcommit.io.mcause_in:=DPI.csr_commit.exception.mcause_in
+  dpi_csrcommit.io.pc_wb:=DPI.csr_commit.exception.pc_wb
+
 }
 
 
 
-class dpi_getinfo extends BlackBox with HasBlackBoxInline {
+class Dpi_GetInfo extends BlackBox with HasBlackBoxInline {
   val io = IO(new Bundle {
     val clock=Input(Clock())
     val reset=Input(Bool())
@@ -69,10 +82,10 @@ class dpi_getinfo extends BlackBox with HasBlackBoxInline {
     val nextpc  =Input(UInt(ADDR_WIDTH.W))
     val inst    =Input(UInt(32.W))
   })
-  setInline("dpi_getinfo.v",
+  setInline("dpic/DpiGetInfo.v",
     """
       |import "DPI-C" function void get_info(input int pc,input int nextpc,input int inst,input bit dpi_valid);
-      |module dpi_getinfo(
+      |module Dpi_GetInfo(
       |    input        clock,
       |    input        reset,
       |    input        dpi_valid,
@@ -99,7 +112,7 @@ class dpi_inv extends BlackBox with HasBlackBoxInline {
     val inv_flag=Input(Bool())
     val pc      =Input(UInt(ADDR_WIDTH.W))
   })
-  setInline("dpi_inv.v",
+  setInline("dpic/DpiInv.v",
     """
       |import "DPI-C" function void inv_break(input int pc);
       |module dpi_inv(
@@ -118,7 +131,7 @@ class dpi_inv extends BlackBox with HasBlackBoxInline {
     """.stripMargin)
 }  
 
-class dpi_func extends BlackBox with HasBlackBoxInline {
+class Dpi_Func extends BlackBox with HasBlackBoxInline {
   val io = IO(new Bundle {
     val clock=Input(Clock())
     val reset=Input(Bool())
@@ -130,10 +143,10 @@ class dpi_func extends BlackBox with HasBlackBoxInline {
     val is_rd0   =Input(Bool())
     val is_ret   =Input(Bool())
   })
-  setInline("dpi_func.v",
+  setInline("dpic/DpiFunc.v",
     """
       |import "DPI-C" function void cpu_use_func(input int pc,input int nextpc,input bit is_ret,input bit is_jal,input bit is_rd0);
-      |module dpi_func(
+      |module Dpi_Func(
       |    input        clock,
       |    input        reset,
       |    input        dpi_valid,
@@ -154,7 +167,7 @@ class dpi_func extends BlackBox with HasBlackBoxInline {
 }
 
 
-class dpi_ebreak extends BlackBox with HasBlackBoxInline {
+class Dpi_Ebreak extends BlackBox with HasBlackBoxInline {
   val io = IO(new Bundle {
     val clock=Input(Clock())
     val reset=Input(Bool())
@@ -163,10 +176,10 @@ class dpi_ebreak extends BlackBox with HasBlackBoxInline {
     val pc       =Input(UInt(ADDR_WIDTH.W))
     val ret_reg_data=Input(UInt(ADDR_WIDTH.W))
   })
-  setInline("dpi_ebreak.v",
+  setInline("dpic/DpiEbreak.v",
     """
       |import "DPI-C" function void sim_break(input int pc,input int ret_reg_data);
-      |module dpi_ebreak(
+      |module Dpi_Ebreak(
       |    input        clock,
       |    input        reset,
       |    input        dpi_valid,
@@ -183,3 +196,40 @@ class dpi_ebreak extends BlackBox with HasBlackBoxInline {
     """.stripMargin)
 }
 
+
+class Dpi_CsrCommit extends BlackBox with HasBlackBoxInline {
+  val io = IO(new Bundle {
+    val clock=Input(Clock())
+    val reset=Input(Bool())
+    val dpi_valid=Input(Bool())
+    val csr_wen=Input(Bool())
+    val waddr=Input(UInt(32.W))
+    val wdata=Input(UInt(DATA_WIDTH.W))
+    val exception_wen=Input(Bool())
+    val mcause_in=Input(UInt(DATA_WIDTH.W))
+    val pc_wb=Input(UInt(DATA_WIDTH.W))
+  })
+  setInline("dpic/DpiCsrCommit.v",
+    """
+      |import "DPI-C" function void sync_csrfile_regs(input int waddr,input int wdata);
+      |import "DPI-C" function void sync_csr_exception_regs(input int mcause_in,input int pc_wb);
+      |module Dpi_CsrCommit(
+      |    input        clock,
+      |    input        reset,
+      |    input        dpi_valid,
+      |    input        csr_wen,
+      |    input [31:0] waddr,
+      |    input [31:0] wdata,
+      |    input        exception_wen,
+      |    input [31:0] mcause_in,
+      |    input [31:0] pc_wb
+      |);
+      | always @(posedge clock)begin
+      |   if(~reset)begin
+      |     if(csr_wen&&dpi_valid) sync_csrfile_regs(waddr,wdata);
+      |     if(exception_wen&&dpi_valid) sync_csr_exception_regs(mcause_in,pc_wb);
+      |   end
+      |  end
+      |endmodule
+    """.stripMargin)
+}
