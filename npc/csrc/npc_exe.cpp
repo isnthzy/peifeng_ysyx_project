@@ -82,6 +82,7 @@ extern "C" void prt_debug(const svBitVecVal* debug_1,int debug_2){
 #define MEPC 0x341
 #define MCAUSE 0x343
 extern "C" void sync_csrfile_regs(int waddr,int wdata){
+  printf("%x\n",waddr);
   switch (waddr)
   {
   case MTVEC: cpu.mtvec=wdata; break;
