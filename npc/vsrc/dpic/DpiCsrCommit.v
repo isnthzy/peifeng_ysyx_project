@@ -12,7 +12,7 @@ module Dpi_CsrCommit(
     input [31:0] mcause_in,
     input [31:0] pc_wb
 );
- always @(*)begin
+ always @(posedge clock)begin
    if(~reset)begin
      if(csr_wen&&dpi_valid) sync_csrfile_regs(waddr,wdata);
      if(exception_wen&&dpi_valid) sync_csr_exception_regs(mcause_in,pc_wb);
