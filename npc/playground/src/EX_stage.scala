@@ -79,9 +79,9 @@ class EX_stage extends Module {
   EX.to_id.csr.ecpt.mcause_in:=11.U
   EX.to_id.csr.ecpt.pc_wb:=EX.IO.bits.pc
   
-  EX.to_if.epc.target:=(EX.IO.bits.pc_sel===PC_EPC)&&ex_valid
-  EX.to_if.epc.taken:=Mux((EX.IO.bits.csr_cmd===CSR.MRET ),EX.IO.bits.csr_global.mepc,
-                      Mux((EX.IO.bits.csr_cmd===CSR.ECALL),EX.IO.bits.csr_global.mtvec,0.U))
+  EX.to_if.epc.taken:=(EX.IO.bits.pc_sel===PC_EPC)&&ex_valid
+  EX.to_if.epc.target:=Mux((EX.IO.bits.csr_cmd===CSR.MRET ),EX.IO.bits.csr_global.mepc,
+                        Mux((EX.IO.bits.csr_cmd===CSR.ECALL),EX.IO.bits.csr_global.mtvec,0.U))
   
 
 
