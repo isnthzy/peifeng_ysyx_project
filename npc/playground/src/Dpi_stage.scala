@@ -224,7 +224,7 @@ class Dpi_CsrCommit extends BlackBox with HasBlackBoxInline {
       |    input [31:0] mcause_in,
       |    input [31:0] pc_wb
       |);
-      | always @(posedge *)begin
+      | always @(*)begin
       |   if(~reset)begin
       |     if(csr_wen&&dpi_valid) sync_csrfile_regs(waddr,wdata);
       |     if(exception_wen&&dpi_valid) sync_csr_exception_regs(mcause_in,pc_wb);

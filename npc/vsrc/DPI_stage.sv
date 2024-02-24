@@ -60,7 +60,7 @@ module DPI_stage(	// @[<stdin>:1439:3]
     .reset         (reset),
     .dpi_valid     (DPI_wb_valid),
     .csr_wen       (DPI_csr_commit_wen),
-    .waddr         (DPI_csr_commit_waddr),
+    .waddr         ({20'h0, DPI_csr_commit_waddr}),	// @[playground/src/Dpi_stage.scala:66:25]
     .wdata         (DPI_csr_commit_wdata),
     .exception_wen (DPI_csr_commit_exception_wen),
     .mcause_in     ({28'h0, DPI_csr_commit_exception_mcause_in}),	// @[playground/src/Dpi_stage.scala:69:29]
