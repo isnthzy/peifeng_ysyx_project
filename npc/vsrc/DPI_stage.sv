@@ -29,7 +29,7 @@ module DPI_stage(	// @[<stdin>:1439:3]
     .nextpc    (DPI_nextpc),
     .inst      (DPI_inst)
   );
-  Dpi_Inv dpi_inv (	// @[playground/src/Dpi_stage.scala:35:21]
+  dpi_inv dpi_inv (	// @[playground/src/Dpi_stage.scala:35:21]
     .clock     (clock),
     .reset     (reset),
     .dpi_valid (DPI_wb_valid),
