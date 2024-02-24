@@ -32,7 +32,7 @@ class DPI_stage extends Module {
   dpi_getinfo.io.nextpc:=DPI.nextpc
   dpi_getinfo.io.inst:=DPI.inst
 
-  val dpi_inv=Module(new Dpi_Inv())
+  val dpi_inv=Module(new dpi_inv())
   dpi_inv.io.clock:=clock
   dpi_inv.io.reset:=reset
   dpi_inv.io.dpi_valid:=DPI.wb_valid
@@ -104,7 +104,7 @@ class Dpi_GetInfo extends BlackBox with HasBlackBoxInline {
     """.stripMargin)
 }  
 
-class Dpi_Inv extends BlackBox with HasBlackBoxInline {
+class dpi_inv extends BlackBox with HasBlackBoxInline {
   val io = IO(new Bundle {
     val clock=Input(Clock())
     val reset=Input(Bool())
