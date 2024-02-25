@@ -25,7 +25,6 @@ class WB_stage extends Module {
 
   WB.to_id.rf.waddr:=WB.IO.bits.rd
   WB.to_id.rf.wdata:=WB.IO.bits.result
-  //如果是csr写入寄存器操作，相应的都要修改成csr寄存器的值
   WB.to_id.rf.wen  :=WB.IO.bits.rf_wen&&wb_valid
   WB.debug_waddr:=WB.to_id.rf.waddr
   WB.debug_wdata:=WB.to_id.rf.wdata
