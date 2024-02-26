@@ -11,9 +11,9 @@ class EX_stage extends Module {
     val to_if =Output(new ex_to_if_bus())
 
     val ar=Decoupled(new AxiAddressBundle())
-    val aw=Flipped(Decoupled(new AxiAddressBundle()))
-    val w=Flipped(Decoupled(new AxiWriteDataBundle()))
-    val b=Decoupled(new AxiWriteResponseBundle())
+    val aw=Decoupled(new AxiAddressBundle())
+    val w=Decoupled(new AxiWriteDataBundle())
+    val b=Flipped(Decoupled(new AxiWriteResponseBundle()))
   })
   
   val ex_valid=dontTouch(RegInit(false.B))
