@@ -10,7 +10,7 @@ class EX_stage extends Module {
     val to_id =Output(new ex_to_id_bus())
     val to_if =Output(new ex_to_if_bus())
 
-    val ar=Flipped(Decoupled(new AxiAddressBundle()))
+    val ar=Decoupled(new AxiAddressBundle())
     val aw=Flipped(Decoupled(new AxiAddressBundle()))
     val w=Flipped(Decoupled(new AxiWriteDataBundle()))
     val b=Decoupled(new AxiWriteResponseBundle())
