@@ -122,7 +122,7 @@ class id_to_ex_bus extends Bundle{
   val csr_global=new csr_global()
 
   val b_taken=Bool()
-  val st_type=UInt(8.W)
+  val st_type=UInt(4.W)
   val ld_type=UInt(3.W)
   val csr_cmd=UInt(5.W)
   val wb_sel =UInt(2.W)

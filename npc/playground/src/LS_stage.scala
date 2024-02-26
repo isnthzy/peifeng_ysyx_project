@@ -10,31 +10,39 @@ class LS_stage extends Module {
     val to_wb =Decoupled(new ls_to_wb_bus())
 
     val to_id =Output(new ls_to_id_bus())
-    val data_sram=Input(new data_sram_ls_bus())
+
+    val r=Decoupled(new AxiReadDataBundle())
   })
-  val rdata_ok=dontTouch(Wire(Bool()))
-  val wdata_ok=dontTouch(Wire(Bool()))
-  rdata_ok:=LS.data_sram.rdata_ok
-  wdata_ok:=LS.data_sram.wdata_ok
+
+  val data_sram_rdata=dontTouch(Wire(UInt(ADDR_WIDTH.W)))
 
   val ls_valid=dontTouch(RegInit(false.B))
   val ls_ready_go=dontTouch(Wire(Bool()))
-  ls_ready_go:=true.B
-  //未来用rdata_ok或者wdata_ok信号控制ls_ready_go
+  ls_ready_go:=Mux(LS.r.valid,true.B,false.B)
   LS.IO.ready := !ls_valid || ls_ready_go &&LS.to_wb.ready
   when(LS.IO.ready){
     ls_valid:=LS.IO.valid
   }
   LS.to_wb.valid:=ls_valid && ls_ready_go
 
+//-----------------AXI总线操作----------
+  LS.r.ready:=ls_valid
+  when(LS.r.fire){
+    data_sram_rdata:=LS.r.bits.data
+  }
+  
+
+  
+//-----------------------------------
+
   val ram_data=dontTouch(Wire(UInt(32.W)))
 
   ram_data:=MuxLookup(LS.IO.bits.ld_type,0.U)(Seq(
-    LD_LW -> LS.data_sram.rdata,
-    LD_LH -> Sext(LS.data_sram.rdata(15,0),32),
-    LD_LB -> Sext(LS.data_sram.rdata( 7,0),32),
-    LD_LHU-> Zext(LS.data_sram.rdata(15,0),32),
-    LD_LBU-> Zext(LS.data_sram.rdata( 7,0),32)
+    LD_LW -> data_sram_rdata,
+    LD_LH -> Sext(data_sram_rdata(15,0),32),
+    LD_LB -> Sext(data_sram_rdata( 7,0),32),
+    LD_LHU-> Zext(data_sram_rdata(15,0),32),
+    LD_LBU-> Zext(data_sram_rdata( 7,0),32)
   ))
   
 

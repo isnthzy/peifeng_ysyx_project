@@ -9,12 +9,16 @@ class EX_stage extends Module {
 
     val to_id =Output(new ex_to_id_bus())
     val to_if =Output(new ex_to_if_bus())
-    val data_sram=Output(new data_sram_ex_bus())
+
+    val ar=Flipped(Decoupled(new AxiAddressBundle()))
+    val aw=Flipped(Decoupled(new AxiAddressBundle()))
+    val w=Flipped(Decoupled(new AxiWriteDataBundle()))
+    val b=Decoupled(new AxiWriteResponseBundle())
   })
   
   val ex_valid=dontTouch(RegInit(false.B))
   val ex_ready_go=dontTouch(Wire(Bool()))
-  ex_ready_go:=true.B
+  ex_ready_go:=Mux(EX.ar.ready||(EX.aw.ready&&EX.w.ready),true.B,false.B)
   EX.IO.ready := !ex_valid || ex_ready_go && EX.to_ls.ready
   when(EX.IO.ready){
     ex_valid:=EX.IO.valid
@@ -54,18 +58,52 @@ class EX_stage extends Module {
   EX.to_id.fw.addr:=Mux(ex_valid && EX.IO.bits.rf_wen , EX.to_ls.bits.rd , 0.U)
   EX.to_id.fw.data:=EX.to_ls.bits.result
 
-  //EX级发起访存
+  //EX级发起访存-----------AXI分界线-------------------
+  
+
   val ld_wen=dontTouch(Wire(Bool()))
   val st_wen=dontTouch(Wire(Bool()))
   ld_wen:=(EX.IO.bits.st_type=/=0.U)&&ex_valid
   st_wen:=(EX.IO.bits.ld_type=/=0.U)&&ex_valid
 
-  EX.data_sram.st_wen:=ld_wen
-  EX.data_sram.ld_wen:=st_wen
-  EX.data_sram.addr:=Alu.io.result
-  EX.data_sram.wmask:=EX.IO.bits.st_type
-  EX.data_sram.wdata:=EX.IO.bits.rdata2
+  val DoAddrReadReg=RegInit(false.B)
+  val DoAddrWriteReg=RegInit(false.B)
+  val DoWdataReg=RegInit(false.B)
+  when(ld_wen && ex_valid){
+    DoAddrReadReg:=true.B
+  }
 
+  when(EX.ar.fire && ex_valid){
+    DoAddrReadReg:=false.B
+  }
+
+  when(st_wen && ex_valid){
+    DoAddrWriteReg:=true.B
+    DoWdataReg:=true.B
+  }
+
+  when(EX.aw.fire && ex_valid){
+    DoAddrWriteReg:=false.B
+  }
+
+  when(EX.w.fire && ex_valid){
+    DoWdataReg:=false.B
+  }
+
+  EX.ar.bits.addr:=Alu.io.result
+  EX.ar.valid:=DoAddrReadReg&&ex_valid
+  EX.ar.bits.prot:=0.U
+
+  EX.w.bits.data:=EX.IO.bits.rdata2
+  EX.w.bits.strb:=EX.IO.bits.st_type
+
+  // EX.data_sram.st_wen:=ld_wen
+  // EX.data_sram.ld_wen:=st_wen
+  // EX.data_sram.addr:=Alu.io.result
+  // EX.data_sram.wmask:=EX.IO.bits.st_type
+  // EX.data_sram.wdata:=EX.IO.bits.rdata2
+
+  //----------------------------------------------------
 
   //csr
   val Csr_alu=Module(new Csr_alu())
