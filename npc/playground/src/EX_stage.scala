@@ -16,8 +16,9 @@ class EX_stage extends Module {
     val b=Flipped(Decoupled(new AxiWriteResponseBundle()))
   })
   dontTouch(EX.ar);
-
-
+  dontTouch(EX.aw);
+  dontTouch(EX.w);
+  dontTouch(EX.b);
 
   val ex_valid=dontTouch(RegInit(false.B))
   val ex_ready_go=dontTouch(Wire(Bool()))
