@@ -8,7 +8,7 @@ module dpi_sram(
    input [ 7:0] wmask,
    input        ena,
    input        wen,
-   Output [31:0] rdata
+   Output [31:0] rdata,
 );
  
 always @(posedge clock) begin
