@@ -11,7 +11,7 @@ class LS_stage extends Module {
 
     val to_id =Output(new ls_to_id_bus())
 
-    val r=Decoupled(new AxiReadDataBundle())
+    val r=Flipped(Decoupled(new AxiReadDataBundle()))
   })
 
   val data_sram_rdata=dontTouch(Wire(UInt(ADDR_WIDTH.W)))
