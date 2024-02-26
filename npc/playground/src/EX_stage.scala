@@ -91,7 +91,7 @@ class EX_stage extends Module {
   }
 
   EX.ar.bits.addr:=Alu.io.result
-  // EX.ar.valid:=DoAddrReadReg&&ex_valid
+  EX.ar.valid:=DoAddrReadReg&&ex_valid
   EX.ar.bits.prot:=0.U
 
   EX.w.bits.data:=EX.IO.bits.rdata2
