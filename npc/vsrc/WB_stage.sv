@@ -33,14 +33,14 @@ module WB_stage(	// @[<stdin>:1485:3]
   wire wb_ready_go = 1'h1;	// @[playground/src/WB_stage.scala:18:33, :19:14]
   reg  wb_valid;	// @[playground/src/WB_stage.scala:17:33]
   wire _WB_IO_ready_output = ~wb_valid | wb_ready_go;	// @[playground/src/WB_stage.scala:17:33, :18:33, :20:{18,28}]
-  wire _WB_to_id_rf_wen_output = WB_IO_bits_rf_wen & wb_valid;	// @[playground/src/WB_stage.scala:17:33, :29:39]
+  wire _WB_to_id_rf_wen_output = WB_IO_bits_rf_wen & wb_valid;	// @[playground/src/WB_stage.scala:17:33, :28:39]
   always @(posedge clock) begin	// @[<stdin>:1486:11]
     if (reset)	// @[<stdin>:1486:11]
       wb_valid <= 1'h0;	// @[playground/src/WB_stage.scala:17:33]
     else if (_WB_IO_ready_output)	// @[playground/src/WB_stage.scala:20:28]
       wb_valid <= WB_IO_valid;	// @[playground/src/WB_stage.scala:17:33]
   end // always @(posedge)
-  DPI_stage DPI_stage (	// @[playground/src/WB_stage.scala:36:23]
+  DPI_stage DPI_stage (	// @[playground/src/WB_stage.scala:35:23]
     .clock                              (clock),
     .reset                              (reset),
     .DPI_wb_valid                       (wb_valid),	// @[playground/src/WB_stage.scala:17:33]
@@ -52,8 +52,8 @@ module WB_stage(	// @[<stdin>:1485:3]
     .DPI_is_jal                         (WB_IO_bits_dpic_bundle_ex_is_jal),
     .DPI_is_ret                         (WB_IO_bits_dpic_bundle_ex_is_ret),
     .DPI_is_rd0                         (WB_IO_bits_dpic_bundle_ex_is_rd0),
-    .DPI_is_ebreak                      (WB_IO_bits_csr_cmd == 5'h5),	// @[playground/src/WB_stage.scala:46:47]
-    .DPI_ret_reg_data                   (WB_IO_bits_result[0]),	// @[playground/src/WB_stage.scala:47:29]
+    .DPI_is_ebreak                      (WB_IO_bits_csr_cmd == 5'h5),	// @[playground/src/WB_stage.scala:45:47]
+    .DPI_ret_reg_data                   (WB_IO_bits_result[0]),	// @[playground/src/WB_stage.scala:46:29]
     .DPI_csr_commit_wen                 (WB_IO_bits_csr_commit_wen),
     .DPI_csr_commit_waddr               (WB_IO_bits_csr_commit_waddr),
     .DPI_csr_commit_wdata               (WB_IO_bits_csr_commit_wdata),
@@ -64,9 +64,9 @@ module WB_stage(	// @[<stdin>:1485:3]
   assign WB_IO_ready = _WB_IO_ready_output;	// @[<stdin>:1485:3, playground/src/WB_stage.scala:20:28]
   assign WB_to_id_rf_waddr = WB_IO_bits_rd;	// @[<stdin>:1485:3]
   assign WB_to_id_rf_wdata = WB_IO_bits_result;	// @[<stdin>:1485:3]
-  assign WB_to_id_rf_wen = _WB_to_id_rf_wen_output;	// @[<stdin>:1485:3, playground/src/WB_stage.scala:29:39]
+  assign WB_to_id_rf_wen = _WB_to_id_rf_wen_output;	// @[<stdin>:1485:3, playground/src/WB_stage.scala:28:39]
   assign WB_debug_waddr = WB_IO_bits_rd;	// @[<stdin>:1485:3]
   assign WB_debug_wdata = WB_IO_bits_result;	// @[<stdin>:1485:3]
-  assign WB_debug_wen = _WB_to_id_rf_wen_output;	// @[<stdin>:1485:3, playground/src/WB_stage.scala:29:39]
+  assign WB_debug_wen = _WB_to_id_rf_wen_output;	// @[<stdin>:1485:3, playground/src/WB_stage.scala:28:39]
 endmodule
 

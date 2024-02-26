@@ -8,7 +8,7 @@
 #define CONFIG_TRACE 1
 #define CONFIG_ITRACE 1
 // #define CONFIG_FTRACE 1
-// #define CONFIG_MTRACE 1
+#define CONFIG_MTRACE 1
 #define CONFIG_DIFFTEST 1
 #define NPCLOG_NUM 10000 //trace最多记录多少个log
 //TRACE开关
@@ -20,7 +20,7 @@
 
 /*---------------------------------------------------------------------------------*/
 
-#define TRACE_VCD 1
+// #define TRACE_VCD 1
 // 波形生成开关
 
 /*---------------------------------------------------------------------------------*/
@@ -44,5 +44,6 @@
 
 #define CONFIG_PC_RESET_OFFSET 0x0
 //pc重置偏移
-
+#define CONFIG_MAX_EXE_INST 50000000
+//指令执行最大次数，拦截可能发生的死循环
 /*---------------------------------------------------------------------------------*/

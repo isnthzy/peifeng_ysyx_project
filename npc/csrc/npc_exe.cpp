@@ -187,6 +187,9 @@ static void npc_execute(uint64_t n) {
     }while(cpu.pc==lastpc);
     lastpc=cpu.pc;
   }
+  if(g_nr_guest_inst>CONFIG_MAX_EXE_INST){
+    panic("Too many instructions(Suspected to be in a traploop)");
+  }
 }
 
 bool init_iringbuf_f=false;

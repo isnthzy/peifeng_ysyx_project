@@ -10,32 +10,25 @@ class Sram extends Module {
   //添加一个sram抽象层，为来再此进行抽象
   val dpi_sram=Module(new dpi_sram())
   dpi_sram.io.clock:=clock
-  dpi_sram.io.reset:=reset
-  dpi_sram.io.ld_wen:=io.in.ld_wen
-  dpi_sram.io.st_wen:=io.in.st_wen
-  dpi_sram.io.raddr:=io.in.addr
-  dpi_sram.io.wmask:=io.in.wmask
-  dpi_sram.io.waddr:=io.in.addr
+  dpi_sram.io.addr:=io.in.addr
   dpi_sram.io.wdata:=io.in.wdata
+  dpi_sram.io.wmask:=io.in.wmask
+  dpi_sram.io.ena:=(io.in.ld_wen||io.in.st_wen)&& ~reset.asBool
+  dpi_sram.io.wen:=io.in.st_wen&& ~reset.asBool
   io.out.rdata:=dpi_sram.io.rdata
-  io.out.rdata_ok:=dpi_sram.io.rdata_ok
-  io.out.wdata_ok:=dpi_sram.io.wdata_ok
-
+  io.out.rdata_ok:=true.B
+  io.out.wdata_ok:=true.B
 }
 
 class dpi_sram extends BlackBox with HasBlackBoxInline {
   val io = IO(new Bundle {
     val clock=Input(Clock())
-    val reset=Input(Bool())
-    val ld_wen=Input(Bool())
-    val st_wen=Input(Bool())
-    val raddr =Input(UInt(32.W))
-    val rdata =Output(UInt(32.W))
-    val wmask =Input(UInt(8.W))
-    val waddr =Input(UInt(32.W))
-    val wdata =Input(UInt(32.W))
-    val rdata_ok=Output(Bool())
-    val wdata_ok=Output(Bool())
+    val addr=Input(UInt(ADDR_WIDTH.W))
+    val wdata=Input(UInt(DATA_WIDTH.W))
+    val wmask=Input(UInt(8.W))
+    val ena=Input(Bool())
+    val wen=Input(Bool())
+    val rdata=Output(UInt(DATA_WIDTH.W))
   })
   setInline("dpic/DpiSram.v",
     """
@@ -43,37 +36,21 @@ class dpi_sram extends BlackBox with HasBlackBoxInline {
       |import "DPI-C" function void pmem_write(input int waddr, input  int wdata, input byte wmask);
       |module dpi_sram(
       |   input        clock,
-      |   input        reset,
-      |   input        ld_wen,
-      |   input        st_wen,
-      |   input [31:0] raddr,
-      |   output[31:0] rdata,
-      |   input [ 7:0] wmask,
-      |   input [31:0] waddr,
+      |   input [31:0] addr,
       |   input [31:0] wdata,
-      |   output reg rdata_ok,
-      |   output reg wdata_ok
+      |   input [ 7:0] wmask,
+      |   input        ena,
+      |   input        wen,
+      |   output [31:0] rdata
       |);
       | 
       |always @(posedge clock) begin
-      |  if(~reset)begin
-      |    if(ld_wen) begin
-      |      pmem_read (raddr,rdata);
-      |      rdata_ok<=1;
+      |    if(ena) begin
+      |      pmem_read (addr,rdata);
+      |      if(wen) begin
+      |        pmem_write (addr,wdata,wmask);
+      |      end
       |    end
-      |    else begin
-      |      rdata_ok<=0;
-      |      rdata[31:0]=0;
-      |    end
-      |
-      |    if(st_wen) begin
-      |      pmem_write(waddr,wdata,wmask);
-      |      wdata_ok<=1;
-      |    end
-      |    else begin
-      |      wdata_ok<=0;
-      |    end
-      | end
       |end
       |endmodule
     """.stripMargin)
