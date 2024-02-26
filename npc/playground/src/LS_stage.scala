@@ -14,7 +14,7 @@ class LS_stage extends Module {
     val r=Flipped(Decoupled(new AxiReadDataBundle()))
   })
 
-  val data_sram_rdata=dontTouch(Wire(UInt(ADDR_WIDTH.W)))
+  val data_sram_rdata=dontTouch(WireDefault(0.U(DATA_WIDTH.W)))
 
   val ls_valid=dontTouch(RegInit(false.B))
   val ls_ready_go=dontTouch(Wire(Bool()))
