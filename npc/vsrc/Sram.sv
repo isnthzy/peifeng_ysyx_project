@@ -15,8 +15,8 @@ module Sram(	// @[<stdin>:1533:3]
     .addr  (io_in_addr),
     .wdata (io_in_wdata),
     .wmask (io_in_wmask),
-    .ena   (io_in_ld_wen & io_in_st_wen & ~reset),	// @[playground/src/Sram.scala:16:{46,49}]
-    .wen   (io_in_st_wen),
+    .ena   ((io_in_ld_wen | io_in_st_wen) & ~reset),	// @[playground/src/Sram.scala:16:{33,48,51}]
+    .wen   (io_in_st_wen & ~reset),	// @[playground/src/Sram.scala:17:{32,35}]
     .rdata (io_out_rdata)
   );
 endmodule
