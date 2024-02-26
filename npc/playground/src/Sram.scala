@@ -3,7 +3,7 @@ import chisel3.util._
 import config.Configs._
 import Control._
 class Axi4Lite_Sram_Bridge extends Module {
-  val io=IO(new Axi4LiteSlave())
+  val io=IO(new Axi4LiteMaster())
   val dpi_sram=Module(new dpi_sram())
   
   val DoRdataReg=RegInit(false.B)
@@ -34,7 +34,7 @@ class Axi4Lite_Sram_Bridge extends Module {
   }
 
 
-  
+
 }
 
 class dpi_sram extends BlackBox with HasBlackBoxInline {
