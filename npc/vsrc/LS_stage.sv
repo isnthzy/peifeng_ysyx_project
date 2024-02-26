@@ -26,6 +26,7 @@ module LS_stage(	// @[<stdin>:1346:3]
   input         LS_to_wb_ready,	// @[playground/src/LS_stage.scala:7:12]
                 LS_r_valid,	// @[playground/src/LS_stage.scala:7:12]
   input  [31:0] LS_r_bits_data,	// @[playground/src/LS_stage.scala:7:12]
+  input  [1:0]  LS_r_bits_resp,	// @[playground/src/LS_stage.scala:7:12]
   output        LS_IO_ready,	// @[playground/src/LS_stage.scala:7:12]
                 LS_to_wb_valid,	// @[playground/src/LS_stage.scala:7:12]
                 LS_to_wb_bits_csr_commit_wen,	// @[playground/src/LS_stage.scala:7:12]
@@ -47,33 +48,35 @@ module LS_stage(	// @[<stdin>:1346:3]
                 LS_to_wb_bits_pc,	// @[playground/src/LS_stage.scala:7:12]
                 LS_to_wb_bits_inst,	// @[playground/src/LS_stage.scala:7:12]
   output [4:0]  LS_to_id_fw_addr,	// @[playground/src/LS_stage.scala:7:12]
-  output [31:0] LS_to_id_fw_data	// @[playground/src/LS_stage.scala:7:12]
+  output [31:0] LS_to_id_fw_data,	// @[playground/src/LS_stage.scala:7:12]
+  output        LS_r_ready	// @[playground/src/LS_stage.scala:7:12]
 );
 
   wire        ls_ready_go = LS_r_valid;	// @[playground/src/LS_stage.scala:20:33]
   reg  [31:0] casez_tmp;	// @[playground/src/LS_stage.scala:40:46]
   reg  [31:0] casez_tmp_0;	// @[playground/src/LS_stage.scala:52:57]
   reg         ls_valid;	// @[playground/src/LS_stage.scala:19:33]
+  wire        _LS_r_ready_output = ls_valid;	// @[<stdin>:1346:3, playground/src/LS_stage.scala:19:33]
   wire        _LS_IO_ready_output = ~ls_valid | ls_ready_go & LS_to_wb_ready;	// @[playground/src/LS_stage.scala:19:33, :20:33, :22:{18,28,43}]
-  wire [31:0] data_sram_rdata = ls_valid & LS_r_valid ? LS_r_bits_data : 32'h0;	// @[playground/src/LS_stage.scala:17:44, :19:33, :30:18, :31:20, src/main/scala/chisel3/util/Decoupled.scala:52:35]
+  wire [31:0] data_sram_rdata = _LS_r_ready_output & LS_r_valid ? LS_r_bits_data : 32'h0;	// @[<stdin>:1346:3, playground/src/LS_stage.scala:16:44, :30:18, :31:20, src/main/scala/chisel3/util/Decoupled.scala:52:35]
   always_comb begin	// @[playground/src/LS_stage.scala:40:46]
     casez (LS_IO_bits_ld_type)	// @[playground/src/LS_stage.scala:40:46]
       3'b000:
-        casez_tmp = 32'h0;	// @[playground/src/LS_stage.scala:17:44, :40:46]
+        casez_tmp = 32'h0;	// @[playground/src/LS_stage.scala:16:44, :40:46]
       3'b001:
-        casez_tmp = data_sram_rdata;	// @[playground/src/LS_stage.scala:17:44, :40:46]
+        casez_tmp = data_sram_rdata;	// @[playground/src/LS_stage.scala:16:44, :40:46]
       3'b010:
-        casez_tmp = {{16{data_sram_rdata[15]}}, data_sram_rdata[15:0]};	// @[playground/src/Bundle.scala:180:{10,15,37}, playground/src/LS_stage.scala:17:44, :40:46, :42:34]
+        casez_tmp = {{16{data_sram_rdata[15]}}, data_sram_rdata[15:0]};	// @[playground/src/Bundle.scala:180:{10,15,37}, playground/src/LS_stage.scala:16:44, :40:46, :42:34]
       3'b011:
-        casez_tmp = {{24{data_sram_rdata[7]}}, data_sram_rdata[7:0]};	// @[playground/src/Bundle.scala:180:{10,15,37}, playground/src/LS_stage.scala:17:44, :40:46, :43:34]
+        casez_tmp = {{24{data_sram_rdata[7]}}, data_sram_rdata[7:0]};	// @[playground/src/Bundle.scala:180:{10,15,37}, playground/src/LS_stage.scala:16:44, :40:46, :43:34]
       3'b100:
-        casez_tmp = {16'h0, data_sram_rdata[15:0]};	// @[playground/src/Bundle.scala:180:15, :191:10, playground/src/LS_stage.scala:17:44, :40:46, :42:34]
+        casez_tmp = {16'h0, data_sram_rdata[15:0]};	// @[playground/src/Bundle.scala:180:15, :191:10, playground/src/LS_stage.scala:16:44, :40:46, :42:34]
       3'b101:
-        casez_tmp = {24'h0, data_sram_rdata[7:0]};	// @[playground/src/Bundle.scala:180:15, :191:10, playground/src/LS_stage.scala:17:44, :40:46, :43:34]
+        casez_tmp = {24'h0, data_sram_rdata[7:0]};	// @[playground/src/Bundle.scala:180:15, :191:10, playground/src/LS_stage.scala:16:44, :40:46, :43:34]
       3'b110:
-        casez_tmp = 32'h0;	// @[playground/src/LS_stage.scala:17:44, :40:46]
+        casez_tmp = 32'h0;	// @[playground/src/LS_stage.scala:16:44, :40:46]
       default:
-        casez_tmp = 32'h0;	// @[playground/src/LS_stage.scala:17:44, :40:46]
+        casez_tmp = 32'h0;	// @[playground/src/LS_stage.scala:16:44, :40:46]
     endcase	// @[playground/src/LS_stage.scala:40:46]
   end // always_comb
   wire [31:0] ram_data = casez_tmp;	// @[playground/src/LS_stage.scala:38:30, :40:46]
@@ -118,5 +121,6 @@ module LS_stage(	// @[<stdin>:1346:3]
   assign LS_to_wb_bits_inst = LS_IO_bits_inst;	// @[<stdin>:1346:3]
   assign LS_to_id_fw_addr = ls_valid & LS_IO_bits_rf_wen ? LS_IO_bits_rd : 5'h0;	// @[<stdin>:1346:3, playground/src/LS_stage.scala:19:33, :63:{24,34}]
   assign LS_to_id_fw_data = casez_tmp_0;	// @[<stdin>:1346:3, playground/src/LS_stage.scala:52:57]
+  assign LS_r_ready = _LS_r_ready_output;	// @[<stdin>:1346:3]
 endmodule
 

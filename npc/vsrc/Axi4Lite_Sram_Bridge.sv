@@ -8,7 +8,8 @@ module Axi4Lite_Sram_Bridge(	// @[<stdin>:1568:3]
   input  [31:0] io_w_bits_data,	// @[playground/src/Sram.scala:6:12]
   input  [7:0]  io_w_bits_strb,	// @[playground/src/Sram.scala:6:12]
   output        io_r_valid,	// @[playground/src/Sram.scala:6:12]
-  output [31:0] io_r_bits_data	// @[playground/src/Sram.scala:6:12]
+  output [31:0] io_r_bits_data,	// @[playground/src/Sram.scala:6:12]
+  output        io_b_valid	// @[playground/src/Sram.scala:6:12]
 );
 
   dpi_sram dpi_sram (	// @[playground/src/Sram.scala:7:22]
@@ -21,5 +22,6 @@ module Axi4Lite_Sram_Bridge(	// @[<stdin>:1568:3]
     .rdata (io_r_bits_data)
   );
   assign io_r_valid = io_ar_valid;	// @[<stdin>:1568:3]
+  assign io_b_valid = io_aw_valid & io_w_valid;	// @[<stdin>:1568:3, playground/src/Sram.scala:34:19]
 endmodule
 
