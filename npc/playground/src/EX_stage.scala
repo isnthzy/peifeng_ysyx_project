@@ -63,8 +63,8 @@ class EX_stage extends Module {
 
   val ld_wen=dontTouch(Wire(Bool()))
   val st_wen=dontTouch(Wire(Bool()))
-  ld_wen:=(EX.IO.bits.st_type=/=0.U)&&ex_valid
-  st_wen:=(EX.IO.bits.ld_type=/=0.U)&&ex_valid
+  ld_wen:=(EX.IO.bits.st_type=/=0.U)
+  st_wen:=(EX.IO.bits.ld_type=/=0.U)
 
   val DoAddrReadReg=RegInit(false.B)
   val DoAddrWriteReg=RegInit(false.B)
@@ -96,6 +96,11 @@ class EX_stage extends Module {
 
   EX.w.bits.data:=EX.IO.bits.rdata2
   EX.w.bits.strb:=EX.IO.bits.st_type
+
+  EX.aw.valid:=st_wen&&ex_valid
+  EX.aw.bits.addr:=Alu.io.result
+
+  EX.b.ready:=true.B
 
   // EX.data_sram.st_wen:=ld_wen
   // EX.data_sram.ld_wen:=st_wen
