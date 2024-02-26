@@ -13,7 +13,7 @@ class Sram extends Module {
   dpi_sram.io.addr:=io.in.addr
   dpi_sram.io.wdata:=io.in.wdata
   dpi_sram.io.wmask:=io.in.wmask
-  dpi_sram.io.ena:=io.in.ld_wen&&io.in.st_wen&& ~reset.asBool
+  dpi_sram.io.ena:=(io.in.ld_wen||io.in.st_wen)&& ~reset.asBool
   dpi_sram.io.wen:=io.in.st_wen&& ~reset.asBool
   io.out.rdata:=dpi_sram.io.rdata
   io.out.rdata_ok:=true.B
