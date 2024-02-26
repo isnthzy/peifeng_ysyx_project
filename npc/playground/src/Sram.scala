@@ -18,6 +18,9 @@ class Axi4Lite_Sram_Bridge extends Module {
   when(io.ar.fire){
     io.r.valid:=true.B
     io.r.bits.resp:=0.U
+  }.otherwise{
+    io.r.valid:=false.B
+    io.r.bits.resp:=0.U
   }
   io.r.bits.data:=dpi_sram.io.rdata
 
@@ -30,6 +33,9 @@ class Axi4Lite_Sram_Bridge extends Module {
 
   when(io.aw.fire && io.w.fire){
     io.b.valid:=true.B
+    io.b.bits.resp:=0.U
+  }.otherwise{
+    io.b.valid:=false.B
     io.b.bits.resp:=0.U
   }
 
