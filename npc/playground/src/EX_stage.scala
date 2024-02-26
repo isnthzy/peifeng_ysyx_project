@@ -94,11 +94,13 @@ class EX_stage extends Module {
   EX.ar.valid:=DoAddrReadReg&&ex_valid
   EX.ar.bits.prot:=0.U
 
+  EX.w.valid:=DoAddrWriteReg
   EX.w.bits.data:=EX.IO.bits.rdata2
   EX.w.bits.strb:=EX.IO.bits.st_type
 
-  EX.aw.valid:=st_wen&&ex_valid
+  EX.aw.valid:=DoWdataReg
   EX.aw.bits.addr:=Alu.io.result
+  EX.aw.bits.prot:=0.U
 
   EX.b.ready:=true.B
 
