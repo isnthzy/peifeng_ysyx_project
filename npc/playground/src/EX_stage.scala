@@ -10,12 +10,15 @@ class EX_stage extends Module {
     val to_id =Output(new ex_to_id_bus())
     val to_if =Output(new ex_to_if_bus())
 
-    val ar=Decoupled(dontTouch(new AxiAddressBundle()))
+    val ar=Decoupled(new AxiAddressBundle())
     val aw=Decoupled(new AxiAddressBundle())
     val w=Decoupled(new AxiWriteDataBundle())
     val b=Flipped(Decoupled(new AxiWriteResponseBundle()))
   })
-  
+  dontTouch(EX.ar);
+
+
+
   val ex_valid=dontTouch(RegInit(false.B))
   val ex_ready_go=dontTouch(Wire(Bool()))
   ex_ready_go:=Mux(EX.ar.ready||(EX.aw.ready&&EX.w.ready),true.B,false.B)
