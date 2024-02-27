@@ -133,7 +133,6 @@ class EX_stage extends Module {
   
 
 
-  EX.to_ls.bits.st_wen:=st_wen
   EX.to_ls.bits.ld_wen:=ld_wen
   EX.to_ls.bits.ld_type:=EX.IO.bits.ld_type
   EX.to_ls.bits.csr_cmd:=EX.IO.bits.csr_cmd
