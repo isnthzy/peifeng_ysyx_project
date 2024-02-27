@@ -72,29 +72,6 @@ class EX_stage extends Module {
   st_wen:=(EX.IO.bits.st_type=/=0.U)
   ld_wen:=(EX.IO.bits.ld_type=/=0.U)
 
-  // val DoAddrReadReg=RegInit(false.B)
-  // val DoAddrWriteReg=RegInit(false.B)
-  // val DoWdataReg=RegInit(false.B)
-  // when(ld_wen && ex_valid){
-  //   DoAddrReadReg:=true.B
-  // }
-
-  // when(EX.ar.fire && ex_valid){
-  //   DoAddrReadReg:=false.B
-  // }
-
-  // when(st_wen && ex_valid){
-  //   DoAddrWriteReg:=true.B
-  //   DoWdataReg:=true.B
-  // }
-
-  // when(EX.aw.fire && ex_valid){
-  //   DoAddrWriteReg:=false.B
-  // }
-
-  // when(EX.w.fire && ex_valid){
-  //   DoWdataReg:=false.B
-  // }
   EX.ar.valid:=ld_wen&&ex_valid
   EX.ar.bits.addr:=Alu.io.result
   EX.ar.bits.prot:=0.U
@@ -108,12 +85,6 @@ class EX_stage extends Module {
   EX.aw.bits.prot:=0.U
 
   EX.b.ready:=true.B
-
-  // EX.data_sram.st_wen:=ld_wen
-  // EX.data_sram.ld_wen:=st_wen
-  // EX.data_sram.addr:=Alu.io.result
-  // EX.data_sram.wmask:=EX.IO.bits.st_type
-  // EX.data_sram.wdata:=EX.IO.bits.rdata2
 
   //----------------------------------------------------
 
