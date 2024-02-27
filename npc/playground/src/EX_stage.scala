@@ -69,8 +69,8 @@ class EX_stage extends Module {
   
 
 
-  ld_wen:=(EX.IO.bits.st_type=/=0.U)
-  st_wen:=(EX.IO.bits.ld_type=/=0.U)
+  st_wen:=(EX.IO.bits.st_type=/=0.U)
+  ld_wen:=(EX.IO.bits.ld_type=/=0.U)
 
   // val DoAddrReadReg=RegInit(false.B)
   // val DoAddrWriteReg=RegInit(false.B)
