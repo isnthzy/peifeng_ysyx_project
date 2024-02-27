@@ -84,7 +84,7 @@ class EX_stage extends Module {
   EX.aw.bits.addr:=Alu.io.result
   EX.aw.bits.prot:=0.U
 
-  EX.b.ready:=true.B
+  EX.b.ready:=ex_valid
 
   //----------------------------------------------------
 

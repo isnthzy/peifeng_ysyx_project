@@ -7,14 +7,12 @@ class Axi4Lite_Sram_Bridge extends Module {
   val dpi_sram=Module(new dpi_sram())
   
   dontTouch(io);
-//----------------- r and ar 
-
-  dpi_sram.io.wr:=(io.aw.fire && io.w.fire)
-
+  
   io.ar.ready:=true.B
   dpi_sram.io.clock:=clock
   dpi_sram.io.addr:=io.ar.bits.addr
   dpi_sram.io.req:=io.ar.fire || (io.aw.fire && io.w.fire)
+  dpi_sram.io.wr:=(io.aw.fire && io.w.fire)
 
   val readDataValidReg=RegInit(false.B)
   when(io.ar.fire){
@@ -77,7 +75,7 @@ class dpi_sram extends BlackBox with HasBlackBoxInline {
       |      end
       |      else begin
       |       pmem_read (addr,rdata);
-      |       end
+      |      end
       |    end
       |end
       |endmodule
