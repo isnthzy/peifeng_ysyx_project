@@ -29,7 +29,7 @@ class IF_stage extends Module {
   when(if_ready_go){
     if_valid:=true.B
   }
-  IF.to_id.valid:=Mux(if_flush, false.B , if_ready_go)
+  IF.to_id.valid:=Mux(if_flush, false.B , ~reset.asBool && if_ready_go)
 
 
   val br=Wire(new br_bus())
