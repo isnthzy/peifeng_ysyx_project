@@ -19,10 +19,13 @@ class EX_stage extends Module {
   dontTouch(EX.aw);
   dontTouch(EX.w);
   dontTouch(EX.b);
+  val ld_wen=dontTouch(Wire(Bool()))
+  val st_wen=dontTouch(Wire(Bool()))
 
   val ex_valid=dontTouch(RegInit(false.B))
   val ex_ready_go=dontTouch(Wire(Bool()))
-  ex_ready_go:=Mux(EX.ar.ready||(EX.aw.ready&&EX.w.ready),true.B,false.B)
+  ex_ready_go:=Mux((~EX.ar.ready&&ld_wen)
+                || (~(EX.aw.ready&&EX.w.ready)&&st_wen),false.B,true.B)
   EX.IO.ready := !ex_valid || ex_ready_go && EX.to_ls.ready
   when(EX.IO.ready){
     ex_valid:=EX.IO.valid
@@ -65,8 +68,7 @@ class EX_stage extends Module {
   //EX级发起访存-----------AXI分界线-------------------
   
 
-  val ld_wen=dontTouch(Wire(Bool()))
-  val st_wen=dontTouch(Wire(Bool()))
+
   ld_wen:=(EX.IO.bits.st_type=/=0.U)
   st_wen:=(EX.IO.bits.ld_type=/=0.U)
 
