@@ -40,7 +40,7 @@ class Axi4Lite_Sram_Bridge extends Module {
     writeRespValidReg:=false.B
   }
   io.b.valid:=writeRespValidReg
-  io.r.bits.resp:=0.U
+  io.b.bits.resp:=0.U
 
 
 }
