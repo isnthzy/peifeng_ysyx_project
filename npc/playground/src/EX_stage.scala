@@ -70,39 +70,38 @@ class EX_stage extends Module {
   ld_wen:=(EX.IO.bits.st_type=/=0.U)
   st_wen:=(EX.IO.bits.ld_type=/=0.U)
 
-  val DoAddrReadReg=RegInit(false.B)
-  val DoAddrWriteReg=RegInit(false.B)
-  val DoWdataReg=RegInit(false.B)
-  when(ld_wen && ex_valid){
-    DoAddrReadReg:=true.B
-  }
+  // val DoAddrReadReg=RegInit(false.B)
+  // val DoAddrWriteReg=RegInit(false.B)
+  // val DoWdataReg=RegInit(false.B)
+  // when(ld_wen && ex_valid){
+  //   DoAddrReadReg:=true.B
+  // }
 
-  when(EX.ar.fire && ex_valid){
-    DoAddrReadReg:=false.B
-  }
+  // when(EX.ar.fire && ex_valid){
+  //   DoAddrReadReg:=false.B
+  // }
 
-  when(st_wen && ex_valid){
-    DoAddrWriteReg:=true.B
-    DoWdataReg:=true.B
-  }
+  // when(st_wen && ex_valid){
+  //   DoAddrWriteReg:=true.B
+  //   DoWdataReg:=true.B
+  // }
 
-  when(EX.aw.fire && ex_valid){
-    DoAddrWriteReg:=false.B
-  }
+  // when(EX.aw.fire && ex_valid){
+  //   DoAddrWriteReg:=false.B
+  // }
 
-  when(EX.w.fire && ex_valid){
-    DoWdataReg:=false.B
-  }
-
+  // when(EX.w.fire && ex_valid){
+  //   DoWdataReg:=false.B
+  // }
+  EX.ar.valid:=ld_wen&&ex_valid
   EX.ar.bits.addr:=Alu.io.result
-  EX.ar.valid:=DoAddrReadReg&&ex_valid
   EX.ar.bits.prot:=0.U
-
-  EX.w.valid:=DoAddrWriteReg
+  
+  EX.w.valid:=st_wen&&ex_valid
   EX.w.bits.data:=EX.IO.bits.rdata2
   EX.w.bits.strb:=EX.IO.bits.st_type
 
-  EX.aw.valid:=DoWdataReg
+  EX.aw.valid:=st_wen&&ex_valid
   EX.aw.bits.addr:=Alu.io.result
   EX.aw.bits.prot:=0.U
 
