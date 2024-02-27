@@ -14,7 +14,7 @@ class SimTop extends Module {
   val LS_stage = Module(new LS_stage())
   val WB_stage = Module(new WB_stage())
   // val Sram = Module(new Sram())
-  val Axi4Lite_Sram_Bridge = Module(new Axi4Lite_Sram_Bridge())
+  val Axi4Lite_Sram_Mem = Module(new Axi4Lite_Sram_Mem())
 
 // IF begin
   IF_stage.IF.for_id<>ID_stage.ID.to_if
@@ -28,14 +28,14 @@ class SimTop extends Module {
 
 // EX begin
   StageConnect(ID_stage.ID.to_ex,EX_stage.EX.IO)
-  EX_stage.EX.ar<>Axi4Lite_Sram_Bridge.io.ar
-  EX_stage.EX.aw<>Axi4Lite_Sram_Bridge.io.aw
-  EX_stage.EX.w <>Axi4Lite_Sram_Bridge.io.w 
-  EX_stage.EX.b <>Axi4Lite_Sram_Bridge.io.b
+  EX_stage.EX.ar<>Axi4Lite_Sram_Mem.io.ar
+  EX_stage.EX.aw<>Axi4Lite_Sram_Mem.io.aw
+  EX_stage.EX.w <>Axi4Lite_Sram_Mem.io.w 
+  EX_stage.EX.b <>Axi4Lite_Sram_Mem.io.b
   
 // LS begin
   StageConnect(EX_stage.EX.to_ls,LS_stage.LS.IO)
-  LS_stage.LS.r<>Axi4Lite_Sram_Bridge.io.r
+  LS_stage.LS.r<>Axi4Lite_Sram_Mem.io.r
 
 // WB begin
   StageConnect(LS_stage.LS.to_wb,WB_stage.WB.IO)
