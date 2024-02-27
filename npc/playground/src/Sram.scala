@@ -15,10 +15,10 @@ class Axi4Lite_Sram_Bridge extends Module {
   dpi_sram.io.addr:=io.ar.bits.addr
   dpi_sram.io.req:=io.ar.fire || (io.aw.fire && io.w.fire)
 
-  val readDataValid=RegInit(false.B)
-  val do_rdata= ~readDataValid && io.ar.fire
-  readDataValid:=do_rdata
-  io.r.valid:=readDataValid
+  val readDataValidReg=RegInit(false.B)
+  val do_rdata= ~readDataValidReg && io.ar.fire
+  readDataValidReg:=do_rdata
+  io.r.valid:=readDataValidReg
 
   io.r.bits.resp:=0.U
   io.r.bits.data:=dpi_sram.io.rdata
@@ -30,14 +30,10 @@ class Axi4Lite_Sram_Bridge extends Module {
   dpi_sram.io.wdata:=io.w.bits.data
   dpi_sram.io.wmask:=io.w.bits.strb
 
-  when(io.aw.fire && io.w.fire){
-    io.b.valid:=true.B
-    io.b.bits.resp:=0.U
-  }.otherwise{
-    io.b.valid:=false.B
-    io.b.bits.resp:=0.U
-  }
-
+  val writeRespValidReg=RegInit(false.B)
+  val do_wresp= ~writeRespValidReg && io.aw.fire && io.w.fire
+  writeRespValidReg:=do_wresp
+  io.r.bits.resp:=0.U
 
 
 }
