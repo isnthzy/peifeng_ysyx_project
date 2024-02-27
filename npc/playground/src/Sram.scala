@@ -14,12 +14,13 @@ class Axi4Lite_Sram_Bridge extends Module {
   dpi_sram.io.clock:=clock
   dpi_sram.io.addr:=io.ar.bits.addr
   dpi_sram.io.req:=io.ar.fire || (io.aw.fire && io.w.fire)
-  
+
   val readDataValid=RegInit(false.B)
   val do_rdata= ~readDataValid && io.ar.fire
   readDataValid:=do_rdata
   io.r.valid:=readDataValid
 
+  io.r.bits.resp:=0.U
   io.r.bits.data:=dpi_sram.io.rdata
 
 
