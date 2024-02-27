@@ -7,14 +7,14 @@ module SimTop(	// @[<stdin>:1595:3]
   output        io_debug_wen	// @[playground/src/SimTop.scala:6:14]
 );
 
-  wire        _Axi4Lite_Sram_Bridge_io_ar_ready;	// @[playground/src/SimTop.scala:17:36]
-  wire        _Axi4Lite_Sram_Bridge_io_r_valid;	// @[playground/src/SimTop.scala:17:36]
-  wire [31:0] _Axi4Lite_Sram_Bridge_io_r_bits_data;	// @[playground/src/SimTop.scala:17:36]
-  wire [1:0]  _Axi4Lite_Sram_Bridge_io_r_bits_resp;	// @[playground/src/SimTop.scala:17:36]
-  wire        _Axi4Lite_Sram_Bridge_io_aw_ready;	// @[playground/src/SimTop.scala:17:36]
-  wire        _Axi4Lite_Sram_Bridge_io_w_ready;	// @[playground/src/SimTop.scala:17:36]
-  wire        _Axi4Lite_Sram_Bridge_io_b_valid;	// @[playground/src/SimTop.scala:17:36]
-  wire [1:0]  _Axi4Lite_Sram_Bridge_io_b_bits_resp;	// @[playground/src/SimTop.scala:17:36]
+  wire        _Axi4Lite_Sram_Mem_io_ar_ready;	// @[playground/src/SimTop.scala:17:33]
+  wire        _Axi4Lite_Sram_Mem_io_r_valid;	// @[playground/src/SimTop.scala:17:33]
+  wire [31:0] _Axi4Lite_Sram_Mem_io_r_bits_data;	// @[playground/src/SimTop.scala:17:33]
+  wire [1:0]  _Axi4Lite_Sram_Mem_io_r_bits_resp;	// @[playground/src/SimTop.scala:17:33]
+  wire        _Axi4Lite_Sram_Mem_io_aw_ready;	// @[playground/src/SimTop.scala:17:33]
+  wire        _Axi4Lite_Sram_Mem_io_w_ready;	// @[playground/src/SimTop.scala:17:33]
+  wire        _Axi4Lite_Sram_Mem_io_b_valid;	// @[playground/src/SimTop.scala:17:33]
+  wire [1:0]  _Axi4Lite_Sram_Mem_io_b_bits_resp;	// @[playground/src/SimTop.scala:17:33]
   wire        _WB_stage_WB_IO_ready;	// @[playground/src/SimTop.scala:15:24]
   wire [4:0]  _WB_stage_WB_to_id_rf_waddr;	// @[playground/src/SimTop.scala:15:24]
   wire [31:0] _WB_stage_WB_to_id_rf_wdata;	// @[playground/src/SimTop.scala:15:24]
@@ -360,11 +360,11 @@ module SimTop(	// @[<stdin>:1595:3]
     .EX_IO_bits_pc                            (EX_stage_EX_IO_bits_r_pc),	// @[playground/src/SimTop.scala:56:27]
     .EX_IO_bits_inst                          (EX_stage_EX_IO_bits_r_inst),	// @[playground/src/SimTop.scala:56:27]
     .EX_to_ls_ready                           (_LS_stage_LS_IO_ready),	// @[playground/src/SimTop.scala:14:24]
-    .EX_ar_ready                              (_Axi4Lite_Sram_Bridge_io_ar_ready),	// @[playground/src/SimTop.scala:17:36]
-    .EX_aw_ready                              (_Axi4Lite_Sram_Bridge_io_aw_ready),	// @[playground/src/SimTop.scala:17:36]
-    .EX_w_ready                               (_Axi4Lite_Sram_Bridge_io_w_ready),	// @[playground/src/SimTop.scala:17:36]
-    .EX_b_valid                               (_Axi4Lite_Sram_Bridge_io_b_valid),	// @[playground/src/SimTop.scala:17:36]
-    .EX_b_bits_resp                           (_Axi4Lite_Sram_Bridge_io_b_bits_resp),	// @[playground/src/SimTop.scala:17:36]
+    .EX_ar_ready                              (_Axi4Lite_Sram_Mem_io_ar_ready),	// @[playground/src/SimTop.scala:17:33]
+    .EX_aw_ready                              (_Axi4Lite_Sram_Mem_io_aw_ready),	// @[playground/src/SimTop.scala:17:33]
+    .EX_w_ready                               (_Axi4Lite_Sram_Mem_io_w_ready),	// @[playground/src/SimTop.scala:17:33]
+    .EX_b_valid                               (_Axi4Lite_Sram_Mem_io_b_valid),	// @[playground/src/SimTop.scala:17:33]
+    .EX_b_bits_resp                           (_Axi4Lite_Sram_Mem_io_b_bits_resp),	// @[playground/src/SimTop.scala:17:33]
     .EX_IO_ready                              (_EX_stage_EX_IO_ready),
     .EX_to_ls_valid                           (_EX_stage_EX_to_ls_valid),
     .EX_to_ls_bits_csr_commit_wen             (_EX_stage_EX_to_ls_bits_csr_commit_wen),
@@ -453,9 +453,9 @@ module SimTop(	// @[<stdin>:1595:3]
     .LS_IO_bits_pc                                (LS_stage_LS_IO_bits_r_pc),	// @[playground/src/SimTop.scala:56:27]
     .LS_IO_bits_inst                              (LS_stage_LS_IO_bits_r_inst),	// @[playground/src/SimTop.scala:56:27]
     .LS_to_wb_ready                               (_WB_stage_WB_IO_ready),	// @[playground/src/SimTop.scala:15:24]
-    .LS_r_valid                                   (_Axi4Lite_Sram_Bridge_io_r_valid),	// @[playground/src/SimTop.scala:17:36]
-    .LS_r_bits_data                               (_Axi4Lite_Sram_Bridge_io_r_bits_data),	// @[playground/src/SimTop.scala:17:36]
-    .LS_r_bits_resp                               (_Axi4Lite_Sram_Bridge_io_r_bits_resp),	// @[playground/src/SimTop.scala:17:36]
+    .LS_r_valid                                   (_Axi4Lite_Sram_Mem_io_r_valid),	// @[playground/src/SimTop.scala:17:33]
+    .LS_r_bits_data                               (_Axi4Lite_Sram_Mem_io_r_bits_data),	// @[playground/src/SimTop.scala:17:33]
+    .LS_r_bits_resp                               (_Axi4Lite_Sram_Mem_io_r_bits_resp),	// @[playground/src/SimTop.scala:17:33]
     .LS_IO_ready                                  (_LS_stage_LS_IO_ready),
     .LS_to_wb_valid                               (_LS_stage_LS_to_wb_valid),
     .LS_to_wb_bits_csr_commit_wen
@@ -529,7 +529,7 @@ module SimTop(	// @[<stdin>:1595:3]
     .WB_debug_wdata                            (io_debug_wdata),
     .WB_debug_wen                              (io_debug_wen)
   );
-  Axi4Lite_Sram_Bridge Axi4Lite_Sram_Bridge (	// @[playground/src/SimTop.scala:17:36]
+  Axi4Lite_Sram_Mem Axi4Lite_Sram_Mem (	// @[playground/src/SimTop.scala:17:33]
     .clock           (clock),
     .reset           (reset),
     .io_ar_valid     (_EX_stage_EX_ar_valid),	// @[playground/src/SimTop.scala:13:24]
@@ -543,14 +543,14 @@ module SimTop(	// @[<stdin>:1595:3]
     .io_w_bits_data  (_EX_stage_EX_w_bits_data),	// @[playground/src/SimTop.scala:13:24]
     .io_w_bits_strb  (_EX_stage_EX_w_bits_strb),	// @[playground/src/SimTop.scala:13:24]
     .io_b_ready      (_EX_stage_EX_b_ready),	// @[playground/src/SimTop.scala:13:24]
-    .io_ar_ready     (_Axi4Lite_Sram_Bridge_io_ar_ready),
-    .io_r_valid      (_Axi4Lite_Sram_Bridge_io_r_valid),
-    .io_r_bits_data  (_Axi4Lite_Sram_Bridge_io_r_bits_data),
-    .io_r_bits_resp  (_Axi4Lite_Sram_Bridge_io_r_bits_resp),
-    .io_aw_ready     (_Axi4Lite_Sram_Bridge_io_aw_ready),
-    .io_w_ready      (_Axi4Lite_Sram_Bridge_io_w_ready),
-    .io_b_valid      (_Axi4Lite_Sram_Bridge_io_b_valid),
-    .io_b_bits_resp  (_Axi4Lite_Sram_Bridge_io_b_bits_resp)
+    .io_ar_ready     (_Axi4Lite_Sram_Mem_io_ar_ready),
+    .io_r_valid      (_Axi4Lite_Sram_Mem_io_r_valid),
+    .io_r_bits_data  (_Axi4Lite_Sram_Mem_io_r_bits_data),
+    .io_r_bits_resp  (_Axi4Lite_Sram_Mem_io_r_bits_resp),
+    .io_aw_ready     (_Axi4Lite_Sram_Mem_io_aw_ready),
+    .io_w_ready      (_Axi4Lite_Sram_Mem_io_w_ready),
+    .io_b_valid      (_Axi4Lite_Sram_Mem_io_b_valid),
+    .io_b_bits_resp  (_Axi4Lite_Sram_Mem_io_b_bits_resp)
   );
 endmodule
 
