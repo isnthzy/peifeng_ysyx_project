@@ -167,6 +167,6 @@ module EX_stage(	// @[<stdin>:1196:3]
   assign EX_w_valid = _EX_aw_valid_T;	// @[<stdin>:1196:3, playground/src/EX_stage.scala:79:21]
   assign EX_w_bits_data = EX_IO_bits_rdata2;	// @[<stdin>:1196:3]
   assign EX_w_bits_strb = {4'h0, EX_IO_bits_st_type};	// @[<stdin>:1196:3, playground/src/EX_stage.scala:72:30, :81:17]
-  assign EX_b_ready = 1'h1;	// @[<stdin>:1196:3, playground/src/EX_stage.scala:27:19]
+  assign EX_b_ready = ex_valid;	// @[<stdin>:1196:3, playground/src/EX_stage.scala:25:33]
 endmodule
 

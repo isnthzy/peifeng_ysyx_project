@@ -18,7 +18,7 @@ always @(posedge clock) begin
       end
       else begin
        pmem_read (addr,rdata);
-       end
+      end
     end
 end
 endmodule
