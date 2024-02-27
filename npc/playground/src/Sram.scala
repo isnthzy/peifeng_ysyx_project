@@ -6,8 +6,9 @@ class Axi4Lite_Sram_Bridge extends Module {
   val io=IO(new Axi4LiteSlave())
   val dpi_sram=Module(new dpi_sram())
   
-  val DoRdataReg=RegInit(false.B)
+  dontTouch(io);
 //----------------- r and ar 
+
   dpi_sram.io.wr:=(io.aw.fire && io.w.fire)
 
   io.ar.ready:=true.B
