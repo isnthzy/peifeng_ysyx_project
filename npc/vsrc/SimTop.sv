@@ -48,6 +48,7 @@ module SimTop(	// @[<stdin>:1589:3]
   wire        _EX_stage_EX_to_ls_bits_dpic_bundle_ex_is_jal;	// @[playground/src/SimTop.scala:13:24]
   wire        _EX_stage_EX_to_ls_bits_dpic_bundle_ex_is_ret;	// @[playground/src/SimTop.scala:13:24]
   wire        _EX_stage_EX_to_ls_bits_dpic_bundle_ex_is_rd0;	// @[playground/src/SimTop.scala:13:24]
+  wire        _EX_stage_EX_to_ls_bits_ld_wen;	// @[playground/src/SimTop.scala:13:24]
   wire [2:0]  _EX_stage_EX_to_ls_bits_ld_type;	// @[playground/src/SimTop.scala:13:24]
   wire [4:0]  _EX_stage_EX_to_ls_bits_csr_cmd;	// @[playground/src/SimTop.scala:13:24]
   wire [1:0]  _EX_stage_EX_to_ls_bits_wb_sel;	// @[playground/src/SimTop.scala:13:24]
@@ -140,6 +141,7 @@ module SimTop(	// @[<stdin>:1589:3]
   reg         LS_stage_LS_IO_bits_r_dpic_bundle_ex_is_jal;	// @[playground/src/SimTop.scala:56:27]
   reg         LS_stage_LS_IO_bits_r_dpic_bundle_ex_is_ret;	// @[playground/src/SimTop.scala:56:27]
   reg         LS_stage_LS_IO_bits_r_dpic_bundle_ex_is_rd0;	// @[playground/src/SimTop.scala:56:27]
+  reg         LS_stage_LS_IO_bits_r_ld_wen;	// @[playground/src/SimTop.scala:56:27]
   reg  [2:0]  LS_stage_LS_IO_bits_r_ld_type;	// @[playground/src/SimTop.scala:56:27]
   reg  [4:0]  LS_stage_LS_IO_bits_r_csr_cmd;	// @[playground/src/SimTop.scala:56:27]
   reg  [1:0]  LS_stage_LS_IO_bits_r_wb_sel;	// @[playground/src/SimTop.scala:56:27]
@@ -215,6 +217,7 @@ module SimTop(	// @[<stdin>:1589:3]
         _EX_stage_EX_to_ls_bits_dpic_bundle_ex_is_ret;	// @[playground/src/SimTop.scala:13:24, :56:27]
       LS_stage_LS_IO_bits_r_dpic_bundle_ex_is_rd0 <=
         _EX_stage_EX_to_ls_bits_dpic_bundle_ex_is_rd0;	// @[playground/src/SimTop.scala:13:24, :56:27]
+      LS_stage_LS_IO_bits_r_ld_wen <= _EX_stage_EX_to_ls_bits_ld_wen;	// @[playground/src/SimTop.scala:13:24, :56:27]
       LS_stage_LS_IO_bits_r_ld_type <= _EX_stage_EX_to_ls_bits_ld_type;	// @[playground/src/SimTop.scala:13:24, :56:27]
       LS_stage_LS_IO_bits_r_csr_cmd <= _EX_stage_EX_to_ls_bits_csr_cmd;	// @[playground/src/SimTop.scala:13:24, :56:27]
       LS_stage_LS_IO_bits_r_wb_sel <= _EX_stage_EX_to_ls_bits_wb_sel;	// @[playground/src/SimTop.scala:13:24, :56:27]
@@ -371,6 +374,7 @@ module SimTop(	// @[<stdin>:1589:3]
       (_EX_stage_EX_to_ls_bits_dpic_bundle_ex_is_ret),
     .EX_to_ls_bits_dpic_bundle_ex_is_rd0
       (_EX_stage_EX_to_ls_bits_dpic_bundle_ex_is_rd0),
+    .EX_to_ls_bits_ld_wen                     (_EX_stage_EX_to_ls_bits_ld_wen),
     .EX_to_ls_bits_ld_type                    (_EX_stage_EX_to_ls_bits_ld_type),
     .EX_to_ls_bits_csr_cmd                    (_EX_stage_EX_to_ls_bits_csr_cmd),
     .EX_to_ls_bits_wb_sel                     (_EX_stage_EX_to_ls_bits_wb_sel),
@@ -428,6 +432,7 @@ module SimTop(	// @[<stdin>:1589:3]
       (LS_stage_LS_IO_bits_r_dpic_bundle_ex_is_ret),	// @[playground/src/SimTop.scala:56:27]
     .LS_IO_bits_dpic_bundle_ex_is_rd0
       (LS_stage_LS_IO_bits_r_dpic_bundle_ex_is_rd0),	// @[playground/src/SimTop.scala:56:27]
+    .LS_IO_bits_ld_wen                            (LS_stage_LS_IO_bits_r_ld_wen),	// @[playground/src/SimTop.scala:56:27]
     .LS_IO_bits_ld_type                           (LS_stage_LS_IO_bits_r_ld_type),	// @[playground/src/SimTop.scala:56:27]
     .LS_IO_bits_csr_cmd                           (LS_stage_LS_IO_bits_r_csr_cmd),	// @[playground/src/SimTop.scala:56:27]
     .LS_IO_bits_wb_sel                            (LS_stage_LS_IO_bits_r_wb_sel),	// @[playground/src/SimTop.scala:56:27]
