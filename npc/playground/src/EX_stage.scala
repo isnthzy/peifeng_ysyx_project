@@ -9,12 +9,23 @@ class EX_stage extends Module {
 
     val to_id =Output(new ex_to_id_bus())
     val to_if =Output(new ex_to_if_bus())
-    val data_sram=Output(new data_sram_ex_bus())
+
+    val ar=Decoupled(new AxiAddressBundle())
+    val aw=Decoupled(new AxiAddressBundle())
+    val w=Decoupled(new AxiWriteDataBundle())
+    val b=Flipped(Decoupled(new AxiWriteResponseBundle()))
   })
-  
+  dontTouch(EX.ar);
+  dontTouch(EX.aw);
+  dontTouch(EX.w);
+  dontTouch(EX.b);
+  val ld_wen=dontTouch(Wire(Bool()))
+  val st_wen=dontTouch(Wire(Bool()))
+
   val ex_valid=dontTouch(RegInit(false.B))
   val ex_ready_go=dontTouch(Wire(Bool()))
-  ex_ready_go:=true.B
+  ex_ready_go:=Mux((~EX.ar.ready&&ld_wen)
+                || (~(EX.aw.ready&&EX.w.ready)&&st_wen),false.B,true.B)
   EX.IO.ready := !ex_valid || ex_ready_go && EX.to_ls.ready
   when(EX.IO.ready){
     ex_valid:=EX.IO.valid
@@ -54,18 +65,28 @@ class EX_stage extends Module {
   EX.to_id.fw.addr:=Mux(ex_valid && EX.IO.bits.rf_wen , EX.to_ls.bits.rd , 0.U)
   EX.to_id.fw.data:=EX.to_ls.bits.result
 
-  //EX级发起访存
-  val ld_wen=dontTouch(Wire(Bool()))
-  val st_wen=dontTouch(Wire(Bool()))
-  ld_wen:=(EX.IO.bits.st_type=/=0.U)&&ex_valid
-  st_wen:=(EX.IO.bits.ld_type=/=0.U)&&ex_valid
+  //EX级发起访存-----------AXI分界线-------------------
+  
 
-  EX.data_sram.st_wen:=ld_wen
-  EX.data_sram.ld_wen:=st_wen
-  EX.data_sram.addr:=Alu.io.result
-  EX.data_sram.wmask:=EX.IO.bits.st_type
-  EX.data_sram.wdata:=EX.IO.bits.rdata2
 
+  st_wen:=(EX.IO.bits.st_type=/=0.U)
+  ld_wen:=(EX.IO.bits.ld_type=/=0.U)
+
+  EX.ar.valid:=ld_wen&&ex_valid
+  EX.ar.bits.addr:=Alu.io.result
+  EX.ar.bits.prot:=0.U
+  
+  EX.w.valid:=st_wen&&ex_valid
+  EX.w.bits.data:=EX.IO.bits.rdata2
+  EX.w.bits.strb:=EX.IO.bits.st_type
+
+  EX.aw.valid:=st_wen&&ex_valid
+  EX.aw.bits.addr:=Alu.io.result
+  EX.aw.bits.prot:=0.U
+
+  EX.b.ready:=ex_valid
+
+  //----------------------------------------------------
 
   //csr
   val Csr_alu=Module(new Csr_alu())
@@ -85,7 +106,6 @@ class EX_stage extends Module {
   
 
 
-  EX.to_ls.bits.st_wen:=st_wen
   EX.to_ls.bits.ld_wen:=ld_wen
   EX.to_ls.bits.ld_type:=EX.IO.bits.ld_type
   EX.to_ls.bits.csr_cmd:=EX.IO.bits.csr_cmd
