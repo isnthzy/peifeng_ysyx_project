@@ -9,17 +9,17 @@ class IF_stage extends Module {
     val for_id=Input(new id_to_if_bus())
     val for_ex=Input(new ex_to_if_bus())
 
-    // val ar=Decoupled(new AxiAddressBundle())
-    // val r=Flipped(Decoupled(new AxiReadDataBundle()))
-    // val aw=Decoupled(new AxiAddressBundle())
-    // val w=Decoupled(new AxiWriteDataBundle())
-    // val b=Flipped(Decoupled(new AxiWriteResponseBundle()))
+    val ar=Decoupled(new AxiAddressBundle())
+    val r=Flipped(Decoupled(new AxiReadDataBundle()))
+    val aw=Decoupled(new AxiAddressBundle())
+    val w=Decoupled(new AxiWriteDataBundle())
+    val b=Flipped(Decoupled(new AxiWriteResponseBundle()))
   })
-  // dontTouch(IF.ar);
-  // dontTouch(IF.r);
-  // dontTouch(IF.aw);
-  // dontTouch(IF.w);
-  // dontTouch(IF.b);
+  dontTouch(IF.ar);
+  dontTouch(IF.r);
+  dontTouch(IF.aw);
+  dontTouch(IF.w);
+  dontTouch(IF.b);
   val if_flush=dontTouch(Wire(Bool()))
   if_flush:=IF.for_ex.flush || IF.for_id.flush
 
@@ -47,18 +47,32 @@ class IF_stage extends Module {
   if_dnpc := Mux(IF.for_ex.epc.taken, IF.for_ex.epc.target, br.target)
   if_nextpc:= Mux(br.taken || IF.for_ex.epc.taken, if_dnpc, if_snpc)
   
-  // val DoAddrReadReg=RegInit(false.B)
-  // DoAddrReadReg:=if_ready_go
-  // IF.ar.valid:=DoAddrReadReg
-  // IF.ar.bits.addr:=if_nextpc
-  // IF.ar.bits.prot:=0.U
-  val Fetch=Module(new read_inst())
-  Fetch.io.clock:=clock
-  Fetch.io.reset:=reset
-  Fetch.io.nextpc:=if_nextpc
-  Fetch.io.fetch_wen:=if_ready_go
+  val DoAddrReadReg=RegInit(false.B)
+  DoAddrReadReg:= ~if_ready_go
+  IF.ar.valid:=DoAddrReadReg
+  IF.ar.bits.addr:=if_nextpc
+  IF.ar.bits.prot:=0.U
+  IF.r.ready:=if_valid
+  when(IF.r.fire){
+    IF.to_id.bits.inst:=IF.r.bits.data
+  }
+  
+  IF.w.valid:=0.U
+  IF.w.bits.data:=0.U
+  IF.w.bits.strb:=0.U
 
-  IF.to_id.bits.inst:=Fetch.io.inst
+  IF.aw.valid:=0.U
+  IF.aw.bits.addr:=0.U
+  IF.aw.bits.prot:=0.U
+
+  IF.b.ready:=0.U
+  // val Fetch=Module(new read_inst())
+  // Fetch.io.clock:=clock
+  // Fetch.io.reset:=reset
+  // Fetch.io.nextpc:=if_nextpc
+  // Fetch.io.fetch_wen:=if_ready_go
+
+  // IF.to_id.bits.inst:=Fetch.io.inst
 
 
 
@@ -71,13 +85,13 @@ class IF_stage extends Module {
   IF.to_id.bits.nextpc:=if_nextpc
 }
 
-class read_inst extends BlackBox with HasBlackBoxPath{
-  val io=IO(new Bundle {
-    val clock =Input(Clock())
-    val reset =Input(Bool())
-    val nextpc=Input(UInt(ADDR_WIDTH.W))
-    val inst  =Output(UInt(32.W))
-    val fetch_wen=Input(Bool())
-  })
-  addPath("playground/src/dpi-c/read_inst.sv")
-}
+// class read_inst extends BlackBox with HasBlackBoxPath{
+//   val io=IO(new Bundle {
+//     val clock =Input(Clock())
+//     val reset =Input(Bool())
+//     val nextpc=Input(UInt(ADDR_WIDTH.W))
+//     val inst  =Output(UInt(32.W))
+//     val fetch_wen=Input(Bool())
+//   })
+//   addPath("playground/src/dpi-c/read_inst.sv")
+// }
