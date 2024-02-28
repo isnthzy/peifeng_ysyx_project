@@ -60,7 +60,7 @@ module IF_stage(	// @[<stdin>:3:3]
       if_valid <= if_ready_go | if_valid;	// @[playground/src/IF_stage.scala:26:33, :27:33, :29:20, :30:13]
       if (if_ready_go)	// @[playground/src/IF_stage.scala:27:33]
         if_pc <= if_nextpc;	// @[playground/src/IF_stage.scala:40:26, :43:33]
-      DoAddrReadReg <= if_ready_go;	// @[playground/src/IF_stage.scala:27:33, :51:28]
+      DoAddrReadReg <= if_ready_go & ~reset;	// @[playground/src/IF_stage.scala:27:33, :51:28, :52:{30,33}]
     end
   end // always @(posedge)
   assign IF_to_id_valid = ~if_flush & if_valid & if_ready_go;	// @[<stdin>:3:3, playground/src/IF_stage.scala:23:30, :26:33, :27:33, :32:22]
