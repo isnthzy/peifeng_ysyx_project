@@ -75,7 +75,6 @@ extern "C" int get_inst(int raddr) {
 extern "C" void pmem_read(int raddr, int *rdata) {
   printf("raddr %x\n",raddr);
   *rdata=paddr_read(raddr,4,1);
-  printf("raddr %x %x\n ",raddr,*rdata);
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 extern "C" void pmem_write(int waddr, int wdata, char wmask) {
@@ -97,13 +96,13 @@ word_t paddr_read(paddr_t addr, int len,int model) {
   word_t pmem_rdata;
   if (likely(in_pmem(addr))) pmem_rdata=pmem_read(addr,4);
   #ifdef CONFIG_MTRACE //警惕切换riscv64会造成的段错误
-  if(model==1){
+  // if(model==1){
     if(likely(in_pmem(addr))){
       char mtrace_logbuf[120];
       sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",cpu_info.nextpc,addr,pmem_rdata);
       enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
     }
-  }
+  // }
   #endif
   if (likely(in_pmem(addr))) return pmem_rdata;
   if(addr>=0xa0000000){
