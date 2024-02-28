@@ -61,6 +61,7 @@ module IF_stage(	// @[<stdin>:3:3]
   wire [31:0] if_nextpc =
     IF_for_id_Br_J_taken | IF_for_ex_Br_B_taken | IF_for_ex_epc_taken ? if_dnpc : if_snpc;	// @[playground/src/IF_stage.scala:41:33, :42:33, :43:33, :49:{18,28}]
   reg         DoAddrReadReg;	// @[playground/src/IF_stage.scala:51:28]
+  reg         DoAddrReadReg_REG;	// @[playground/src/IF_stage.scala:52:27]
   wire [31:0] if_inst = _IF_r_ready_output & IF_r_valid ? IF_r_bits_data : 32'h0;	// @[<stdin>:3:3, playground/src/IF_stage.scala:45:36, :57:18, :58:12, src/main/scala/chisel3/util/Decoupled.scala:52:35]
   always @(posedge clock) begin	// @[<stdin>:4:11]
     if (reset) begin	// @[<stdin>:4:11]
@@ -72,8 +73,9 @@ module IF_stage(	// @[<stdin>:3:3]
       if_valid <= if_ready_go | if_valid;	// @[playground/src/IF_stage.scala:26:33, :27:33, :29:20, :30:13]
       if (if_ready_go)	// @[playground/src/IF_stage.scala:27:33]
         if_pc <= if_nextpc;	// @[playground/src/IF_stage.scala:40:26, :43:33]
-      DoAddrReadReg <= _DoAddrReadReg_T;	// @[playground/src/IF_stage.scala:32:52, :51:28]
+      DoAddrReadReg <= DoAddrReadReg_REG;	// @[playground/src/IF_stage.scala:51:28, :52:27]
     end
+    DoAddrReadReg_REG <= _DoAddrReadReg_T;	// @[playground/src/IF_stage.scala:32:52, :52:27]
   end // always @(posedge)
   assign IF_to_id_valid = ~if_flush & _DoAddrReadReg_T;	// @[<stdin>:3:3, playground/src/IF_stage.scala:23:30, :32:{22,52}]
   assign IF_to_id_bits_nextpc = if_nextpc;	// @[<stdin>:3:3, playground/src/IF_stage.scala:43:33]

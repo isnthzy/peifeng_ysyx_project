@@ -10,9 +10,9 @@
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
 
-module DPI_stage(	// @[<stdin>:1463:3]
-  input        clock,	// @[<stdin>:1464:11]
-               reset,	// @[<stdin>:1465:11]
+module DPI_stage(	// @[<stdin>:1466:3]
+  input        clock,	// @[<stdin>:1467:11]
+               reset,	// @[<stdin>:1468:11]
                DPI_wb_valid,	// @[playground/src/Dpi_stage.scala:13:13]
   input [31:0] DPI_pc,	// @[playground/src/Dpi_stage.scala:13:13]
                DPI_nextpc,	// @[playground/src/Dpi_stage.scala:13:13]
