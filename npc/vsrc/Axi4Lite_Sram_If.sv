@@ -44,7 +44,7 @@ module Axi4Lite_Sram_If(	// @[<stdin>:1615:3]
   `ifndef SYNTHESIS	// @[playground/src/SramIF.scala:30:9]
     always @(posedge clock) begin	// @[playground/src/SramIF.scala:30:9]
       if ((`PRINTF_COND_) & ~reset)	// @[playground/src/SramIF.scala:30:9]
-        $fwrite(32'h80000002, "sram_if: addr=%x reset=%d ar.valid=%d\n", io_ar_bits_addr,
+        $fwrite(32'h80000002, "sram_if: addr=%d reset=%d ar.valid=%d\n", io_ar_bits_addr,
                 reset, io_ar_valid);	// @[playground/src/SramIF.scala:30:9]
     end // always @(posedge)
   `endif // not def SYNTHESIS
