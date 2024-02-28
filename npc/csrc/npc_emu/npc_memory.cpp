@@ -1,7 +1,7 @@
 #include "../include/npc_common.h"
 #include "../include/npc_verilator.h"
 #include "../include/iringbuf.h"
-word_t paddr_read(paddr_t addr, int len,int model);
+word_t paddr_read(paddr_t addr, int len);
 void paddr_write(paddr_t addr, int len, word_t data);
 extern  void  device_write(paddr_t addr,int len,word_t data);
 extern word_t device_read(paddr_t addr,int len);
@@ -67,13 +67,13 @@ void out_of_bound(paddr_t addr) {
 }
 //----------------------------dpi-c----------------------------
 extern "C" int get_inst(int raddr) {
-  word_t rdata=paddr_read(raddr,4,0);
+  word_t rdata=paddr_read(raddr,4);
   // printf("raddr %x\n",raddr);
   return rdata;
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 extern "C" void pmem_read(int raddr, int *rdata) {
-  *rdata=paddr_read(raddr,4,1);
+  *rdata=paddr_read(raddr,4);
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 extern "C" void pmem_write(int waddr, int wdata, char wmask) {
@@ -87,19 +87,17 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
 }
 //----------------------------dpi-c----------------------------
 static uint64_t read_cnt=0;
-word_t paddr_read(paddr_t addr, int len,int model) {
+word_t paddr_read(paddr_t addr, int len) {
 
   word_t pmem_rdata;
   if (likely(in_pmem(addr))) pmem_rdata=pmem_read(addr,4);
   // printf("raddr %x\n",raddr);
   #ifdef CONFIG_MTRACE //警惕切换riscv64会造成的段错误
-  // if(model==1){
-    if(likely(in_pmem(addr))){
-      char mtrace_logbuf[120];
-      sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",cpu_info.nextpc,addr,pmem_rdata);
-      enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
-    }
-  // }
+  if(likely(in_pmem(addr))){
+    char mtrace_logbuf[120];
+    sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",cpu_info.nextpc,addr,pmem_rdata);
+    enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
+  }
   #endif
   if (likely(in_pmem(addr))) return pmem_rdata;
   if(addr>=0xa0000000){
