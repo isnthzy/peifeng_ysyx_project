@@ -73,7 +73,6 @@ extern "C" int get_inst(int raddr) {
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 extern "C" void pmem_read(int raddr, int *rdata) {
-  printf("raddr %x\n",raddr);
   *rdata=paddr_read(raddr,4,1);
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
@@ -89,12 +88,10 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
 //----------------------------dpi-c----------------------------
 static uint64_t read_cnt=0;
 word_t paddr_read(paddr_t addr, int len,int model) {
-  // if(model==1){read_cnt++;
-  // if(read_cnt%2==1) return 0; }
-  // //这是一串自我欺骗代码，因为触发沿是*而不是clock,在实现总线之前暂时用这个达到访问一次的效果
 
   word_t pmem_rdata;
   if (likely(in_pmem(addr))) pmem_rdata=pmem_read(addr,4);
+  // printf("raddr %x\n",raddr);
   #ifdef CONFIG_MTRACE //警惕切换riscv64会造成的段错误
   // if(model==1){
     if(likely(in_pmem(addr))){
