@@ -27,7 +27,6 @@ bool enqueueIRingBuffer(IRingBuffer* buffer, const char* data) {
     if (strlen(data) >= MAX_STRING_LENGTH) {
         return false;  // 字符串长度超过最大长度，无法入队
     }
-    printf("enqueueIRingBuffer: %s\n", data);
     if (isIRingBufferFull(buffer)) {
         // 缓冲区已满，需要先出队一个字符串
         buffer->tail = (buffer->tail + 1) % buffer->size;
