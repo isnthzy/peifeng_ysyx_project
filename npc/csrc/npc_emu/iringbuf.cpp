@@ -24,7 +24,6 @@ bool isIRingBufferFull(const IRingBuffer* buffer) {
 
 // 入队操作
 bool enqueueIRingBuffer(IRingBuffer* buffer, const char* data) {
-    printf("%ld\n",strlen(data));
     if (strlen(data) >= MAX_STRING_LENGTH) {
         return false;  // 字符串长度超过最大长度，无法入队
     }
@@ -37,7 +36,7 @@ bool enqueueIRingBuffer(IRingBuffer* buffer, const char* data) {
     strcpy(buffer->buffer[buffer->head], data);
     buffer->head = (buffer->head + 1) % buffer->size;
     buffer->full = (buffer->head == buffer->tail);
-
+    printf("enqueueIRingBuffer: %s\n", data);
     return true;
 }
 
