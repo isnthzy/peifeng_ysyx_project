@@ -73,7 +73,7 @@ extern "C" int get_inst(int raddr) {
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 extern "C" void pmem_read(int raddr, int *rdata) {
-  printf("raddr %d\n",raddr);
+  printf("raddr %x\n",raddr);
   *rdata=paddr_read(raddr,4,1);
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
