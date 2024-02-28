@@ -50,7 +50,7 @@ class IF_stage extends Module {
   
   val DoAddrReadReg=RegInit(false.B)
   DoAddrReadReg:= if_ready_go && ~reset.asBool
-  IF.ar.valid:= ~reset.asBool
+  IF.ar.valid:= 0.U
   IF.ar.bits.addr:=if_nextpc
   IF.ar.bits.prot:=0.U
   IF.r.ready:=if_valid
