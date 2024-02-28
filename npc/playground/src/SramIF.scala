@@ -27,7 +27,7 @@ class Axi4Lite_Sram_If extends Module {
   io.r.bits.resp:=0.U
   io.r.bits.data:=dpi_sram.io.rdata
 
-  printf("sram_if: addr=%x reset=%d ar.valid=%d\n",io.ar.bits.addr,reset.asBool,io.ar.valid)
+  printf("sram_if: addr=%d reset=%d ar.valid=%d\n",io.ar.bits.addr,reset.asBool,io.ar.valid)
 
   io.aw.ready:=true.B
   io.w.ready:=true.B
@@ -76,7 +76,7 @@ class dpi_sram_if extends BlackBox with HasBlackBoxInline {
       |       pmem_write (addr,wdata,wmask);
       |      end
       |      else begin
-      |       rdata<=get_inst(addr);
+      |       pmem_read (addr,rdata);
       |      end
       |    end
       |end
