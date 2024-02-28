@@ -27,7 +27,7 @@ class Axi4Lite_Sram_If extends Module {
   io.r.bits.resp:=0.U
   io.r.bits.data:=dpi_sram.io.rdata
 
-  printf("sram_if: addr=%d,reset=%,ar.valid=%d",io.ar.bits.addr,reset.asBool,io.ar.valid)
+  printf("sram_if: addr=%d reset=%d ar.valid=%d",io.ar.bits.addr,reset.asBool,io.ar.valid)
 
   io.aw.ready:=true.B
   io.w.ready:=true.B
