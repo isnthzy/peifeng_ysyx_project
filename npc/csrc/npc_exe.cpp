@@ -192,13 +192,20 @@ static void npc_execute(uint64_t n) {
   }
 }
 
-bool init_iringbuf_f=false;
+void init_traces(){
+  #ifdef CONFIG_TRACE
+  initializeIRingBuffer(&iring_buffer ,ITRACE_LOGBUF_SIZE);
+  initializeIRingBuffer(&mtrace_buffer,MTRACE_LOGBUF_SIZE);
+  #endif
+}
+
+// bool init_iringbuf_f=false;
 void npc_exev(uint64_t step){ //之所以不用int因为int是有符号的，批处理传入-1就是-1，无法达到效果
-  if(!init_iringbuf_f){
-    init_iringbuf_f=true;
-    initializeIRingBuffer(&iring_buffer ,ITRACE_LOGBUF_SIZE);
-    initializeIRingBuffer(&mtrace_buffer,MTRACE_LOGBUF_SIZE);
-  } //初始化iringbuffer,只初始化一次
+  // if(!init_iringbuf_f){
+  //   init_iringbuf_f=true;
+  //   initializeIRingBuffer(&iring_buffer ,ITRACE_LOGBUF_SIZE);
+  //   initializeIRingBuffer(&mtrace_buffer,MTRACE_LOGBUF_SIZE);
+  // } //初始化iringbuffer,只初始化一次
   g_print_step = (step<MAX_INST_TO_PRINT);
   switch (npc_state.state) {
     case NPC_END: case NPC_ABORT: case NPC_QUIT:

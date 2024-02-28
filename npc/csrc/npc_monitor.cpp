@@ -4,6 +4,7 @@ void step_and_dump_wave();
 void init_difftest(char *ref_so_file, long img_size, int port);
 void init_device();
 void init_mem();
+void init_traces();
 uint8_t* guest_to_host(paddr_t paddr);
 paddr_t host_to_guest(uint8_t *haddr);
 bool ftrace_flag=false;
@@ -181,6 +182,9 @@ void init_monitor(int argc, char *argv[]) {
 
   init_sim();
   //初始化verilator仿真文件
+
+  init_traces();
+  //初始化traces
 
   reset(2);
   //初始化reset
