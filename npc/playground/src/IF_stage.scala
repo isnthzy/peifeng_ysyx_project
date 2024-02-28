@@ -48,9 +48,9 @@ class IF_stage extends Module {
   if_dnpc := Mux(IF.for_ex.epc.taken, IF.for_ex.epc.target, br.target)
   if_nextpc:= Mux(br.taken || IF.for_ex.epc.taken, if_dnpc, if_snpc)
   
-  // val DoAddrReadReg=RegInit(false.B)
-  // DoAddrReadReg:=  RegNext(if_valid && if_ready_go)
-  IF.ar.valid:= if_ready_go&& reset.asBool
+  val DoAddrReadReg=RegInit(false.B)
+  DoAddrReadReg:=  if_valid && if_ready_go && ~reset.asBool
+  IF.ar.valid:= DoAddrReadReg
   IF.ar.bits.addr:=if_nextpc
   IF.ar.bits.prot:=0.U
   IF.r.ready:=if_valid
