@@ -32,8 +32,8 @@ bool enqueueIRingBuffer(IRingBuffer* buffer, const char* data) {
         buffer->tail = (buffer->tail + 1) % buffer->size;
         buffer->num--;
     }
-    printf("enqueueIRingBuffer: %s\n", data);
     buffer->num++;
+    printf("enqueueIRingBuffer: %s\n", data);
     strcpy(buffer->buffer[buffer->head], data);
     buffer->head = (buffer->head + 1) % buffer->size;
     buffer->full = (buffer->head == buffer->tail);
