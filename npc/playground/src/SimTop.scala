@@ -19,6 +19,7 @@ class SimTop extends Module {
 // IF begin
   IF_stage.IF.for_id<>ID_stage.ID.to_if
   IF_stage.IF.for_ex<>EX_stage.EX.to_if
+  
   IF_stage.IF.ar<>Axi4Lite_Sram_If.io.ar
   IF_stage.IF.r <>Axi4Lite_Sram_If.io.r
   IF_stage.IF.aw<>Axi4Lite_Sram_If.io.aw

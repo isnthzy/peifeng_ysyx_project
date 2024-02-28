@@ -42,6 +42,7 @@ class IF_stage extends Module {
   val if_dnpc   = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
   val if_nextpc = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
 
+  val if_inst=dontTouch(WireDefault(0.U(DATA_WIDTH.W)))
 // pc通过axi结构访问sram取指
   if_snpc := if_pc + 4.U
   if_dnpc := Mux(IF.for_ex.epc.taken, IF.for_ex.epc.target, br.target)
@@ -54,9 +55,10 @@ class IF_stage extends Module {
   IF.ar.bits.prot:=0.U
   IF.r.ready:=if_valid
   when(IF.r.fire){
-    IF.to_id.bits.inst:=IF.r.bits.data
+    if_inst:=IF.r.bits.data
   }
-  
+  IF.to_id.bits.inst:=if_inst
+
   IF.w.valid:=0.U
   IF.w.bits.data:=0.U
   IF.w.bits.strb:=0.U
