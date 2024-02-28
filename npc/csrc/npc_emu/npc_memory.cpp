@@ -100,6 +100,7 @@ word_t paddr_read(paddr_t addr, int len) {
     sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",cpu_info.nextpc,addr,pmem_rdata);
     printf("%s\n",mtrace_logbuf);
     enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
+    printf("1111111111\n");
   }
   #endif
   if (likely(in_pmem(addr))) return pmem_rdata;
