@@ -34,9 +34,9 @@ module Axi4Lite_Sram_If(	// @[<stdin>:1615:3]
   output [1:0]  io_b_bits_resp	// @[playground/src/SramIF.scala:8:12]
 );
 
-  wire _io_ar_ready_output = 1'h1;	// @[<stdin>:1615:3, playground/src/SramIF.scala:13:14]
-  wire _io_aw_ready_output = 1'h1;	// @[<stdin>:1615:3, playground/src/SramIF.scala:13:14]
-  wire _io_w_ready_output = 1'h1;	// @[<stdin>:1615:3, playground/src/SramIF.scala:13:14]
+  wire _io_aw_ready_output = 1'h1;	// @[<stdin>:1615:3, playground/src/SramIF.scala:21:21]
+  wire _io_w_ready_output = 1'h1;	// @[<stdin>:1615:3, playground/src/SramIF.scala:21:21]
+  wire _io_ar_ready_output = 1'h0;	// @[<stdin>:1615:3, playground/src/SramIF.scala:13:14]
   wire _dpi_sram_io_req_T = _io_ar_ready_output & io_ar_valid;	// @[<stdin>:1615:3, src/main/scala/chisel3/util/Decoupled.scala:52:35]
   wire _dpi_sram_io_wr_T = _io_aw_ready_output & io_aw_valid;	// @[<stdin>:1615:3, src/main/scala/chisel3/util/Decoupled.scala:52:35]
   wire _dpi_sram_io_wr_T_1 = _io_w_ready_output & io_w_valid;	// @[<stdin>:1615:3, src/main/scala/chisel3/util/Decoupled.scala:52:35]
@@ -44,15 +44,15 @@ module Axi4Lite_Sram_If(	// @[<stdin>:1615:3]
   `ifndef SYNTHESIS	// @[playground/src/SramIF.scala:30:9]
     always @(posedge clock) begin	// @[playground/src/SramIF.scala:30:9]
       if ((`PRINTF_COND_) & ~reset)	// @[playground/src/SramIF.scala:30:9]
-        $fwrite(32'h80000002, "sram_if: addr=%d reset=%d ar.valid=%d\n", io_ar_bits_addr,
+        $fwrite(32'h80000002, "sram_if: addr=%x reset=%d ar.valid=%d\n", io_ar_bits_addr,
                 reset, io_ar_valid);	// @[playground/src/SramIF.scala:30:9]
     end // always @(posedge)
   `endif // not def SYNTHESIS
   reg  writeRespValidReg;	// @[playground/src/SramIF.scala:37:32]
   always @(posedge clock) begin	// @[<stdin>:1616:11]
     if (reset) begin	// @[<stdin>:1616:11]
-      readDataValidReg <= 1'h0;	// @[playground/src/SramIF.scala:19:31]
-      writeRespValidReg <= 1'h0;	// @[playground/src/SramIF.scala:19:31, :37:32]
+      readDataValidReg <= 1'h0;	// @[playground/src/SramIF.scala:13:14, :19:31]
+      writeRespValidReg <= 1'h0;	// @[playground/src/SramIF.scala:13:14, :37:32]
     end
     else begin	// @[<stdin>:1616:11]
       readDataValidReg <= _dpi_sram_io_req_T;	// @[playground/src/SramIF.scala:19:31, src/main/scala/chisel3/util/Decoupled.scala:52:35]
