@@ -67,7 +67,7 @@ class dpi_sram_if extends BlackBox with HasBlackBoxInline {
       |   input [ 7:0] wmask,
       |   input        req,
       |   input        wr,
-      |   output [31:0] rdata
+      |   output reg [31:0] rdata
       |);
       | 
       |always @(posedge clock) begin
@@ -76,7 +76,7 @@ class dpi_sram_if extends BlackBox with HasBlackBoxInline {
       |       pmem_write (addr,wdata,wmask);
       |      end
       |      else begin
-      |       pmem_read (addr,rdata);
+      |       rdata<=get_inst(addr);
       |      end
       |    end
       |end
