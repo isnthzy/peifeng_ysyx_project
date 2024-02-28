@@ -91,10 +91,11 @@ word_t paddr_read(paddr_t addr, int len) {
 
   word_t pmem_rdata;
   if (likely(in_pmem(addr))) pmem_rdata=pmem_read(addr,4);
-  // printf("raddr %x\n",raddr);
+
   #ifdef CONFIG_MTRACE //警惕切换riscv64会造成的段错误
   if(likely(in_pmem(addr))){
     char mtrace_logbuf[120];
+    printf("11111111111");
     sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",cpu_info.nextpc,addr,pmem_rdata);
     enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
   }
