@@ -16,7 +16,9 @@ class IF_stage extends Module {
   if_flush:=IF.for_ex.flush || IF.for_id.flush
 
   val ResetNReg=dontTouch(RegInit(false.B))
+  val AxiValidOpen=dontTouch(RegInit(false.B))
   ResetNReg:=RegNext(true.B)
+  AxiValidOpen:=ResetNReg
   val if_ready_go=dontTouch(Wire(Bool()))
   if_ready_go:=IF.to_id.ready
   IF.to_id.valid:=Mux(if_flush, false.B , ResetNReg && if_ready_go)
