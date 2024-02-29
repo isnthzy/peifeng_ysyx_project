@@ -21,7 +21,7 @@ module IF_stage(	// @[<stdin>:11:3]
   wire        if_flush = IF_for_ex_flush | IF_for_id_flush;	// @[playground/src/IF_stage.scala:15:30, :16:29]
   reg         ResetNReg;	// @[playground/src/IF_stage.scala:18:34]
   reg         AxiValidOpen;	// @[playground/src/IF_stage.scala:19:37]
-  wire        if_ready_go = AxiValidOpen & IF_to_id_ready;	// @[playground/src/IF_stage.scala:19:37, :22:33, :23:19]
+  wire        if_ready_go = ResetNReg & IF_to_id_ready;	// @[playground/src/IF_stage.scala:18:34, :22:33, :23:19]
   reg  [31:0] if_pc;	// @[playground/src/IF_stage.scala:32:26]
   wire [31:0] if_snpc = if_pc + 32'h4;	// @[playground/src/IF_stage.scala:32:26, :33:33, :39:20]
   wire [31:0] if_dnpc =
@@ -50,7 +50,7 @@ module IF_stage(	// @[<stdin>:11:3]
     .fetch_wen (if_ready_go),	// @[playground/src/IF_stage.scala:22:33]
     .inst      (IF_to_id_bits_inst)
   );
-  assign IF_to_id_valid = ~if_flush & AxiValidOpen & if_ready_go;	// @[<stdin>:11:3, playground/src/IF_stage.scala:15:30, :19:37, :22:33, :24:22]
+  assign IF_to_id_valid = ~if_flush & ResetNReg & if_ready_go;	// @[<stdin>:11:3, playground/src/IF_stage.scala:15:30, :18:34, :22:33, :24:22]
   assign IF_to_id_bits_nextpc = if_nextpc;	// @[<stdin>:11:3, playground/src/IF_stage.scala:35:33]
   assign IF_to_id_bits_pc = if_pc;	// @[<stdin>:11:3, playground/src/IF_stage.scala:32:26]
 endmodule
