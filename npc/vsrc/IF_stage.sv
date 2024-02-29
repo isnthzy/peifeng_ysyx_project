@@ -17,7 +17,7 @@ module IF_stage(	// @[<stdin>:11:3]
                 IF_to_id_bits_inst	// @[playground/src/IF_stage.scala:6:12]
 );
 
-  wire        if_ready_go = IF_to_id_ready;	// @[playground/src/IF_stage.scala:19:33]
+  wire        if_ready_go = IF_to_id_ready;	// @[playground/src/IF_stage.scala:21:33]
   wire [31:0] if_inst = 32'h0;	// @[playground/src/IF_stage.scala:37:36]
   wire        if_flush = IF_for_ex_flush | IF_for_id_flush;	// @[playground/src/IF_stage.scala:15:30, :16:29]
   reg         ResetNReg;	// @[playground/src/IF_stage.scala:18:34]
@@ -35,8 +35,8 @@ module IF_stage(	// @[<stdin>:11:3]
       if_pc <= 32'h7FFFFFFC;	// @[playground/src/IF_stage.scala:32:26]
     end
     else begin	// @[<stdin>:12:11]
-      ResetNReg <= 1'h1;	// @[playground/src/IF_stage.scala:18:34, :22:12]
-      if (if_ready_go)	// @[playground/src/IF_stage.scala:19:33]
+      ResetNReg <= 1'h1;	// @[playground/src/IF_stage.scala:18:34, :19:12]
+      if (if_ready_go)	// @[playground/src/IF_stage.scala:21:33]
         if_pc <= if_nextpc;	// @[playground/src/IF_stage.scala:32:26, :35:33]
     end
   end // always @(posedge)
@@ -44,10 +44,10 @@ module IF_stage(	// @[<stdin>:11:3]
     .clock     (clock),
     .reset     (reset),
     .nextpc    (if_nextpc),	// @[playground/src/IF_stage.scala:35:33]
-    .fetch_wen (if_ready_go),	// @[playground/src/IF_stage.scala:19:33]
+    .fetch_wen (if_ready_go),	// @[playground/src/IF_stage.scala:21:33]
     .inst      (IF_to_id_bits_inst)
   );
-  assign IF_to_id_valid = ~if_flush & ResetNReg & if_ready_go;	// @[<stdin>:11:3, playground/src/IF_stage.scala:15:30, :18:34, :19:33, :24:22]
+  assign IF_to_id_valid = ~if_flush & ResetNReg & if_ready_go;	// @[<stdin>:11:3, playground/src/IF_stage.scala:15:30, :18:34, :21:33, :24:22]
   assign IF_to_id_bits_nextpc = if_nextpc;	// @[<stdin>:11:3, playground/src/IF_stage.scala:35:33]
   assign IF_to_id_bits_pc = if_pc;	// @[<stdin>:11:3, playground/src/IF_stage.scala:32:26]
 endmodule
