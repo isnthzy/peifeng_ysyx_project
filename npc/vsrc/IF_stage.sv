@@ -47,7 +47,7 @@ module IF_stage(	// @[<stdin>:11:3]
     .fetch_wen (if_ready_go),	// @[playground/src/IF_stage.scala:18:33]
     .inst      (IF_to_id_bits_inst)
   );
-  assign IF_to_id_valid = ~if_flush & ~reset & if_ready_go;	// @[<stdin>:11:3, playground/src/IF_stage.scala:13:30, :18:33, :21:{22,43}]
+  assign IF_to_id_valid = ~if_flush & ResetN & if_ready_go;	// @[<stdin>:11:3, playground/src/IF_stage.scala:13:30, :16:31, :18:33, :21:22]
   assign IF_to_id_bits_nextpc = if_nextpc;	// @[<stdin>:11:3, playground/src/IF_stage.scala:32:33]
   assign IF_to_id_bits_pc = if_pc;	// @[<stdin>:11:3, playground/src/IF_stage.scala:29:26]
 endmodule
