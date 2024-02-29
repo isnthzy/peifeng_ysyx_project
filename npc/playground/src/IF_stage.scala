@@ -9,17 +9,7 @@ class IF_stage extends Module {
     val for_id=Input(new id_to_if_bus())
     val for_ex=Input(new ex_to_if_bus())
 
-    // val ar=Decoupled(new AxiAddressBundle())
-    // val r=Flipped(Decoupled(new AxiReadDataBundle()))
-    // val aw=Decoupled(new AxiAddressBundle())
-    // val w=Decoupled(new AxiWriteDataBundle())
-    // val b=Flipped(Decoupled(new AxiWriteResponseBundle()))
   })
-  // dontTouch(IF.ar);
-  // dontTouch(IF.r);
-  // dontTouch(IF.aw);
-  // dontTouch(IF.w);
-  // dontTouch(IF.b);
 
   
   val if_flush=dontTouch(Wire(Bool()))
