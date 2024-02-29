@@ -8,17 +8,28 @@ class IF_stage extends Module {
     
     val for_id=Input(new id_to_if_bus())
     val for_ex=Input(new ex_to_if_bus())
+
+    val ar=Decoupled(new AxiAddressBundle())
+    val r=Flipped(Decoupled(new AxiReadDataBundle()))
+    val aw=Decoupled(new AxiAddressBundle())
+    val w=Decoupled(new AxiWriteDataBundle())
+    val b=Flipped(Decoupled(new AxiWriteResponseBundle()))
   })
+  dontTouch(IF.ar);
+  dontTouch(IF.r);
+  dontTouch(IF.aw);
+  dontTouch(IF.w);
+  dontTouch(IF.b);
   val if_flush=dontTouch(Wire(Bool()))
   if_flush:=IF.for_ex.flush || IF.for_id.flush
 
   val if_valid=dontTouch(RegInit(false.B))
   val if_ready_go=dontTouch(Wire(Bool()))
-  if_ready_go:=IF.to_id.ready
+  if_ready_go:=Mux(IF.ar.valid,IF.to_id.ready,false.B)
   when(if_ready_go){
     if_valid:=true.B
   }
-  IF.to_id.valid:=Mux(if_flush, false.B ,if_valid && if_ready_go)
+  IF.to_id.valid:=Mux(if_flush, false.B , if_valid && if_ready_go)
 
 
   val br=Wire(new br_bus())
@@ -30,18 +41,34 @@ class IF_stage extends Module {
   val if_snpc   = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
   val if_dnpc   = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
   val if_nextpc = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
-  val Fetch   = Module(new read_inst())
-// pc在这里用dpi-c进行取指
+
+  val if_inst=dontTouch(WireDefault(0.U(DATA_WIDTH.W)))
+// pc通过axi结构访问sram取指
   if_snpc := if_pc + 4.U
   if_dnpc := Mux(IF.for_ex.epc.taken, IF.for_ex.epc.target, br.target)
   if_nextpc:= Mux(br.taken || IF.for_ex.epc.taken, if_dnpc, if_snpc)
   
-  Fetch.io.clock:=clock
-  Fetch.io.reset:=reset
-  Fetch.io.nextpc:=if_nextpc
-  Fetch.io.fetch_wen:=if_ready_go
+  val DoAddrReadReg=RegInit(false.B)
+  DoAddrReadReg:=  if_valid && if_ready_go && ~reset.asBool
+  IF.ar.valid:= DoAddrReadReg
+  IF.ar.bits.addr:=if_nextpc
+  IF.ar.bits.prot:=0.U
+  IF.r.ready:=if_valid
+  when(IF.r.fire){
+    if_inst:=IF.r.bits.data
+  }
+  IF.to_id.bits.inst:=if_inst
 
-  IF.to_id.bits.inst:=Fetch.io.inst
+  IF.w.valid:=0.U
+  IF.w.bits.data:=0.U
+  IF.w.bits.strb:=0.U
+
+  IF.aw.valid:=0.U
+  IF.aw.bits.addr:=0.U
+  IF.aw.bits.prot:=0.U
+
+  IF.b.ready:=0.U
+
   when(if_ready_go){ //if级控制不用if_valid信号（if级有点特殊）
     if_pc := if_nextpc //reg类型，更新慢一拍
   }
@@ -51,13 +78,22 @@ class IF_stage extends Module {
   IF.to_id.bits.nextpc:=if_nextpc
 }
 
-class read_inst extends BlackBox with HasBlackBoxPath{
-  val io=IO(new Bundle {
-    val clock =Input(Clock())
-    val reset =Input(Bool())
-    val nextpc=Input(UInt(ADDR_WIDTH.W))
-    val inst  =Output(UInt(32.W))
-    val fetch_wen=Input(Bool())
-  })
-  addPath("playground/src/dpi-c/read_inst.sv")
-}
+  // val Fetch=Module(new read_inst())
+  // Fetch.io.clock:=clock
+  // Fetch.io.reset:=reset
+  // Fetch.io.nextpc:=if_nextpc
+  // Fetch.io.fetch_wen:=if_ready_go
+
+  // IF.to_id.bits.inst:=Fetch.io.inst
+
+
+// class read_inst extends BlackBox with HasBlackBoxPath{
+//   val io=IO(new Bundle {
+//     val clock =Input(Clock())
+//     val reset =Input(Bool())
+//     val nextpc=Input(UInt(ADDR_WIDTH.W))
+//     val inst  =Output(UInt(32.W))
+//     val fetch_wen=Input(Bool())
+//   })
+//   addPath("playground/src/dpi-c/read_inst.sv")
+// }

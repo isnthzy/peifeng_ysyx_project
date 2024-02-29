@@ -4,7 +4,7 @@
 
 #define UNUSED(x) (void)(x)
 word_t isa_reg_str2val(const char *s, bool *success);
-extern word_t paddr_read(paddr_t addr, int len,int model);
+word_t pmem_read(paddr_t addr, int len);
 int tokens_num=0; //放一个全局变量记录tokens的个数
 enum {
   TK_NOTYPE = 256, TK_EQ,
@@ -183,7 +183,7 @@ word_t eval(int p,int q) {
         else return 0;
       case TK_AND: return val1&&val2;
       case TK_OR : return val1||val2;
-      case TK_DEF: return paddr_read(val2,4,0);
+      case TK_DEF: return pmem_read(val2,4);
       default: assert(0);
     }
   }

@@ -1,8 +1,10 @@
+//为了验证方便，添加两个sram
+//一个用于取指，另一个用于访存
 import chisel3._
 import chisel3.util._
 import config.Configs._
 import Control._
-class Axi4Lite_Sram_Mem extends Module {
+class Axi4Lite_Sram_If extends Module {
   val io=IO(new Axi4LiteSlave())
   val dpi_sram=Module(new dpi_sram())
   
@@ -11,7 +13,7 @@ class Axi4Lite_Sram_Mem extends Module {
   io.ar.ready:=true.B
   dpi_sram.io.clock:=clock
   dpi_sram.io.addr:=io.ar.bits.addr
-  dpi_sram.io.req:=io.ar.fire || (io.aw.fire && io.w.fire)
+  dpi_sram.io.req:=io.ar.fire
   dpi_sram.io.wr:=(io.aw.fire && io.w.fire)
 
   val readDataValidReg=RegInit(false.B)
@@ -24,8 +26,6 @@ class Axi4Lite_Sram_Mem extends Module {
 
   io.r.bits.resp:=0.U
   io.r.bits.data:=dpi_sram.io.rdata
-
-
 
   io.aw.ready:=true.B
   io.w.ready:=true.B
@@ -44,7 +44,7 @@ class Axi4Lite_Sram_Mem extends Module {
 
 }
 
-class dpi_sram extends BlackBox with HasBlackBoxInline {
+class dpi_sram_if extends BlackBox with HasBlackBoxInline {
   val io = IO(new Bundle {
     val clock=Input(Clock())
     val addr=Input(UInt(ADDR_WIDTH.W))
@@ -54,18 +54,18 @@ class dpi_sram extends BlackBox with HasBlackBoxInline {
     val wr=Input(Bool())
     val rdata=Output(UInt(DATA_WIDTH.W))
   })
-  setInline("dpic/DpiSram.v",
+  setInline("dpic/DpiSramIF.v",
     """
       |import "DPI-C" function void pmem_read (input int raddr, output int rdata);
       |import "DPI-C" function void pmem_write(input int waddr, input  int wdata, input byte wmask);
-      |module dpi_sram(
+      |module dpi_sram_if(
       |   input        clock,
       |   input [31:0] addr,
       |   input [31:0] wdata,
       |   input [ 7:0] wmask,
       |   input        req,
       |   input        wr,
-      |   output [31:0] rdata
+      |   output reg [31:0] rdata
       |);
       | 
       |always @(posedge clock) begin
@@ -82,48 +82,3 @@ class dpi_sram extends BlackBox with HasBlackBoxInline {
     """.stripMargin)
 }
 
-
-// //yosys_test
-// class dpi_ls extends BlackBox with HasBlackBoxInline {
-//   val io = IO(new Bundle {
-//     val clock=Input(Clock())
-//     val reset=Input(Bool())
-//     val ld_wen=Input(Bool())
-//     val st_wen=Input(Bool())
-//     val raddr =Input(UInt(32.W))
-//     val rdata =Output(UInt(32.W))
-//     val wmask =Input(UInt(8.W))
-//     val waddr =Input(UInt(32.W))
-//     val wdata =Input(UInt(32.W))
-//   })
-//   setInline("dpi_ls.v",
-//     """
-//       |module dpi_ls(
-//       |   input        clock,
-//       |   input        reset,
-//       |   input        ld_wen,
-//       |   input        st_wen,
-//       |   input [31:0] raddr,
-//       |   output[31:0] rdata,
-//       |   input [ 7:0] wmask,
-//       |   input [31:0] waddr,
-//       |   input [31:0] wdata
-//       |);
-//       |reg [31:0] mem2[255:0];
-//       |always_latch @(*) begin
-//       |  if(~reset)begin
-//       |    if(ld_wen&&clock) begin
-//       |      rdata[31:0]<=mem2[raddr];
-//       |    end
-//       |    else begin
-//       |      rdata[31:0]=0;
-//       |    end
-//       |
-//       |    if(st_wen&&clock) begin
-//       |      mem2[waddr]<=wdata;
-//       |    end
-//       |  end
-//       | end
-//       |endmodule
-//     """.stripMargin)
-// }
