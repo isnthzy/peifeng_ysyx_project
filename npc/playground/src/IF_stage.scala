@@ -25,7 +25,7 @@ class IF_stage extends Module {
 
   val if_valid=dontTouch(RegInit(false.B))
   val if_ready_go=dontTouch(Wire(Bool()))
-  if_ready_go:=Mux(IF.ar.valid,IF.to_id.ready,false.B)
+  if_ready_go:=IF.to_id.ready
   when(if_ready_go){
     if_valid:=true.B
   }
@@ -48,9 +48,9 @@ class IF_stage extends Module {
   if_dnpc := Mux(IF.for_ex.epc.taken, IF.for_ex.epc.target, br.target)
   if_nextpc:= Mux(br.taken || IF.for_ex.epc.taken, if_dnpc, if_snpc)
   
-  val DoAddrReadReg=RegInit(false.B)
-  DoAddrReadReg:=  if_valid && ~reset.asBool
-  IF.ar.valid:= DoAddrReadReg
+  val ResetNReg=RegInit(false.B)
+  ResetNReg:=  ~reset.asBool
+  IF.ar.valid:= ResetNReg
   IF.ar.bits.addr:=if_nextpc
   IF.ar.bits.prot:=0.U
   IF.r.ready:=if_valid
@@ -68,15 +68,6 @@ class IF_stage extends Module {
   IF.aw.bits.prot:=0.U
 
   IF.b.ready:=0.U
-  // val Fetch=Module(new read_inst())
-  // Fetch.io.clock:=clock
-  // Fetch.io.reset:=reset
-  // Fetch.io.nextpc:=if_nextpc
-  // Fetch.io.fetch_wen:=if_ready_go
-
-  // IF.to_id.bits.inst:=Fetch.io.inst
-
-
 
   when(if_ready_go){ //if级控制不用if_valid信号（if级有点特殊）
     if_pc := if_nextpc //reg类型，更新慢一拍
@@ -86,6 +77,15 @@ class IF_stage extends Module {
   IF.to_id.bits.pc    :=if_pc
   IF.to_id.bits.nextpc:=if_nextpc
 }
+
+  // val Fetch=Module(new read_inst())
+  // Fetch.io.clock:=clock
+  // Fetch.io.reset:=reset
+  // Fetch.io.nextpc:=if_nextpc
+  // Fetch.io.fetch_wen:=if_ready_go
+
+  // IF.to_id.bits.inst:=Fetch.io.inst
+
 
 // class read_inst extends BlackBox with HasBlackBoxPath{
 //   val io=IO(new Bundle {
