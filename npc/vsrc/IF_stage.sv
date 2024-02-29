@@ -17,11 +17,11 @@ module IF_stage(	// @[<stdin>:11:3]
                 IF_to_id_bits_inst	// @[playground/src/IF_stage.scala:6:12]
 );
 
-  wire        if_ready_go = IF_to_id_ready;	// @[playground/src/IF_stage.scala:22:33]
   wire [31:0] if_inst = 32'h0;	// @[playground/src/IF_stage.scala:37:36]
   wire        if_flush = IF_for_ex_flush | IF_for_id_flush;	// @[playground/src/IF_stage.scala:15:30, :16:29]
   reg         ResetNReg;	// @[playground/src/IF_stage.scala:18:34]
   reg         AxiValidOpen;	// @[playground/src/IF_stage.scala:19:37]
+  wire        if_ready_go = AxiValidOpen & IF_to_id_ready;	// @[playground/src/IF_stage.scala:19:37, :22:33, :23:19]
   reg  [31:0] if_pc;	// @[playground/src/IF_stage.scala:32:26]
   wire [31:0] if_snpc = if_pc + 32'h4;	// @[playground/src/IF_stage.scala:32:26, :33:33, :39:20]
   wire [31:0] if_dnpc =
