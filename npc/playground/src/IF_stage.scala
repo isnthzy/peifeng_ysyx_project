@@ -20,6 +20,8 @@ class IF_stage extends Module {
   // dontTouch(IF.aw);
   // dontTouch(IF.w);
   // dontTouch(IF.b);
+
+
   val if_flush=dontTouch(Wire(Bool()))
   if_flush:=IF.for_ex.flush || IF.for_id.flush
 
@@ -69,7 +71,7 @@ class IF_stage extends Module {
 
   // IF.b.ready:=0.U
 
-  when(if_ready_go){ //if级控制不用if_valid信号（if级有点特殊）
+  when(IF.to_id.valid){ //if级控制不用if_valid信号（if级有点特殊）
     if_pc := if_nextpc //reg类型，更新慢一拍
   }
   //如果遇到阻塞情况，那么if级也要发生阻塞
