@@ -18,9 +18,9 @@ class IF_stage extends Module {
   val if_valid=dontTouch(RegInit(false.B))
   val if_ready_go=dontTouch(Wire(Bool()))
   if_ready_go:=IF.to_id.ready
-  when(if_ready_go){
+  // when(if_ready_go){
     if_valid:=true.B
-  }
+  // }
   IF.to_id.valid:=Mux(if_flush, false.B , if_valid && if_ready_go)
 
 
