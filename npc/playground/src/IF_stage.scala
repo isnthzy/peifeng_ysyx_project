@@ -25,7 +25,7 @@ class IF_stage extends Module {
 
   val if_valid=dontTouch(RegInit(false.B))
   val if_ready_go=dontTouch(Wire(Bool()))
-  if_ready_go:=IF.to_id.ready
+  if_ready_go:=Mux(IF.ar.valid,IF.to_id.ready,false.B)
   when(if_ready_go){
     if_valid:=true.B
   }
@@ -49,7 +49,7 @@ class IF_stage extends Module {
   if_nextpc:= Mux(br.taken || IF.for_ex.epc.taken, if_dnpc, if_snpc)
   
   val DoAddrReadReg=RegInit(false.B)
-  DoAddrReadReg:=  if_valid && if_ready_go && ~reset.asBool
+  DoAddrReadReg:=  if_valid && ~reset.asBool
   IF.ar.valid:= DoAddrReadReg
   IF.ar.bits.addr:=if_nextpc
   IF.ar.bits.prot:=0.U
