@@ -50,7 +50,7 @@ module IF_stage(	// @[<stdin>:11:3]
     .fetch_wen (if_ready_go),	// @[playground/src/IF_stage.scala:22:33]
     .inst      (IF_to_id_bits_inst)
   );
-  assign IF_to_id_valid = ~if_flush & ResetNReg & if_ready_go;	// @[<stdin>:11:3, playground/src/IF_stage.scala:15:30, :18:34, :22:33, :24:22]
+  assign IF_to_id_valid = ~if_flush & AxiValidOpen & if_ready_go;	// @[<stdin>:11:3, playground/src/IF_stage.scala:15:30, :19:37, :22:33, :24:22]
   assign IF_to_id_bits_nextpc = if_nextpc;	// @[<stdin>:11:3, playground/src/IF_stage.scala:35:33]
   assign IF_to_id_bits_pc = if_pc;	// @[<stdin>:11:3, playground/src/IF_stage.scala:32:26]
 endmodule
