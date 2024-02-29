@@ -21,7 +21,7 @@ class IF_stage extends Module {
   AxiValidOpen:=ResetNReg
   val if_ready_go=dontTouch(Wire(Bool()))
   if_ready_go:=IF.to_id.ready
-  IF.to_id.valid:=Mux(if_flush, false.B , ResetNReg && if_ready_go)
+  IF.to_id.valid:=Mux(if_flush, false.B , AxiValidOpen && if_ready_go)
 
 
   val br=Wire(new br_bus())
