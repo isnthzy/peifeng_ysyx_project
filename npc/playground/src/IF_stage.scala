@@ -49,7 +49,7 @@ class IF_stage extends Module {
   if_nextpc:= Mux(br.taken || IF.for_ex.epc.taken, if_dnpc, if_snpc)
   
   val ResetNReg=RegInit(false.B)
-  ResetNReg:=  ~reset.asBool
+  ResetNReg:=  RegNext(~reset.asBool)
   IF.ar.valid:= ResetNReg
   IF.ar.bits.addr:=if_nextpc
   IF.ar.bits.prot:=0.U
