@@ -20,7 +20,7 @@ module IF_stage(	// @[<stdin>:11:3]
   wire        if_ready_go = IF_to_id_ready;	// @[playground/src/IF_stage.scala:19:33]
   wire [31:0] if_inst = 32'h0;	// @[playground/src/IF_stage.scala:37:36]
   wire        if_flush = IF_for_ex_flush | IF_for_id_flush;	// @[playground/src/IF_stage.scala:15:30, :16:29]
-  reg         if_valid;	// @[playground/src/IF_stage.scala:18:33]
+  reg         ResetNReg;	// @[playground/src/IF_stage.scala:18:34]
   reg  [31:0] if_pc;	// @[playground/src/IF_stage.scala:32:26]
   wire [31:0] if_snpc = if_pc + 32'h4;	// @[playground/src/IF_stage.scala:32:26, :33:33, :39:20]
   wire [31:0] if_dnpc =
@@ -31,11 +31,11 @@ module IF_stage(	// @[<stdin>:11:3]
     IF_for_id_Br_J_taken | IF_for_ex_Br_B_taken | IF_for_ex_epc_taken ? if_dnpc : if_snpc;	// @[playground/src/IF_stage.scala:33:33, :34:33, :35:33, :41:{18,28}]
   always @(posedge clock) begin	// @[<stdin>:12:11]
     if (reset) begin	// @[<stdin>:12:11]
-      if_valid <= 1'h0;	// @[playground/src/IF_stage.scala:18:33]
+      ResetNReg <= 1'h0;	// @[playground/src/IF_stage.scala:18:34]
       if_pc <= 32'h7FFFFFFC;	// @[playground/src/IF_stage.scala:32:26]
     end
     else begin	// @[<stdin>:12:11]
-      if_valid <= 1'h1;	// @[playground/src/IF_stage.scala:18:33, :22:13]
+      ResetNReg <= 1'h1;	// @[playground/src/IF_stage.scala:18:34, :22:12]
       if (if_ready_go)	// @[playground/src/IF_stage.scala:19:33]
         if_pc <= if_nextpc;	// @[playground/src/IF_stage.scala:32:26, :35:33]
     end
@@ -47,7 +47,7 @@ module IF_stage(	// @[<stdin>:11:3]
     .fetch_wen (if_ready_go),	// @[playground/src/IF_stage.scala:19:33]
     .inst      (IF_to_id_bits_inst)
   );
-  assign IF_to_id_valid = ~if_flush & if_valid & if_ready_go;	// @[<stdin>:11:3, playground/src/IF_stage.scala:15:30, :18:33, :19:33, :24:22]
+  assign IF_to_id_valid = ~if_flush & ResetNReg & if_ready_go;	// @[<stdin>:11:3, playground/src/IF_stage.scala:15:30, :18:34, :19:33, :24:22]
   assign IF_to_id_bits_nextpc = if_nextpc;	// @[<stdin>:11:3, playground/src/IF_stage.scala:35:33]
   assign IF_to_id_bits_pc = if_pc;	// @[<stdin>:11:3, playground/src/IF_stage.scala:32:26]
 endmodule
