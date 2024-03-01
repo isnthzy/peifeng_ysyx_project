@@ -64,7 +64,7 @@ module IF_stage(	// @[<stdin>:3:3]
       ReadRequstState <= 1'h0;	// @[playground/src/IF_stage.scala:29:33, :62:30]
     end
     else begin	// @[<stdin>:4:11]
-      if_valid <= if_ready_go | if_valid;	// @[playground/src/IF_stage.scala:29:33, :30:33, :33:20, :34:13]
+      if_valid <= 1'h1;	// @[playground/src/IF_stage.scala:29:33, :34:13]
       if (if_ready_go)	// @[playground/src/IF_stage.scala:30:33]
         if_pc <= if_nextpc;	// @[playground/src/IF_stage.scala:44:26, :47:33]
       if (ReadRequstState) begin	// @[playground/src/IF_stage.scala:62:30]
