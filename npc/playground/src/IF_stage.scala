@@ -29,6 +29,7 @@ class IF_stage extends Module {
   val if_valid=dontTouch(RegInit(false.B))
   val if_ready_go=dontTouch(Wire(Bool()))
   if_ready_go:=Mux(inst_is_valid,IF.to_id.ready,false.B)
+  //如果取指为未完成，发起阻塞
   when(if_ready_go){
     if_valid:=true.B
   }
@@ -63,8 +64,7 @@ class IF_stage extends Module {
     ReadRequstState:=s_wait_ready
     araddrReg:=if_nextpc
     arvalidReg:=true.B
-  }
-  when(ReadRequstState===s_wait_ready){
+  }.elsewhen(ReadRequstState===s_wait_ready){
     when(IF.ar.ready){
       ReadRequstState:=s_idle
       arvalidReg:=false.B
