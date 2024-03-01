@@ -67,18 +67,12 @@ module IF_stage(	// @[<stdin>:3:3]
       if_valid <= 1'h1;	// @[playground/src/IF_stage.scala:29:33, :33:11]
       if (if_ready_go)	// @[playground/src/IF_stage.scala:30:33]
         if_pc <= if_nextpc;	// @[playground/src/IF_stage.scala:42:26, :45:33]
+      arvalidReg <= ~ReadRequstState | ~_GEN & arvalidReg;	// @[playground/src/IF_stage.scala:56:25, :60:30, :61:{23,33}, :65:17, :67:45, :68:22, :69:22, :70:17]
       if (ReadRequstState) begin	// @[playground/src/IF_stage.scala:60:30]
-        arvalidReg <= ~_GEN & arvalidReg;	// @[playground/src/IF_stage.scala:56:25, :60:30, :67:45, :68:22, :69:22, :70:17]
-        ReadRequstState <= ~_GEN & ReadRequstState;	// @[playground/src/IF_stage.scala:60:30, :67:45, :68:22, :69:22]
       end
-      else begin	// @[playground/src/IF_stage.scala:60:30]
-        arvalidReg <= ~reset | arvalidReg;	// @[playground/src/IF_stage.scala:56:25, :62:{10,24}, :65:17]
-        ReadRequstState <= ~reset | ReadRequstState;	// @[playground/src/IF_stage.scala:60:30, :62:{10,24}, :63:22]
-      end
-      if (ReadRequstState | reset) begin	// @[playground/src/IF_stage.scala:57:24, :60:30, :61:33, :62:24, :64:16]
-      end
-      else	// @[playground/src/IF_stage.scala:57:24, :61:33, :62:24, :64:16]
+      else	// @[playground/src/IF_stage.scala:60:30]
         araddrReg <= if_nextpc;	// @[playground/src/IF_stage.scala:45:33, :57:24]
+      ReadRequstState <= ~ReadRequstState | ~_GEN & ReadRequstState;	// @[playground/src/IF_stage.scala:60:30, :61:{23,33}, :63:22, :67:45, :68:22, :69:22]
     end
   end // always @(posedge)
   assign IF_to_id_valid = ~if_flush & if_valid & if_ready_go;	// @[<stdin>:3:3, playground/src/IF_stage.scala:26:30, :29:33, :30:33, :34:22]
