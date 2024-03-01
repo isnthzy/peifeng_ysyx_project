@@ -15,16 +15,16 @@ class SimTop extends Module {
   val WB_stage = Module(new WB_stage())
   
   val Axi4Lite_Sram_Mem = Module(new Axi4Lite_Sram_Mem())
-  // val Axi4Lite_Sram_If=Module(new Axi4Lite_Sram_If())
+  val Axi4Lite_Sram_If=Module(new Axi4Lite_Sram_If())
 // IF begin
   IF_stage.IF.for_id<>ID_stage.ID.to_if
   IF_stage.IF.for_ex<>EX_stage.EX.to_if
   
-  // IF_stage.IF.ar<>Axi4Lite_Sram_If.io.ar
-  // IF_stage.IF.r <>Axi4Lite_Sram_If.io.r
-  // IF_stage.IF.aw<>Axi4Lite_Sram_If.io.aw
-  // IF_stage.IF.w <>Axi4Lite_Sram_If.io.w 
-  // IF_stage.IF.b <>Axi4Lite_Sram_If.io.b
+  IF_stage.IF.ar<>Axi4Lite_Sram_If.io.ar
+  IF_stage.IF.r <>Axi4Lite_Sram_If.io.r
+  IF_stage.IF.aw<>Axi4Lite_Sram_If.io.aw
+  IF_stage.IF.w <>Axi4Lite_Sram_If.io.w 
+  IF_stage.IF.b <>Axi4Lite_Sram_If.io.b
 // ID begin
   StageConnect(IF_stage.IF.to_id,ID_stage.ID.IO) //左边是out，右边是in
   ID_stage.ID.for_ex<>EX_stage.EX.to_id
