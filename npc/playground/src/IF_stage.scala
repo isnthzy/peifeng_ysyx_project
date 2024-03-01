@@ -61,9 +61,11 @@ class IF_stage extends Module {
   
   val ReadRequstState=RegInit(s_idle)
   when(ReadRequstState===s_idle){
-    ReadRequstState:=s_wait_ready
-    araddrReg:=if_nextpc
-    arvalidReg:=true.B
+    when(if_valid){
+      ReadRequstState:=s_wait_ready
+      araddrReg:=if_nextpc
+      arvalidReg:=true.B
+    }
   }.elsewhen(ReadRequstState===s_wait_ready){
     when(IF.ar.ready){
       ReadRequstState:=s_idle
