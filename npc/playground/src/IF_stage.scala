@@ -73,6 +73,7 @@ class IF_stage extends Module {
 
   IF.ar.valid:=arvalidReg
   IF.ar.bits.addr:=araddrReg
+  IF.ar.bits.prot:=0.U
   //-----------------AXI4Lite AR Channel------------------------
 
 
@@ -103,7 +104,7 @@ class IF_stage extends Module {
 
   IF.to_id.bits.pc    :=if_pc
   IF.to_id.bits.nextpc:=if_nextpc
-
+  IF.to_id.bits.inst  :=if_inst
 
 }
 
