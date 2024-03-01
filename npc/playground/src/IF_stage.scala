@@ -9,19 +9,29 @@ class IF_stage extends Module {
     val for_id=Input(new id_to_if_bus())
     val for_ex=Input(new ex_to_if_bus())
 
+    // val ar=Decoupled(new AxiAddressBundle())
+    // val r=Flipped(Decoupled(new AxiReadDataBundle()))
+    // val aw=Decoupled(new AxiAddressBundle())
+    // val w=Decoupled(new AxiWriteDataBundle())
+    // val b=Flipped(Decoupled(new AxiWriteResponseBundle()))
   })
+  // dontTouch(IF.ar);
+  // dontTouch(IF.r);
+  // dontTouch(IF.aw);
+  // dontTouch(IF.w);
+  // dontTouch(IF.b);
 
   
   val if_flush=dontTouch(Wire(Bool()))
   if_flush:=IF.for_ex.flush || IF.for_id.flush
 
-  val ResetNReg=dontTouch(RegInit(false.B))
-  val AxiValidOpen=dontTouch(RegInit(false.B))
-  ResetNReg:=RegNext(true.B)
-  AxiValidOpen:=ResetNReg
+  val if_valid=dontTouch(RegInit(false.B))
   val if_ready_go=dontTouch(Wire(Bool()))
-  if_ready_go:=Mux(AxiValidOpen,IF.to_id.ready,false.B)
-  IF.to_id.valid:=Mux(if_flush, false.B , AxiValidOpen && if_ready_go)
+  if_ready_go:=IF.to_id.ready
+  when(if_ready_go){
+    if_valid:=true.B
+  }
+  IF.to_id.valid:=Mux(if_flush, false.B , if_valid && if_ready_go)
 
 
   val br=Wire(new br_bus())
@@ -40,6 +50,27 @@ class IF_stage extends Module {
   if_dnpc := Mux(IF.for_ex.epc.taken, IF.for_ex.epc.target, br.target)
   if_nextpc:= Mux(br.taken || IF.for_ex.epc.taken, if_dnpc, if_snpc)
   
+  // val ResetNReg=RegInit(false.B)
+  // ResetNReg:=  RegNext(~reset.asBool)
+  // IF.ar.valid:= ResetNReg
+  // IF.ar.bits.addr:=if_nextpc
+  // IF.ar.bits.prot:=0.U
+  // IF.r.ready:=if_valid
+  // when(IF.r.fire){
+  //   if_inst:=IF.r.bits.data
+  // }
+  // IF.to_id.bits.inst:=if_inst
+
+  // IF.w.valid:=0.U
+  // IF.w.bits.data:=0.U
+  // IF.w.bits.strb:=0.U
+
+  // IF.aw.valid:=0.U
+  // IF.aw.bits.addr:=0.U
+  // IF.aw.bits.prot:=0.U
+
+  // IF.b.ready:=0.U
+
   when(if_ready_go){ //if级控制不用if_valid信号（if级有点特殊）
     if_pc := if_nextpc //reg类型，更新慢一拍
   }
