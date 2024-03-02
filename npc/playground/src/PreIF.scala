@@ -16,9 +16,9 @@ class PreIF_s extends Module {
     val b=Flipped(Decoupled(new AxiWriteResponseBundle()))
   })
   val resetn=dontTouch(Wire(Bool()))
-  val resetnReg=dontTouch(RegInit(false.B))
+  // val resetnReg=dontTouch(RegInit(false.B))
   resetn:= ~reset.asBool
-  resetnReg:= ~reset.asBool
+  // resetnReg:= ~reset.asBool
 
   val fetch_wen=dontTouch(Wire(Bool()))
   fetch_wen:=PreIF.to_if.ready
@@ -26,7 +26,7 @@ class PreIF_s extends Module {
   val PreIF_flush=dontTouch(Wire(Bool()))
   PreIF_flush:=PreIF.for_ex.flush || PreIF.for_id.flush
 
-  PreIF.to_if.valid:= Mux(PreIF_flush,false.B,resetnReg)
+  PreIF.to_if.valid:= Mux(PreIF_flush,false.B,resetn)
 
   val br=Wire(new br_bus())
   br.taken:=PreIF.for_id.Br_J.taken || PreIF.for_ex.Br_B.taken
