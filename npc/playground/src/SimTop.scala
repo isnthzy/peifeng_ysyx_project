@@ -18,7 +18,8 @@ class SimTop extends Module {
   val Axi4Lite_Sram_Mem = Module(new Axi4Lite_Sram_Mem())
   val Axi4Lite_Sram_If=Module(new Axi4Lite_Sram_If())
 // PreIF begin
-  dontTouch(PreIF_s.PreIF.to_if.bits)
+  dontTouch(PreIF_s.PreIF.to_if.bits.pc)
+  dontTouch(PreIF_s.PreIF.to_if.bits.nextpc)
   PreIF_s.PreIF.for_id<>ID_stage.ID.to_preif
   PreIF_s.PreIF.for_ex<>EX_stage.EX.to_preif
   PreIF_s.PreIF.ar<>Axi4Lite_Sram_If.io.ar
