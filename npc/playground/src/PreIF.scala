@@ -88,10 +88,10 @@ class PreIF_s extends Module {
 
   //----------------------AXI4Lite-----------------------------
 
-  val is_fire=PreIF.to_if.fire
-  dontTouch(is_fire)
-  when(is_fire&&resetn){ //if级控制不用if_valid信号（if级有点特殊）
-    printf("PreIF: pc=%x, nextpc=%x , is_fire=%d\n", PreIF_pc, PreIF_nextpc,is_fire)
+ 
+  dontTouch(PreIF.to_if.fire)
+  when(PreIF.to_if.fire&&resetn){ //if级控制不用if_valid信号（if级有点特殊）
+    printf("PreIF: pc=%x, nextpc=%x , is_fire=%d\n", PreIF_pc, PreIF_nextpc,PreIF.to_if.fire)
     PreIF_pc := PreIF_nextpc //reg类型，更新慢一拍
   }
   //如果遇到阻塞情况，那么if级也要发生阻塞
