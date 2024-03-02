@@ -1,6 +1,7 @@
 import chisel3._
 import chisel3.util._
 import config.Configs._
+import os.truncate
 
 class IF_stage extends Module {
   val IF=IO(new Bundle {
@@ -20,12 +21,16 @@ class IF_stage extends Module {
   dontTouch(IF.aw);
   dontTouch(IF.w);
   dontTouch(IF.b);
+
+  val inst_is_valid=dontTouch(Wire(Bool()))
+  
   val if_flush=dontTouch(Wire(Bool()))
   if_flush:=IF.for_ex.flush || IF.for_id.flush
 
   val if_valid=dontTouch(RegInit(false.B))
   val if_ready_go=dontTouch(Wire(Bool()))
-  if_ready_go:=Mux(IF.ar.valid,IF.to_id.ready,false.B)
+  if_ready_go:=Mux(inst_is_valid,IF.to_id.ready,false.B)
+  //如果取指为未完成，发起阻塞
   when(if_ready_go){
     if_valid:=true.B
   }
@@ -47,18 +52,43 @@ class IF_stage extends Module {
   if_snpc := if_pc + 4.U
   if_dnpc := Mux(IF.for_ex.epc.taken, IF.for_ex.epc.target, br.target)
   if_nextpc:= Mux(br.taken || IF.for_ex.epc.taken, if_dnpc, if_snpc)
+
+  //--------------------------AXI4Lite--------------------------
+  val s_idle :: s_wait_ready :: Nil = Enum(2)
+  //-----------------AXI4Lite AR Channel------------------------
+  val arvalidReg=RegInit(false.B)
+  val araddrReg=RegInit(0.U(ADDR_WIDTH.W))
+
   
-  val DoAddrReadReg=RegInit(false.B)
-  DoAddrReadReg:=  if_valid && if_ready_go && ~reset.asBool
-  IF.ar.valid:= DoAddrReadReg
-  IF.ar.bits.addr:=if_nextpc
+  val ReadRequstState=RegInit(s_idle)
+  when(ReadRequstState===s_idle){
+    when(~reset.asBool){
+      ReadRequstState:=s_wait_ready
+      araddrReg:=if_nextpc
+      arvalidReg:=true.B
+    }
+  }.elsewhen(ReadRequstState===s_wait_ready){
+    when(IF.ar.ready){
+      ReadRequstState:=s_idle
+      arvalidReg:=false.B
+    }
+  }
+
+  IF.ar.valid:=arvalidReg
+  IF.ar.bits.addr:=araddrReg
   IF.ar.bits.prot:=0.U
-  IF.r.ready:=if_valid
+  //-----------------AXI4Lite AR Channel------------------------
+
+
+  //-----------------AXI4Lite R  Channel------------------------
+  IF.r.ready:=true.B
+
   when(IF.r.fire){
     if_inst:=IF.r.bits.data
   }
-  IF.to_id.bits.inst:=if_inst
-
+  inst_is_valid:=IF.r.fire
+  //-----------------AXI4Lite R  Channel------------------------
+  //-----------------AXI4Lite Other Channel------------------------
   IF.w.valid:=0.U
   IF.w.bits.data:=0.U
   IF.w.bits.strb:=0.U
@@ -69,6 +99,9 @@ class IF_stage extends Module {
 
   IF.b.ready:=0.U
 
+  //--------------------------AXI4Lite--------------------------
+
+
   when(if_ready_go){ //if级控制不用if_valid信号（if级有点特殊）
     if_pc := if_nextpc //reg类型，更新慢一拍
   }
@@ -76,24 +109,8 @@ class IF_stage extends Module {
 
   IF.to_id.bits.pc    :=if_pc
   IF.to_id.bits.nextpc:=if_nextpc
+  IF.to_id.bits.inst  :=if_inst
+
 }
 
-  // val Fetch=Module(new read_inst())
-  // Fetch.io.clock:=clock
-  // Fetch.io.reset:=reset
-  // Fetch.io.nextpc:=if_nextpc
-  // Fetch.io.fetch_wen:=if_ready_go
 
-  // IF.to_id.bits.inst:=Fetch.io.inst
-
-
-// class read_inst extends BlackBox with HasBlackBoxPath{
-//   val io=IO(new Bundle {
-//     val clock =Input(Clock())
-//     val reset =Input(Bool())
-//     val nextpc=Input(UInt(ADDR_WIDTH.W))
-//     val inst  =Output(UInt(32.W))
-//     val fetch_wen=Input(Bool())
-//   })
-//   addPath("playground/src/dpi-c/read_inst.sv")
-// }

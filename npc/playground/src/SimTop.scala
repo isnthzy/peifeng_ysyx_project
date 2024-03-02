@@ -13,7 +13,7 @@ class SimTop extends Module {
   val EX_stage = Module(new EX_stage())
   val LS_stage = Module(new LS_stage())
   val WB_stage = Module(new WB_stage())
-  // val Sram = Module(new Sram())
+  
   val Axi4Lite_Sram_Mem = Module(new Axi4Lite_Sram_Mem())
   val Axi4Lite_Sram_If=Module(new Axi4Lite_Sram_If())
 // IF begin
