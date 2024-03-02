@@ -10,7 +10,7 @@
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
 
-module ImmGen(	// @[<stdin>:765:3]
+module ImmGen(	// @[<stdin>:768:3]
   input  [31:0] io_inst,	// @[playground/src/ImmGen.scala:8:12]
   input  [2:0]  io_sel,	// @[playground/src/ImmGen.scala:8:12]
   output [31:0] io_out	// @[playground/src/ImmGen.scala:8:12]
@@ -38,6 +38,6 @@ module ImmGen(	// @[<stdin>:765:3]
         casez_tmp = 32'h0;	// @[playground/src/ImmGen.scala:19:35]
     endcase	// @[playground/src/ImmGen.scala:19:35]
   end // always_comb
-  assign io_out = casez_tmp;	// @[<stdin>:765:3, playground/src/ImmGen.scala:19:35]
+  assign io_out = casez_tmp;	// @[<stdin>:768:3, playground/src/ImmGen.scala:19:35]
 endmodule
 
