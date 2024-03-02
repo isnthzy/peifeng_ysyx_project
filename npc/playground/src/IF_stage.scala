@@ -13,7 +13,7 @@ class IF_stage extends Module {
 
     val r=Flipped(Decoupled(new AxiReadDataBundle()))
   })
-  val if_inst=dontTouch(Wire(UInt(32.W)))
+  val if_inst=dontTouch(WireDefault(0.U(32.W)))
   val if_inst_is_valid=dontTouch(Wire(Bool()))
 
   val if_flush=dontTouch(Wire(Bool()))
