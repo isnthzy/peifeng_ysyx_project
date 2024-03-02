@@ -15,6 +15,8 @@ class IF_stage extends Module {
   })
   val if_inst=dontTouch(WireDefault(0.U(32.W)))
   val if_inst_is_valid=dontTouch(Wire(Bool()))
+  val resetnReg=dontTouch(RegInit(false.B))
+  resetnReg:=true.B
 
   val if_flush=dontTouch(Wire(Bool()))
   if_flush:= IF.for_ex.flush || IF.for_id.flush
@@ -22,7 +24,7 @@ class IF_stage extends Module {
   val if_valid=dontTouch(RegInit(false.B))
   val if_ready_go=dontTouch(Wire(Bool()))
   if_ready_go:=Mux(if_inst_is_valid,true.B,false.B)
-  IF.IO.ready := !if_valid || if_ready_go && IF.to_id.ready 
+  IF.IO.ready :=( !if_valid || if_ready_go && IF.to_id.ready ) && resetnReg
   when(IF.IO.ready){
     if_valid:=IF.IO.valid
   }
