@@ -46,7 +46,7 @@ module PreIF_s(	// @[<stdin>:3:3]
       ReadRequstState <= 1'h0;	// @[playground/src/PreIF.scala:27:26, :52:30]
     end
     else begin	// @[<stdin>:4:11]
-      if (is_fire)	// @[src/main/scala/chisel3/util/Decoupled.scala:52:35]
+      if (is_fire & resetn)	// @[playground/src/PreIF.scala:18:28, :91:15, src/main/scala/chisel3/util/Decoupled.scala:52:35]
         PreIF_pc <= PreIF_nextpc;	// @[playground/src/PreIF.scala:34:29, :37:36]
       if (ReadRequstState) begin	// @[playground/src/PreIF.scala:52:30]
         arvalidReg <= ~_GEN & arvalidReg;	// @[playground/src/PreIF.scala:48:25, :52:30, :59:45, :60:25, :61:22, :62:17]
