@@ -21,10 +21,6 @@ module SimTop(	// @[<stdin>:1702:3]
   wire        _Axi4Lite_Sram_If_io_ar_ready;	// @[playground/src/SimTop.scala:19:30]
   wire        _Axi4Lite_Sram_If_io_r_valid;	// @[playground/src/SimTop.scala:19:30]
   wire [31:0] _Axi4Lite_Sram_If_io_r_bits_data;	// @[playground/src/SimTop.scala:19:30]
-  wire        _Axi4Lite_Sram_If_io_aw_ready;	// @[playground/src/SimTop.scala:19:30]
-  wire        _Axi4Lite_Sram_If_io_w_ready;	// @[playground/src/SimTop.scala:19:30]
-  wire        _Axi4Lite_Sram_If_io_b_valid;	// @[playground/src/SimTop.scala:19:30]
-  wire [1:0]  _Axi4Lite_Sram_If_io_b_bits_resp;	// @[playground/src/SimTop.scala:19:30]
   wire        _Axi4Lite_Sram_Mem_io_ar_ready;	// @[playground/src/SimTop.scala:18:33]
   wire        _Axi4Lite_Sram_Mem_io_r_valid;	// @[playground/src/SimTop.scala:18:33]
   wire [31:0] _Axi4Lite_Sram_Mem_io_r_bits_data;	// @[playground/src/SimTop.scala:18:33]
@@ -144,14 +140,6 @@ module SimTop(	// @[<stdin>:1702:3]
   wire [31:0] _PreIF_s_PreIF_to_if_bits_pc;	// @[playground/src/SimTop.scala:11:24]
   wire        _PreIF_s_PreIF_ar_valid;	// @[playground/src/SimTop.scala:11:24]
   wire [31:0] _PreIF_s_PreIF_ar_bits_addr;	// @[playground/src/SimTop.scala:11:24]
-  wire [2:0]  _PreIF_s_PreIF_ar_bits_prot;	// @[playground/src/SimTop.scala:11:24]
-  wire        _PreIF_s_PreIF_aw_valid;	// @[playground/src/SimTop.scala:11:24]
-  wire [31:0] _PreIF_s_PreIF_aw_bits_addr;	// @[playground/src/SimTop.scala:11:24]
-  wire [2:0]  _PreIF_s_PreIF_aw_bits_prot;	// @[playground/src/SimTop.scala:11:24]
-  wire        _PreIF_s_PreIF_w_valid;	// @[playground/src/SimTop.scala:11:24]
-  wire [31:0] _PreIF_s_PreIF_w_bits_data;	// @[playground/src/SimTop.scala:11:24]
-  wire [7:0]  _PreIF_s_PreIF_w_bits_strb;	// @[playground/src/SimTop.scala:11:24]
-  wire        _PreIF_s_PreIF_b_ready;	// @[playground/src/SimTop.scala:11:24]
   reg  [31:0] IF_stage_IF_IO_bits_r_nextpc;	// @[playground/src/SimTop.scala:71:27]
   reg  [31:0] IF_stage_IF_IO_bits_r_pc;	// @[playground/src/SimTop.scala:71:27]
   reg  [31:0] ID_stage_ID_IO_bits_r_nextpc;	// @[playground/src/SimTop.scala:71:27]
@@ -321,23 +309,11 @@ module SimTop(	// @[<stdin>:1702:3]
     .PreIF_for_ex_Br_B_target (_EX_stage_EX_to_preif_Br_B_target),	// @[playground/src/SimTop.scala:14:24]
     .PreIF_for_ex_flush       (_EX_stage_EX_to_preif_flush),	// @[playground/src/SimTop.scala:14:24]
     .PreIF_ar_ready           (_Axi4Lite_Sram_If_io_ar_ready),	// @[playground/src/SimTop.scala:19:30]
-    .PreIF_aw_ready           (_Axi4Lite_Sram_If_io_aw_ready),	// @[playground/src/SimTop.scala:19:30]
-    .PreIF_w_ready            (_Axi4Lite_Sram_If_io_w_ready),	// @[playground/src/SimTop.scala:19:30]
-    .PreIF_b_valid            (_Axi4Lite_Sram_If_io_b_valid),	// @[playground/src/SimTop.scala:19:30]
-    .PreIF_b_bits_resp        (_Axi4Lite_Sram_If_io_b_bits_resp),	// @[playground/src/SimTop.scala:19:30]
     .PreIF_to_if_valid        (_PreIF_s_PreIF_to_if_valid),
     .PreIF_to_if_bits_nextpc  (_PreIF_s_PreIF_to_if_bits_nextpc),
     .PreIF_to_if_bits_pc      (_PreIF_s_PreIF_to_if_bits_pc),
     .PreIF_ar_valid           (_PreIF_s_PreIF_ar_valid),
-    .PreIF_ar_bits_addr       (_PreIF_s_PreIF_ar_bits_addr),
-    .PreIF_ar_bits_prot       (_PreIF_s_PreIF_ar_bits_prot),
-    .PreIF_aw_valid           (_PreIF_s_PreIF_aw_valid),
-    .PreIF_aw_bits_addr       (_PreIF_s_PreIF_aw_bits_addr),
-    .PreIF_aw_bits_prot       (_PreIF_s_PreIF_aw_bits_prot),
-    .PreIF_w_valid            (_PreIF_s_PreIF_w_valid),
-    .PreIF_w_bits_data        (_PreIF_s_PreIF_w_bits_data),
-    .PreIF_w_bits_strb        (_PreIF_s_PreIF_w_bits_strb),
-    .PreIF_b_ready            (_PreIF_s_PreIF_b_ready)
+    .PreIF_ar_bits_addr       (_PreIF_s_PreIF_ar_bits_addr)
   );
   IF_stage IF_stage (	// @[playground/src/SimTop.scala:12:24]
     .clock                (clock),
@@ -633,23 +609,23 @@ module SimTop(	// @[<stdin>:1702:3]
     .reset           (reset),
     .io_ar_valid     (_PreIF_s_PreIF_ar_valid),	// @[playground/src/SimTop.scala:11:24]
     .io_ar_bits_addr (_PreIF_s_PreIF_ar_bits_addr),	// @[playground/src/SimTop.scala:11:24]
-    .io_ar_bits_prot (_PreIF_s_PreIF_ar_bits_prot),	// @[playground/src/SimTop.scala:11:24]
+    .io_ar_bits_prot (3'h0),	// @[playground/src/SimTop.scala:11:24, :19:30]
     .io_r_ready      (1'h1),	// @[playground/src/SimTop.scala:12:24, :19:30]
-    .io_aw_valid     (_PreIF_s_PreIF_aw_valid),	// @[playground/src/SimTop.scala:11:24]
-    .io_aw_bits_addr (_PreIF_s_PreIF_aw_bits_addr),	// @[playground/src/SimTop.scala:11:24]
-    .io_aw_bits_prot (_PreIF_s_PreIF_aw_bits_prot),	// @[playground/src/SimTop.scala:11:24]
-    .io_w_valid      (_PreIF_s_PreIF_w_valid),	// @[playground/src/SimTop.scala:11:24]
-    .io_w_bits_data  (_PreIF_s_PreIF_w_bits_data),	// @[playground/src/SimTop.scala:11:24]
-    .io_w_bits_strb  (_PreIF_s_PreIF_w_bits_strb),	// @[playground/src/SimTop.scala:11:24]
-    .io_b_ready      (_PreIF_s_PreIF_b_ready),	// @[playground/src/SimTop.scala:11:24]
+    .io_aw_valid     (1'h0),	// @[playground/src/SimTop.scala:11:24, :13:24, :19:30]
+    .io_aw_bits_addr (32'h0),	// @[playground/src/SimTop.scala:11:24, :19:30]
+    .io_aw_bits_prot (3'h0),	// @[playground/src/SimTop.scala:11:24, :19:30]
+    .io_w_valid      (1'h0),	// @[playground/src/SimTop.scala:11:24, :13:24, :19:30]
+    .io_w_bits_data  (32'h0),	// @[playground/src/SimTop.scala:11:24, :19:30]
+    .io_w_bits_strb  (8'h0),	// @[playground/src/SimTop.scala:11:24, :19:30]
+    .io_b_ready      (1'h0),	// @[playground/src/SimTop.scala:11:24, :13:24, :19:30]
     .io_ar_ready     (_Axi4Lite_Sram_If_io_ar_ready),
     .io_r_valid      (_Axi4Lite_Sram_If_io_r_valid),
     .io_r_bits_data  (_Axi4Lite_Sram_If_io_r_bits_data),
     .io_r_bits_resp  (/* unused */),
-    .io_aw_ready     (_Axi4Lite_Sram_If_io_aw_ready),
-    .io_w_ready      (_Axi4Lite_Sram_If_io_w_ready),
-    .io_b_valid      (_Axi4Lite_Sram_If_io_b_valid),
-    .io_b_bits_resp  (_Axi4Lite_Sram_If_io_b_bits_resp)
+    .io_aw_ready     (/* unused */),
+    .io_w_ready      (/* unused */),
+    .io_b_valid      (/* unused */),
+    .io_b_bits_resp  (/* unused */)
   );
 endmodule
 
