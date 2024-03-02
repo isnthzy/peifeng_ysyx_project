@@ -16,13 +16,15 @@ class ID_stage extends Module {
   })
   val id_clog=dontTouch(Wire(Bool()))
   val id_flush=dontTouch(Wire(Bool()))
+  val resetnReg=dontTouch(RegInit(false.B))
+  resetnReg:=true.B
   id_clog:=ID.for_ex.clog
   id_flush:=ID.for_ex.flush
 
   val id_valid=dontTouch(RegInit(false.B))
   val id_ready_go=dontTouch(Wire(Bool()))
   id_ready_go:=Mux(id_clog,false.B,true.B)
-  ID.IO.ready := !id_valid || id_ready_go && ID.to_ex.ready
+  ID.IO.ready := (!id_valid || id_ready_go && ID.to_ex.ready) && resetnReg
   when(ID.IO.ready){
     id_valid:=ID.IO.valid
   }
