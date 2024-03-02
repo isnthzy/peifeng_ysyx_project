@@ -10,9 +10,9 @@
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
 
-module WB_stage(	// @[<stdin>:1564:3]
-  input         clock,	// @[<stdin>:1565:11]
-                reset,	// @[<stdin>:1566:11]
+module WB_stage(	// @[<stdin>:1558:3]
+  input         clock,	// @[<stdin>:1559:11]
+                reset,	// @[<stdin>:1560:11]
                 WB_IO_valid,	// @[playground/src/WB_stage.scala:7:12]
                 WB_IO_bits_csr_commit_wen,	// @[playground/src/WB_stage.scala:7:12]
   input  [11:0] WB_IO_bits_csr_commit_waddr,	// @[playground/src/WB_stage.scala:7:12]
@@ -45,8 +45,8 @@ module WB_stage(	// @[<stdin>:1564:3]
   reg  wb_valid;	// @[playground/src/WB_stage.scala:17:33]
   wire _WB_IO_ready_output = ~wb_valid | wb_ready_go;	// @[playground/src/WB_stage.scala:17:33, :18:33, :20:{18,28}]
   wire _WB_to_id_rf_wen_output = WB_IO_bits_rf_wen & wb_valid;	// @[playground/src/WB_stage.scala:17:33, :28:39]
-  always @(posedge clock) begin	// @[<stdin>:1565:11]
-    if (reset)	// @[<stdin>:1565:11]
+  always @(posedge clock) begin	// @[<stdin>:1559:11]
+    if (reset)	// @[<stdin>:1559:11]
       wb_valid <= 1'h0;	// @[playground/src/WB_stage.scala:17:33]
     else if (_WB_IO_ready_output)	// @[playground/src/WB_stage.scala:20:28]
       wb_valid <= WB_IO_valid;	// @[playground/src/WB_stage.scala:17:33]
@@ -72,12 +72,12 @@ module WB_stage(	// @[<stdin>:1564:3]
     .DPI_csr_commit_exception_mcause_in (WB_IO_bits_csr_commit_exception_mcause_in),
     .DPI_csr_commit_exception_pc_wb     (WB_IO_bits_csr_commit_exception_pc_wb)
   );
-  assign WB_IO_ready = _WB_IO_ready_output;	// @[<stdin>:1564:3, playground/src/WB_stage.scala:20:28]
-  assign WB_to_id_rf_waddr = WB_IO_bits_rd;	// @[<stdin>:1564:3]
-  assign WB_to_id_rf_wdata = WB_IO_bits_result;	// @[<stdin>:1564:3]
-  assign WB_to_id_rf_wen = _WB_to_id_rf_wen_output;	// @[<stdin>:1564:3, playground/src/WB_stage.scala:28:39]
-  assign WB_debug_waddr = WB_IO_bits_rd;	// @[<stdin>:1564:3]
-  assign WB_debug_wdata = WB_IO_bits_result;	// @[<stdin>:1564:3]
-  assign WB_debug_wen = _WB_to_id_rf_wen_output;	// @[<stdin>:1564:3, playground/src/WB_stage.scala:28:39]
+  assign WB_IO_ready = _WB_IO_ready_output;	// @[<stdin>:1558:3, playground/src/WB_stage.scala:20:28]
+  assign WB_to_id_rf_waddr = WB_IO_bits_rd;	// @[<stdin>:1558:3]
+  assign WB_to_id_rf_wdata = WB_IO_bits_result;	// @[<stdin>:1558:3]
+  assign WB_to_id_rf_wen = _WB_to_id_rf_wen_output;	// @[<stdin>:1558:3, playground/src/WB_stage.scala:28:39]
+  assign WB_debug_waddr = WB_IO_bits_rd;	// @[<stdin>:1558:3]
+  assign WB_debug_wdata = WB_IO_bits_result;	// @[<stdin>:1558:3]
+  assign WB_debug_wen = _WB_to_id_rf_wen_output;	// @[<stdin>:1558:3, playground/src/WB_stage.scala:28:39]
 endmodule
 
