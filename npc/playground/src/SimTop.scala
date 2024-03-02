@@ -8,6 +8,7 @@ class SimTop extends Module {
     val debug_wdata=Output(UInt(DATA_WIDTH.W))
     val debug_wen  =Output(Bool())
   })
+  val PreIF_s  = Module(new PreIF_s())
   val IF_stage = Module(new IF_stage())
   val ID_stage = Module(new ID_stage())
   val EX_stage = Module(new EX_stage())
@@ -16,15 +17,23 @@ class SimTop extends Module {
   
   val Axi4Lite_Sram_Mem = Module(new Axi4Lite_Sram_Mem())
   val Axi4Lite_Sram_If=Module(new Axi4Lite_Sram_If())
+// PreIF begin
+  PreIF_s.PreIF.for_id<>ID_stage.ID.to_preif
+  PreIF_s.PreIF.for_ex<>EX_stage.EX.to_preif
+  PreIF_s.PreIF.ar<>Axi4Lite_Sram_If.io.ar
+  PreIF_s.PreIF.aw<>Axi4Lite_Sram_If.io.aw
+  PreIF_s.PreIF.w <>Axi4Lite_Sram_If.io.w
+  PreIF_s.PreIF.b <>Axi4Lite_Sram_If.io.b
 // IF begin
+  StageConnect(PreIF_s.PreIF.to_if,IF_stage.IF.IO)
   IF_stage.IF.for_id<>ID_stage.ID.to_if
   IF_stage.IF.for_ex<>EX_stage.EX.to_if
-  
-  IF_stage.IF.ar<>Axi4Lite_Sram_If.io.ar
   IF_stage.IF.r <>Axi4Lite_Sram_If.io.r
-  IF_stage.IF.aw<>Axi4Lite_Sram_If.io.aw
-  IF_stage.IF.w <>Axi4Lite_Sram_If.io.w 
-  IF_stage.IF.b <>Axi4Lite_Sram_If.io.b
+  // IF_stage.IF.ar<>Axi4Lite_Sram_If.io.ar
+  // IF_stage.IF.r <>Axi4Lite_Sram_If.io.r
+  // IF_stage.IF.aw<>Axi4Lite_Sram_If.io.aw
+  // IF_stage.IF.w <>Axi4Lite_Sram_If.io.w 
+  // IF_stage.IF.b <>Axi4Lite_Sram_If.io.b
 // ID begin
   StageConnect(IF_stage.IF.to_id,ID_stage.ID.IO) //左边是out，右边是in
   ID_stage.ID.for_ex<>EX_stage.EX.to_id

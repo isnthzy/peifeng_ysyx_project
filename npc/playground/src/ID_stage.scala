@@ -12,11 +12,12 @@ class ID_stage extends Module {
     val for_ls=Input(new ls_to_id_bus())
     val for_wb=Input(new wb_to_id_bus())
     val to_if=Output(new id_to_if_bus())
+    val to_preif=Output(new id_to_preif_bus())
   })
   val id_clog=dontTouch(Wire(Bool()))
   val id_flush=dontTouch(Wire(Bool()))
   id_clog:=ID.for_ex.clog
-  id_flush:=false.B
+  id_flush:=ID.for_ex.flush
 
   val id_valid=dontTouch(RegInit(false.B))
   val id_ready_go=dontTouch(Wire(Bool()))
@@ -25,7 +26,7 @@ class ID_stage extends Module {
   when(ID.IO.ready){
     id_valid:=ID.IO.valid
   }
-  ID.to_ex.valid:=id_valid && id_ready_go
+  ID.to_ex.valid:=Mux(id_flush, false.B , id_valid && id_ready_go)
   //flush是将下一级置为无效
 
   val dc=Module(new Decode())
@@ -126,20 +127,18 @@ class ID_stage extends Module {
   J_cond.io.br_type:=dc.io.br_type
   J_cond.io.src1:=src1
   J_cond.io.src2:=src2
-  ID.to_if.Br_J.taken:=J_cond.io.taken&&id_valid
-  ID.to_if.Br_J.target:=J_cond.io.target
+  ID.to_preif.Br_J.taken:=J_cond.io.taken&&id_valid
+  ID.to_preif.Br_J.target:=J_cond.io.target
   
   B_cond.io.br_type:=dc.io.br_type
   B_cond.io.rdata1:=rdata1
   B_cond.io.rdata2:=rdata2
 
 
-  ID.to_if.flush:=(J_cond.io.taken 
-                ||  B_cond.io.taken
-                ||  (dc.io.csr_cmd===CSR.ECALL)
-                ||  (dc.io.csr_cmd===CSR.MRET))&&id_valid
-  //如果是j跳转，id级向if级发起flush     (损失一个周期)
-  //如果是b跳转，id和ex级向if级发起flush (损失两个周期，b跳转在ex级计算)
+  ID.to_if.flush:=J_cond.io.taken &&id_valid
+  ID.to_preif.flush:=J_cond.io.taken &&id_valid
+  //如果是j跳转，id级向if级和preif级发起flush     (损失两个周期)
+  //如果是b跳转，ex级向if，preif，id级发起flush (损失三个周期，b跳转在ex级计算)
   //b跳转分为两个阶段，在id级计算是否跳转，在ex级得到跳转地址发起跳转
   ID.to_ex.bits.b_taken:=B_cond.io.taken&&id_valid
 

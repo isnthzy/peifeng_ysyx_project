@@ -9,6 +9,7 @@ class EX_stage extends Module {
 
     val to_id =Output(new ex_to_id_bus())
     val to_if =Output(new ex_to_if_bus())
+    val to_preif =Output(new ex_to_preif_bus())
 
     val ar=Decoupled(new AxiAddressBundle())
     val aw=Decoupled(new AxiAddressBundle())
@@ -40,8 +41,8 @@ class EX_stage extends Module {
   
   //分支跳转
   
-  EX.to_if.Br_B.taken:=EX.IO.bits.b_taken&&ex_valid
-  EX.to_if.Br_B.target:=MuxLookup(EX.IO.bits.br_type,0.U)(Seq(
+  EX.to_preif.Br_B.taken:=EX.IO.bits.b_taken&&ex_valid
+  EX.to_preif.Br_B.target:=MuxLookup(EX.IO.bits.br_type,0.U)(Seq(
                           BR_XXX -> 0.U,
                           BR_LTU -> Alu.io.result,
                           BR_LT  -> Alu.io.result,
@@ -53,10 +54,18 @@ class EX_stage extends Module {
 
 
   //如果是跳转，发起flush
-  EX.to_if.flush:=(EX.to_if.Br_B.taken
-                || (EX.IO.bits.csr_cmd===CSR.MRET )
-                || (EX.IO.bits.csr_cmd===CSR.ECALL))&&ex_valid 
-  
+  //如果是b跳转，ex级向if，preif，id级发起flush (损失三个周期，b跳转在ex级计算)
+  val to_flush=Wire(Bool())
+  to_flush:=(EX.to_preif.Br_B.taken
+         || (EX.IO.bits.csr_cmd===CSR.MRET )
+         || (EX.IO.bits.csr_cmd===CSR.ECALL))&&ex_valid 
+  // EX.to_if.flush:=(EX.to_if.Br_B.taken
+  //               || (EX.IO.bits.csr_cmd===CSR.MRET )
+  //               || (EX.IO.bits.csr_cmd===CSR.ECALL))&&ex_valid 
+  EX.to_id.flush:=to_flush
+  EX.to_if.flush:=to_flush
+  EX.to_preif.flush:=to_flush
+
   //对id发起阻塞
   EX.to_id.clog:=(EX.IO.bits.ld_type=/=0.U)&&ex_valid
 
@@ -100,8 +109,8 @@ class EX_stage extends Module {
   EX.to_id.csr.ecpt.mcause_in:=11.U
   EX.to_id.csr.ecpt.pc_wb:=EX.IO.bits.pc
   
-  EX.to_if.epc.taken:=(EX.IO.bits.pc_sel===PC_EPC)&&ex_valid
-  EX.to_if.epc.target:=Mux((EX.IO.bits.csr_cmd===CSR.MRET ),EX.IO.bits.csr_global.mepc,
+  EX.to_preif.epc.taken:=(EX.IO.bits.pc_sel===PC_EPC)&&ex_valid
+  EX.to_preif.epc.target:=Mux((EX.IO.bits.csr_cmd===CSR.MRET ),EX.IO.bits.csr_global.mepc,
                         Mux((EX.IO.bits.csr_cmd===CSR.ECALL),EX.IO.bits.csr_global.mtvec,0.U))
   
 
