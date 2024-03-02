@@ -16,7 +16,7 @@ class PreIF_s extends Module {
     val b=Flipped(Decoupled(new AxiWriteResponseBundle()))
   })
   val resetn=dontTouch(Wire(Bool()))
-  val resetnReg=dontTouch(Wire(RegInit(false.B)))
+  val resetnReg=dontTouch(RegInit(false.B))
   resetn:= ~reset.asBool
   resetnReg:= ~reset.asBool
 
