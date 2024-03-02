@@ -10,9 +10,9 @@
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
 
-module SimTop(	// @[<stdin>:1702:3]
-  input         clock,	// @[<stdin>:1703:11]
-                reset,	// @[<stdin>:1704:11]
+module SimTop(	// @[<stdin>:1706:3]
+  input         clock,	// @[<stdin>:1707:11]
+                reset,	// @[<stdin>:1708:11]
   output [4:0]  io_debug_waddr,	// @[playground/src/SimTop.scala:6:14]
   output [31:0] io_debug_wdata,	// @[playground/src/SimTop.scala:6:14]
   output        io_debug_wen	// @[playground/src/SimTop.scala:6:14]
@@ -136,8 +136,8 @@ module SimTop(	// @[<stdin>:1702:3]
   wire [31:0] _IF_stage_IF_to_id_bits_pc;	// @[playground/src/SimTop.scala:12:24]
   wire [31:0] _IF_stage_IF_to_id_bits_inst;	// @[playground/src/SimTop.scala:12:24]
   wire        _PreIF_s_PreIF_to_if_valid;	// @[playground/src/SimTop.scala:11:24]
-  reg  [31:0] PreIF_s_PreIF_to_if_bits_nextpc;	// @[playground/src/SimTop.scala:11:24]
-  reg  [31:0] PreIF_s_PreIF_to_if_bits_pc;	// @[playground/src/SimTop.scala:11:24]
+  wire [31:0] _PreIF_s_PreIF_to_if_bits_nextpc;	// @[playground/src/SimTop.scala:11:24]
+  wire [31:0] _PreIF_s_PreIF_to_if_bits_pc;	// @[playground/src/SimTop.scala:11:24]
   wire        _PreIF_s_PreIF_ar_valid;	// @[playground/src/SimTop.scala:11:24]
   wire [31:0] _PreIF_s_PreIF_ar_bits_addr;	// @[playground/src/SimTop.scala:11:24]
   reg  [31:0] IF_stage_IF_IO_bits_r_nextpc;	// @[playground/src/SimTop.scala:72:27]
@@ -204,10 +204,10 @@ module SimTop(	// @[<stdin>:1702:3]
   reg  [31:0] WB_stage_WB_IO_bits_r_nextpc;	// @[playground/src/SimTop.scala:72:27]
   reg  [31:0] WB_stage_WB_IO_bits_r_pc;	// @[playground/src/SimTop.scala:72:27]
   reg  [31:0] WB_stage_WB_IO_bits_r_inst;	// @[playground/src/SimTop.scala:72:27]
-  always @(posedge clock) begin	// @[<stdin>:1703:11]
+  always @(posedge clock) begin	// @[<stdin>:1707:11]
     if (_IF_stage_IF_IO_ready & _PreIF_s_PreIF_to_if_valid) begin	// @[playground/src/SimTop.scala:11:24, :12:24, src/main/scala/chisel3/util/Decoupled.scala:52:35]
-      IF_stage_IF_IO_bits_r_nextpc <= PreIF_s_PreIF_to_if_bits_nextpc;	// @[playground/src/SimTop.scala:11:24, :72:27]
-      IF_stage_IF_IO_bits_r_pc <= PreIF_s_PreIF_to_if_bits_pc;	// @[playground/src/SimTop.scala:11:24, :72:27]
+      IF_stage_IF_IO_bits_r_nextpc <= _PreIF_s_PreIF_to_if_bits_nextpc;	// @[playground/src/SimTop.scala:11:24, :72:27]
+      IF_stage_IF_IO_bits_r_pc <= _PreIF_s_PreIF_to_if_bits_pc;	// @[playground/src/SimTop.scala:11:24, :72:27]
     end
     if (_ID_stage_ID_IO_ready & _IF_stage_IF_to_id_valid) begin	// @[playground/src/SimTop.scala:12:24, :13:24, src/main/scala/chisel3/util/Decoupled.scala:52:35]
       ID_stage_ID_IO_bits_r_nextpc <= _IF_stage_IF_to_id_bits_nextpc;	// @[playground/src/SimTop.scala:12:24, :72:27]
@@ -310,8 +310,8 @@ module SimTop(	// @[<stdin>:1702:3]
     .PreIF_for_ex_flush       (_EX_stage_EX_to_preif_flush),	// @[playground/src/SimTop.scala:14:24]
     .PreIF_ar_ready           (_Axi4Lite_Sram_If_io_ar_ready),	// @[playground/src/SimTop.scala:19:30]
     .PreIF_to_if_valid        (_PreIF_s_PreIF_to_if_valid),
-    .PreIF_to_if_bits_nextpc  (PreIF_s_PreIF_to_if_bits_nextpc),
-    .PreIF_to_if_bits_pc      (PreIF_s_PreIF_to_if_bits_pc),
+    .PreIF_to_if_bits_nextpc  (_PreIF_s_PreIF_to_if_bits_nextpc),
+    .PreIF_to_if_bits_pc      (_PreIF_s_PreIF_to_if_bits_pc),
     .PreIF_ar_valid           (_PreIF_s_PreIF_ar_valid),
     .PreIF_ar_bits_addr       (_PreIF_s_PreIF_ar_bits_addr)
   );
