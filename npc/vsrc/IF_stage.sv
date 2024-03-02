@@ -18,9 +18,9 @@ module IF_stage(	// @[<stdin>:71:3]
 );
 
   wire        if_inst_is_valid = IF_r_valid;	// @[playground/src/IF_stage.scala:17:38]
+  wire        if_ready_go = if_inst_is_valid;	// @[playground/src/IF_stage.scala:17:38, :23:33]
   wire        if_flush = IF_for_ex_flush | IF_for_id_flush;	// @[playground/src/IF_stage.scala:19:30, :20:30]
   reg         if_valid;	// @[playground/src/IF_stage.scala:22:33]
-  wire        if_ready_go = ~if_inst_is_valid;	// @[playground/src/IF_stage.scala:17:38, :22:33, :23:33, :24:19]
   wire        _IF_IO_ready_output = ~if_valid | if_ready_go & IF_to_id_ready;	// @[playground/src/IF_stage.scala:22:33, :23:33, :25:{18,28,43}]
   wire [31:0] if_inst = IF_r_valid ? IF_r_bits_data : 32'h0;	// @[playground/src/IF_stage.scala:16:36, :35:18, :36:12]
   always @(posedge clock) begin	// @[<stdin>:72:11]
