@@ -10,9 +10,9 @@
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
 
-module SimTop(	// @[<stdin>:1706:3]
-  input         clock,	// @[<stdin>:1707:11]
-                reset,	// @[<stdin>:1708:11]
+module SimTop(	// @[<stdin>:1708:3]
+  input         clock,	// @[<stdin>:1709:11]
+                reset,	// @[<stdin>:1710:11]
   output [4:0]  io_debug_waddr,	// @[playground/src/SimTop.scala:6:14]
   output [31:0] io_debug_wdata,	// @[playground/src/SimTop.scala:6:14]
   output        io_debug_wen	// @[playground/src/SimTop.scala:6:14]
@@ -204,7 +204,7 @@ module SimTop(	// @[<stdin>:1706:3]
   reg  [31:0] WB_stage_WB_IO_bits_r_nextpc;	// @[playground/src/SimTop.scala:72:27]
   reg  [31:0] WB_stage_WB_IO_bits_r_pc;	// @[playground/src/SimTop.scala:72:27]
   reg  [31:0] WB_stage_WB_IO_bits_r_inst;	// @[playground/src/SimTop.scala:72:27]
-  always @(posedge clock) begin	// @[<stdin>:1707:11]
+  always @(posedge clock) begin	// @[<stdin>:1709:11]
     if (_IF_stage_IF_IO_ready & _PreIF_s_PreIF_to_if_valid) begin	// @[playground/src/SimTop.scala:11:24, :12:24, src/main/scala/chisel3/util/Decoupled.scala:52:35]
       IF_stage_IF_IO_bits_r_nextpc <= _PreIF_s_PreIF_to_if_bits_nextpc;	// @[playground/src/SimTop.scala:11:24, :72:27]
       IF_stage_IF_IO_bits_r_pc <= _PreIF_s_PreIF_to_if_bits_pc;	// @[playground/src/SimTop.scala:11:24, :72:27]

@@ -10,9 +10,9 @@
   `endif // PRINTF_COND
 `endif // not def PRINTF_COND_
 
-module RegFile(	// @[<stdin>:826:3]
-  input         clock,	// @[<stdin>:827:11]
-                reset,	// @[<stdin>:828:11]
+module RegFile(	// @[<stdin>:828:3]
+  input         clock,	// @[<stdin>:829:11]
+                reset,	// @[<stdin>:830:11]
   input  [4:0]  io_waddr,	// @[playground/src/Regfile.scala:6:12]
   input  [31:0] io_wdata,	// @[playground/src/Regfile.scala:6:12]
   input  [4:0]  io_raddr1,	// @[playground/src/Regfile.scala:6:12]
@@ -192,8 +192,8 @@ module RegFile(	// @[<stdin>:826:3]
         casez_tmp_0 = rf_31;	// @[playground/src/Regfile.scala:15:17, :23:12]
     endcase	// @[playground/src/Regfile.scala:23:12]
   end // always_comb
-  always @(posedge clock) begin	// @[<stdin>:827:11]
-    if (reset) begin	// @[<stdin>:827:11]
+  always @(posedge clock) begin	// @[<stdin>:829:11]
+    if (reset) begin	// @[<stdin>:829:11]
       rf_0 <= 32'h0;	// @[playground/src/Regfile.scala:15:{17,25}]
       rf_1 <= 32'h0;	// @[playground/src/Regfile.scala:15:{17,25}]
       rf_2 <= 32'h0;	// @[playground/src/Regfile.scala:15:{17,25}]
@@ -227,7 +227,7 @@ module RegFile(	// @[<stdin>:826:3]
       rf_30 <= 32'h0;	// @[playground/src/Regfile.scala:15:{17,25}]
       rf_31 <= 32'h0;	// @[playground/src/Regfile.scala:15:{17,25}]
     end
-    else begin	// @[<stdin>:827:11]
+    else begin	// @[<stdin>:829:11]
       if (~io_wen | (|io_waddr)) begin	// @[playground/src/Regfile.scala:15:17, :16:15, :17:{18,25}]
       end
       else	// @[playground/src/Regfile.scala:15:17, :16:15, :17:25]
@@ -296,7 +296,7 @@ module RegFile(	// @[<stdin>:826:3]
         rf_31 <= io_wdata;	// @[playground/src/Regfile.scala:15:17]
     end
   end // always @(posedge)
-  assign io_rdata1 = casez_tmp;	// @[<stdin>:826:3, playground/src/Regfile.scala:23:12]
-  assign io_rdata2 = casez_tmp_0;	// @[<stdin>:826:3, playground/src/Regfile.scala:24:12]
+  assign io_rdata1 = casez_tmp;	// @[<stdin>:828:3, playground/src/Regfile.scala:23:12]
+  assign io_rdata2 = casez_tmp_0;	// @[<stdin>:828:3, playground/src/Regfile.scala:24:12]
 endmodule
 
