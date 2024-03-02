@@ -52,7 +52,7 @@ module PreIF_s(	// @[<stdin>:3:3]
   `ifndef SYNTHESIS	// @[playground/src/PreIF.scala:92:11]
     always @(posedge clock) begin	// @[playground/src/PreIF.scala:92:11]
       if ((`PRINTF_COND_) & _GEN & ~reset)	// @[playground/src/PreIF.scala:91:15, :92:11]
-        $fwrite(32'h80000002, "PreIF: pc=%d, nextpc=%d , is_fire=%d\n", PreIF_pc,
+        $fwrite(32'h80000002, "PreIF: pc=%x, nextpc=%x , is_fire=%d\n", PreIF_pc,
                 PreIF_nextpc, is_fire);	// @[playground/src/PreIF.scala:34:29, :37:36, :92:11, src/main/scala/chisel3/util/Decoupled.scala:52:35]
     end // always @(posedge)
   `endif // not def SYNTHESIS
