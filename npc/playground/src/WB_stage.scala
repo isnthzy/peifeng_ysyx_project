@@ -17,7 +17,7 @@ class WB_stage extends Module {
   val wb_valid=dontTouch(RegInit(false.B))
   val wb_ready_go=dontTouch(Wire(Bool()))
   wb_ready_go:=true.B
-  WB.IO.ready := !wb_valid || wb_ready_go 
+  WB.IO.ready := (!wb_valid || wb_ready_go) && ~reset.asBool   
   when(WB.IO.ready){
     wb_valid:=WB.IO.valid
   }
