@@ -39,7 +39,7 @@ class IF_stage extends Module {
   if_inst_is_valid:=IF.r.fire
   //-----------------AXI4Lite R  Channel------------------------
 
-  val if_pc=dontTouch(Wire(UInt(ADDR_WIDTH.W)))
+  val if_pc=dontTouch(WireDefault(0.U(ADDR_WIDTH.W)))
   when(IF.to_id.fire){
     if_pc:=IF.IO.bits.nextpc
   }
