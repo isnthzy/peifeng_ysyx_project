@@ -92,7 +92,7 @@ class PreIF_s extends Module {
   }
   //如果遇到阻塞情况，那么if级也要发生阻塞
 
-  PreIF.to_if.bits.pc    :=PreIF_nextpc
-  PreIF.to_if.bits.nextpc:=0.U
+  PreIF.to_if.bits.pc    :=PreIF_pc
+  PreIF.to_if.bits.nextpc:=PreIF_nextpc
 }
 

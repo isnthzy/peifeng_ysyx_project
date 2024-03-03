@@ -29,7 +29,6 @@ class DPI_stage extends Module {
   dpi_getinfo.io.reset:=reset
   dpi_getinfo.io.dpi_valid:=DPI.wb_valid
   dpi_getinfo.io.pc:=DPI.pc
-  dpi_getinfo.io.nextpc:=DPI.nextpc
   dpi_getinfo.io.inst:=DPI.inst
 
   val dpi_inv=Module(new dpi_inv())
@@ -79,24 +78,22 @@ class Dpi_GetInfo extends BlackBox with HasBlackBoxInline {
     val reset=Input(Bool())
     val dpi_valid=Input(Bool())
     val pc      =Input(UInt(ADDR_WIDTH.W))
-    val nextpc  =Input(UInt(ADDR_WIDTH.W))
     val inst    =Input(UInt(32.W))
   })
   setInline("dpic/DpiGetInfo.v",
     """
-      |import "DPI-C" function void get_info(input int pc,input int nextpc,input int inst,input bit dpi_valid);
+      |import "DPI-C" function void get_info(input int pc,input int inst,input bit dpi_valid);
       |module Dpi_GetInfo(
       |    input        clock,
       |    input        reset,
       |    input        dpi_valid,
       |    input [31:0] pc,
-      |    input [31:0] nextpc,
       |    input [31:0] inst
       |    
       |);
       | always @(*)begin
       |   if(~reset)begin
-      |     get_info(pc,nextpc,inst,dpi_valid);
+      |     get_info(pc,inst,dpi_valid);
       |     //有可能因为阻塞等传递了无效的数据，需要在仿真环境中处理这些情况
       |   end
       |  end
