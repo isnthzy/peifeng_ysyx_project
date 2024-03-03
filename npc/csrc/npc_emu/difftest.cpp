@@ -124,7 +124,7 @@ void reg_ref_display(CPU_state *ref_r){
   }
   // printf("pc:%x\n",ref_r->pc);
 }
-static void checkregs(CPU_state *ref, vaddr_t pc,vaddr_t npc) {
+static void checkregs(CPU_state *ref, vaddr_t pc) {
   if (!difftest_checkregs(ref, pc)) {
     npc_state.state = NPC_ABORT;
     npc_state.halt_pc = pc;
@@ -142,7 +142,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
     ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
     if (ref_r.pc == npc) {
       skip_dut_nr_inst = 0;
-      checkregs(&ref_r, pc, npc);
+      checkregs(&ref_r, pc);
       return;
     }
     skip_dut_nr_inst --;
@@ -160,7 +160,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
 
   ref_difftest_exec(1);
   ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
-  checkregs(&ref_r, pc, npc);
+  checkregs(&ref_r, pc);
 }
 #endif
 #ifndef CONFIG_DIFFTEST
