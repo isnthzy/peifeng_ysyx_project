@@ -22,8 +22,8 @@ class PreIF_s extends Module {
   
 
   br.nextpc_stall:=(PreIF.for_id.Br_J.nextpc_stall 
-                   || PreIF.for_ex.Br_B.nextpc_stall
-                   || PreIF.for_ex.epc.nextpc_stall )
+                 || PreIF.for_ex.Br_B.nextpc_stall
+                 || PreIF.for_ex.epc.nextpc_stall )
   fetch_wen:=PreIF.to_if.ready && !br.nextpc_stall
 
   PreIF_flush:=PreIF.for_ex.flush || PreIF.for_id.flush
@@ -43,8 +43,7 @@ class PreIF_s extends Module {
 
   PreIF_snpc := PreIF_pc + 4.U
   PreIF_dnpc := Mux(PreIF.for_ex.epc.taken, PreIF.for_ex.epc.target, br.target)
-  PreIF_nextpc:= Mux(br.nextpc_stall, PreIF_nextpc ,
-                  Mux(br.taken || PreIF.for_ex.epc.taken, PreIF_dnpc, PreIF_snpc))
+  PreIF_nextpc:= Mux(br.taken || PreIF.for_ex.epc.taken, PreIF_dnpc, PreIF_snpc)
 
   //--------------------------AXI4Lite--------------------------
 
