@@ -37,7 +37,7 @@ class PreIF_s extends Module {
   PreIF_flush:=PreIF.for_ex.flush || PreIF.for_id.flush
 
   PreIF_ready_go:= fetch_wen && PreIF.ar.fire
-  PreIF.to_if.valid:= Mux(PreIF_flush,false.B, resetn && PreIF_ready_go)
+  PreIF.to_if.valid:= Mux(PreIF_flush,false.B, resetnReg && PreIF_ready_go)
 
   val br=Wire(new br_bus())
   br.taken:=PreIF.for_id.Br_J.taken || PreIF.for_ex.Br_B.taken
