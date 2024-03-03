@@ -26,7 +26,7 @@ void device_update();
 void step_and_dump_wave(){
   top->eval();
   contextp->timeInc(1); //时间+1
-  // top->eval();
+  top->eval();
 #ifdef TRACE_VCD
   tfp->dump(contextp->time()); //使用时间
 #endif

@@ -20,10 +20,10 @@ class PreIF_s extends Module {
   val PreIF_flush=dontTouch(Wire(Bool()))
   val br_modify=dontTouch(Wire(Bool()))
 
-  val resetnReg=dontTouch(RegInit(false.B))
-  val resetn=dontTouch(Wire(Bool()))
-  resetn:= ~reset.asBool 
-  resetnReg:= ~reset.asBool 
+  // val resetnReg=dontTouch(RegInit(false.B))
+  // val resetn=dontTouch(Wire(Bool()))
+  // resetn:= ~reset.asBool 
+  // resetnReg:= ~reset.asBool 
   //因为preif用pc取指，当传入分支跳转的nextpc时，需要修改pc为nextpc
   //并取消发起fetch
 
@@ -37,7 +37,7 @@ class PreIF_s extends Module {
   PreIF_flush:=PreIF.for_ex.flush || PreIF.for_id.flush
 
   PreIF_ready_go:= fetch_wen && PreIF.ar.fire
-  PreIF.to_if.valid:= Mux(PreIF_flush,false.B, resetnReg && PreIF_ready_go)
+  PreIF.to_if.valid:= Mux(PreIF_flush,false.B, ~reset.asBool && PreIF_ready_go)
 
   val br=Wire(new br_bus())
   br.taken:=PreIF.for_id.Br_J.taken || PreIF.for_ex.Br_B.taken
@@ -99,8 +99,9 @@ class PreIF_s extends Module {
 
   //----------------------AXI4Lite-----------------------------
 
- 
+  val is_fire=PreIF.to_if.fire
   when(PreIF_ready_go || br_modify){ 
+    printf("PreIF: pc=%x, nextpc=%x , is_fire=%d\n", PreIF_pc, PreIF_nextpc,is_fire)
     PreIF_pc := PreIF_nextpc //reg类型，更新慢一拍
   }
   //如果遇到阻塞情况，那么if级也要发生阻塞
