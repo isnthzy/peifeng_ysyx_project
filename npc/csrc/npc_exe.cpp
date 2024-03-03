@@ -64,10 +64,11 @@ extern "C" void cpu_use_func(int pc,int nextpc,svBit is_ret,svBit is_jal,svBit i
   #endif
 }
 
-extern "C" void get_info(int pc,int inst,svBit dpi_valid){
+extern "C" void get_info(int pc,int nextpc,int inst,svBit dpi_valid){
   // printf("pc: %x\n",pc);
   if(dpi_valid){
     cpu.pc=pc;
+    cpu_info.nextpc=nextpc;
     cpu_info.inst=inst;
   }
   cpu_info.valid=dpi_valid;
@@ -143,7 +144,7 @@ static void trace_and_difftest(){
   if(difftest_flag){
     /*第一次不进行diff,因为nemu的寄存器写入是瞬间写，npc是延迟一拍后写
     因此diff时机是npc执行结束了，进入下一排执行了，reg能取出来了，进行diff*/
-    if(!first_diff) difftest_step(cpu.pc,0);
+    if(!first_diff) difftest_step(cpu.pc,cpu_info.nextpc);
     first_diff=false;
   }
   #endif

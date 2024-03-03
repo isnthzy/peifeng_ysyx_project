@@ -40,6 +40,7 @@ typedef struct {
 }CPU_state;
 
 typedef struct {
+  vaddr_t nextpc;
   word_t inst;
   bool valid;
 }CPU_info;
