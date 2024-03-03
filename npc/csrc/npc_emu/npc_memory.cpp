@@ -63,7 +63,7 @@ void mputIringbuf(){
 void out_of_bound(paddr_t addr) {
   IFDEF(CONFIG_ITRACE,putIringbuf()); 
   panic("(npc)address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
-      addr, PMEM_LEFT, PMEM_RIGHT,cpu_info.nextpc);
+      addr, PMEM_LEFT, PMEM_RIGHT,cpu.pc);
 }
 //----------------------------dpi-c----------------------------
 extern "C" int get_inst(int raddr) {
@@ -95,7 +95,7 @@ word_t paddr_read(paddr_t addr, int len) {
   #ifdef CONFIG_MTRACE //警惕切换riscv64会造成的段错误
   if(likely(in_pmem(addr))){
     char mtrace_logbuf[120];
-    sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",cpu_info.nextpc,addr,pmem_rdata);
+    sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",cpu.pc,addr,pmem_rdata);
     enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
   }
   #endif
@@ -114,7 +114,7 @@ void paddr_write(paddr_t addr, int len, word_t data) {
 
   #ifdef CONFIG_MTRACE
   char mtrace_logbuf[120];
-  sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x wdata:0x%08x len:%d",cpu_info.nextpc,addr,data,len);
+  sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x wdata:0x%08x len:%d",cpu.pc,addr,data,len);
   enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
   // printf("%s\n",mtrace_logbuf);
   #endif
