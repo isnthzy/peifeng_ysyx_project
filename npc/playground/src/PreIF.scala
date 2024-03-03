@@ -19,8 +19,12 @@ class PreIF_s extends Module {
   val fetch_wen=dontTouch(Wire(Bool()))
   val PreIF_flush=dontTouch(Wire(Bool()))
   val br_modify=dontTouch(Wire(Bool()))
-  //因为用pc取指，当传入分支跳转时，需要修改pc为nextpc
+  //因为preif用pc取指，当传入分支跳转的nextpc时，需要修改pc为nextpc
   //并取消发起fetch
+
+  br_modify:=( PreIF.for_ex.Br_B.taken ||
+               PreIF.for_ex.epc.taken  ||
+               PreIF.for_id.Br_J.taken)
 
 
   fetch_wen:=PreIF.to_if.ready && !br_modify
