@@ -18,19 +18,20 @@ class PreIF_s extends Module {
   val PreIF_ready_go=dontTouch(Wire(Bool()))
   val fetch_wen=dontTouch(Wire(Bool()))
   val PreIF_flush=dontTouch(Wire(Bool()))
-  val PreIF_nextpcStall=dontTouch(Wire(Bool()))
+  val br=Wire(new br_bus())
+  
 
-  PreIF_nextpcStall:=(PreIF.for_id.Br_J.nextpc_stall 
+  br.nextpc_stall:=(PreIF.for_id.Br_J.nextpc_stall 
                    || PreIF.for_ex.Br_B.nextpc_stall
                    || PreIF.for_ex.epc.nextpc_stall )
-  fetch_wen:=PreIF.to_if.ready && !PreIF_nextpcStall
+  fetch_wen:=PreIF.to_if.ready && !br.nextpc_stall
 
   PreIF_flush:=PreIF.for_ex.flush || PreIF.for_id.flush
 
   PreIF_ready_go:= fetch_wen && PreIF.ar.fire
   PreIF.to_if.valid:= Mux(PreIF_flush,false.B, ~reset.asBool && PreIF_ready_go)
 
-  val br=Wire(new br_bus())
+  
   br.taken:=PreIF.for_id.Br_J.taken || PreIF.for_ex.Br_B.taken
   br.target:=Mux(PreIF.for_id.Br_J.taken, PreIF.for_id.Br_J.target, PreIF.for_ex.Br_B.target)
 
