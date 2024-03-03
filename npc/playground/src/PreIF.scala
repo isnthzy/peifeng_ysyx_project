@@ -100,6 +100,7 @@ class PreIF_s extends Module {
   //----------------------AXI4Lite-----------------------------
 
   val is_fire=PreIF.to_if.fire
+  dontTouch(is_fire)
   when(PreIF_ready_go || br_modify){ 
     printf("PreIF: pc=%x, nextpc=%x , is_fire=%d\n", PreIF_pc, PreIF_nextpc,is_fire)
     PreIF_pc := PreIF_nextpc //reg类型，更新慢一拍
