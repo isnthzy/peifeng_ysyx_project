@@ -64,7 +64,7 @@ module PreIF_s(	// @[<stdin>:3:3]
         araddrReg <= PreIF_pc;	// @[playground/src/PreIF.scala:47:29, :62:24]
     end
   end // always @(posedge)
-  assign PreIF_to_if_valid = ~PreIF_flush & resetn & PreIF_ready_go;	// @[<stdin>:3:3, playground/src/PreIF.scala:18:36, :20:33, :24:28, :40:26]
+  assign PreIF_to_if_valid = ~PreIF_flush & resetnReg & PreIF_ready_go;	// @[<stdin>:3:3, playground/src/PreIF.scala:18:36, :20:33, :23:34, :40:26]
   assign PreIF_to_if_bits_nextpc = PreIF_nextpc;	// @[<stdin>:3:3, playground/src/PreIF.scala:50:36]
   assign PreIF_to_if_bits_pc = PreIF_pc;	// @[<stdin>:3:3, playground/src/PreIF.scala:47:29]
   assign PreIF_ar_valid = arvalidReg;	// @[<stdin>:3:3, playground/src/PreIF.scala:61:25]
