@@ -18,21 +18,19 @@ class PreIF_s extends Module {
   val PreIF_ready_go=dontTouch(Wire(Bool()))
   val fetch_wen=dontTouch(Wire(Bool()))
   val PreIF_flush=dontTouch(Wire(Bool()))
-  val br=Wire(new br_bus())
-  
+  val br_modify=dontTouch(Wire(Bool()))
+  //因为用pc取指，当传入分支跳转时，需要修改pc为nextpc
+  //并取消发起fetch
 
-  br.nextpc_stall:=(PreIF.for_id.Br_J.nextpc_stall 
-                 || PreIF.for_ex.Br_B.nextpc_stall
-                 || PreIF.for_ex.epc.nextpc_stall )
-  // br.nextpc_stall:=false.B
-  fetch_wen:=PreIF.to_if.ready && !br.nextpc_stall
+
+  fetch_wen:=PreIF.to_if.ready && !br_modify
 
   PreIF_flush:=PreIF.for_ex.flush || PreIF.for_id.flush
 
   PreIF_ready_go:= fetch_wen && PreIF.ar.fire
   PreIF.to_if.valid:= Mux(PreIF_flush,false.B, ~reset.asBool && PreIF_ready_go)
 
-  
+  val br=Wire(new br_bus())
   br.taken:=PreIF.for_id.Br_J.taken || PreIF.for_ex.Br_B.taken
   br.target:=Mux(PreIF.for_id.Br_J.taken, PreIF.for_id.Br_J.target, PreIF.for_ex.Br_B.target)
 
@@ -93,8 +91,7 @@ class PreIF_s extends Module {
   //----------------------AXI4Lite-----------------------------
 
  
-  when(PreIF_ready_go || br.nextpc_stall){ //if级控制不用if_valid信号（if级有点特殊）
-    // printf("PreIF: pc=%x, nextpc=%x , is_fire=%d\n", PreIF_pc, PreIF_nextpc,PreIF.to_if.fire)
+  when(PreIF_ready_go || br_modify){ 
     PreIF_pc := PreIF_nextpc //reg类型，更新慢一拍
   }
   //如果遇到阻塞情况，那么if级也要发生阻塞

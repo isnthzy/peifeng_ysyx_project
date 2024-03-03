@@ -40,7 +40,6 @@ class EX_stage extends Module {
   Alu.io.src2:=EX.IO.bits.src2
   
   //分支跳转
-  EX.to_preif.Br_B.nextpc_stall:=EX.IO.bits.b_taken&&ex_valid
   EX.to_preif.Br_B.taken:=EX.IO.bits.b_taken&&ex_valid
   EX.to_preif.Br_B.target:=MuxLookup(EX.IO.bits.br_type,0.U)(Seq(
                           BR_XXX -> 0.U,
@@ -109,7 +108,6 @@ class EX_stage extends Module {
   EX.to_id.csr.ecpt.mcause_in:=11.U
   EX.to_id.csr.ecpt.pc_wb:=EX.IO.bits.pc
   
-  EX.to_preif.epc.nextpc_stall:=(EX.IO.bits.pc_sel===PC_EPC)&&ex_valid
   EX.to_preif.epc.taken:=(EX.IO.bits.pc_sel===PC_EPC)&&ex_valid
   EX.to_preif.epc.target:=Mux((EX.IO.bits.csr_cmd===CSR.MRET ),EX.IO.bits.csr_global.mepc,
                         Mux((EX.IO.bits.csr_cmd===CSR.ECALL),EX.IO.bits.csr_global.mtvec,0.U))

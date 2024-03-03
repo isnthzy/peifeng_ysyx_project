@@ -127,7 +127,6 @@ class ID_stage extends Module {
   J_cond.io.br_type:=dc.io.br_type
   J_cond.io.src1:=src1
   J_cond.io.src2:=src2
-  ID.to_preif.Br_J.nextpc_stall:=J_cond.io.taken&&id_valid
   ID.to_preif.Br_J.taken:=J_cond.io.taken&&id_valid
   ID.to_preif.Br_J.target:=J_cond.io.target
   
