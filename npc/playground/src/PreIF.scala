@@ -86,7 +86,7 @@ class PreIF_s extends Module {
   //----------------------AXI4Lite-----------------------------
 
  
-  when(PreIF.to_if.fire){ //if级控制不用if_valid信号（if级有点特殊）
+  when(PreIF_ready_go){ //if级控制不用if_valid信号（if级有点特殊）
     // printf("PreIF: pc=%x, nextpc=%x , is_fire=%d\n", PreIF_pc, PreIF_nextpc,PreIF.to_if.fire)
     PreIF_pc := PreIF_nextpc //reg类型，更新慢一拍
   }
