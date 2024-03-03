@@ -58,11 +58,13 @@ class wb_to_rf_bus extends Bundle{
 }
 
 class epc_to_if_bus extends Bundle{
-  val target=UInt(ADDR_WIDTH.W)
+  val nextpc_stall=Bool()
   val taken=Bool()
+  val target=UInt(ADDR_WIDTH.W)
 }
 
 class br_bus extends Bundle{
+  val nextpc_stall=Bool()
   val taken=Bool()
   val target=UInt(ADDR_WIDTH.W)
 }
@@ -90,12 +92,9 @@ class ex_to_preif_bus extends Bundle{
 
 //----------------to if----------------
 class id_to_if_bus extends Bundle{
-  // val Br_J=new br_bus()
   val flush=Bool()
 }
 class ex_to_if_bus extends Bundle{
-  // val epc=new epc_to_if_bus()
-  // val Br_B=new br_bus()
   val flush=Bool()
 }
 

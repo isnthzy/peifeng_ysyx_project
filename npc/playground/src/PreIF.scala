@@ -16,12 +16,17 @@ class PreIF_s extends Module {
     val b=Flipped(Decoupled(new AxiWriteResponseBundle()))
   })
   val PreIF_ready_go=dontTouch(Wire(Bool()))
-
   val fetch_wen=dontTouch(Wire(Bool()))
-  fetch_wen:=PreIF.to_if.ready
-
   val PreIF_flush=dontTouch(Wire(Bool()))
+  val PreIF_nextpcStall=dontTouch(Wire(Bool()))
+
+  PreIF_nextpcStall:=(PreIF.for_id.Br_J.nextpc_stall 
+                   || PreIF.for_ex.Br_B.nextpc_stall
+                   || PreIF.for_ex.epc.nextpc_stall )
+  fetch_wen:=PreIF.to_if.ready && !PreIF_nextpcStall
+
   PreIF_flush:=PreIF.for_ex.flush || PreIF.for_id.flush
+
   PreIF_ready_go:= fetch_wen && PreIF.ar.fire
   PreIF.to_if.valid:= Mux(PreIF_flush,false.B, ~reset.asBool && PreIF_ready_go)
 
@@ -37,7 +42,8 @@ class PreIF_s extends Module {
 
   PreIF_snpc := PreIF_pc + 4.U
   PreIF_dnpc := Mux(PreIF.for_ex.epc.taken, PreIF.for_ex.epc.target, br.target)
-  PreIF_nextpc:= Mux(br.taken || PreIF.for_ex.epc.taken, PreIF_dnpc, PreIF_snpc)
+  PreIF_nextpc:= Mux(PreIF_nextpcStall, PreIF_nextpc ,
+                  Mux(br.taken || PreIF.for_ex.epc.taken, PreIF_dnpc, PreIF_snpc))
 
   //--------------------------AXI4Lite--------------------------
 
