@@ -19,6 +19,11 @@ class PreIF_s extends Module {
   val fetch_wen=dontTouch(Wire(Bool()))
   val PreIF_flush=dontTouch(Wire(Bool()))
   val br_modify=dontTouch(Wire(Bool()))
+
+  val resetnReg=dontTouch(RegInit(false.B))
+  val resetn=dontTouch(Wire(Bool()))
+  resetn:= ~reset.asBool 
+  resetnReg:= ~reset.asBool 
   //因为preif用pc取指，当传入分支跳转的nextpc时，需要修改pc为nextpc
   //并取消发起fetch
 
@@ -32,7 +37,7 @@ class PreIF_s extends Module {
   PreIF_flush:=PreIF.for_ex.flush || PreIF.for_id.flush
 
   PreIF_ready_go:= fetch_wen && PreIF.ar.fire
-  PreIF.to_if.valid:= Mux(PreIF_flush,false.B, ~reset.asBool && PreIF_ready_go)
+  PreIF.to_if.valid:= Mux(PreIF_flush,false.B, resetn && PreIF_ready_go)
 
   val br=Wire(new br_bus())
   br.taken:=PreIF.for_id.Br_J.taken || PreIF.for_ex.Br_B.taken
