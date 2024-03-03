@@ -43,7 +43,7 @@ class PreIF_s extends Module {
 
   PreIF_snpc := PreIF_pc + 4.U
   PreIF_dnpc := Mux(PreIF.for_ex.epc.taken, PreIF.for_ex.epc.target, br.target)
-  PreIF_nextpc:= Mux(PreIF_nextpcStall, PreIF_nextpc ,
+  PreIF_nextpc:= Mux(br.nextpc_stall, PreIF_nextpc ,
                   Mux(br.taken || PreIF.for_ex.epc.taken, PreIF_dnpc, PreIF_snpc))
 
   //--------------------------AXI4Lite--------------------------
