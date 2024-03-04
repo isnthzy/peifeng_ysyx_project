@@ -119,7 +119,7 @@ class EX_stage extends Module {
 //----------------------AXI4Lite AR Channel----------------------
 
 //-------------------AXI4Lite  W WR B  Channel-------------------
-  val wr_idle :: wr_wait_ready :: wr_wait_bresp :: Nil = Enum(2)
+  val wr_idle :: wr_wait_ready :: wr_wait_bresp :: Nil = Enum(3)
   val WriteRequstState=RegInit(wr_idle)
   val awvalidReg=RegInit(false.B)
   val awaddrReg=RegInit(0.U(ADDR_WIDTH.W))
