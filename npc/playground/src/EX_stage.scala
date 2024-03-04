@@ -152,7 +152,12 @@ class EX_stage extends Module {
     }
   }
   EX.aw.bits.prot:=0.U
-
+  EX.aw.valid:=awvalidReg
+  EX.aw.bits.addr:=awaddrReg
+  EX.w.valid:=wvalidReg
+  EX.w.bits.data:=wdataReg
+  EX.w.bits.strb:=wstrbReg
+  EX.b.ready:=breadyReg
 //---------------------------AXI4 Lite---------------------------
 
   //csr

@@ -38,7 +38,6 @@ class IF_stage extends Module {
   }.otherwise{
     if_inst_is_valid:=false.B
   }
-  // if_inst_is_valid:=IF.r.fire
   //-----------------AXI4Lite R  Channel------------------------
 
   IF.to_id.bits.pc:=IF.IO.bits.pc

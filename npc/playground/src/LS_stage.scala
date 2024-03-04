@@ -14,9 +14,9 @@ class LS_stage extends Module {
   })
   dontTouch(LS.r);
   val data_sram_rdata=dontTouch(WireDefault(0.U(DATA_WIDTH.W)))
-  val rdatavalidReg=dontTouch(RegInit(false.B))
+  val rdata_valid=dontTouch(Wire(Bool()))
   val rdata_ok=dontTouch(Wire(Bool()))
-  rdata_ok:=rdatavalidReg && LS.IO.bits.ld_wen
+  rdata_ok:=rdata_valid && LS.IO.bits.ld_wen
 
   val ls_valid=dontTouch(RegInit(false.B))
   val ls_ready_go=dontTouch(Wire(Bool()))
@@ -31,9 +31,9 @@ class LS_stage extends Module {
   LS.r.ready:=true.B
   when(LS.r.fire){
     data_sram_rdata:=LS.r.bits.data
-    rdatavalidReg:=true.B
+    rdata_valid:=true.B
   }.otherwise{
-    rdatavalidReg:=false.B
+    rdata_valid:=false.B
   }
   
 //----------------------AXI4Lite  R Channel----------------------
