@@ -16,6 +16,7 @@
 !README.md
 !utils/
 build/
+vsrc/*
 
 # mill
 out/
