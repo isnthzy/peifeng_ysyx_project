@@ -10,7 +10,8 @@ class Axi4Lite_Sram_Mem extends Module {
   
   io.ar.ready:=true.B
   dpi_sram.io.clock:=clock
-  dpi_sram.io.addr:=io.ar.bits.addr
+  dpi_sram.io.addr:=Mux(io.ar.fire,io.ar.bits.addr,
+                      Mux((io.aw.fire && io.w.fire),io.aw.bits.addr,0.U))
   dpi_sram.io.req:=io.ar.fire || (io.aw.fire && io.w.fire)
   dpi_sram.io.wr:=(io.aw.fire && io.w.fire)
 
