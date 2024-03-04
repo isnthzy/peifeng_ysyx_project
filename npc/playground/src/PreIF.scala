@@ -57,7 +57,9 @@ class PreIF_s extends Module {
   val araddrReg=RegInit(0.U(ADDR_WIDTH.W))
 
   
-  val ReadRequstState=RegInit(s_idle)
+  // val ReadRequstState=RegInit(s_idle)
+  val ReadRequstState=WireDefault(s_idle)
+
   when(ReadRequstState===s_idle){
     when(fetch_wen){
       ReadRequstState:=s_wait_ready
