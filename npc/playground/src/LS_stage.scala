@@ -12,27 +12,31 @@ class LS_stage extends Module {
     val to_id =Output(new ls_to_id_bus())
     val r=Flipped(Decoupled(new AxiReadDataBundle()))
   })
-  val data_sram_rdata=dontTouch(WireDefault(0.U(DATA_WIDTH.W)))
   dontTouch(LS.r);
+  val data_sram_rdata=dontTouch(WireDefault(0.U(DATA_WIDTH.W)))
+  val rdatavalidReg=dontTouch(RegInit(false.B))
+  val rdata_ok=dontTouch(Wire(Bool()))
+  rdata_ok:=rdatavalidReg && LS.IO.bits.ld_wen
 
   val ls_valid=dontTouch(RegInit(false.B))
   val ls_ready_go=dontTouch(Wire(Bool()))
-  ls_ready_go:=Mux(!LS.r.valid&&LS.IO.bits.ld_wen,false.B,true.B)
+  ls_ready_go:=Mux(rdata_ok,false.B,true.B)
   LS.IO.ready := !ls_valid || ls_ready_go &&LS.to_wb.ready
   when(LS.IO.ready){
     ls_valid:=LS.IO.valid
   }
   LS.to_wb.valid:=ls_valid && ls_ready_go
 
-//-----------------AXI总线操作----------
-  LS.r.ready:=ls_valid
+//----------------------AXI4Lite  R Channel----------------------
+  LS.r.ready:=true.B
   when(LS.r.fire){
     data_sram_rdata:=LS.r.bits.data
+    rdatavalidReg:=true.B
+  }.otherwise{
+    rdatavalidReg:=false.B
   }
   
-
-  
-//-----------------------------------
+//----------------------AXI4Lite  R Channel----------------------
 
   val ram_data=dontTouch(Wire(UInt(32.W)))
 

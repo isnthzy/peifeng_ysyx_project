@@ -73,28 +73,87 @@ class EX_stage extends Module {
   EX.to_id.fw.addr:=Mux(ex_valid && EX.IO.bits.rf_wen , EX.to_ls.bits.rd , 0.U)
   EX.to_id.fw.data:=EX.to_ls.bits.result
 
-  //EX级发起访存-----------AXI分界线-------------------
+  //EX级发起访存
+//---------------------------AXI4 Lite---------------------------
+
+
+//----------------------AXI4Lite AR Channel----------------------
+  val ar_idle :: ar_wait_ready :: Nil = Enum(2)
+  val arvalidReg=RegInit(false.B)
+  val araddrReg=RegInit(0.U(ADDR_WIDTH.W))
+
   
+  val ReadRequstState=RegInit(ar_idle)
+  when(ReadRequstState===ar_idle){
+    when(ld_wen&&ex_valid){
+      ReadRequstState:=ar_wait_ready
+      araddrReg:=Alu.io.result
+      arvalidReg:=true.B
+    }
+  }.elsewhen(ReadRequstState===ar_wait_ready){
+    when(EX.ar.ready){
+      ReadRequstState:=ar_idle
+      arvalidReg:=false.B
+    }
+  }
 
-
-  st_wen:=(EX.IO.bits.st_type=/=0.U)
-  ld_wen:=(EX.IO.bits.ld_type=/=0.U)
-
-  EX.ar.valid:=ld_wen&&ex_valid
-  EX.ar.bits.addr:=Alu.io.result
+  EX.ar.valid:=arvalidReg
+  EX.ar.bits.addr:=araddrReg
   EX.ar.bits.prot:=0.U
-  
-  EX.w.valid:=st_wen&&ex_valid
-  EX.w.bits.data:=EX.IO.bits.rdata2
-  EX.w.bits.strb:=EX.IO.bits.st_type
+  // st_wen:=(EX.IO.bits.st_type=/=0.U)
+  // ld_wen:=(EX.IO.bits.ld_type=/=0.U)
 
-  EX.aw.valid:=st_wen&&ex_valid
-  EX.aw.bits.addr:=Alu.io.result
+  // EX.ar.valid:=ld_wen&&ex_valid
+  // EX.ar.bits.addr:=Alu.io.result
+  // EX.ar.bits.prot:=0.U
+  
+  // EX.w.valid:=st_wen&&ex_valid
+  // EX.w.bits.data:=EX.IO.bits.rdata2
+  // EX.w.bits.strb:=EX.IO.bits.st_type
+
+  // EX.aw.valid:=st_wen&&ex_valid
+  // EX.aw.bits.addr:=Alu.io.result
+  // EX.aw.bits.prot:=0.U
+
+  // EX.b.ready:=ex_valid
+//----------------------AXI4Lite AR Channel----------------------
+
+//-------------------AXI4Lite  W WR B  Channel-------------------
+  val wr_idle :: wr_wait_ready :: wr_wait_bresp :: Nil = Enum(2)
+  val WriteRequstState=RegInit(wr_idle)
+  val awvalidReg=RegInit(false.B)
+  val awaddrReg=RegInit(0.U(ADDR_WIDTH.W))
+  val wvalidReg=RegInit(false.B)
+  val wdataReg=RegInit(0.U(DATA_WIDTH.W))
+  val wstrbReg=RegInit(0.U(4.W))
+  val breadyReg=RegInit(false.B)
+
+  when(WriteRequstState===wr_idle){
+    when(st_wen&&ex_valid){
+      WriteRequstState:=wr_wait_ready
+      awvalidReg:=true.B
+      awaddrReg:=Alu.io.result
+      
+      wvalidReg:=true.B
+      wdataReg:=EX.IO.bits.rdata2
+      wstrbReg:=EX.IO.bits.st_type
+    }
+  }.elsewhen(WriteRequstState===wr_wait_ready){
+    when(EX.aw.ready&&EX.w.ready){
+      WriteRequstState:=wr_wait_bresp
+      awvalidReg:=false.B
+      wvalidReg:=false.B
+      breadyReg:=true.B
+    }
+  }.elsewhen(WriteRequstState===wr_wait_bresp){
+    when(breadyReg&&EX.b.valid){
+      WriteRequstState:=wr_idle
+      breadyReg:=false.B
+    }
+  }
   EX.aw.bits.prot:=0.U
 
-  EX.b.ready:=ex_valid
-
-  //----------------------------------------------------
+//---------------------------AXI4 Lite---------------------------
 
   //csr
   val Csr_alu=Module(new Csr_alu())
