@@ -22,6 +22,8 @@ class EX_stage extends Module {
   dontTouch(EX.b);
   val ld_wen=dontTouch(Wire(Bool()))
   val st_wen=dontTouch(Wire(Bool()))
+  st_wen:=(EX.IO.bits.st_type=/=0.U)
+  ld_wen:=(EX.IO.bits.ld_type=/=0.U)
 
   val ex_valid=dontTouch(RegInit(false.B))
   val ex_ready_go=dontTouch(Wire(Bool()))
@@ -100,22 +102,7 @@ class EX_stage extends Module {
   EX.ar.valid:=arvalidReg
   EX.ar.bits.addr:=araddrReg
   EX.ar.bits.prot:=0.U
-  // st_wen:=(EX.IO.bits.st_type=/=0.U)
-  // ld_wen:=(EX.IO.bits.ld_type=/=0.U)
 
-  // EX.ar.valid:=ld_wen&&ex_valid
-  // EX.ar.bits.addr:=Alu.io.result
-  // EX.ar.bits.prot:=0.U
-  
-  // EX.w.valid:=st_wen&&ex_valid
-  // EX.w.bits.data:=EX.IO.bits.rdata2
-  // EX.w.bits.strb:=EX.IO.bits.st_type
-
-  // EX.aw.valid:=st_wen&&ex_valid
-  // EX.aw.bits.addr:=Alu.io.result
-  // EX.aw.bits.prot:=0.U
-
-  // EX.b.ready:=ex_valid
 //----------------------AXI4Lite AR Channel----------------------
 
 //-------------------AXI4Lite  W WR B  Channel-------------------
