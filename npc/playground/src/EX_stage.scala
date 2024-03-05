@@ -77,8 +77,10 @@ class EX_stage extends Module {
 
   //EX级发起访存
 //---------------------------AXI4 Lite---------------------------
-
-
+  val WaitWriteIdle=dontTouch(Wire(Bool()))
+  //如果write不是idle状态，拉高信号
+  val BrespFire=dontTouch(Wire(Bool()))
+  //b通道握手，拉高信号
 //----------------------AXI4Lite AR Channel----------------------
   val ar_idle :: ar_wait_ready :: Nil = Enum(2)
   val arvalidReg=RegInit(false.B)
@@ -88,9 +90,17 @@ class EX_stage extends Module {
   val ReadRequstState=RegInit(ar_idle)
   when(ReadRequstState===ar_idle){
     when(ld_wen&&ex_valid){
-      ReadRequstState:=ar_wait_ready
-      araddrReg:=Alu.io.result
-      arvalidReg:=true.B
+      when(WaitWriteIdle){
+        when(BrespFire){
+          ReadRequstState:=ar_wait_ready
+          araddrReg:=Alu.io.result
+          arvalidReg:=true.B    
+        }
+      }.otherwise{
+        ReadRequstState:=ar_wait_ready
+        araddrReg:=Alu.io.result
+        arvalidReg:=true.B
+      }
     }
   }.elsewhen(ReadRequstState===ar_wait_ready){
     when(EX.ar.ready){
@@ -138,6 +148,8 @@ class EX_stage extends Module {
       breadyReg:=false.B
     }
   }
+  WaitWriteIdle:=(WriteRequstState=/=wr_idle)
+  BrespFire:=EX.b.fire
   EX.aw.bits.prot:=0.U
   EX.aw.valid:=awvalidReg
   EX.aw.bits.addr:=awaddrReg
