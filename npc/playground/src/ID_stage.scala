@@ -67,7 +67,7 @@ class ID_stage extends Module {
   val rdata2=dontTouch(Wire(UInt(DATA_WIDTH.W)))
   val rs1_is_forward=dontTouch(Wire(Bool()))
   val rs2_is_forward=dontTouch(Wire(Bool()))
-  id_clog:=(ID.for_ex.clog||ID.for_ls.clog)&&(rs1_is_forward||rs1_is_forward)
+  id_clog:=(ID.for_ex.clog||ID.for_ls.clog)&&(rs1_is_forward||rs2_is_forward)
 
   rs1_is_forward:=((Regfile.io.raddr1=/=0.U) && 
                   ((Regfile.io.raddr1===ID.for_ex.fw.addr) ||
