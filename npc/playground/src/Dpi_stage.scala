@@ -79,6 +79,7 @@ class DPI_stage extends Module {
   dpi_mtrace.io.clock:=clock
   dpi_mtrace.io.reset:=reset
   dpi_mtrace.io.dpi_valid:=DPI.wb_valid
+  dpi_mtrace.io.pc:=DPI.pc
   dpi_mtrace.io.ld_wen:=DPI.ld_type=/=0.U
   dpi_mtrace.io.st_wen:=DPI.st_type=/=0.U
   dpi_mtrace.io.ld_len:=MuxLookup(DPI.ld_type,0.U)(Seq(
