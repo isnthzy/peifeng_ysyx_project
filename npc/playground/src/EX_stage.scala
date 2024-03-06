@@ -161,7 +161,7 @@ class EX_stage extends Module {
   EX.b.ready:=breadyReg
 //---------------------------AXI4 Lite---------------------------
   ex_clog:=((~EX.ar.ready&&ld_wen)
-         || WaitWriteIdle&&st_wen)
+         || (WriteRequstState=/=wr_idle)&&st_wen)
 
   //csr
   val Csr_alu=Module(new Csr_alu())
