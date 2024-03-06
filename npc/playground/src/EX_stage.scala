@@ -194,12 +194,15 @@ class EX_stage extends Module {
   EX.to_ls.bits.csr_commit.wdata:=EX.to_id.csr.wdata
   EX.to_ls.bits.csr_commit.exception:=EX.to_id.csr.ecpt
 
+  EX.to_ls.bits.dpic_bundle.id<>EX.IO.bits.dpic_bundle.id
+  EX.to_ls.bits.dpic_bundle.ex.func_flag:=(EX.IO.bits.br_type===BR_JAL)|(EX.IO.bits.br_type===BR_JR)
+  EX.to_ls.bits.dpic_bundle.ex.is_jal:=EX.IO.bits.br_type===BR_JAL
+  EX.to_ls.bits.dpic_bundle.ex.is_ret:=EX.IO.bits.inst===0x00008067.U
+  EX.to_ls.bits.dpic_bundle.ex.is_rd0:=EX.IO.bits.rd===0.U
 
-  EX.to_ls.bits.dpic_bundle.id_inv_flag:=EX.IO.bits.dpic_bundle.id_inv_flag
-  EX.to_ls.bits.dpic_bundle.ex_func_flag:=(EX.IO.bits.br_type===BR_JAL)|(EX.IO.bits.br_type===BR_JR)
-  EX.to_ls.bits.dpic_bundle.ex_is_jal:=EX.IO.bits.br_type===BR_JAL
-  EX.to_ls.bits.dpic_bundle.ex_is_ret:=EX.IO.bits.inst===0x00008067.U
-  EX.to_ls.bits.dpic_bundle.ex_is_rd0:=EX.IO.bits.rd===0.U
-
+  EX.to_ls.bits.dpic_bundle.ex.ld_type:=EX.IO.bits.ld_type
+  EX.to_ls.bits.dpic_bundle.ex.st_type:=EX.IO.bits.st_type
+  EX.to_ls.bits.dpic_bundle.ex.mem_addr:=Mux(st_wen||ld_wen,Alu.io.result,0.U)
+  EX.to_ls.bits.dpic_bundle.ex.st_data:=Mux(st_wen,EX.IO.bits.rdata2,0.U)
 }
 

@@ -85,6 +85,25 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
   // `wmask`中每比特表示`wdata`中1个字节的掩码,
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
 }
+
+extern "C" void mtrace_store(int pc,int addr,int data,int len){
+  #ifdef CONFIG_MTRACE
+    char mtrace_logbuf[120];
+    sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x wdata:0x%08x len:%d",cpu.pc,addr,data,len);
+    enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
+  #endif
+}
+extern "C" void mtrace_load(int pc,int addr,int data,int len){
+  #ifdef CONFIG_MTRACE //警惕切换riscv64会造成的段错误
+    char mtrace_logbuf[120];
+    sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",pc,addr,data);
+    enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
+  #endif
+}
+  // char mtrace_logbuf[120];
+  // sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x wdata:0x%08x len:%d",cpu.pc,addr,data,len);
+  // enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
+  // // printf("%s\n",mtrace_logbuf);
 //----------------------------dpi-c----------------------------
 static uint64_t read_cnt=0;
 word_t paddr_read(paddr_t addr, int len) {
@@ -92,13 +111,13 @@ word_t paddr_read(paddr_t addr, int len) {
   word_t pmem_rdata;
   if (likely(in_pmem(addr))) pmem_rdata=pmem_read(addr,4);
 
-  #ifdef CONFIG_MTRACE //警惕切换riscv64会造成的段错误
-  if(likely(in_pmem(addr))){
-    char mtrace_logbuf[120];
-    sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",cpu.pc,addr,pmem_rdata);
-    enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
-  }
-  #endif
+  // #ifdef CONFIG_MTRACE //警惕切换riscv64会造成的段错误
+  // if(likely(in_pmem(addr))){
+  //   char mtrace_logbuf[120];
+  //   sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",cpu.pc,addr,pmem_rdata);
+  //   enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
+  // }
+  // #endif
   if (likely(in_pmem(addr))) return pmem_rdata;
   if(addr>=0xa0000000){
     return device_read(addr,len);
@@ -108,16 +127,12 @@ word_t paddr_read(paddr_t addr, int len) {
 }
 static uint64_t write_cnt=0;
 void paddr_write(paddr_t addr, int len, word_t data) {
-  // write_cnt++;
-  // if(write_cnt%2==1) return; 
-  // //这是一串自我欺骗代码，因为触发沿是*而不是clock,在实现总线之前暂时用这个达到访问一次的效果
-
-  #ifdef CONFIG_MTRACE
-  char mtrace_logbuf[120];
-  sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x wdata:0x%08x len:%d",cpu.pc,addr,data,len);
-  enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
-  // printf("%s\n",mtrace_logbuf);
-  #endif
+  // #ifdef CONFIG_MTRACE
+  // char mtrace_logbuf[120];
+  // sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x wdata:0x%08x len:%d",cpu.pc,addr,data,len);
+  // enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
+  // // printf("%s\n",mtrace_logbuf);
+  // #endif
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
   if(addr>=0xa0000000){
     device_write(addr,len,data);

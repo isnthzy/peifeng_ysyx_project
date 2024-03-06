@@ -67,14 +67,33 @@ class br_bus extends Bundle{
   val target=UInt(ADDR_WIDTH.W)
 }
 
-class To_wb_dpic_bus extends Bundle{
-  val id_inv_flag=Bool()
-
-  val ex_func_flag=Bool()
-  val ex_is_jal=Bool()
-  val ex_is_ret=Bool()
-  val ex_is_rd0=Bool()
+//-----------------dpi bundle-----------------
+class for_id_dpi_bundle extends Bundle{
+  val inv_flag=Bool()
 }
+
+class for_ex_dpi_bundle extends Bundle{
+  val func_flag=Bool()
+  val is_jal=Bool()
+  val is_ret=Bool()
+  val is_rd0=Bool()
+
+  val ld_type=UInt(3.W)
+  val st_type=UInt(4.W)
+  val mem_addr=UInt(ADDR_WIDTH.W)
+  val st_data=UInt(DATA_WIDTH.W)
+}
+
+class for_ls_dpi_bundle extends Bundle{
+  val ld_data=UInt(DATA_WIDTH.W)
+}
+
+class To_wb_dpic_bus extends Bundle{
+  val id=new for_id_dpi_bundle()
+  val ex=new for_ex_dpi_bundle()
+  val ls=new for_ls_dpi_bundle()
+}
+//-----------------dpi bundle-----------------
 
 //--------------to preif---------------
 class id_to_preif_bus extends Bundle{
