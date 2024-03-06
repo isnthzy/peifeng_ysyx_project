@@ -273,7 +273,7 @@ class Dpi_Mtrace extends BlackBox with HasBlackBoxInline {
     val pc    =Input(UInt(ADDR_WIDTH.W))
     val ld_wen=Input(Bool())
     val st_wen=Input(Bool())
-    val ld_len=Input(UInt(3.W))
+    val ld_len=Input(UInt(4.W))
     val st_len=Input(UInt(4.W))
     val mem_addr=Input(UInt(ADDR_WIDTH.W))
     val st_data=Input(UInt(DATA_WIDTH.W))
@@ -290,8 +290,8 @@ class Dpi_Mtrace extends BlackBox with HasBlackBoxInline {
       |    input [31:0] pc,
       |    input        ld_wen,
       |    input        st_wen,
-      |    input [ 4:0] ld_len,
-      |    input [ 4:0] st_len,
+      |    input [ 3:0] ld_len,
+      |    input [ 3:0] st_len,
       |    input [31:0] mem_addr,
       |    input [31:0] st_data,
       |    input [31:0] ld_data
