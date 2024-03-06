@@ -93,7 +93,7 @@ extern "C" void mtrace_store(int pc,int addr,int data,int len){
   enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
   #endif
 }
-extern "C" void mtrace_load (int pc,int addr,int data,const svBitVecVal* len){
+extern "C" void mtrace_load (int pc,int addr,int data,int len){
   #ifdef CONFIG_MTRACE //警惕切换riscv64会造成的段错误
   char mtrace_logbuf[120];
   sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x len:%d",pc,addr,data,len);
