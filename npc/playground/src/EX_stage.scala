@@ -110,7 +110,7 @@ class EX_stage extends Module {
       arvalidReg:=false.B
     }
   }
-  WaitReadIdle:=(WaitReadIdle=/=ar_idle)
+  WaitReadIdle:=(ReadRequstState=/=ar_idle)
   EX.ar.valid:=arvalidReg
   EX.ar.bits.addr:=araddrReg
   EX.ar.bits.prot:=0.U
@@ -161,7 +161,7 @@ class EX_stage extends Module {
   EX.b.ready:=breadyReg
 //---------------------------AXI4 Lite---------------------------
   ex_clog:=((~EX.ar.ready&&ld_wen)
-         || (WriteRequstState=/=wr_idle)&&st_wen)
+         ||(WaitWriteIdle&&st_wen))
 
   //csr
   val Csr_alu=Module(new Csr_alu())
