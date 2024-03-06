@@ -86,13 +86,13 @@ class DPI_stage extends Module {
     LD_XXX -> 0.U,
     LD_LB  -> 1.U,
     LD_LH  -> 2.U,
-    LD_LW  -> 4.U
+    LD_LW  -> 4.U,
   ))
   dpi_mtrace.io.st_len:=MuxLookup(DPI.st_type,0.U)(Seq(
     ST_XXX -> 0.U,
     ST_SB  -> 1.U,
     ST_SH  -> 2.U,
-    ST_SW  -> 4.U
+    ST_SW  -> 4.U,
   ))
   dpi_mtrace.io.st_len:=DPI.st_type
   dpi_mtrace.io.mem_addr:=DPI.mem_addr
