@@ -15,12 +15,12 @@ class LS_stage extends Module {
   dontTouch(LS.r);
   val data_sram_rdata=dontTouch(WireDefault(0.U(DATA_WIDTH.W)))
   val rdata_valid=dontTouch(Wire(Bool()))
-  val rdata_ok=dontTouch(Wire(Bool()))
-  rdata_ok:= ~LS.IO.bits.ld_wen || (LS.IO.bits.ld_wen && rdata_valid)
+  val ls_clog=dontTouch(Wire(Bool()))
+  ls_clog:= ~LS.IO.bits.ld_wen || (LS.IO.bits.ld_wen && rdata_valid)
 
   val ls_valid=dontTouch(RegInit(false.B))
   val ls_ready_go=dontTouch(Wire(Bool()))
-  ls_ready_go:=Mux(rdata_ok,true.B,false.B)
+  ls_ready_go:=Mux(ls_clog,true.B,false.B)
   LS.IO.ready := !ls_valid || ls_ready_go &&LS.to_wb.ready
   when(LS.IO.ready){
     ls_valid:=LS.IO.valid
@@ -63,6 +63,8 @@ class LS_stage extends Module {
   LS.to_wb.bits.nextpc:=LS.IO.bits.nextpc
 
   //前递
+  LS.to_id.clog:=ls_valid && !ls_ready_go && LS.IO.bits.ld_wen
+
   LS.to_id.fw.addr:=Mux(ls_valid && LS.IO.bits.rf_wen, LS.IO.bits.rd , 0.U)
   LS.to_id.fw.data:=LS.to_wb.bits.result
 

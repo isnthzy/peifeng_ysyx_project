@@ -16,7 +16,8 @@ class ID_stage extends Module {
   })
   val id_clog=dontTouch(Wire(Bool()))
   val id_flush=dontTouch(Wire(Bool()))
-  id_clog:=ID.for_ex.clog
+  //id_clog需要结合decoder的地址计算是否发起阻塞，放在下边处理
+  //应对lw指令的处理
   id_flush:=ID.for_ex.flush
 
   val id_valid=dontTouch(RegInit(false.B))
@@ -66,13 +67,13 @@ class ID_stage extends Module {
   val rdata2=dontTouch(Wire(UInt(DATA_WIDTH.W)))
   val rs1_is_forward=dontTouch(Wire(Bool()))
   val rs2_is_forward=dontTouch(Wire(Bool()))
+  id_clog:=( ID.for_ex.clog || ID.for_ls.clog ) && (rs1_is_forward || rs1_is_forward)
+
   rs1_is_forward:=((Regfile.io.raddr1=/=0.U) && 
-                  (id_clog===false.B) &&  //从lw传来的数据
                   ((Regfile.io.raddr1===ID.for_ex.fw.addr) ||
                   (Regfile.io.raddr1===ID.for_ls.fw.addr) || 
                   (ID.for_wb.rf.wen && (Regfile.io.raddr1===ID.for_wb.rf.waddr))))
   rs2_is_forward:=((Regfile.io.raddr2=/=0.U) &&
-                  (id_clog===false.B) &&
                   ((Regfile.io.raddr2===ID.for_ex.fw.addr) ||
                   (Regfile.io.raddr2===ID.for_ls.fw.addr) ||
                   (ID.for_wb.rf.wen && (Regfile.io.raddr2===ID.for_wb.rf.waddr))))

@@ -101,16 +101,17 @@ class ex_to_if_bus extends Bundle{
 
 //----------------to id----------------
 class ex_to_id_bus extends Bundle{
-  val fw=Input(new forward_to_id_bus())
-  val csr=Input(new ex_to_csr_bus()) //csrfile
-  val clog=Input(Bool())
+  val fw=new forward_to_id_bus()
+  val csr=new ex_to_csr_bus() //csrfile
+  val clog=Bool()
   val flush=Bool()
 }
 class ls_to_id_bus extends Bundle{
-  val fw=Input(new forward_to_id_bus())
+  val fw=new forward_to_id_bus()
+  val clog=Bool()
 }
 class wb_to_id_bus extends Bundle{
-  val rf=Input(new wb_to_rf_bus())
+  val rf=new wb_to_rf_bus()
 }
 //----------------to id----------------
 class preif_to_if_bus extends Bundle{
