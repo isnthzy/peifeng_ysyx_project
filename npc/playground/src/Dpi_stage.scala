@@ -1,7 +1,7 @@
 import chisel3._
 import chisel3.util._
 import config.Configs._
-
+import Control._
 
 /* 
   ！！！！
@@ -23,6 +23,12 @@ class DPI_stage extends Module {
     val is_ebreak=Input(Bool())
     val ret_reg_data=Input(Bool())
     val csr_commit=Input(new commit_csr_to_diff())
+
+    val ld_type=Input(UInt(3.W))
+    val st_type=Input(UInt(4.W))
+    val mem_addr=Input(UInt(ADDR_WIDTH.W))
+    val st_data=Input(UInt(DATA_WIDTH.W))
+    val ld_data=Input(UInt(DATA_WIDTH.W))
   })
   val dpi_getinfo=Module(new Dpi_GetInfo())
   dpi_getinfo.io.clock:=clock
@@ -69,6 +75,29 @@ class DPI_stage extends Module {
   dpi_csrcommit.io.mcause_in:=DPI.csr_commit.exception.mcause_in
   dpi_csrcommit.io.pc_wb:=DPI.csr_commit.exception.pc_wb
 
+  val dpi_mtrace=Module(new Dpi_Mtrace())
+  dpi_mtrace.io.clock:=clock
+  dpi_mtrace.io.reset:=reset
+  dpi_mtrace.io.dpi_valid:=DPI.wb_valid
+  dpi_mtrace.io.pc:=DPI.pc
+  dpi_mtrace.io.ld_wen:=DPI.ld_type=/=0.U
+  dpi_mtrace.io.st_wen:=DPI.st_type=/=0.U
+  dpi_mtrace.io.ld_len:=MuxLookup(DPI.ld_type,0.U)(Seq(
+    LD_XXX -> 0.U,
+    LD_LB  -> 1.U,
+    LD_LH  -> 2.U,
+    LD_LW  -> 4.U,
+  ))
+  dpi_mtrace.io.st_len:=MuxLookup(DPI.st_type,0.U)(Seq(
+    ST_XXX -> 0.U,
+    ST_SB  -> 1.U,
+    ST_SH  -> 2.U,
+    ST_SW  -> 4.U,
+  ))
+  dpi_mtrace.io.mem_addr:=DPI.mem_addr
+  dpi_mtrace.io.st_data:=DPI.st_data
+  dpi_mtrace.io.ld_data:=DPI.ld_data
+  
 }
 
 
@@ -228,6 +257,48 @@ class Dpi_CsrCommit extends BlackBox with HasBlackBoxInline {
       |   if(~reset)begin
       |     if(csr_wen&&dpi_valid) sync_csrfile_regs(waddr,wdata);
       |     if(exception_wen&&dpi_valid) sync_csr_exception_regs(mcause_in,pc_wb);
+      |   end
+      |  end
+      |endmodule
+    """.stripMargin)
+}
+
+
+class Dpi_Mtrace extends BlackBox with HasBlackBoxInline {
+  val io = IO(new Bundle {
+    val clock=Input(Clock())
+    val reset=Input(Bool())
+    val dpi_valid=Input(Bool())
+    val pc    =Input(UInt(ADDR_WIDTH.W))
+    val ld_wen=Input(Bool())
+    val st_wen=Input(Bool())
+    val ld_len=Input(UInt(32.W))
+    val st_len=Input(UInt(32.W))
+    val mem_addr=Input(UInt(ADDR_WIDTH.W))
+    val st_data=Input(UInt(DATA_WIDTH.W))
+    val ld_data=Input(UInt(DATA_WIDTH.W))
+  })
+  setInline("dpic/DpiMtrace.v",
+    """
+      |import "DPI-C" function void mtrace_store(input int pc,input int addr,input int data,input int len);
+      |import "DPI-C" function void mtrace_load (input int pc,input int addr,input int data,input int len);
+      |module Dpi_Mtrace(
+      |    input        clock,
+      |    input        reset,
+      |    input        dpi_valid,
+      |    input [31:0] pc,
+      |    input        ld_wen,
+      |    input        st_wen,
+      |    input [31:0] ld_len,
+      |    input [31:0] st_len,
+      |    input [31:0] mem_addr,
+      |    input [31:0] st_data,
+      |    input [31:0] ld_data
+      |);
+      | always @(posedge clock)begin
+      |   if(~reset)begin
+      |     if(ld_wen&&dpi_valid) mtrace_load (pc,mem_addr,ld_data,ld_len);
+      |     if(st_wen&&dpi_valid) mtrace_store(pc,mem_addr,st_data,st_len);
       |   end
       |  end
       |endmodule

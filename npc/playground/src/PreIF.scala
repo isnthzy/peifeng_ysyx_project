@@ -52,21 +52,21 @@ class PreIF_s extends Module {
 
 
   //-----------------AXI4Lite AR Channel------------------------
-  val s_idle :: s_wait_ready :: Nil = Enum(2)
+  val ar_idle :: ar_wait_ready :: Nil = Enum(2)
   val arvalidReg=RegInit(false.B)
   val araddrReg=RegInit(0.U(ADDR_WIDTH.W))
 
   
-  val ReadRequstState=RegInit(s_idle)
-  when(ReadRequstState===s_idle){
+  val ReadRequstState=RegInit(ar_idle)
+  when(ReadRequstState===ar_idle){
     when(fetch_wen){
-      ReadRequstState:=s_wait_ready
+      ReadRequstState:=ar_wait_ready
       araddrReg:=PreIF_pc
       arvalidReg:=true.B
     }
-  }.elsewhen(ReadRequstState===s_wait_ready){
+  }.elsewhen(ReadRequstState===ar_wait_ready){
     when(PreIF.ar.ready){
-      ReadRequstState:=s_idle
+      ReadRequstState:=ar_idle
       arvalidReg:=false.B
     }
   }

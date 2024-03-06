@@ -11,5 +11,7 @@
 
 // external module Dpi_CsrCommit
 
+// external module Dpi_Mtrace
+
 // external module dpi_sram
 
