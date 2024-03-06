@@ -79,9 +79,10 @@ module DPI_stage(	// @[<stdin>:1630:3]
     .ld_wen    (|DPI_ld_type),	// @[playground/src/Dpi_stage.scala:83:36]
     .st_wen    (|DPI_st_type),	// @[playground/src/Dpi_stage.scala:84:36]
     .ld_len
-      (DPI_ld_type == 3'h1
-         ? 3'h4
-         : {1'h0, DPI_ld_type == 3'h2 ? 2'h2 : {1'h0, DPI_ld_type == 3'h3}}),	// @[playground/src/Dpi_stage.scala:85:51]
+      ({1'h0,
+        DPI_ld_type == 3'h1
+          ? 3'h4
+          : {1'h0, DPI_ld_type == 3'h2 ? 2'h2 : {1'h0, DPI_ld_type == 3'h3}}}),	// @[playground/src/Dpi_stage.scala:85:{23,51}]
     .st_len    (DPI_st_type),
     .mem_addr  (DPI_mem_addr),
     .st_data   (DPI_st_data),

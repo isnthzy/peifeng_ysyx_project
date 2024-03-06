@@ -281,8 +281,8 @@ class Dpi_Mtrace extends BlackBox with HasBlackBoxInline {
   })
   setInline("dpic/DpiMtrace.v",
     """
-      |import "DPI-C" function void mtrace_store(input int pc,input int addr,input int data,input int len);
-      |import "DPI-C" function void mtrace_load (input int pc,input int addr,input int data,input int len);
+      |import "DPI-C" function void mtrace_store(input int pc,input int addr,input int data,input bit[3:0] len);
+      |import "DPI-C" function void mtrace_load (input int pc,input int addr,input int data,input bit[3:0] len);
       |module Dpi_Mtrace(
       |    input        clock,
       |    input        reset,

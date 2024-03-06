@@ -86,14 +86,14 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
 }
 
-extern "C" void mtrace_store(int pc,int addr,int data,int len){
+extern "C" void mtrace_store(int pc,int addr,int data,const svBitVecVal* len){
   #ifdef CONFIG_MTRACE
     char mtrace_logbuf[120];
     sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x wdata:0x%08x len:%d",cpu.pc,addr,data,len);
     enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
   #endif
 }
-extern "C" void mtrace_load(int pc,int addr,int data,int len){
+extern "C" void mtrace_load (int pc,int addr,int data,svBitVecVal* len){
   #ifdef CONFIG_MTRACE //警惕切换riscv64会造成的段错误
     char mtrace_logbuf[120];
     sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",pc,addr,data);
