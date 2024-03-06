@@ -24,6 +24,7 @@ class EX_stage extends Module {
   val st_wen=dontTouch(Wire(Bool()))
   st_wen:=(EX.IO.bits.st_type=/=0.U)
   ld_wen:=(EX.IO.bits.ld_type=/=0.U)
+  val ex_clog=dontTouch(Wire(Bool()))
 
   val ex_valid=dontTouch(RegInit(false.B))
   val ex_ready_go=dontTouch(Wire(Bool()))
@@ -78,6 +79,7 @@ class EX_stage extends Module {
   //EX级发起访存
 //---------------------------AXI4 Lite---------------------------
   val WaitWriteIdle=dontTouch(Wire(Bool()))
+  val WaitReadIdle=dontTouch(Wire(Bool()))
   //如果write不是idle状态，拉高信号
   val BrespFire=dontTouch(Wire(Bool()))
   //b通道握手，拉高信号
@@ -108,11 +110,11 @@ class EX_stage extends Module {
       arvalidReg:=false.B
     }
   }
-
+  WaitReadIdle:=(WaitReadIdle=/=ar_idle)
   EX.ar.valid:=arvalidReg
   EX.ar.bits.addr:=araddrReg
   EX.ar.bits.prot:=0.U
-
+  
 //----------------------AXI4Lite AR Channel----------------------
 
 //-------------------AXI4Lite  W WR B  Channel-------------------
@@ -158,6 +160,8 @@ class EX_stage extends Module {
   EX.w.bits.strb:=wstrbReg
   EX.b.ready:=breadyReg
 //---------------------------AXI4 Lite---------------------------
+  ex_clog:=((~EX.ar.ready&&ld_wen)
+         || WaitWriteIdle&&st_wen)
 
   //csr
   val Csr_alu=Module(new Csr_alu())
