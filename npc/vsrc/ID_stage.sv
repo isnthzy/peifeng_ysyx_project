@@ -78,14 +78,15 @@ module ID_stage(	// @[<stdin>:1008:3]
   wire [4:0]  _Regfile_io_raddr2_T_3 =
     _dc_io_csr_cmd == 5'h4 ? 5'hF : _dc_io_csr_cmd == 5'h5 ? 5'hA : rs2;	// @[playground/src/ID_stage.scala:33:16, :37:25, :58:50]
   wire        rs1_is_forward;	// @[playground/src/ID_stage.scala:68:36]
-  assign id_clog = (ID_for_ex_clog | ID_for_ls_clog) & rs1_is_forward;	// @[playground/src/ID_stage.scala:17:29, :68:36, :70:{27,44}]
+  wire        rs2_is_forward;	// @[playground/src/ID_stage.scala:69:36]
+  assign id_clog = (ID_for_ex_clog | ID_for_ls_clog) & (rs1_is_forward | rs2_is_forward);	// @[playground/src/ID_stage.scala:17:29, :68:36, :69:36, :70:{27,44,61}]
   wire        _rdata1_T = rs1 == ID_for_ex_fw_addr;	// @[playground/src/ID_stage.scala:36:25, :73:38]
   wire        _rdata1_T_1 = rs1 == ID_for_ls_fw_addr;	// @[playground/src/ID_stage.scala:36:25, :74:37]
   assign rs1_is_forward =
     (|rs1) & (_rdata1_T | _rdata1_T_1 | ID_for_wb_rf_wen & rs1 == ID_for_wb_rf_waddr);	// @[playground/src/ID_stage.scala:36:25, :68:36, :72:{38,46}, :73:38, :74:{37,59}, :75:{37,58}]
   wire        _rdata2_T = _Regfile_io_raddr2_T_3 == ID_for_ex_fw_addr;	// @[playground/src/ID_stage.scala:58:50, :77:38]
   wire        _rdata2_T_1 = _Regfile_io_raddr2_T_3 == ID_for_ls_fw_addr;	// @[playground/src/ID_stage.scala:58:50, :78:37]
-  wire        rs2_is_forward =
+  assign rs2_is_forward =
     (|_Regfile_io_raddr2_T_3)
     & (_rdata2_T | _rdata2_T_1 | ID_for_wb_rf_wen
        & _Regfile_io_raddr2_T_3 == ID_for_wb_rf_waddr);	// @[playground/src/ID_stage.scala:58:50, :69:36, :76:{38,46}, :77:38, :78:{37,59}, :79:{37,58}]
