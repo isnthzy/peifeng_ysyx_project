@@ -290,8 +290,8 @@ class Dpi_Mtrace extends BlackBox with HasBlackBoxInline {
       |    input [31:0] pc,
       |    input        ld_wen,
       |    input        st_wen,
-      |    input [ 3:0] ld_len,
-      |    input [ 3:0] st_len,
+      |    input [31:0] ld_len,
+      |    input [31:0] st_len,
       |    input [31:0] mem_addr,
       |    input [31:0] st_data,
       |    input [31:0] ld_data
