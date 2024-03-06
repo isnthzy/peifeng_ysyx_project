@@ -163,7 +163,7 @@ class ID_stage extends Module {
 
   /*---------------------传递信号到wb级再由wb级处理dpi信号----------------------*/
   ID.to_ex.bits.dpic_bundle.id.inv_flag:=(dc.io.illegal&&ID.IO.bits.nextpc=/="h80000000".U)
-  ID.to_ex.bits.dpic_bundle.ex:=0.U
-  ID.to_ex.bits.dpic_bundle.ls:=0.U
+  ID.to_ex.bits.dpic_bundle.ex:=0.U.asTypeOf(new for_ex_dpi_bundle)
+  ID.to_ex.bits.dpic_bundle.ls:=0.U.asTypeOf(new for_ls_dpi_bundle)
 }
 
