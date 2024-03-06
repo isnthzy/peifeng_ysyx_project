@@ -89,14 +89,14 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
 extern "C" void mtrace_store(int pc,int addr,int data,const svBitVecVal* len){
   #ifdef CONFIG_MTRACE
     char mtrace_logbuf[120];
-    sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x wdata:0x%08x len:%d",cpu.pc,addr,data,len);
+    sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x wdata:0x%08x len:%d",pc,addr,data,(int)len);
     enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
   #endif
 }
-extern "C" void mtrace_load (int pc,int addr,int data,svBitVecVal* len){
+extern "C" void mtrace_load (int pc,int addr,int data,const svBitVecVal* len){
   #ifdef CONFIG_MTRACE //警惕切换riscv64会造成的段错误
     char mtrace_logbuf[120];
-    sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x",pc,addr,data);
+    sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x len:%d",pc,addr,data,(int)len);
     enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
   #endif
 }
