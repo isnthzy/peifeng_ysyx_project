@@ -94,7 +94,6 @@ class DPI_stage extends Module {
     ST_SH  -> 2.U,
     ST_SW  -> 4.U,
   ))
-  dpi_mtrace.io.st_len:=DPI.st_type
   dpi_mtrace.io.mem_addr:=DPI.mem_addr
   dpi_mtrace.io.st_data:=DPI.st_data
   dpi_mtrace.io.ld_data:=DPI.ld_data
