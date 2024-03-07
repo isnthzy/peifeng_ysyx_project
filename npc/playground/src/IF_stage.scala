@@ -33,7 +33,7 @@ class IF_stage extends Module {
 
   if_inst:=Mux(if_use_inst_buffer,if_inst_buffer,IF.r.bits.data)
 
-  when(IF.to_id.fire){
+  when(IF.IO.fire){
     if_use_inst_buffer:=false.B
   }//加buffer是为了在if级暂存取到的指令，避免因为流水与下一级握手失败if级失去指令
   //-----------------AXI4Lite R  Channel------------------------
