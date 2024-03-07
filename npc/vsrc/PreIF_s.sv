@@ -30,7 +30,7 @@ module PreIF_s(	// @[<stdin>:3:3]
   wire [31:0] PreIF_dnpc =
     PreIF_for_ex_epc_taken
       ? PreIF_for_ex_epc_target
-      : PreIF_for_id_Br_J_taken ? PreIF_for_id_Br_J_target : PreIF_for_ex_Br_B_target;	// @[playground/src/PreIF.scala:39:17, :44:36, :48:20]
+      : PreIF_for_ex_Br_B_taken ? PreIF_for_ex_Br_B_target : PreIF_for_id_Br_J_target;	// @[playground/src/PreIF.scala:39:17, :44:36, :48:20]
   wire [31:0] PreIF_nextpc =
     PreIF_for_id_Br_J_taken | PreIF_for_ex_Br_B_taken | PreIF_for_ex_epc_taken
       ? PreIF_dnpc

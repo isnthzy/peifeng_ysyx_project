@@ -5,7 +5,6 @@ import Control._
 
 class LS_stage extends Module {
   val LS=IO(new Bundle {
-    // val IO    =Input(new ex_to_ls_bus())
     val IO    =Flipped(Decoupled(new ex_to_ls_bus()))
     val to_wb =Decoupled(new ls_to_wb_bus())
 
@@ -16,11 +15,11 @@ class LS_stage extends Module {
   val data_sram_rdata=dontTouch(WireDefault(0.U(DATA_WIDTH.W)))
   val rdata_valid=dontTouch(Wire(Bool()))
   val ls_clog=dontTouch(Wire(Bool()))
-  ls_clog:= ~LS.IO.bits.ld_wen || (LS.IO.bits.ld_wen && rdata_valid)
 
   val ls_valid=dontTouch(RegInit(false.B))
   val ls_ready_go=dontTouch(Wire(Bool()))
-  ls_ready_go:=Mux(ls_clog,true.B,false.B)
+  ls_clog:= (LS.IO.bits.ld_wen && ~rdata_valid)&&ls_valid
+  ls_ready_go:=Mux(ls_clog,false.B,true.B)
   LS.IO.ready := !ls_valid || ls_ready_go &&LS.to_wb.ready
   when(LS.IO.ready){
     ls_valid:=LS.IO.valid
