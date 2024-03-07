@@ -14,6 +14,7 @@ class IF_stage extends Module {
     val r=Flipped(Decoupled(new AxiReadDataBundle()))
   })
   val if_inst=dontTouch(WireDefault(0.U(32.W)))
+  val if_clog=dontTouch(Wire(Bool()))
   val if_inst_is_valid=dontTouch(Wire(Bool()))
 
   val if_flush=dontTouch(Wire(Bool()))
@@ -21,7 +22,8 @@ class IF_stage extends Module {
 
   val if_valid=dontTouch(RegInit(false.B))
   val if_ready_go=dontTouch(Wire(Bool()))
-  if_ready_go:=Mux(if_inst_is_valid,true.B,false.B)
+  if_clog:= ~if_inst_is_valid&&if_valid
+  if_ready_go:=Mux(if_clog,false.B,true.B)
   IF.IO.ready := !if_valid || if_ready_go && IF.to_id.ready 
   when(IF.IO.ready){
     if_valid:=IF.IO.valid
