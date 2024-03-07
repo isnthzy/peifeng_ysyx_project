@@ -16,7 +16,7 @@ class LS_stage extends Module {
   val data_sram_rdata=dontTouch(WireDefault(0.U(DATA_WIDTH.W)))
   val rdata_valid=dontTouch(Wire(Bool()))
   val ls_clog=dontTouch(Wire(Bool()))
-  ls_clog:= ~LS.IO.bits.ld_wen || (LS.IO.bits.ld_wen && rdata_valid)
+  ls_clog:= (~LS.IO.bits.ld_wen || (LS.IO.bits.ld_wen && rdata_valid))&&ls_valid
 
   val ls_valid=dontTouch(RegInit(false.B))
   val ls_ready_go=dontTouch(Wire(Bool()))
