@@ -16,9 +16,6 @@ class IF_stage extends Module {
   val if_clog=dontTouch(Wire(Bool()))
   val if_inst=dontTouch(WireDefault(0.U(32.W)))
   val if_inst_ok=dontTouch(Wire(Bool()))
-  val if_inst_ok_buffer=dontTouch(RegInit(false.B))
-  val if_inst_buffer=dontTouch(RegInit(0.U(32.W)))
-  val if_use_inst_buffer=dontTouch(RegInit(false.B))
   val if_flush=dontTouch(Wire(Bool()))
   if_flush:= IF.for_ex.flush || IF.for_id.flush
 
@@ -32,6 +29,10 @@ class IF_stage extends Module {
   }
   IF.to_id.valid:=Mux(if_flush, false.B , if_valid && if_ready_go)
 
+  
+  val if_inst_ok_buffer=dontTouch(RegInit(false.B))
+  val if_inst_buffer=dontTouch(RegInit(0.U(32.W)))
+  val if_use_inst_buffer=dontTouch(RegInit(false.B))
   if_inst:=Mux(if_use_inst_buffer,if_inst_buffer,IF.r.bits.data)
   if_inst_ok:=if_inst_ok_buffer
   when(IF.IO.fire){
