@@ -5,7 +5,6 @@ import Control._
 
 class LS_stage extends Module {
   val LS=IO(new Bundle {
-    // val IO    =Input(new ex_to_ls_bus())
     val IO    =Flipped(Decoupled(new ex_to_ls_bus()))
     val to_wb =Decoupled(new ls_to_wb_bus())
 
