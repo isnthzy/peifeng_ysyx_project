@@ -36,7 +36,7 @@ module IF_stage(	// @[<stdin>:80:3]
       if (IF_r_valid)	// @[playground/src/IF_stage.scala:7:12]
         if_inst_buffer <= IF_r_bits_data;	// @[playground/src/IF_stage.scala:19:39]
       if_use_inst_buffer <=
-        IF_r_valid | ~(_IF_IO_ready_output & IF_IO_valid) & if_use_inst_buffer;	// @[playground/src/IF_stage.scala:20:43, :28:27, :36:19, :37:23, :42:18, :44:23, src/main/scala/chisel3/util/Decoupled.scala:52:35]
+        IF_r_valid | ~(_IF_IO_ready_output & IF_IO_valid) & if_use_inst_buffer;	// @[playground/src/IF_stage.scala:20:43, :28:27, :36:19, :37:23, :50:18, :52:23, src/main/scala/chisel3/util/Decoupled.scala:52:35]
       if (_IF_IO_ready_output)	// @[playground/src/IF_stage.scala:28:27]
         if_valid <= IF_IO_valid;	// @[playground/src/IF_stage.scala:24:33]
     end
