@@ -79,7 +79,8 @@ module ID_stage(	// @[<stdin>:1008:3]
     _dc_io_csr_cmd == 5'h4 ? 5'hF : _dc_io_csr_cmd == 5'h5 ? 5'hA : rs2;	// @[playground/src/ID_stage.scala:33:16, :37:25, :58:50]
   wire        rs1_is_forward;	// @[playground/src/ID_stage.scala:68:36]
   wire        rs2_is_forward;	// @[playground/src/ID_stage.scala:69:36]
-  assign id_clog = (ID_for_ex_clog | ID_for_ls_clog) & (rs1_is_forward | rs2_is_forward);	// @[playground/src/ID_stage.scala:17:29, :68:36, :69:36, :70:{27,44,61}]
+  assign id_clog =
+    (ID_for_ex_clog | ID_for_ls_clog) & (rs1_is_forward | rs2_is_forward) & id_valid;	// @[playground/src/ID_stage.scala:17:29, :23:33, :68:36, :69:36, :70:{27,61,78}]
   wire        _rdata1_T = rs1 == ID_for_ex_fw_addr;	// @[playground/src/ID_stage.scala:36:25, :73:38]
   wire        _rdata1_T_1 = rs1 == ID_for_ls_fw_addr;	// @[playground/src/ID_stage.scala:36:25, :74:37]
   assign rs1_is_forward =
