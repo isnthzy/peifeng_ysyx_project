@@ -35,8 +35,16 @@ class IF_stage extends Module {
 
   when(IF.IO.fire){
     if_use_inst_buffer:=false.B
-  }//加buffer是为了在if级暂存取到的指令，避免因为流水与下一级握手失败if级失去指令
-  //-----------------AXI4Lite R  Channel------------------------
+  }
+  //加buffer是为了在if级暂存取到的指令，避免因为流水与下一级握手失败if级失去指
+  //当接收到新的数据时，取消使用buffer
+  //效果大概是
+  /**
+     pc     pc      pc    pc+4   pc+4
+    inst  buffer  buffer  inst  buffer
+    */
+
+//---------------------------AXI4Lite R  Channel------------------------
   IF.r.ready:=true.B
 
   when(IF.r.fire){
@@ -46,7 +54,7 @@ class IF_stage extends Module {
   }.otherwise{
     if_inst_ok:=false.B
   }
-  //-----------------AXI4Lite R  Channel------------------------
+//---------------------------AXI4Lite R  Channel------------------------
   IF.to_id.bits.pc:=IF.IO.bits.pc
   IF.to_id.bits.nextpc:=IF.IO.bits.nextpc
   IF.to_id.bits.inst:=if_inst
