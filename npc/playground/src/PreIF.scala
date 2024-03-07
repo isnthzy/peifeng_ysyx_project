@@ -36,7 +36,7 @@ class PreIF_s extends Module {
 
   val br=Wire(new br_bus())
   br.taken:=PreIF.for_id.Br_J.taken || PreIF.for_ex.Br_B.taken
-  br.target:=Mux(PreIF.for_id.Br_J.taken, PreIF.for_id.Br_J.target, PreIF.for_ex.Br_B.target)
+  br.target:=Mux(PreIF.for_ex.Br_B.taken, PreIF.for_ex.Br_B.target, PreIF.for_id.Br_J.target)
 
 
   val PreIF_pc     = RegInit(START_ADDR)
