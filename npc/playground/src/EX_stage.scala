@@ -28,8 +28,7 @@ class EX_stage extends Module {
 
   val ex_valid=dontTouch(RegInit(false.B))
   val ex_ready_go=dontTouch(Wire(Bool()))
-  ex_ready_go:=Mux((~EX.ar.ready&&ld_wen)
-                || (~(EX.aw.ready&&EX.w.ready)&&st_wen),false.B,true.B)
+  ex_ready_go:=Mux(ex_clog,false.B,true.B)
   EX.IO.ready := !ex_valid || ex_ready_go && EX.to_ls.ready
   when(EX.IO.ready){
     ex_valid:=EX.IO.valid
