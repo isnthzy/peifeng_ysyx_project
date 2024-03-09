@@ -3,27 +3,29 @@ import chisel3._
 import chisel3.util._
 import config.Configs._
 import Control._
-import java.awt.MouseInfo
 
 class LSFR extends Module {
   val io=IO(new Bundle {
-    val out=Output(UInt(4.W))
+    val OutTime=Output(UInt(4.W))
+    val Seed=Input(UInt(4.W))
   })
-  val delaytime=RegInit("b0001".U(4.W))
+  val delaytime=RegInit(io.Seed)
   delaytime:=Cat(delaytime(2,0),delaytime(3)^delaytime(2))
-  io.out:=delaytime
+  io.OutTime:=delaytime
 }
 
 object RandomDelay {
-  def apply[T <: Data](in: T): T = {
+  def apply[T <: Data](in: T,Seed: UInt): T = {
     val width=in.getWidth
     val delay=RegInit(0.U(4.W)) // 延迟周期寄存器，初始值为0
     val data =RegInit(0.U.asTypeOf(in)) // 数据寄存器，初始值为0
 
     val LSFR=Module(new LSFR)
+    require(Seed.getWidth <= 4, "Seed length cannot exceed 4")
+    LSFR.io.Seed:=Seed
     when(delay===0.U) {
       data := in // 当延迟周期为0时，将输入信号赋值给数据寄存器
-      delay := LSFR.io.out // 生成1到delayMax之间的随机延迟周期
+      delay := LSFR.io.OutTime // 生成1到delayMax之间的随机延迟周期
     }.otherwise {
       data := 0.U
       delay := delay-1.U // 延迟周期减1
