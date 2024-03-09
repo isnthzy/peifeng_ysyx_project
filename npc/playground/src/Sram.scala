@@ -8,7 +8,7 @@ class Axi4Lite_Sram_Mem extends Module {
   
   dontTouch(io);
   
-  io.ar.ready:=true.B
+  io.ar.ready:=RandomDelay(true.B,15.U)
   dpi_sram.io.clock:=clock
   dpi_sram.io.addr:=Mux(io.ar.fire,io.ar.bits.addr,
                       Mux((io.aw.fire && io.w.fire),io.aw.bits.addr,0.U))
