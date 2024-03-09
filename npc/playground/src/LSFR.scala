@@ -22,7 +22,7 @@ object RandomDelay {
     val data =RegInit(0.U.asTypeOf(in)) // 数据寄存器，初始值为0
 
     val LSFR=Module(new LSFR)
-    require(Seed.getWidth <= 4, "Seed length cannot exceed 4")
+    require(Seed.getWidth <= 8, "Seed length cannot exceed 4")
     LSFR.io.Seed:=Seed
     when(delay===0.U) {
       data := in // 当延迟周期为0时，将输入信号赋值给数据寄存器
