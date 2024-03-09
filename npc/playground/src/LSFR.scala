@@ -25,11 +25,11 @@ object RandomDelay {
     require(Seed.getWidth <= 8, "Seed length cannot exceed 4")
     LSFR.io.Seed:=Seed
     when(delay===0.U) {
-      data := in // 当延迟周期为0时，将输入信号赋值给数据寄存器
-      delay := LSFR.io.OutTime // 生成1到delayMax之间的随机延迟周期
+      data:=in // 当延迟周期为0时，将输入信号赋值给数据寄存器
+      delay:=LSFR.io.OutTime // 生成1到delayMax之间的随机延迟周期
     }.otherwise {
-      data := 0.U
-      delay := delay-1.U // 延迟周期减1
+      data:=0.U
+      delay:=delay-1.U // 延迟周期减1
     }
     data
   }
