@@ -101,7 +101,8 @@ module EX_stage(	// @[<stdin>:1279:3]
   wire [31:0] ram_waddr =
     ({32{EX_IO_bits_st_type != 4'hF}} | 32'hFFFFFFFC) & _Alu_io_result;	// @[playground/src/EX_stage.scala:39:17, :79:{20,39,64}]
   wire [31:0] ram_raddr =
-    ({32{EX_IO_bits_ld_type != 3'h1}} | 32'hFFFFFFFC) & _Alu_io_result;	// @[playground/src/EX_stage.scala:39:17, :79:64, :81:{20,39}]
+    ({32{~(EX_IO_bits_ld_type == 3'h1 | EX_IO_bits_ld_type == 3'h5
+           | EX_IO_bits_ld_type == 3'h4)}} | 32'hFFFFFFFC) & _Alu_io_result;	// @[playground/src/EX_stage.scala:39:17, :79:64, :81:{20,39,69,79,100}]
   reg         arvalidReg;	// @[playground/src/EX_stage.scala:93:25]
   reg  [31:0] araddrReg;	// @[playground/src/EX_stage.scala:94:24]
   reg         ReadRequstState;	// @[playground/src/EX_stage.scala:97:30]
