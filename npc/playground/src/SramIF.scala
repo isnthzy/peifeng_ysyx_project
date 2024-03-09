@@ -10,7 +10,8 @@ class Axi4Lite_Sram_If extends Module {
   
   dontTouch(io);
   
-  io.ar.ready:=RandomDelay(true.B,3.U)
+  // io.ar.ready:=RandomDelay(true.B,3.U)
+  io.ar.ready:=true.B
   dpi_sram.io.clock:=clock
   dpi_sram.io.addr:=io.ar.bits.addr
   dpi_sram.io.req:=io.ar.fire
