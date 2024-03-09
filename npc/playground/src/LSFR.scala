@@ -25,6 +25,7 @@ object RandomDelay {
       data := in // 当延迟周期为0时，将输入信号赋值给数据寄存器
       delay := LSFR.io.out // 生成1到delayMax之间的随机延迟周期
     }.otherwise {
+      data := 0.U
       delay := delay-1.U // 延迟周期减1
     }
     data
