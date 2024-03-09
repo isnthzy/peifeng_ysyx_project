@@ -23,8 +23,8 @@ module Axi4Lite_Sram_Mem(	// @[<stdin>:1818:3]
   output [1:0]  io_b_bits_resp	// @[playground/src/Sram.scala:6:12]
 );
 
-  wire [3:0] _io_w_ready_LSFR_io_out;	// @[playground/src/LSFR.scala:23:20]
-  wire [3:0] _io_aw_ready_LSFR_io_out;	// @[playground/src/LSFR.scala:23:20]
+  wire [3:0] _io_w_ready_LSFR_io_OutTime;	// @[playground/src/LSFR.scala:23:20]
+  wire [3:0] _io_aw_ready_LSFR_io_OutTime;	// @[playground/src/LSFR.scala:23:20]
   wire       _io_ar_ready_output = 1'h1;	// @[<stdin>:1818:3, playground/src/Sram.scala:11:14]
   wire       _dpi_sram_io_req_T = _io_ar_ready_output & io_ar_valid;	// @[<stdin>:1818:3, src/main/scala/chisel3/util/Decoupled.scala:52:35]
   wire       _io_aw_ready_output;	// @[<stdin>:1818:3]
@@ -39,8 +39,8 @@ module Axi4Lite_Sram_Mem(	// @[<stdin>:1818:3]
   reg        io_w_ready_data;	// @[playground/src/LSFR.scala:21:22]
   assign _io_w_ready_output = io_w_ready_data;	// @[<stdin>:1818:3, playground/src/LSFR.scala:21:22]
   reg        writeRespValidReg;	// @[playground/src/Sram.scala:37:32]
-  wire       _io_aw_ready_T = io_aw_ready_delay == 4'h0;	// @[playground/src/LSFR.scala:20:22, :24:15]
-  wire       _io_w_ready_T = io_w_ready_delay == 4'h0;	// @[playground/src/LSFR.scala:20:22, :24:15]
+  wire       _io_aw_ready_T = io_aw_ready_delay == 4'h0;	// @[playground/src/LSFR.scala:20:22, :26:15]
+  wire       _io_w_ready_T = io_w_ready_delay == 4'h0;	// @[playground/src/LSFR.scala:20:22, :26:15]
   always @(posedge clock) begin	// @[<stdin>:1819:11]
     if (reset) begin	// @[<stdin>:1819:11]
       readDataValidReg <= 1'h0;	// @[playground/src/Sram.scala:14:26, :18:31]
@@ -52,16 +52,16 @@ module Axi4Lite_Sram_Mem(	// @[<stdin>:1818:3]
     end
     else begin	// @[<stdin>:1819:11]
       readDataValidReg <= _dpi_sram_io_req_T;	// @[playground/src/Sram.scala:18:31, src/main/scala/chisel3/util/Decoupled.scala:52:35]
-      if (_io_aw_ready_T)	// @[playground/src/LSFR.scala:24:15]
-        io_aw_ready_delay <= _io_aw_ready_LSFR_io_out;	// @[playground/src/LSFR.scala:20:22, :23:20]
-      else	// @[playground/src/LSFR.scala:24:15]
-        io_aw_ready_delay <= io_aw_ready_delay - 4'h1;	// @[playground/src/LSFR.scala:20:22, :29:21]
-      io_aw_ready_data <= _io_aw_ready_T;	// @[playground/src/LSFR.scala:21:22, :24:15]
-      if (_io_w_ready_T)	// @[playground/src/LSFR.scala:24:15]
-        io_w_ready_delay <= _io_w_ready_LSFR_io_out;	// @[playground/src/LSFR.scala:20:22, :23:20]
-      else	// @[playground/src/LSFR.scala:24:15]
-        io_w_ready_delay <= io_w_ready_delay - 4'h1;	// @[playground/src/LSFR.scala:20:22, :29:21]
-      io_w_ready_data <= _io_w_ready_T;	// @[playground/src/LSFR.scala:21:22, :24:15]
+      if (_io_aw_ready_T)	// @[playground/src/LSFR.scala:26:15]
+        io_aw_ready_delay <= _io_aw_ready_LSFR_io_OutTime;	// @[playground/src/LSFR.scala:20:22, :23:20]
+      else	// @[playground/src/LSFR.scala:26:15]
+        io_aw_ready_delay <= io_aw_ready_delay - 4'h1;	// @[playground/src/LSFR.scala:20:22, :31:21]
+      io_aw_ready_data <= _io_aw_ready_T;	// @[playground/src/LSFR.scala:21:22, :26:15]
+      if (_io_w_ready_T)	// @[playground/src/LSFR.scala:26:15]
+        io_w_ready_delay <= _io_w_ready_LSFR_io_OutTime;	// @[playground/src/LSFR.scala:20:22, :23:20]
+      else	// @[playground/src/LSFR.scala:26:15]
+        io_w_ready_delay <= io_w_ready_delay - 4'h1;	// @[playground/src/LSFR.scala:20:22, :31:21]
+      io_w_ready_data <= _io_w_ready_T;	// @[playground/src/LSFR.scala:21:22, :26:15]
       writeRespValidReg <= _dpi_sram_io_wr_T & _dpi_sram_io_wr_T_1;	// @[playground/src/Sram.scala:37:32, :38:18, src/main/scala/chisel3/util/Decoupled.scala:52:35]
     end
   end // always @(posedge)
@@ -78,14 +78,16 @@ module Axi4Lite_Sram_Mem(	// @[<stdin>:1818:3]
     .rdata (io_r_bits_data)
   );
   LSFR io_aw_ready_LSFR (	// @[playground/src/LSFR.scala:23:20]
-    .clock  (clock),
-    .reset  (reset),
-    .io_out (_io_aw_ready_LSFR_io_out)
+    .clock      (clock),
+    .reset      (reset),
+    .io_Seed    (4'h1),	// @[playground/src/LSFR.scala:25:17]
+    .io_OutTime (_io_aw_ready_LSFR_io_OutTime)
   );
   LSFR io_w_ready_LSFR (	// @[playground/src/LSFR.scala:23:20]
-    .clock  (clock),
-    .reset  (reset),
-    .io_out (_io_w_ready_LSFR_io_out)
+    .clock      (clock),
+    .reset      (reset),
+    .io_Seed    (4'hA),	// @[playground/src/LSFR.scala:25:17]
+    .io_OutTime (_io_w_ready_LSFR_io_OutTime)
   );
   assign io_ar_ready = _io_ar_ready_output;	// @[<stdin>:1818:3]
   assign io_r_valid = readDataValidReg;	// @[<stdin>:1818:3, playground/src/Sram.scala:18:31]
