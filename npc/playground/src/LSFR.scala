@@ -6,7 +6,7 @@ import Control._
 
 class LSFR extends Module {
   val io=IO(new Bundle {
-    val OutTime=Output(UInt(4.W))
+    val OutTime=Output(UInt(8.W))
     val Seed=Input(UInt(8.W))
   })
   val delaytime=RegInit(io.Seed)
