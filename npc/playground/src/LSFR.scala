@@ -7,11 +7,12 @@ import Control._
 class LSFR extends Module {
   val io=IO(new Bundle {
     val OutTime=Output(UInt(4.W))
-    val Seed=Input(UInt(4.W))
+    val Seed=Input(UInt(8.W))
   })
   val delaytime=RegInit(io.Seed)
-  delaytime:=Cat(delaytime(2,0),delaytime(3)^delaytime(2))
-  io.OutTime:=delaytime
+  val x8=delaytime(0)+delaytime(2)+delaytime(3)+delaytime(4)
+  delaytime:=Cat(x8,delaytime(7,1))
+  io.OutTime:=delaytime(4,0)
 }
 
 object RandomDelay {

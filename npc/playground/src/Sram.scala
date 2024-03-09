@@ -28,7 +28,7 @@ class Axi4Lite_Sram_Mem extends Module {
 
 
   io.aw.ready:=RandomDelay(true.B,1.U)
-  io.w.ready:=RandomDelay(true.B,10.U)
+  io.w.ready:=RandomDelay(true.B,20.U)
   // io.aw.ready:=true.B
   // io.w.ready:=true.B
   dpi_sram.io.wdata:=io.w.bits.data
