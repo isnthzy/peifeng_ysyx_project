@@ -18,7 +18,7 @@ class LSFR extends Module {
 object RandomDelay {
   def apply[T <: Data](in: T,Seed: UInt): T = {
     val width=in.getWidth
-    val delay=RegInit(0.U(4.W)) // 延迟周期寄存器，初始值为0
+    val delay=RegInit(0.U(8.W)) // 延迟周期寄存器，初始值为0
     val data =RegInit(0.U.asTypeOf(in)) // 数据寄存器，初始值为0
 
     val LSFR=Module(new LSFR)
