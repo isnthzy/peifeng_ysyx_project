@@ -75,8 +75,9 @@ class EX_stage extends Module {
   EX.to_id.fw.addr:=Mux(ex_valid && EX.IO.bits.rf_wen , EX.to_ls.bits.rd , 0.U)
   EX.to_id.fw.data:=EX.to_ls.bits.result
 
-  val ram_addr=Mux(EX.IO.bits.ld_type===LD_LW,Alu.io.result & ~3.U(2.W),
+  val ram_raddr=Mux(EX.IO.bits.ld_type===LD_LW,Alu.io.result & ~3.U(2.W),
                    Alu.io.result)
+  val ram_waddr=Alu.io.result & ~3.U(2.W)
   //EX级发起访存
 //---------------------------AXI4 Lite---------------------------
   val WaitWriteIdle=dontTouch(Wire(Bool()))
@@ -96,12 +97,12 @@ class EX_stage extends Module {
       when(WaitWriteIdle){
         when(BrespFire){
           ReadRequstState:=ar_wait_ready
-          araddrReg:=Alu.io.result
+          araddrReg:=ram_raddr
           arvalidReg:=true.B    
         }
       }.otherwise{
         ReadRequstState:=ar_wait_ready
-        araddrReg:=Alu.io.result
+        araddrReg:=ram_raddr
         arvalidReg:=true.B
       }
     }
@@ -132,7 +133,7 @@ class EX_stage extends Module {
     when(st_wen&&ex_valid){
       WriteRequstState:=wr_wait_ready
       awvalidReg:=true.B
-      awaddrReg:=Alu.io.result
+      awaddrReg:=ram_waddr
       
       wvalidReg:=true.B
       wdataReg:=EX.IO.bits.rdata2
