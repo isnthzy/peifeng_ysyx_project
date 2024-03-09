@@ -9,8 +9,9 @@ class LSFR extends Module {
   val io=IO(new Bundle {
     val out=Output(UInt(4.W))
   })
-  val data=RegInit("b0001".U(4.W))
-  data:=Cat(data(2,0),data(3)^data(2))
+  val delaytime=RegInit("b0001".U(4.W))
+  delaytime:=Cat(delaytime(2,0),delaytime(3)^delaytime(2))
+  io.out:=delaytime
 }
 
 object RandomDelay {
