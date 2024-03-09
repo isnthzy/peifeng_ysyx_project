@@ -99,6 +99,8 @@ module EX_stage(	// @[<stdin>:1279:3]
     (_EX_to_preif_Br_B_taken_output | _EX_to_preif_epc_target_T
      | _EX_to_preif_epc_target_T_1) & ex_valid;	// @[playground/src/EX_stage.scala:29:33, :45:45, :61:32, :62:{10,32,46}]
   wire [31:0] ram_raddr = _Alu_io_result & 32'hFFFFFFFC;	// @[playground/src/EX_stage.scala:39:17, :78:{31,33}]
+  wire [31:0] ram_waddr =
+    ({32{EX_IO_bits_st_type != 4'hF}} | 32'hFFFFFFFC) & _Alu_io_result;	// @[playground/src/EX_stage.scala:39:17, :78:33, :79:{20,39}]
   reg         arvalidReg;	// @[playground/src/EX_stage.scala:90:25]
   reg  [31:0] araddrReg;	// @[playground/src/EX_stage.scala:91:24]
   reg         ReadRequstState;	// @[playground/src/EX_stage.scala:94:30]
@@ -177,7 +179,7 @@ module EX_stage(	// @[<stdin>:1279:3]
         wvalidReg <= ~_GEN_3 & wvalidReg;	// @[playground/src/EX_stage.scala:125:25, :127:24, :142:47, :143:34, :145:17, :146:16]
       end
       if (_GEN_6 & _GEN_7) begin	// @[playground/src/EX_stage.scala:126:24, :132:{24,35}, :133:{16,27}, :136:16]
-        awaddrReg <= _Alu_io_result;	// @[playground/src/EX_stage.scala:39:17, :126:24]
+        awaddrReg <= ram_waddr;	// @[playground/src/EX_stage.scala:79:20, :126:24]
         wdataReg <= EX_IO_bits_rdata2;	// @[playground/src/EX_stage.scala:128:23]
         wstrbReg <= EX_IO_bits_st_type;	// @[playground/src/EX_stage.scala:129:23]
       end
@@ -212,7 +214,7 @@ module EX_stage(	// @[<stdin>:1279:3]
   assign EX_to_ls_bits_dpic_bundle_ex_ld_type = EX_IO_bits_ld_type;	// @[<stdin>:1279:3]
   assign EX_to_ls_bits_dpic_bundle_ex_st_type = EX_IO_bits_st_type;	// @[<stdin>:1279:3]
   assign EX_to_ls_bits_dpic_bundle_ex_mem_addr =
-    st_wen ? _Alu_io_result : ld_wen ? ram_raddr : 32'h0;	// @[<stdin>:1279:3, playground/src/EX_stage.scala:23:28, :24:28, :39:17, :78:31, :91:24, :212:45, :213:50]
+    st_wen ? ram_waddr : ld_wen ? ram_raddr : 32'h0;	// @[<stdin>:1279:3, playground/src/EX_stage.scala:23:28, :24:28, :78:31, :79:20, :91:24, :212:45, :213:50]
   assign EX_to_ls_bits_dpic_bundle_ex_st_data = st_wen ? EX_IO_bits_rdata2 : 32'h0;	// @[<stdin>:1279:3, playground/src/EX_stage.scala:24:28, :91:24, :214:44]
   assign EX_to_ls_bits_ld_wen = ld_wen;	// @[<stdin>:1279:3, playground/src/EX_stage.scala:23:28]
   assign EX_to_ls_bits_ld_type = EX_IO_bits_ld_type;	// @[<stdin>:1279:3]
