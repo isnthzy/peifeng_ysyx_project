@@ -176,7 +176,7 @@ module EX_stage(	// @[<stdin>:1279:3]
         wvalidReg <= ~_GEN_3 & wvalidReg;	// @[playground/src/EX_stage.scala:125:25, :127:24, :142:47, :143:34, :145:17, :146:16]
       end
       if (_GEN_6 & _GEN_7) begin	// @[playground/src/EX_stage.scala:126:24, :132:{24,35}, :133:{16,27}, :136:16]
-        awaddrReg <= ({32{EX_IO_bits_ld_type != 3'h1}} | 32'hFFFFFFFC) & _Alu_io_result;	// @[playground/src/EX_stage.scala:39:17, :78:33, :79:{20,39}, :126:24]
+        awaddrReg <= _Alu_io_result;	// @[playground/src/EX_stage.scala:39:17, :126:24]
         wdataReg <= EX_IO_bits_rdata2;	// @[playground/src/EX_stage.scala:128:23]
         wstrbReg <= EX_IO_bits_st_type;	// @[playground/src/EX_stage.scala:129:23]
       end
