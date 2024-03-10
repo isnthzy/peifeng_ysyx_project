@@ -79,7 +79,7 @@ class for_ex_dpi_bundle extends Bundle{
   val is_rd0=Bool()
 
   val ld_type=UInt(3.W)
-  val st_type=UInt(4.W)
+  val st_type=UInt(3.W)
   val mem_addr=UInt(ADDR_WIDTH.W)
   val st_data=UInt(DATA_WIDTH.W)
 }
@@ -133,6 +133,12 @@ class wb_to_id_bus extends Bundle{
   val rf=new wb_to_rf_bus()
 }
 //----------------to id----------------
+
+//----------------to ex----------------
+class ls_to_ex_bus extends Bundle{
+  val WaitloadOk=Bool()
+}
+//----------------to ex----------------
 class preif_to_if_bus extends Bundle{
   val nextpc=UInt(ADDR_WIDTH.W)
   val pc  =UInt(ADDR_WIDTH.W)
@@ -154,7 +160,7 @@ class id_to_ex_bus extends Bundle{
   val csr_global=new csr_global()
 
   val b_taken=Bool()
-  val st_type=UInt(4.W)
+  val st_type=UInt(3.W)
   val ld_type=UInt(3.W)
   val csr_cmd=UInt(5.W)
   val wb_sel =UInt(2.W)
@@ -176,6 +182,7 @@ class ex_to_ls_bus extends Bundle{
   val dpic_bundle=new To_wb_dpic_bus()
    //传递到wb级进行交给dpic处理
 
+  val addr_low2bit=UInt(2.W)
   val ld_wen=Bool() //不需要st_type原因是st_type在ex级被处理
   val ld_type=UInt(3.W)
   val csr_cmd=UInt(5.W)

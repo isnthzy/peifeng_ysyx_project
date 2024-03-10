@@ -113,10 +113,10 @@ object Control {
   val BR_JR  = 8.U(4.W)
 
   // st_type
-  val ST_XXX = 0.U(4.W)
-  val ST_SB  = 1.U(4.W)
-  val ST_SH  = 3.U(4.W)
-  val ST_SW  = 15.U(4.W)
+  val ST_XXX = 0.U(3.W)
+  val ST_SB  = 1.U(3.W)
+  val ST_SH  = 2.U(3.W)
+  val ST_SW  = 3.U(3.W)
 
   // ld_type
   val LD_XXX = 0.U(3.W)
@@ -198,7 +198,7 @@ class DecodeSignals extends Bundle {
   val imm_sel  = Output(UInt(3.W))
   val alu_op   = Output(UInt(4.W))
   val br_type  = Output(UInt(4.W))
-  val st_type  = Output(UInt(4.W))
+  val st_type  = Output(UInt(3.W))
   val ld_type  = Output(UInt(3.W))
   val wb_sel   = Output(UInt(2.W))
   val wb_en    = Output(Bool())

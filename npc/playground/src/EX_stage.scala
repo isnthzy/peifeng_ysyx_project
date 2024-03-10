@@ -2,11 +2,12 @@ import chisel3._
 import chisel3.util._
 import config.Configs._
 import Control._
+import chisel3.internal.sourceinfo.MuxTransform
 class EX_stage extends Module {
   val EX=IO(new Bundle {
     val IO    =Flipped(Decoupled(new id_to_ex_bus()))
     val to_ls =Decoupled(new ex_to_ls_bus())
-
+    
     val to_id =Output(new ex_to_id_bus())
     val to_if =Output(new ex_to_if_bus())
     val to_preif =Output(new ex_to_preif_bus())
@@ -75,6 +76,27 @@ class EX_stage extends Module {
   EX.to_id.fw.addr:=Mux(ex_valid && EX.IO.bits.rf_wen , EX.to_ls.bits.rd , 0.U)
   EX.to_id.fw.data:=EX.to_ls.bits.result
 
+  val st_wstrb=Wire(UInt(4.W))
+  val addr_low2bit=Alu.io.result(1,0)
+  val store_byte_sel=MuxLookup(addr_low2bit,0.U)(Seq(
+    "b00".U -> "b0001".U,
+    "b01".U -> "b0010".U,
+    "b10".U -> "b0100".U,
+    "b11".U -> "b1000".U
+  ))
+  val store_half_sel=MuxLookup(addr_low2bit,0.U)(Seq(
+      "b00".U -> "b0011".U, 
+      "b01".U -> "b0011".U, 
+      "b10".U -> "b1100".U, 
+      "b11".U -> "b1100".U
+  ))
+  val ram_addr=Alu.io.result & ~3.U(32.W)
+  st_wstrb:=MuxLookup(EX.IO.bits.st_type,0.U)(Seq(
+    ST_XXX -> 0.U,
+    ST_SB  -> store_byte_sel,
+    ST_SH  -> store_half_sel,
+    ST_SW  -> "b1111".U
+  ))
   //EX级发起访存
 //---------------------------AXI4 Lite---------------------------
   val WaitWriteIdle=dontTouch(Wire(Bool()))
@@ -94,12 +116,12 @@ class EX_stage extends Module {
       when(WaitWriteIdle){
         when(BrespFire){
           ReadRequstState:=ar_wait_ready
-          araddrReg:=Alu.io.result
+          araddrReg:=ram_addr
           arvalidReg:=true.B    
         }
       }.otherwise{
         ReadRequstState:=ar_wait_ready
-        araddrReg:=Alu.io.result
+        araddrReg:=ram_addr
         arvalidReg:=true.B
       }
     }
@@ -128,13 +150,14 @@ class EX_stage extends Module {
 
   when(WriteRequstState===wr_idle){
     when(st_wen&&ex_valid){
+
       WriteRequstState:=wr_wait_ready
       awvalidReg:=true.B
-      awaddrReg:=Alu.io.result
+      awaddrReg:=ram_addr
       
       wvalidReg:=true.B
       wdataReg:=EX.IO.bits.rdata2
-      wstrbReg:=EX.IO.bits.st_type
+      wstrbReg:=st_wstrb
     }
   }.elsewhen(WriteRequstState===wr_wait_ready){
     when(EX.aw.ready&&EX.w.ready){
@@ -180,7 +203,7 @@ class EX_stage extends Module {
                         Mux((EX.IO.bits.csr_cmd===CSR.ECALL),EX.IO.bits.csr_global.mtvec,0.U))
   
 
-
+  EX.to_ls.bits.addr_low2bit:=addr_low2bit
   EX.to_ls.bits.ld_wen:=ld_wen
   EX.to_ls.bits.ld_type:=EX.IO.bits.ld_type
   EX.to_ls.bits.csr_cmd:=EX.IO.bits.csr_cmd
@@ -206,7 +229,7 @@ class EX_stage extends Module {
 
   EX.to_ls.bits.dpic_bundle.ex.ld_type:=EX.IO.bits.ld_type
   EX.to_ls.bits.dpic_bundle.ex.st_type:=EX.IO.bits.st_type
-  EX.to_ls.bits.dpic_bundle.ex.mem_addr:=Mux(st_wen||ld_wen,Alu.io.result,0.U)
+  EX.to_ls.bits.dpic_bundle.ex.mem_addr:=Mux(st_wen || ld_wen,Alu.io.result,0.U)
   EX.to_ls.bits.dpic_bundle.ex.st_data:=Mux(st_wen,EX.IO.bits.rdata2,0.U)
 
   EX.to_ls.bits.dpic_bundle.ls:=0.U.asTypeOf(new for_ls_dpi_bundle)

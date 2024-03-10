@@ -12,7 +12,7 @@ class LS_stage extends Module {
     val r=Flipped(Decoupled(new AxiReadDataBundle()))
   })
   dontTouch(LS.r);
-  val data_sram_rdata=dontTouch(WireDefault(0.U(DATA_WIDTH.W)))
+  val data_ram_rdata=dontTouch(WireDefault(0.U(DATA_WIDTH.W)))
   val rdata_valid=dontTouch(Wire(Bool()))
   val ls_clog=dontTouch(Wire(Bool()))
 
@@ -29,22 +29,33 @@ class LS_stage extends Module {
 //----------------------AXI4Lite  R Channel----------------------
   LS.r.ready:=true.B
   when(LS.r.fire){
-    data_sram_rdata:=LS.r.bits.data
+    data_ram_rdata:=LS.r.bits.data
     rdata_valid:=true.B
   }.otherwise{
     rdata_valid:=false.B
   }
-  
 //----------------------AXI4Lite  R Channel----------------------
+  
+  val mem_data=dontTouch(Wire(UInt(32.W)))
+  val load_byte_data=MuxLookup(LS.IO.bits.addr_low2bit,0.U)(Seq(
+    "b00".U -> data_ram_rdata(7 , 0),
+    "b01".U -> data_ram_rdata(15, 8),
+    "b10".U -> data_ram_rdata(23,16),
+    "b11".U -> data_ram_rdata(31,24)
+  ))
 
-  val ram_data=dontTouch(Wire(UInt(32.W)))
-
-  ram_data:=MuxLookup(LS.IO.bits.ld_type,0.U)(Seq(
-    LD_LW -> data_sram_rdata,
-    LD_LH -> Sext(data_sram_rdata(15,0),32),
-    LD_LB -> Sext(data_sram_rdata( 7,0),32),
-    LD_LHU-> Zext(data_sram_rdata(15,0),32),
-    LD_LBU-> Zext(data_sram_rdata( 7,0),32)
+  val load_half_data=MuxLookup(LS.IO.bits.addr_low2bit,0.U)(Seq(
+    "b00".U -> data_ram_rdata(15, 0), 
+    "b01".U -> data_ram_rdata(15, 0),
+    "b10".U -> data_ram_rdata(31,16), 
+    "b11".U -> data_ram_rdata(31,16)
+  ))
+  mem_data:=MuxLookup(LS.IO.bits.ld_type,0.U)(Seq(
+    LD_LW -> data_ram_rdata,
+    LD_LH -> Sext(load_half_data,32),
+    LD_LB -> Sext(load_byte_data,32),
+    LD_LHU-> Zext(load_half_data,32),
+    LD_LBU-> Zext(load_byte_data,32)
   ))
   
 
@@ -53,7 +64,7 @@ class LS_stage extends Module {
   LS.to_wb.bits.rd :=LS.IO.bits.rd
   LS.to_wb.bits.result:=MuxLookup(LS.IO.bits.wb_sel,0.U)(Seq(
     WB_ALU ->  LS.IO.bits.result,
-    WB_MEM ->  ram_data,
+    WB_MEM ->  mem_data,
     WB_PC4 -> (LS.IO.bits.pc+4.U),
     WB_CSR ->  LS.IO.bits.result
   ))

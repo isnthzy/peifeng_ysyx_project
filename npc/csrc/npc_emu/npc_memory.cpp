@@ -77,10 +77,40 @@ extern "C" void pmem_read(int raddr, int *rdata) {
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 extern "C" void pmem_write(int waddr, int wdata, char wmask) {
-  // waddr=waddr & ~0x3u;
-  if(wmask==0x1) paddr_write(waddr,1,wdata);
-  else if(wmask==0x3) paddr_write(waddr,2,wdata);
-  else if(wmask==0xf) paddr_write(waddr,4,wdata);
+  //用了笨方法枚举，暂时没想到什么合适的办法
+  int st_addr=0;
+  int st_len=0;
+  switch (wmask)
+  {
+  //lb
+  case 0x1: 
+    st_addr=waddr;
+    st_len=1; break;
+  case 0x2:
+    st_addr=waddr+1;
+    st_len=1; break;
+  case 0x4:
+    st_addr=waddr+2;
+    st_len=1; break;
+  case 0x8:
+    st_addr=waddr+3;
+    st_len=1; break;
+  //lh
+  case 0x3:
+    st_addr=waddr;
+    st_len=2; break;
+  case 0xc:
+    st_addr=waddr+2;
+    st_len=2; break;
+  //lw
+  case 0xf:
+    st_addr=waddr;
+    st_len=4; break;
+  default:
+    panic("load error\n");
+    break;
+  }
+  paddr_write(st_addr,st_len,wdata);
   // 总是往地址为`waddr & ~0x3u`的4字节按写掩码`wmask`写入`wdata`
   // `wmask`中每比特表示`wdata`中1个字节的掩码,
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
