@@ -136,7 +136,7 @@ class wb_to_id_bus extends Bundle{
 
 //----------------to ex----------------
 class ls_to_ex_bus extends Bundle{
-  val ld_ok=Bool()
+  val WaitloadOk=Bool()
 }
 //----------------to ex----------------
 class preif_to_if_bus extends Bundle{

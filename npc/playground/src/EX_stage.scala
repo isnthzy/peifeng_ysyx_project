@@ -184,7 +184,7 @@ class EX_stage extends Module {
   EX.b.ready:=breadyReg
 //---------------------------AXI4 Lite---------------------------
   ex_clog:=((~EX.ar.ready&& ld_wen)
-         ||( ~EX.for_ls.ld_ok&&ld_wen)
+         ||(EX.for_ls.WaitloadOk&&ld_wen)
          ||(WaitWriteIdle&& ~BrespFire)
          ||(WaitWriteIdle&&st_wen))&&ex_valid
 
