@@ -133,6 +133,12 @@ class wb_to_id_bus extends Bundle{
   val rf=new wb_to_rf_bus()
 }
 //----------------to id----------------
+
+//----------------to ex----------------
+class ls_to_ex_bus extends Bundle{
+  val ld_ok=Bool()
+}
+//----------------to ex----------------
 class preif_to_if_bus extends Bundle{
   val nextpc=UInt(ADDR_WIDTH.W)
   val pc  =UInt(ADDR_WIDTH.W)

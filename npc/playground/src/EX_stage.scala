@@ -7,7 +7,8 @@ class EX_stage extends Module {
   val EX=IO(new Bundle {
     val IO    =Flipped(Decoupled(new id_to_ex_bus()))
     val to_ls =Decoupled(new ex_to_ls_bus())
-
+    
+    val for_ls=Input(new ls_to_ex_bus())
     val to_id =Output(new ex_to_id_bus())
     val to_if =Output(new ex_to_if_bus())
     val to_preif =Output(new ex_to_preif_bus())
@@ -150,6 +151,7 @@ class EX_stage extends Module {
 
   when(WriteRequstState===wr_idle){
     when(st_wen&&ex_valid){
+
       WriteRequstState:=wr_wait_ready
       awvalidReg:=true.B
       awaddrReg:=ram_addr
@@ -182,6 +184,7 @@ class EX_stage extends Module {
   EX.b.ready:=breadyReg
 //---------------------------AXI4 Lite---------------------------
   ex_clog:=((~EX.ar.ready&& ld_wen)
+         ||(EX.for_ls.ld_ok&& ld_wen)
          ||(WaitWriteIdle&& ~BrespFire)
          ||(WaitWriteIdle&&st_wen))&&ex_valid
 

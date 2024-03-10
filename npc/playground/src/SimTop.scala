@@ -44,6 +44,7 @@ class SimTop extends Module {
 
 // EX begin
   StageConnect(ID_stage.ID.to_ex,EX_stage.EX.IO)
+  EX_stage.EX.for_ls<>LS_stage.LS.to_ex
   EX_stage.EX.ar<>Axi4Lite_Sram_Mem.io.ar
   EX_stage.EX.aw<>Axi4Lite_Sram_Mem.io.aw
   EX_stage.EX.w <>Axi4Lite_Sram_Mem.io.w 
