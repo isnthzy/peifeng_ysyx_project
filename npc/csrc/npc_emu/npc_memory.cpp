@@ -77,6 +77,7 @@ extern "C" void pmem_read(int raddr, int *rdata) {
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 extern "C" void pmem_write(int waddr, int wdata, char wmask) {
+  printf("wmask : %x\n",wmask);
   //用了笨方法枚举，暂时没想到什么合适的办法
   int st_addr=0;
   int st_len=0;
@@ -107,7 +108,7 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
     st_addr=waddr;
     st_len=4; break;
   default:
-    panic("load error");
+    panic("load error\n");
     break;
   }
   paddr_write(st_addr,st_len,wdata);
