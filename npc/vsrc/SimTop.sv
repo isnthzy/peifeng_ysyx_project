@@ -50,7 +50,7 @@ module SimTop(	// @[<stdin>:2064:3]
   wire [4:0]  _LS_stage_LS_to_id_fw_addr;	// @[playground/src/SimTop.scala:15:24]
   wire [31:0] _LS_stage_LS_to_id_fw_data;	// @[playground/src/SimTop.scala:15:24]
   wire        _LS_stage_LS_to_id_clog;	// @[playground/src/SimTop.scala:15:24]
-  wire        _LS_stage_LS_to_ex_ld_ok;	// @[playground/src/SimTop.scala:15:24]
+  wire        _LS_stage_LS_to_ex_WaitloadOk;	// @[playground/src/SimTop.scala:15:24]
   wire        _LS_stage_LS_r_ready;	// @[playground/src/SimTop.scala:15:24]
   wire        _EX_stage_EX_IO_ready;	// @[playground/src/SimTop.scala:14:24]
   wire        _EX_stage_EX_to_ls_valid;	// @[playground/src/SimTop.scala:14:24]
@@ -441,7 +441,7 @@ module SimTop(	// @[<stdin>:2064:3]
     .EX_IO_bits_pc                            (EX_stage_EX_IO_bits_r_pc),	// @[playground/src/SimTop.scala:73:27]
     .EX_IO_bits_inst                          (EX_stage_EX_IO_bits_r_inst),	// @[playground/src/SimTop.scala:73:27]
     .EX_to_ls_ready                           (_LS_stage_LS_IO_ready),	// @[playground/src/SimTop.scala:15:24]
-    .EX_for_ls_ld_ok                          (_LS_stage_LS_to_ex_ld_ok),	// @[playground/src/SimTop.scala:15:24]
+    .EX_for_ls_WaitloadOk                     (_LS_stage_LS_to_ex_WaitloadOk),	// @[playground/src/SimTop.scala:15:24]
     .EX_ar_ready                              (_Axi4Lite_Sram_Mem_io_ar_ready),	// @[playground/src/SimTop.scala:18:33]
     .EX_aw_ready                              (_Axi4Lite_Sram_Mem_io_aw_ready),	// @[playground/src/SimTop.scala:18:33]
     .EX_w_ready                               (_Axi4Lite_Sram_Mem_io_w_ready),	// @[playground/src/SimTop.scala:18:33]
@@ -602,7 +602,7 @@ module SimTop(	// @[<stdin>:2064:3]
     .LS_to_id_fw_addr                             (_LS_stage_LS_to_id_fw_addr),
     .LS_to_id_fw_data                             (_LS_stage_LS_to_id_fw_data),
     .LS_to_id_clog                                (_LS_stage_LS_to_id_clog),
-    .LS_to_ex_ld_ok                               (_LS_stage_LS_to_ex_ld_ok),
+    .LS_to_ex_WaitloadOk                          (_LS_stage_LS_to_ex_WaitloadOk),
     .LS_r_ready                                   (_LS_stage_LS_r_ready)
   );
   WB_stage WB_stage (	// @[playground/src/SimTop.scala:16:24]
