@@ -35,7 +35,7 @@ class LS_stage extends Module {
   }.otherwise{
     rdata_valid:=false.B
   }
-  LS.to_ex.ld_ok:=LS.IO.bits.ld_wen&&LS.IO.bits.ld_wen&&ls_valid
+  LS.to_ex.ld_ok:=LS.IO.bits.ld_wen&&rdata_valid&&ls_valid
 //----------------------AXI4Lite  R Channel----------------------
   
   val mem_data=dontTouch(Wire(UInt(32.W)))
