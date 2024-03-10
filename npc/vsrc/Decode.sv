@@ -7,8 +7,8 @@ module Decode(	// @[<stdin>:133:3]
   output [2:0]  io_imm_sel,	// @[playground/src/Decode.scala:210:23]
   output [3:0]  io_alu_op,	// @[playground/src/Decode.scala:210:23]
                 io_br_type,	// @[playground/src/Decode.scala:210:23]
-                io_st_type,	// @[playground/src/Decode.scala:210:23]
-  output [2:0]  io_ld_type,	// @[playground/src/Decode.scala:210:23]
+  output [2:0]  io_st_type,	// @[playground/src/Decode.scala:210:23]
+                io_ld_type,	// @[playground/src/Decode.scala:210:23]
   output [1:0]  io_wb_sel,	// @[playground/src/Decode.scala:210:23]
   output        io_wb_en,	// @[playground/src/Decode.scala:210:23]
   output [4:0]  io_csr_cmd,	// @[playground/src/Decode.scala:210:23]
@@ -195,8 +195,10 @@ module Decode(	// @[<stdin>:133:3]
     _ctrlSignals_T_1 | _ctrlSignals_T_3 | _ctrlSignals_T_5 | _ctrlSignals_T_7
     | _ctrlSignals_T_9 | _ctrlSignals_T_11 | _ctrlSignals_T_13 | _ctrlSignals_T_15
     | _ctrlSignals_T_17 | _ctrlSignals_T_19 | _GEN_9
-      ? 4'h0
-      : _ctrlSignals_T_31 ? 4'h1 : _ctrlSignals_T_33 ? 4'h3 : {4{_ctrlSignals_T_35}};	// @[<stdin>:133:3, src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
+      ? 3'h0
+      : _ctrlSignals_T_31
+          ? 3'h1
+          : _ctrlSignals_T_33 ? 3'h2 : _ctrlSignals_T_35 ? 3'h3 : 3'h0;	// @[<stdin>:133:3, src/main/scala/chisel3/util/Lookup.scala:31:38, :34:39]
   assign io_ld_type =
     _ctrlSignals_T_1 | _ctrlSignals_T_3 | _ctrlSignals_T_5 | _ctrlSignals_T_7 | _GEN_5
       ? 3'h0
