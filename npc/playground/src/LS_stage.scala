@@ -9,7 +9,6 @@ class LS_stage extends Module {
     val to_wb =Decoupled(new ls_to_wb_bus())
 
     val to_id =Output(new ls_to_id_bus())
-    val to_ex =Output(new ls_to_ex_bus())
     val r=Flipped(Decoupled(new AxiReadDataBundle()))
   })
   dontTouch(LS.r);
@@ -35,7 +34,6 @@ class LS_stage extends Module {
   }.otherwise{
     rdata_valid:=false.B
   }
-  LS.to_ex.WaitloadOk:= ~rdata_valid&&ls_valid&&LS.IO.bits.ld_wen
 //----------------------AXI4Lite  R Channel----------------------
   
   val mem_data=dontTouch(Wire(UInt(32.W)))
