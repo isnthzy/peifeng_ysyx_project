@@ -11,7 +11,7 @@
 #define CONFIG_MTRACE 1
 #define CONFIG_DIFFTEST 1
 
-#define NPCLOG_NUM 10000 //trace最多记录多少个log
+#define NPCLOG_NUM 1000000 //trace最多记录多少个log
 //TRACE开关
 
 /*---------------------------------------------------------------------------------*/
