@@ -91,19 +91,19 @@ module Axi4Lite_Sram_Mem(	// @[<stdin>:1899:3]
   LSFR io_ar_ready_LSFR (	// @[playground/src/LSFR.scala:24:20]
     .clock      (clock),
     .reset      (reset),
-    .io_Seed    (8'h8),	// @[playground/src/LSFR.scala:26:17]
+    .io_Seed    (8'hF),	// @[playground/src/LSFR.scala:26:17]
     .io_OutTime (_io_ar_ready_LSFR_io_OutTime)
   );
   LSFR io_aw_ready_LSFR (	// @[playground/src/LSFR.scala:24:20]
     .clock      (clock),
     .reset      (reset),
-    .io_Seed    (8'h4),	// @[playground/src/LSFR.scala:26:17]
+    .io_Seed    (8'h1),	// @[playground/src/LSFR.scala:26:17]
     .io_OutTime (_io_aw_ready_LSFR_io_OutTime)
   );
   LSFR io_w_ready_LSFR (	// @[playground/src/LSFR.scala:24:20]
     .clock      (clock),
     .reset      (reset),
-    .io_Seed    (8'h9),	// @[playground/src/LSFR.scala:26:17]
+    .io_Seed    (8'h14),	// @[playground/src/LSFR.scala:26:17]
     .io_OutTime (_io_w_ready_LSFR_io_OutTime)
   );
   assign io_ar_ready = _io_ar_ready_output;	// @[<stdin>:1899:3]
