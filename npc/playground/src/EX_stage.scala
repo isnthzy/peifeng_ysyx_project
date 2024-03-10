@@ -228,7 +228,7 @@ class EX_stage extends Module {
 
   EX.to_ls.bits.dpic_bundle.ex.ld_type:=EX.IO.bits.ld_type
   EX.to_ls.bits.dpic_bundle.ex.st_type:=EX.IO.bits.st_type
-  EX.to_ls.bits.dpic_bundle.ex.mem_addr:=Mux(st_wen || ld_wen,ram_addr,0.U)
+  EX.to_ls.bits.dpic_bundle.ex.mem_addr:=Mux(st_wen || ld_wen,Alu.io.result,0.U)
   EX.to_ls.bits.dpic_bundle.ex.st_data:=Mux(st_wen,EX.IO.bits.rdata2,0.U)
 
   EX.to_ls.bits.dpic_bundle.ls:=0.U.asTypeOf(new for_ls_dpi_bundle)
