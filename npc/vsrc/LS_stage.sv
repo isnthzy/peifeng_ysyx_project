@@ -160,7 +160,7 @@ module LS_stage(	// @[<stdin>:1526:3]
   assign LS_to_id_fw_addr = ls_valid & LS_IO_bits_rf_wen ? LS_IO_bits_rd : 5'h0;	// @[<stdin>:1526:3, playground/src/LS_stage.scala:20:33, :80:{24,34}]
   assign LS_to_id_fw_data = casez_tmp_1;	// @[<stdin>:1526:3, playground/src/LS_stage.scala:67:57]
   assign LS_to_id_clog = ls_valid & ~ls_ready_go & LS_IO_bits_ld_wen;	// @[<stdin>:1526:3, playground/src/LS_stage.scala:20:33, :21:33, :78:{30,43}]
-  assign LS_to_ex_ld_ok = LS_IO_bits_ld_wen & ls_valid;	// @[<stdin>:1526:3, playground/src/LS_stage.scala:20:33, :38:55]
+  assign LS_to_ex_ld_ok = LS_IO_bits_ld_wen & rdata_valid & ls_valid;	// @[<stdin>:1526:3, playground/src/LS_stage.scala:17:33, :20:33, :38:49]
   assign LS_r_ready = _LS_r_ready_output;	// @[<stdin>:1526:3]
 endmodule
 
