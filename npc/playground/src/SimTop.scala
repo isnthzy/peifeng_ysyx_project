@@ -54,6 +54,7 @@ class SimTop extends Module {
   AXi4LiteBridge.io.addr:=EX_stage.EX.mem_addr
   AXi4LiteBridge.io.write_en:=EX_stage.EX.write_en
   AXi4LiteBridge.io.wstrb:=EX_stage.EX.wstrb
+  AXi4LiteBridge.io.wdata:=EX_stage.EX.wdata
   EX_stage.EX.waddr_ok:=AXi4LiteBridge.io.waddr_ok
   EX_stage.EX.wdata_ok:=AXi4LiteBridge.io.wdata_ok
   

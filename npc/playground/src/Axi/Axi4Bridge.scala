@@ -32,7 +32,7 @@ class Axi4Bridge extends Module {
 
   val WaitReadIdle=dontTouch(Wire(Bool()))
   val RrespFire=dontTouch(Wire(Bool()))
-
+  val ram_rdata=dontTouch(WireDefault(0.U(DATA_WIDTH.W)))
 //----------------------AXI4Lite AR Channel----------------------
   val ar_idle :: ar_wait_ready :: ar_wait_rresp ::Nil = Enum(3)
   val arvalidReg=RegInit(false.B)
@@ -66,7 +66,7 @@ class Axi4Bridge extends Module {
       ReadRequstState:=ar_idle
       rvalidReg:=false.B
 
-      io.rdata:=io.r.bits.data
+      ram_rdata:=io.r.bits.data
       //不用reg减少一周期
     }
   }
@@ -79,6 +79,7 @@ class Axi4Bridge extends Module {
 
   io.raddr_ok:= io.ar.fire
   io.rdata_ok:= WaitReadIdle&&RrespFire
+  io.rdata:= ram_rdata
   /*
     如果状态位为
     1.等待read事务空闲，此时读相应，已读出来数据
