@@ -62,71 +62,71 @@ module LS_stage(	// @[<stdin>:1443:3]
   output        LS_to_id_clog	// @[playground/src/LS_stage.scala:7:12]
 );
 
-  wire [31:0] data_ram_rdata = LS_rdata;	// @[playground/src/LS_stage.scala:18:36]
-  reg  [7:0]  casez_tmp;	// @[playground/src/LS_stage.scala:45:60]
-  reg  [31:0] casez_tmp_0;	// @[playground/src/LS_stage.scala:58:46]
-  reg  [31:0] casez_tmp_1;	// @[playground/src/LS_stage.scala:70:57]
-  reg         ls_valid;	// @[playground/src/LS_stage.scala:23:33]
-  wire        ls_clog = LS_IO_bits_ld_wen & ~LS_rdata_ok & ls_valid;	// @[playground/src/LS_stage.scala:21:29, :23:33, :25:{35,48}]
-  wire        ls_ready_go = ~ls_clog;	// @[playground/src/LS_stage.scala:21:29, :23:33, :24:33, :26:19]
-  wire        _LS_IO_ready_output = ~ls_valid | ls_ready_go & LS_to_wb_ready;	// @[playground/src/LS_stage.scala:23:33, :24:33, :27:{18,28,43}]
-  always_comb begin	// @[playground/src/LS_stage.scala:45:60]
-    casez (LS_IO_bits_addr_low2bit)	// @[playground/src/LS_stage.scala:45:60]
+  wire [31:0] data_ram_rdata = LS_rdata;	// @[playground/src/LS_stage.scala:17:36]
+  reg  [7:0]  casez_tmp;	// @[playground/src/LS_stage.scala:32:60]
+  reg  [31:0] casez_tmp_0;	// @[playground/src/LS_stage.scala:45:46]
+  reg  [31:0] casez_tmp_1;	// @[playground/src/LS_stage.scala:57:57]
+  reg         ls_valid;	// @[playground/src/LS_stage.scala:21:33]
+  wire        ls_clog = LS_IO_bits_ld_wen & ~LS_rdata_ok & ls_valid;	// @[playground/src/LS_stage.scala:19:29, :21:33, :23:{35,48}]
+  wire        ls_ready_go = ~ls_clog;	// @[playground/src/LS_stage.scala:19:29, :21:33, :22:33, :24:19]
+  wire        _LS_IO_ready_output = ~ls_valid | ls_ready_go & LS_to_wb_ready;	// @[playground/src/LS_stage.scala:21:33, :22:33, :25:{18,28,43}]
+  always_comb begin	// @[playground/src/LS_stage.scala:32:60]
+    casez (LS_IO_bits_addr_low2bit)	// @[playground/src/LS_stage.scala:32:60]
       2'b00:
-        casez_tmp = data_ram_rdata[7:0];	// @[playground/src/LS_stage.scala:18:36, :45:60, :46:30]
+        casez_tmp = data_ram_rdata[7:0];	// @[playground/src/LS_stage.scala:17:36, :32:60, :33:30]
       2'b01:
-        casez_tmp = data_ram_rdata[15:8];	// @[playground/src/LS_stage.scala:18:36, :45:60, :47:30]
+        casez_tmp = data_ram_rdata[15:8];	// @[playground/src/LS_stage.scala:17:36, :32:60, :34:30]
       2'b10:
-        casez_tmp = data_ram_rdata[23:16];	// @[playground/src/LS_stage.scala:18:36, :45:60, :48:30]
+        casez_tmp = data_ram_rdata[23:16];	// @[playground/src/LS_stage.scala:17:36, :32:60, :35:30]
       default:
-        casez_tmp = data_ram_rdata[31:24];	// @[playground/src/LS_stage.scala:18:36, :45:60, :49:30]
-    endcase	// @[playground/src/LS_stage.scala:45:60]
+        casez_tmp = data_ram_rdata[31:24];	// @[playground/src/LS_stage.scala:17:36, :32:60, :36:30]
+    endcase	// @[playground/src/LS_stage.scala:32:60]
   end // always_comb
   wire [15:0] load_half_data =
     (&LS_IO_bits_addr_low2bit) | LS_IO_bits_addr_low2bit == 2'h2
       ? data_ram_rdata[31:16]
-      : data_ram_rdata[15:0];	// @[playground/src/LS_stage.scala:18:36, :45:60, :52:60, :53:30, :55:30]
-  always_comb begin	// @[playground/src/LS_stage.scala:58:46]
-    casez (LS_IO_bits_ld_type)	// @[playground/src/LS_stage.scala:58:46]
+      : data_ram_rdata[15:0];	// @[playground/src/LS_stage.scala:17:36, :32:60, :39:60, :40:30, :42:30]
+  always_comb begin	// @[playground/src/LS_stage.scala:45:46]
+    casez (LS_IO_bits_ld_type)	// @[playground/src/LS_stage.scala:45:46]
       3'b000:
-        casez_tmp_0 = 32'h0;	// @[playground/src/LS_stage.scala:58:46]
+        casez_tmp_0 = 32'h0;	// @[playground/src/LS_stage.scala:45:46]
       3'b001:
-        casez_tmp_0 = data_ram_rdata;	// @[playground/src/LS_stage.scala:18:36, :58:46]
+        casez_tmp_0 = data_ram_rdata;	// @[playground/src/LS_stage.scala:17:36, :45:46]
       3'b010:
-        casez_tmp_0 = {{16{load_half_data[15]}}, load_half_data};	// @[playground/src/Bundles.scala:218:{10,15,37}, playground/src/LS_stage.scala:52:60, :58:46]
+        casez_tmp_0 = {{16{load_half_data[15]}}, load_half_data};	// @[playground/src/Bundles.scala:218:{10,15,37}, playground/src/LS_stage.scala:39:60, :45:46]
       3'b011:
-        casez_tmp_0 = {{24{casez_tmp[7]}}, casez_tmp};	// @[playground/src/Bundles.scala:218:{10,15,37}, playground/src/LS_stage.scala:45:60, :58:46]
+        casez_tmp_0 = {{24{casez_tmp[7]}}, casez_tmp};	// @[playground/src/Bundles.scala:218:{10,15,37}, playground/src/LS_stage.scala:32:60, :45:46]
       3'b100:
-        casez_tmp_0 = {16'h0, load_half_data};	// @[playground/src/Bundles.scala:218:15, :229:10, playground/src/LS_stage.scala:52:60, :58:46]
+        casez_tmp_0 = {16'h0, load_half_data};	// @[playground/src/Bundles.scala:218:15, :229:10, playground/src/LS_stage.scala:39:60, :45:46]
       3'b101:
-        casez_tmp_0 = {24'h0, casez_tmp};	// @[playground/src/Bundles.scala:218:15, :229:10, playground/src/LS_stage.scala:45:60, :58:46]
+        casez_tmp_0 = {24'h0, casez_tmp};	// @[playground/src/Bundles.scala:218:15, :229:10, playground/src/LS_stage.scala:32:60, :45:46]
       3'b110:
-        casez_tmp_0 = 32'h0;	// @[playground/src/LS_stage.scala:58:46]
+        casez_tmp_0 = 32'h0;	// @[playground/src/LS_stage.scala:45:46]
       default:
-        casez_tmp_0 = 32'h0;	// @[playground/src/LS_stage.scala:58:46]
-    endcase	// @[playground/src/LS_stage.scala:58:46]
+        casez_tmp_0 = 32'h0;	// @[playground/src/LS_stage.scala:45:46]
+    endcase	// @[playground/src/LS_stage.scala:45:46]
   end // always_comb
-  wire [31:0] mem_data = casez_tmp_0;	// @[playground/src/LS_stage.scala:44:30, :58:46]
-  always_comb begin	// @[playground/src/LS_stage.scala:70:57]
-    casez (LS_IO_bits_wb_sel)	// @[playground/src/LS_stage.scala:70:57]
+  wire [31:0] mem_data = casez_tmp_0;	// @[playground/src/LS_stage.scala:31:30, :45:46]
+  always_comb begin	// @[playground/src/LS_stage.scala:57:57]
+    casez (LS_IO_bits_wb_sel)	// @[playground/src/LS_stage.scala:57:57]
       2'b00:
-        casez_tmp_1 = LS_IO_bits_result;	// @[playground/src/LS_stage.scala:70:57]
+        casez_tmp_1 = LS_IO_bits_result;	// @[playground/src/LS_stage.scala:57:57]
       2'b01:
-        casez_tmp_1 = mem_data;	// @[playground/src/LS_stage.scala:44:30, :70:57]
+        casez_tmp_1 = mem_data;	// @[playground/src/LS_stage.scala:31:30, :57:57]
       2'b10:
-        casez_tmp_1 = LS_IO_bits_pc + 32'h4;	// @[playground/src/LS_stage.scala:70:57, :73:29]
+        casez_tmp_1 = LS_IO_bits_pc + 32'h4;	// @[playground/src/LS_stage.scala:57:57, :60:29]
       default:
-        casez_tmp_1 = LS_IO_bits_result;	// @[playground/src/LS_stage.scala:70:57]
-    endcase	// @[playground/src/LS_stage.scala:70:57]
+        casez_tmp_1 = LS_IO_bits_result;	// @[playground/src/LS_stage.scala:57:57]
+    endcase	// @[playground/src/LS_stage.scala:57:57]
   end // always_comb
   always @(posedge clock) begin	// @[<stdin>:1444:11]
     if (reset)	// @[<stdin>:1444:11]
-      ls_valid <= 1'h0;	// @[playground/src/LS_stage.scala:23:33]
-    else if (_LS_IO_ready_output)	// @[playground/src/LS_stage.scala:27:28]
-      ls_valid <= LS_IO_valid;	// @[playground/src/LS_stage.scala:23:33]
+      ls_valid <= 1'h0;	// @[playground/src/LS_stage.scala:21:33]
+    else if (_LS_IO_ready_output)	// @[playground/src/LS_stage.scala:25:28]
+      ls_valid <= LS_IO_valid;	// @[playground/src/LS_stage.scala:21:33]
   end // always @(posedge)
-  assign LS_IO_ready = _LS_IO_ready_output;	// @[<stdin>:1443:3, playground/src/LS_stage.scala:27:28]
-  assign LS_to_wb_valid = ls_valid & ls_ready_go;	// @[<stdin>:1443:3, playground/src/LS_stage.scala:23:33, :24:33, :31:28]
+  assign LS_IO_ready = _LS_IO_ready_output;	// @[<stdin>:1443:3, playground/src/LS_stage.scala:25:28]
+  assign LS_to_wb_valid = ls_valid & ls_ready_go;	// @[<stdin>:1443:3, playground/src/LS_stage.scala:21:33, :22:33, :29:28]
   assign LS_to_wb_bits_csr_commit_wen = LS_IO_bits_csr_commit_wen;	// @[<stdin>:1443:3]
   assign LS_to_wb_bits_csr_commit_waddr = LS_IO_bits_csr_commit_waddr;	// @[<stdin>:1443:3]
   assign LS_to_wb_bits_csr_commit_wdata = LS_IO_bits_csr_commit_wdata;	// @[<stdin>:1443:3]
@@ -143,16 +143,16 @@ module LS_stage(	// @[<stdin>:1443:3]
   assign LS_to_wb_bits_dpic_bundle_ex_st_type = LS_IO_bits_dpic_bundle_ex_st_type;	// @[<stdin>:1443:3]
   assign LS_to_wb_bits_dpic_bundle_ex_mem_addr = LS_IO_bits_dpic_bundle_ex_mem_addr;	// @[<stdin>:1443:3]
   assign LS_to_wb_bits_dpic_bundle_ex_st_data = LS_IO_bits_dpic_bundle_ex_st_data;	// @[<stdin>:1443:3]
-  assign LS_to_wb_bits_dpic_bundle_ls_ld_data = casez_tmp_1;	// @[<stdin>:1443:3, playground/src/LS_stage.scala:70:57]
+  assign LS_to_wb_bits_dpic_bundle_ls_ld_data = casez_tmp_1;	// @[<stdin>:1443:3, playground/src/LS_stage.scala:57:57]
   assign LS_to_wb_bits_csr_cmd = LS_IO_bits_csr_cmd;	// @[<stdin>:1443:3]
   assign LS_to_wb_bits_rf_wen = LS_IO_bits_rf_wen;	// @[<stdin>:1443:3]
   assign LS_to_wb_bits_rd = LS_IO_bits_rd;	// @[<stdin>:1443:3]
-  assign LS_to_wb_bits_result = casez_tmp_1;	// @[<stdin>:1443:3, playground/src/LS_stage.scala:70:57]
+  assign LS_to_wb_bits_result = casez_tmp_1;	// @[<stdin>:1443:3, playground/src/LS_stage.scala:57:57]
   assign LS_to_wb_bits_nextpc = LS_IO_bits_nextpc;	// @[<stdin>:1443:3]
   assign LS_to_wb_bits_pc = LS_IO_bits_pc;	// @[<stdin>:1443:3]
   assign LS_to_wb_bits_inst = LS_IO_bits_inst;	// @[<stdin>:1443:3]
-  assign LS_to_id_fw_addr = ls_valid & LS_IO_bits_rf_wen ? LS_IO_bits_rd : 5'h0;	// @[<stdin>:1443:3, playground/src/LS_stage.scala:23:33, :83:{24,34}]
-  assign LS_to_id_fw_data = casez_tmp_1;	// @[<stdin>:1443:3, playground/src/LS_stage.scala:70:57]
-  assign LS_to_id_clog = ls_valid & ~ls_ready_go & LS_IO_bits_ld_wen;	// @[<stdin>:1443:3, playground/src/LS_stage.scala:23:33, :24:33, :81:{30,43}]
+  assign LS_to_id_fw_addr = ls_valid & LS_IO_bits_rf_wen ? LS_IO_bits_rd : 5'h0;	// @[<stdin>:1443:3, playground/src/LS_stage.scala:21:33, :70:{24,34}]
+  assign LS_to_id_fw_data = casez_tmp_1;	// @[<stdin>:1443:3, playground/src/LS_stage.scala:57:57]
+  assign LS_to_id_clog = ls_valid & ~ls_ready_go & LS_IO_bits_ld_wen;	// @[<stdin>:1443:3, playground/src/LS_stage.scala:21:33, :22:33, :68:{30,43}]
 endmodule
 
