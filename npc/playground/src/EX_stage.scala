@@ -12,15 +12,25 @@ class EX_stage extends Module {
     val to_if =Output(new ex_to_if_bus())
     val to_preif =Output(new ex_to_preif_bus())
 
-    val ar=Decoupled(new AxiAddressBundle())
-    val aw=Decoupled(new AxiAddressBundle())
-    val w=Decoupled(new AxiWriteDataBundle())
-    val b=Flipped(Decoupled(new AxiWriteResponseBundle()))
+    val mem_addr=Output(UInt(ADDR_WIDTH.W))
+    val write_en=Output(Bool())
+    val wstrb=Output(UInt(4.W))
+    val wdata=Output(UInt(DATA_WIDTH.W))
+    val waddr_ok=Input(Bool())
+    val wdata_ok=Input(Bool())
+
+    val read_en=Output(Bool())
+    val raddr_ok=Input(Bool())
+
+    // val ar=Decoupled(new AxiAddressBundle())
+    // val aw=Decoupled(new AxiAddressBundle())
+    // val w=Decoupled(new AxiWriteDataBundle())
+    // val b=Flipped(Decoupled(new AxiWriteResponseBundle()))
   })
-  dontTouch(EX.ar);
-  dontTouch(EX.aw);
-  dontTouch(EX.w);
-  dontTouch(EX.b);
+  // dontTouch(EX.ar);
+  // dontTouch(EX.aw);
+  // dontTouch(EX.w);
+  // dontTouch(EX.b);
   val ld_wen=dontTouch(Wire(Bool()))
   val st_wen=dontTouch(Wire(Bool()))
   st_wen:=(EX.IO.bits.st_type=/=0.U)
@@ -97,94 +107,107 @@ class EX_stage extends Module {
     ST_SH  -> store_half_sel,
     ST_SW  -> "b1111".U
   ))
-  //EX级发起访存
-//---------------------------AXI4 Lite---------------------------
-  val WaitWriteIdle=dontTouch(Wire(Bool()))
-  val WaitReadIdle=dontTouch(Wire(Bool()))
-  //如果write不是idle状态，拉高信号
-  val BrespFire=dontTouch(Wire(Bool()))
-  //b通道握手，拉高信号
-//----------------------AXI4Lite AR Channel----------------------
-  val ar_idle :: ar_wait_ready :: Nil = Enum(2)
-  val arvalidReg=RegInit(false.B)
-  val araddrReg=RegInit(0.U(ADDR_WIDTH.W))
+//---------------------------AXI BRIDEG---------------------------
+  EX.mem_addr:=ram_addr
+  EX.write_en:=ld_wen
+  EX.wstrb:=st_wstrb
+  EX.wdata:=EX.IO.bits.rdata2
+  
+  EX.read_en:=st_wen
+  ex_clog:=(((~EX.wdata_ok)&&st_wen)
+           ||(~EX.raddr_ok)&&ld_wen)&&ex_valid
+//---------------------------AXI BRIDEG---------------------------
+
+//   //EX级发起访存
+// //---------------------------AXI4 Lite---------------------------
+//   val WaitWriteIdle=dontTouch(Wire(Bool()))
+//   val WaitReadIdle=dontTouch(Wire(Bool()))
+//   //如果write不是idle状态，拉高信号
+//   val BrespFire=dontTouch(Wire(Bool()))
+//   //b通道握手，拉高信号
+// //----------------------AXI4Lite AR Channel----------------------
+//   val ar_idle :: ar_wait_ready :: Nil = Enum(2)
+//   val arvalidReg=RegInit(false.B)
+//   val araddrReg=RegInit(0.U(ADDR_WIDTH.W))
 
   
-  val ReadRequstState=RegInit(ar_idle)
-  when(ReadRequstState===ar_idle){
-    when(ld_wen&&ex_valid){
-      when(WaitWriteIdle){
-        when(BrespFire){
-          ReadRequstState:=ar_wait_ready
-          araddrReg:=ram_addr
-          arvalidReg:=true.B    
-        }
-      }.otherwise{
-        ReadRequstState:=ar_wait_ready
-        araddrReg:=ram_addr
-        arvalidReg:=true.B
-      }
-    }
-  }.elsewhen(ReadRequstState===ar_wait_ready){
-    when(EX.ar.ready){
-      ReadRequstState:=ar_idle
-      arvalidReg:=false.B
-    }
-  }
-  WaitReadIdle:=(ReadRequstState=/=ar_idle)
-  EX.ar.valid:=arvalidReg
-  EX.ar.bits.addr:=araddrReg
-  EX.ar.bits.prot:=0.U
+//   val ReadRequstState=RegInit(ar_idle)
+//   when(ReadRequstState===ar_idle){
+//     when(ld_wen&&ex_valid){
+//       when(WaitWriteIdle){
+//         when(BrespFire){
+//           ReadRequstState:=ar_wait_ready
+//           araddrReg:=ram_addr
+//           arvalidReg:=true.B    
+//         }
+//       }.otherwise{
+//         ReadRequstState:=ar_wait_ready
+//         araddrReg:=ram_addr
+//         arvalidReg:=true.B
+//       }
+//     }
+//   }.elsewhen(ReadRequstState===ar_wait_ready){
+//     when(EX.ar.ready){
+//       ReadRequstState:=ar_idle
+//       arvalidReg:=false.B
+//     }
+//   }
+//   WaitReadIdle:=(ReadRequstState=/=ar_idle)
+//   EX.ar.valid:=arvalidReg
+//   EX.ar.bits.addr:=araddrReg
+//   EX.ar.bits.prot:=0.U
   
-//----------------------AXI4Lite AR Channel----------------------
+// //----------------------AXI4Lite AR Channel----------------------
 
-//-------------------AXI4Lite  W WR B  Channel-------------------
-  val wr_idle :: wr_wait_ready :: wr_wait_bresp :: Nil = Enum(3)
-  val WriteRequstState=RegInit(wr_idle)
-  val awvalidReg=RegInit(false.B)
-  val awaddrReg=RegInit(0.U(ADDR_WIDTH.W))
-  val wvalidReg=RegInit(false.B)
-  val wdataReg=RegInit(0.U(DATA_WIDTH.W))
-  val wstrbReg=RegInit(0.U(4.W))
-  val breadyReg=RegInit(false.B)
+// //-------------------AXI4Lite  W WR B  Channel-------------------
+//   val wr_idle :: wr_wait_ready :: wr_wait_bresp :: Nil = Enum(3)
+//   val WriteRequstState=RegInit(wr_idle)
+//   val awvalidReg=RegInit(false.B)
+//   val awaddrReg=RegInit(0.U(ADDR_WIDTH.W))
+//   val wvalidReg=RegInit(false.B)
+//   val wdataReg=RegInit(0.U(DATA_WIDTH.W))
+//   val wstrbReg=RegInit(0.U(4.W))
+//   val breadyReg=RegInit(false.B)
 
-  when(WriteRequstState===wr_idle){
-    when(st_wen&&ex_valid){
+//   when(WriteRequstState===wr_idle){
+//     when(st_wen&&ex_valid){
 
-      WriteRequstState:=wr_wait_ready
-      awvalidReg:=true.B
-      awaddrReg:=ram_addr
+//       WriteRequstState:=wr_wait_ready
+//       awvalidReg:=true.B
+//       awaddrReg:=ram_addr
       
-      wvalidReg:=true.B
-      wdataReg:=EX.IO.bits.rdata2
-      wstrbReg:=st_wstrb
-    }
-  }.elsewhen(WriteRequstState===wr_wait_ready){
-    when(EX.aw.ready&&EX.w.ready){
-      WriteRequstState:=wr_wait_bresp
-      awvalidReg:=false.B
-      wvalidReg:=false.B
-      breadyReg:=true.B
-    }
-  }.elsewhen(WriteRequstState===wr_wait_bresp){
-    when(breadyReg&&EX.b.valid){
-      WriteRequstState:=wr_idle
-      breadyReg:=false.B
-    }
-  }
-  WaitWriteIdle:=(WriteRequstState=/=wr_idle)
-  BrespFire:=EX.b.fire
-  EX.aw.bits.prot:=0.U
-  EX.aw.valid:=awvalidReg
-  EX.aw.bits.addr:=awaddrReg
-  EX.w.valid:=wvalidReg
-  EX.w.bits.data:=wdataReg
-  EX.w.bits.strb:=wstrbReg
-  EX.b.ready:=breadyReg
-//---------------------------AXI4 Lite---------------------------
-  ex_clog:=((~EX.ar.ready&& ld_wen)
-         ||(WaitWriteIdle&& ~BrespFire)
-         ||(WaitWriteIdle&&st_wen))&&ex_valid
+//       wvalidReg:=true.B
+//       wdataReg:=EX.IO.bits.rdata2
+//       wstrbReg:=st_wstrb
+//     }
+//   }.elsewhen(WriteRequstState===wr_wait_ready){
+//     when(EX.aw.ready&&EX.w.ready){
+//       WriteRequstState:=wr_wait_bresp
+//       awvalidReg:=false.B
+//       wvalidReg:=false.B
+//       breadyReg:=true.B
+//     }
+//   }.elsewhen(WriteRequstState===wr_wait_bresp){
+//     when(breadyReg&&EX.b.valid){
+//       WriteRequstState:=wr_idle
+//       breadyReg:=false.B
+//     }
+//   }
+//   WaitWriteIdle:=(WriteRequstState=/=wr_idle)
+//   BrespFire:=EX.b.fire
+//   EX.aw.bits.prot:=0.U
+//   EX.aw.valid:=awvalidReg
+//   EX.aw.bits.addr:=awaddrReg
+//   EX.w.valid:=wvalidReg
+//   EX.w.bits.data:=wdataReg
+//   EX.w.bits.strb:=wstrbReg
+//   EX.b.ready:=breadyReg
+// //---------------------------AXI4 Lite---------------------------
+//   ex_clog:=((~EX.ar.ready&& ld_wen)
+//          ||(WaitWriteIdle&& ~BrespFire)
+//          ||(WaitWriteIdle&&st_wen))&&ex_valid
+
+
 
   //csr
   val Csr_alu=Module(new Csr_alu())
