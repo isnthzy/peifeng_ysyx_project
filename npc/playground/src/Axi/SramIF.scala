@@ -57,7 +57,7 @@ class dpi_sram_if extends BlackBox with HasBlackBoxInline {
   })
   setInline("dpic/DpiSramIF.v",
     """
-      |import "DPI-C" function  int pmem_read (input int raddr, output int rdata);
+      |import "DPI-C" function  int pmem_read (input int raddr);
       |import "DPI-C" function void pmem_write(input int waddr, input  int wdata, input byte wmask);
       |module dpi_sram(
       |   input        clock,
