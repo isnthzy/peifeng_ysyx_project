@@ -60,16 +60,11 @@ class SimTop extends Module {
   
   AXi4LiteBridge.io.read_en:=EX_stage.EX.read_en
   EX_stage.EX.raddr_ok:=AXi4LiteBridge.io.raddr_ok
-  // EX_stage.EX.ar<>Axi4Lite_Sram_Mem.io.ar
-  // EX_stage.EX.aw<>Axi4Lite_Sram_Mem.io.aw
-  // EX_stage.EX.w <>Axi4Lite_Sram_Mem.io.w 
-  // EX_stage.EX.b <>Axi4Lite_Sram_Mem.io.b
-  
+
 // LS begin
   StageConnect(EX_stage.EX.to_ls,LS_stage.LS.IO)
   LS_stage.LS.rdata:=AXi4LiteBridge.io.rdata
   LS_stage.LS.rdata_ok:=AXi4LiteBridge.io.rdata_ok
-  // LS_stage.LS.r<>Axi4Lite_Sram_Mem.io.r
 
 // WB begin
   StageConnect(LS_stage.LS.to_wb,WB_stage.WB.IO)

@@ -12,12 +12,10 @@ class LS_stage extends Module {
 
     val rdata=Input(UInt(DATA_WIDTH.W))
     val rdata_ok=Input(Bool())
-    // val r=Flipped(Decoupled(new AxiReadDataBundle()))
   })
   // dontTouch(LS.r);
   val data_ram_rdata=dontTouch(Wire(UInt(DATA_WIDTH.W)))
   data_ram_rdata:=LS.rdata
-  // val rdata_valid=dontTouch(Wire(Bool()))
   val ls_clog=dontTouch(Wire(Bool()))
 
   val ls_valid=dontTouch(RegInit(false.B))
@@ -29,17 +27,6 @@ class LS_stage extends Module {
     ls_valid:=LS.IO.valid
   }
   LS.to_wb.valid:=ls_valid && ls_ready_go
-
-//----------------------AXI4Lite  R Channel----------------------
-  // LS.r.ready:=true.B
-  // when(LS.r.fire){
-  //   data_ram_rdata:=LS.r.bits.data
-  //   rdata_valid:=true.B
-  // }.otherwise{
-  //   rdata_valid:=false.B
-  // }
-
-//----------------------AXI4Lite  R Channel----------------------
   
   val mem_data=dontTouch(Wire(UInt(32.W)))
   val load_byte_data=MuxLookup(LS.IO.bits.addr_low2bit,0.U)(Seq(
