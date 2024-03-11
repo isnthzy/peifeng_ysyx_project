@@ -12,7 +12,7 @@ class LSFR extends Module {
   val delaytime=RegInit(io.Seed)
   val x8=delaytime(0)+delaytime(2)+delaytime(3)+delaytime(4)
   delaytime:=Cat(x8,delaytime(7,1))
-  io.OutTime:=delaytime(1,0)
+  io.OutTime:=delaytime(0)
 }
 
 object RandomDelay {
