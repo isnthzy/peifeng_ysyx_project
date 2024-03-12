@@ -65,52 +65,6 @@ class PreIF_s extends Module {
   
   PreIF.read_en:=fetch_wen
 //---------------------------AXI BRIDEG---------------------------
-  // //--------------------------AXI4Lite--------------------------
-
-
-  // //-----------------AXI4Lite AR Channel------------------------
-  // val ar_idle :: ar_wait_ready :: Nil = Enum(2)
-  // val arvalidReg=RegInit(false.B)
-  // val araddrReg=RegInit(0.U(ADDR_WIDTH.W))
-
-  
-  // val ReadRequstState=RegInit(ar_idle)
-  // when(ReadRequstState===ar_idle){
-  //   when(fetch_wen){
-  //     ReadRequstState:=ar_wait_ready
-  //     araddrReg:=PreIF_pc
-  //     arvalidReg:=true.B
-  //   }
-  // }.elsewhen(ReadRequstState===ar_wait_ready){
-  //   when(PreIF.ar.ready){
-  //     ReadRequstState:=ar_idle
-  //     arvalidReg:=false.B
-  //   }
-  // }
-
-  // PreIF.ar.valid:=arvalidReg
-  // PreIF.ar.bits.addr:=araddrReg
-  // PreIF.ar.bits.prot:=0.U
-  // //-----------------AXI4Lite AR Channel------------------------
-  
-
-  // //-----------------AXI4Lite Other Channel---------------------
-
-  // PreIF.w.valid:=0.U
-  // PreIF.w.bits.data:=0.U
-  // PreIF.w.bits.strb:=0.U
-
-  // PreIF.aw.valid:=0.U
-  // PreIF.aw.bits.addr:=0.U
-  // PreIF.aw.bits.prot:=0.U
-
-  // PreIF.b.ready:=0.U
-
-  // //-----------------AXI4Lite Other Channel--------------------
-
-
-  // //----------------------AXI4Lite-----------------------------
-
  
   when(PreIF_ready_go || br_modify){ 
     PreIF_pc := PreIF_nextpc //reg类型，更新慢一拍
