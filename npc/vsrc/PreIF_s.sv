@@ -37,7 +37,7 @@ module PreIF_s(	// @[<stdin>:3:3]
   always @(posedge clock) begin	// @[<stdin>:4:11]
     if (reset)	// @[<stdin>:4:11]
       PreIF_pc <= 32'h80000000;	// @[playground/src/PreIF.scala:51:29]
-    else if (PreIF_ready_go | br_modify)	// @[playground/src/PreIF.scala:27:36, :30:31, :115:23]
+    else if (PreIF_ready_go | br_modify)	// @[playground/src/PreIF.scala:27:36, :30:31, :69:23]
       PreIF_pc <= PreIF_nextpc;	// @[playground/src/PreIF.scala:51:29, :54:36]
   end // always @(posedge)
   assign PreIF_to_if_valid = ~PreIF_flush & ~reset & PreIF_ready_go;	// @[<stdin>:3:3, playground/src/PreIF.scala:27:36, :29:33, :44:{26,48}]
