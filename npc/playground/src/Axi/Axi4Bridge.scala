@@ -37,7 +37,7 @@ class Axi4Bridge extends Module {
   val ar_idle :: ar_wait_ready :: ar_wait_rresp ::Nil = Enum(3)
   val arvalidReg=RegInit(false.B)
   val araddrReg=RegInit(0.U(ADDR_WIDTH.W))
-  val rvalidReg=RegInit(false.B)
+  val rreadyReg=RegInit(false.B)
 
   val ReadRequstState=RegInit(ar_idle)
   when(ReadRequstState===ar_idle){
@@ -59,12 +59,12 @@ class Axi4Bridge extends Module {
     when(io.ar.fire){
       ReadRequstState:=ar_wait_rresp
       arvalidReg:=false.B
-      rvalidReg:=true.B 
+      rreadyReg:=true.B 
     }
   }.elsewhen(ReadRequstState===ar_wait_rresp){
     when(io.r.fire){
       ReadRequstState:=ar_idle
-      rvalidReg:=false.B
+      rreadyReg:=false.B
 
       ram_rdata:=io.r.bits.data
       //不用reg减少一周期
@@ -75,7 +75,7 @@ class Axi4Bridge extends Module {
   io.ar.valid:=arvalidReg
   io.ar.bits.addr:=araddrReg
   io.ar.bits.prot:=0.U
-  io.r.ready:=rvalidReg
+  io.r.ready:=rreadyReg
 
   io.raddr_ok:= io.ar.fire
   io.rdata_ok:= WaitReadIdle&&RrespFire
