@@ -24,8 +24,8 @@ module Axi4Lite_Sram_If(	// @[<stdin>:1925:3]
 );
 
   wire [7:0] _io_ar_ready_LSFR_io_OutTime;	// @[playground/src/LSFR.scala:24:20]
-  wire       _io_aw_ready_output = 1'h1;	// @[<stdin>:1925:3, playground/src/LSFR.scala:28:11]
-  wire       _io_w_ready_output = 1'h1;	// @[<stdin>:1925:3, playground/src/LSFR.scala:28:11]
+  wire       _io_aw_ready_output = 1'h1;	// @[<stdin>:1925:3, playground/src/LSFR.scala:26:17]
+  wire       _io_w_ready_output = 1'h1;	// @[<stdin>:1925:3, playground/src/LSFR.scala:26:17]
   reg  [7:0] io_ar_ready_delay;	// @[playground/src/LSFR.scala:21:22]
   reg        io_ar_ready_data;	// @[playground/src/LSFR.scala:22:22]
   wire       _io_ar_ready_output = io_ar_ready_data;	// @[<stdin>:1925:3, playground/src/LSFR.scala:22:22]
@@ -64,7 +64,7 @@ module Axi4Lite_Sram_If(	// @[<stdin>:1925:3]
   LSFR io_ar_ready_LSFR (	// @[playground/src/LSFR.scala:24:20]
     .clock      (clock),
     .reset      (reset),
-    .io_Seed    (8'h3),	// @[playground/src/LSFR.scala:26:17]
+    .io_Seed    (8'h1),	// @[playground/src/LSFR.scala:26:17]
     .io_OutTime (_io_ar_ready_LSFR_io_OutTime)
   );
   assign io_ar_ready = _io_ar_ready_output;	// @[<stdin>:1925:3]
