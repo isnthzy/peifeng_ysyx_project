@@ -57,6 +57,14 @@ class PreIF_s extends Module {
   PreIF_dnpc := Mux(PreIF.for_ex.epc.taken, PreIF.for_ex.epc.target, br.target)
   PreIF_nextpc:= Mux(br.taken || PreIF.for_ex.epc.taken, PreIF_dnpc, PreIF_snpc)
 
+//---------------------------AXI BRIDEG---------------------------
+  PreIF.mem_addr:=PreIF_pc
+  PreIF.write_en:=false.B
+  PreIF.wstrb:=0.U
+  PreIF.wdata:=0.U
+  
+  PreIF.read_en:=fetch_wen
+//---------------------------AXI BRIDEG---------------------------
   // //--------------------------AXI4Lite--------------------------
 
 
