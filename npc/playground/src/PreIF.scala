@@ -10,10 +10,6 @@ class PreIF_s extends Module {
     val for_id=Input(new id_to_preif_bus())
     val for_ex=Input(new ex_to_preif_bus())
 
-    // val ar=Decoupled(new AxiAddressBundle())
-    // val aw=Decoupled(new AxiAddressBundle())
-    // val w=Decoupled(new AxiWriteDataBundle())
-    // val b=Flipped(Decoupled(new AxiWriteResponseBundle()))
     val mem_addr=Output(UInt(ADDR_WIDTH.W))
     val write_en=Output(Bool())
     val wstrb=Output(UInt(4.W))

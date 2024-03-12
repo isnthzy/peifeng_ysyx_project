@@ -63,9 +63,6 @@ class EX_stage extends Module {
   to_flush:=(EX.to_preif.Br_B.taken
          || (EX.IO.bits.csr_cmd===CSR.MRET )
          || (EX.IO.bits.csr_cmd===CSR.ECALL))&&ex_valid 
-  // EX.to_if.flush:=(EX.to_if.Br_B.taken
-  //               || (EX.IO.bits.csr_cmd===CSR.MRET )
-  //               || (EX.IO.bits.csr_cmd===CSR.ECALL))&&ex_valid 
   EX.to_id.flush:=to_flush
   EX.to_if.flush:=to_flush
   EX.to_preif.flush:=to_flush

@@ -13,7 +13,6 @@ class IF_stage extends Module {
     
     val rdata=Input(UInt(DATA_WIDTH.W))
     val rdata_ok=Input(Bool())
-    // val r=Flipped(Decoupled(new AxiReadDataBundle()))
   })
   val if_clog=dontTouch(Wire(Bool()))
   val if_inst=dontTouch(WireDefault(0.U(32.W)))
