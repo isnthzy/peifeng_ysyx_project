@@ -39,4 +39,3 @@ class AxiReadDataBundle extends Bundle {
   val data = UInt(DATA_WIDTH.W)
   val resp = UInt(2.W)
 }
-

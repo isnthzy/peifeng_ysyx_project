@@ -11,7 +11,8 @@ class Axi4Lite_Sram_If extends Module {
   dontTouch(io);
   
   // io.ar.ready:=RandomDelay(true.B,3.U)
-  io.ar.ready:=true.B
+  io.ar.ready:=TimeDelay(true.B,1)
+  // io.ar.ready:=true.B
   dpi_sram.io.clock:=clock
   dpi_sram.io.addr:=io.ar.bits.addr
   dpi_sram.io.req:=io.ar.fire
@@ -57,9 +58,9 @@ class dpi_sram_if extends BlackBox with HasBlackBoxInline {
   })
   setInline("dpic/DpiSramIF.v",
     """
-      |import "DPI-C" function void pmem_read (input int raddr, output int rdata);
+      |import "DPI-C" function  int pmem_read (input int raddr);
       |import "DPI-C" function void pmem_write(input int waddr, input  int wdata, input byte wmask);
-      |module dpi_sram_if(
+      |module dpi_sram(
       |   input        clock,
       |   input [31:0] addr,
       |   input [31:0] wdata,
@@ -75,7 +76,7 @@ class dpi_sram_if extends BlackBox with HasBlackBoxInline {
       |       pmem_write (addr,wdata,wmask);
       |      end
       |      else begin
-      |       pmem_read (addr,rdata);
+      |       rdata<=pmem_read (addr);
       |      end
       |    end
       |end
