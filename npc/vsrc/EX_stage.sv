@@ -76,8 +76,8 @@ module EX_stage(	// @[<stdin>:1253:3]
   output        EX_read_en	// @[playground/src/EX_stage.scala:7:12]
 );
 
-  wire        _Csr_alu_io_wen;	// @[playground/src/EX_stage.scala:115:21]
-  wire [31:0] _Csr_alu_io_out;	// @[playground/src/EX_stage.scala:115:21]
+  wire        _Csr_alu_io_wen;	// @[playground/src/EX_stage.scala:112:21]
+  wire [31:0] _Csr_alu_io_out;	// @[playground/src/EX_stage.scala:112:21]
   wire [31:0] _Alu_io_result;	// @[playground/src/EX_stage.scala:42:17]
   wire        ld_wen = |EX_IO_bits_ld_type;	// @[playground/src/EX_stage.scala:26:28, :29:30]
   wire        st_wen = |EX_IO_bits_st_type;	// @[playground/src/EX_stage.scala:27:28, :28:30]
@@ -91,11 +91,11 @@ module EX_stage(	// @[<stdin>:1253:3]
   wire        to_flush =
     (_EX_to_preif_Br_B_taken_output | _EX_to_preif_epc_target_T
      | _EX_to_preif_epc_target_T_1) & ex_valid;	// @[playground/src/EX_stage.scala:32:33, :48:45, :64:32, :65:{10,32,46}]
-  wire        _store_half_sel_T_2 = _Alu_io_result[1:0] == 2'h2;	// @[playground/src/EX_stage.scala:42:17, :82:33, :83:49]
-  assign ex_clog = (~EX_wdata_ok & st_wen | ~EX_raddr_ok & ld_wen) & ex_valid;	// @[playground/src/EX_stage.scala:26:28, :27:28, :30:29, :32:33, :109:{15,28}, :110:{12,15,28,37}]
-  wire        _EX_to_id_csr_wen_output = _Csr_alu_io_wen & ex_valid;	// @[playground/src/EX_stage.scala:32:33, :115:21, :120:35]
-  wire        _EX_to_id_csr_ecpt_wen_output = _EX_to_preif_epc_target_T_1 & ex_valid;	// @[playground/src/EX_stage.scala:32:33, :65:32, :122:58]
-  wire        _EX_to_ls_bits_dpic_bundle_ex_is_jal_T = EX_IO_bits_br_type == 4'h7;	// @[playground/src/EX_stage.scala:150:62]
+  wire        _store_half_sel_T_2 = _Alu_io_result[1:0] == 2'h2;	// @[playground/src/EX_stage.scala:42:17, :79:33, :80:49]
+  assign ex_clog = (~EX_wdata_ok & st_wen | ~EX_raddr_ok & ld_wen) & ex_valid;	// @[playground/src/EX_stage.scala:26:28, :27:28, :30:29, :32:33, :106:{15,28}, :107:{12,15,28,37}]
+  wire        _EX_to_id_csr_wen_output = _Csr_alu_io_wen & ex_valid;	// @[playground/src/EX_stage.scala:32:33, :112:21, :117:35]
+  wire        _EX_to_id_csr_ecpt_wen_output = _EX_to_preif_epc_target_T_1 & ex_valid;	// @[playground/src/EX_stage.scala:32:33, :65:32, :119:58]
+  wire        _EX_to_ls_bits_dpic_bundle_ex_is_jal_T = EX_IO_bits_br_type == 4'h7;	// @[playground/src/EX_stage.scala:147:62]
   always @(posedge clock) begin	// @[<stdin>:1254:11]
     if (reset)	// @[<stdin>:1254:11]
       ex_valid <= 1'h0;	// @[playground/src/EX_stage.scala:28:30, :32:33]
@@ -108,7 +108,7 @@ module EX_stage(	// @[<stdin>:1253:3]
     .io_src2   (EX_IO_bits_src2),
     .io_result (_Alu_io_result)
   );
-  Csr_alu Csr_alu (	// @[playground/src/EX_stage.scala:115:21]
+  Csr_alu Csr_alu (	// @[playground/src/EX_stage.scala:112:21]
     .io_csr_cmd   (EX_IO_bits_csr_cmd),
     .io_in_csr    (_Alu_io_result),	// @[playground/src/EX_stage.scala:42:17]
     .io_in_rdata1 (EX_IO_bits_rdata1),
@@ -117,22 +117,22 @@ module EX_stage(	// @[<stdin>:1253:3]
   );
   assign EX_IO_ready = _EX_IO_ready_output;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:35:28]
   assign EX_to_ls_valid = ex_valid & ex_ready_go;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:32:33, :33:33, :39:28]
-  assign EX_to_ls_bits_csr_commit_wen = _EX_to_id_csr_wen_output;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:120:35]
+  assign EX_to_ls_bits_csr_commit_wen = _EX_to_id_csr_wen_output;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:117:35]
   assign EX_to_ls_bits_csr_commit_waddr = EX_IO_bits_csr_addr;	// @[<stdin>:1253:3]
-  assign EX_to_ls_bits_csr_commit_wdata = _Csr_alu_io_out;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:115:21]
-  assign EX_to_ls_bits_csr_commit_exception_wen = _EX_to_id_csr_ecpt_wen_output;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:122:58]
+  assign EX_to_ls_bits_csr_commit_wdata = _Csr_alu_io_out;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:112:21]
+  assign EX_to_ls_bits_csr_commit_exception_wen = _EX_to_id_csr_ecpt_wen_output;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:119:58]
   assign EX_to_ls_bits_csr_commit_exception_pc_wb = EX_IO_bits_pc;	// @[<stdin>:1253:3]
   assign EX_to_ls_bits_dpic_bundle_id_inv_flag = EX_IO_bits_dpic_bundle_id_inv_flag;	// @[<stdin>:1253:3]
   assign EX_to_ls_bits_dpic_bundle_ex_func_flag =
-    _EX_to_ls_bits_dpic_bundle_ex_is_jal_T | EX_IO_bits_br_type == 4'h8;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:83:49, :150:{62,72,92}]
-  assign EX_to_ls_bits_dpic_bundle_ex_is_jal = _EX_to_ls_bits_dpic_bundle_ex_is_jal_T;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:150:62]
-  assign EX_to_ls_bits_dpic_bundle_ex_is_ret = EX_IO_bits_inst == 32'h8067;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:152:55]
-  assign EX_to_ls_bits_dpic_bundle_ex_is_rd0 = EX_IO_bits_rd == 5'h0;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:78:24, :153:53]
+    _EX_to_ls_bits_dpic_bundle_ex_is_jal_T | EX_IO_bits_br_type == 4'h8;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:80:49, :147:{62,72,92}]
+  assign EX_to_ls_bits_dpic_bundle_ex_is_jal = _EX_to_ls_bits_dpic_bundle_ex_is_jal_T;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:147:62]
+  assign EX_to_ls_bits_dpic_bundle_ex_is_ret = EX_IO_bits_inst == 32'h8067;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:149:55]
+  assign EX_to_ls_bits_dpic_bundle_ex_is_rd0 = EX_IO_bits_rd == 5'h0;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:75:24, :150:53]
   assign EX_to_ls_bits_dpic_bundle_ex_ld_type = EX_IO_bits_ld_type;	// @[<stdin>:1253:3]
   assign EX_to_ls_bits_dpic_bundle_ex_st_type = EX_IO_bits_st_type;	// @[<stdin>:1253:3]
-  assign EX_to_ls_bits_dpic_bundle_ex_mem_addr = st_wen | ld_wen ? _Alu_io_result : 32'h0;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:26:28, :27:28, :42:17, :157:{45,53}, :160:45]
-  assign EX_to_ls_bits_dpic_bundle_ex_st_data = st_wen ? EX_IO_bits_rdata2 : 32'h0;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:27:28, :158:44, :160:45]
-  assign EX_to_ls_bits_addr_low2bit = _Alu_io_result[1:0];	// @[<stdin>:1253:3, playground/src/EX_stage.scala:42:17, :82:33]
+  assign EX_to_ls_bits_dpic_bundle_ex_mem_addr = st_wen | ld_wen ? _Alu_io_result : 32'h0;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:26:28, :27:28, :42:17, :154:{45,53}, :157:45]
+  assign EX_to_ls_bits_dpic_bundle_ex_st_data = st_wen ? EX_IO_bits_rdata2 : 32'h0;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:27:28, :155:44, :157:45]
+  assign EX_to_ls_bits_addr_low2bit = _Alu_io_result[1:0];	// @[<stdin>:1253:3, playground/src/EX_stage.scala:42:17, :79:33]
   assign EX_to_ls_bits_ld_wen = ld_wen;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:26:28]
   assign EX_to_ls_bits_ld_type = EX_IO_bits_ld_type;	// @[<stdin>:1253:3]
   assign EX_to_ls_bits_csr_cmd = EX_IO_bits_csr_cmd;	// @[<stdin>:1253:3]
@@ -143,29 +143,29 @@ module EX_stage(	// @[<stdin>:1253:3]
   assign EX_to_ls_bits_nextpc = EX_IO_bits_nextpc;	// @[<stdin>:1253:3]
   assign EX_to_ls_bits_pc = EX_IO_bits_pc;	// @[<stdin>:1253:3]
   assign EX_to_ls_bits_inst = EX_IO_bits_inst;	// @[<stdin>:1253:3]
-  assign EX_to_id_fw_addr = ex_valid & EX_IO_bits_rf_wen ? EX_IO_bits_rd : 5'h0;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:32:33, :78:{24,34}]
+  assign EX_to_id_fw_addr = ex_valid & EX_IO_bits_rf_wen ? EX_IO_bits_rd : 5'h0;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:32:33, :75:{24,34}]
   assign EX_to_id_fw_data = _Alu_io_result;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:42:17]
-  assign EX_to_id_csr_ecpt_wen = _EX_to_id_csr_ecpt_wen_output;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:122:58]
+  assign EX_to_id_csr_ecpt_wen = _EX_to_id_csr_ecpt_wen_output;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:119:58]
   assign EX_to_id_csr_ecpt_pc_wb = EX_IO_bits_pc;	// @[<stdin>:1253:3]
   assign EX_to_id_csr_waddr = EX_IO_bits_csr_addr;	// @[<stdin>:1253:3]
-  assign EX_to_id_csr_wen = _EX_to_id_csr_wen_output;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:120:35]
-  assign EX_to_id_csr_wdata = _Csr_alu_io_out;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:115:21]
-  assign EX_to_id_clog = (|EX_IO_bits_ld_type) & ex_valid;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:29:30, :32:33, :74:44]
+  assign EX_to_id_csr_wen = _EX_to_id_csr_wen_output;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:117:35]
+  assign EX_to_id_csr_wdata = _Csr_alu_io_out;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:112:21]
+  assign EX_to_id_clog = (|EX_IO_bits_ld_type) & ex_valid;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:29:30, :32:33, :71:44]
   assign EX_to_id_flush = to_flush;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:65:46]
   assign EX_to_if_flush = to_flush;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:65:46]
-  assign EX_to_preif_epc_taken = EX_IO_bits_pc_sel & ex_valid;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:32:33, :126:54]
+  assign EX_to_preif_epc_taken = EX_IO_bits_pc_sel & ex_valid;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:32:33, :123:54]
   assign EX_to_preif_epc_target =
     _EX_to_preif_epc_target_T
       ? EX_IO_bits_csr_global_mepc
-      : _EX_to_preif_epc_target_T_1 ? EX_IO_bits_csr_global_mtvec : 32'h0;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:64:32, :65:32, :127:30, :128:28, :160:45]
+      : _EX_to_preif_epc_target_T_1 ? EX_IO_bits_csr_global_mtvec : 32'h0;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:64:32, :65:32, :124:30, :125:28, :157:45]
   assign EX_to_preif_Br_B_taken = _EX_to_preif_Br_B_taken_output;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:48:45]
   assign EX_to_preif_Br_B_target =
     EX_IO_bits_br_type == 4'h6 | EX_IO_bits_br_type == 4'h5 | EX_IO_bits_br_type == 4'h4
     | EX_IO_bits_br_type == 4'h3 | EX_IO_bits_br_type == 4'h2 | EX_IO_bits_br_type == 4'h1
       ? _Alu_io_result
-      : 32'h0;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:42:17, :49:61, :160:45]
+      : 32'h0;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:42:17, :49:61, :157:45]
   assign EX_to_preif_flush = to_flush;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:65:46]
-  assign EX_mem_addr = _Alu_io_result & 32'hFFFFFFFC;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:42:17, :95:{30,32}]
+  assign EX_mem_addr = _Alu_io_result & 32'hFFFFFFFC;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:42:17, :92:{30,32}]
   assign EX_write_en = st_wen;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:27:28]
   assign EX_wstrb =
     EX_IO_bits_st_type == 3'h3
@@ -179,7 +179,7 @@ module EX_stage(	// @[<stdin>:1253:3]
                       _store_half_sel_T_2
                         ? 3'h4
                         : {1'h0, _Alu_io_result[1:0] == 2'h1 ? 2'h2 : 2'h1}})
-              : 4'h0;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:28:30, :42:17, :49:61, :82:33, :83:49, :89:49, :96:46]
+              : 4'h0;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:28:30, :42:17, :49:61, :79:33, :80:49, :86:49, :93:46]
   assign EX_wdata = EX_IO_bits_rdata2;	// @[<stdin>:1253:3]
   assign EX_read_en = ld_wen;	// @[<stdin>:1253:3, playground/src/EX_stage.scala:26:28]
 endmodule
