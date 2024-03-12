@@ -2,7 +2,7 @@ import chisel3._
 import chisel3.util._
 import config.Configs._
 
-class Axi4Bridge extends Module {
+class Axi4BridgeIF extends Module {
   val io=IO(new Bundle {
     val ar=Decoupled(new AxiAddressBundle())
     val r=Flipped(Decoupled(new AxiReadDataBundle()))

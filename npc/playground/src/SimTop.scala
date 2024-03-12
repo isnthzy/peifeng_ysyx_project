@@ -19,30 +19,42 @@ class SimTop extends Module {
   val Axi4Lite_Sram_Mem = Module(new Axi4Lite_Sram_Mem())
   val Axi4Lite_Sram_If=Module(new Axi4Lite_Sram_If())
   val AXi4LiteBridge=Module(new Axi4Bridge())
-
+  val AXi4LiteBridgeIF=Module(new Axi4Bridge())
 //AxiBridge
   AXi4LiteBridge.io.ar<>Axi4Lite_Sram_Mem.io.ar
   AXi4LiteBridge.io.r <>Axi4Lite_Sram_Mem.io.r
   AXi4LiteBridge.io.aw<>Axi4Lite_Sram_Mem.io.aw
   AXi4LiteBridge.io.w <>Axi4Lite_Sram_Mem.io.w
   AXi4LiteBridge.io.b <>Axi4Lite_Sram_Mem.io.b
+
+  AXi4LiteBridgeIF.io.ar<>Axi4Lite_Sram_If.io.ar
+  AXi4LiteBridgeIF.io.r <>Axi4Lite_Sram_If.io.r
+  AXi4LiteBridgeIF.io.aw<>Axi4Lite_Sram_If.io.aw
+  AXi4LiteBridgeIF.io.w <>Axi4Lite_Sram_If.io.w
+  AXi4LiteBridgeIF.io.b <>Axi4Lite_Sram_If.io.b
 //AxiBridge
 
 // PreIF begin
-  dontTouch(PreIF_s.PreIF.to_if.bits.pc)
-  dontTouch(PreIF_s.PreIF.to_if.bits.nextpc)
   PreIF_s.PreIF.for_id<>ID_stage.ID.to_preif
   PreIF_s.PreIF.for_ex<>EX_stage.EX.to_preif
-  PreIF_s.PreIF.ar<>Axi4Lite_Sram_If.io.ar
-  PreIF_s.PreIF.aw<>Axi4Lite_Sram_If.io.aw
-  PreIF_s.PreIF.w <>Axi4Lite_Sram_If.io.w
-  PreIF_s.PreIF.b <>Axi4Lite_Sram_If.io.b
+
+  AXi4LiteBridgeIF.io.addr:=PreIF_s.PreIF.mem_addr
+  AXi4LiteBridgeIF.io.write_en:=PreIF_s.PreIF.write_en
+  AXi4LiteBridgeIF.io.wstrb:=PreIF_s.PreIF.wstrb
+  AXi4LiteBridgeIF.io.wdata:=PreIF_s.PreIF.wdata
+  PreIF_s.PreIF.waddr_ok:=AXi4LiteBridgeIF.io.waddr_ok
+  PreIF_s.PreIF.wdata_ok:=AXi4LiteBridgeIF.io.wdata_ok
+  AXi4LiteBridgeIF.io.read_en:=PreIF_s.PreIF.read_en
+  PreIF_s.PreIF.raddr_ok:=AXi4LiteBridgeIF.io.raddr_ok
+  
+
 // IF begin
   StageConnect(PreIF_s.PreIF.to_if,IF_stage.IF.IO)
   IF_stage.IF.for_id<>ID_stage.ID.to_if
   IF_stage.IF.for_ex<>EX_stage.EX.to_if
-  IF_stage.IF.r <>Axi4Lite_Sram_If.io.r
-
+  
+  IF_stage.IF.rdata:=AXi4LiteBridgeIF.io.rdata
+  IF_stage.IF.rdata_ok:=AXi4LiteBridgeIF.io.rdata_ok
 // ID begin
   StageConnect(IF_stage.IF.to_id,ID_stage.ID.IO) //左边是out，右边是in
   ID_stage.ID.for_ex<>EX_stage.EX.to_id
