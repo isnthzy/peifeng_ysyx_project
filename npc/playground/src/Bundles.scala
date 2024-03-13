@@ -63,6 +63,7 @@ class epc_to_if_bus extends Bundle{
 }
 
 class br_bus extends Bundle{
+  val stall=Bool()
   val taken=Bool()
   val target=UInt(ADDR_WIDTH.W)
 }

@@ -1,7 +1,6 @@
 import chisel3._
 import chisel3.util._
 import config.Configs._
-import os.truncate
 
 class PreIF_s extends Module {
   val PreIF=IO(new Bundle {
@@ -23,20 +22,21 @@ class PreIF_s extends Module {
   val PreIF_ready_go=dontTouch(Wire(Bool()))
   val fetch_wen=dontTouch(Wire(Bool()))
   val PreIF_flush=dontTouch(Wire(Bool()))
-  val br_modify=dontTouch(Wire(Bool()))
+  val PreIF_raddr_ok=dontTouch(Wire(Bool()))
+
   //因为preif用pc取指，当传入分支跳转的nextpc时，需要修改pc为nextpc
   //并取消发起fetch
+  val br_stall=PreIF.for_ex.Br_B.stall || PreIF.for_id.Br_J.stall 
+  val br_modify=( PreIF.for_ex.Br_B.taken ||
+                  PreIF.for_ex.epc.taken  ||
+                  PreIF.for_id.Br_J.taken)
 
-  br_modify:=( PreIF.for_ex.Br_B.taken ||
-               PreIF.for_ex.epc.taken  ||
-               PreIF.for_id.Br_J.taken)
-
-
-  fetch_wen:=PreIF.to_if.ready && !br_modify
+  PreIF_raddr_ok:=PreIF.raddr_ok
+  fetch_wen:=PreIF.to_if.ready && !br_stall
 
   PreIF_flush:=PreIF.for_ex.flush || PreIF.for_id.flush
 
-  PreIF_ready_go:= fetch_wen && PreIF.raddr_ok
+  PreIF_ready_go:= fetch_wen && PreIF_raddr_ok
   PreIF.to_if.valid:= Mux(PreIF_flush,false.B, ~reset.asBool && PreIF_ready_go)
 
   val br=Wire(new br_bus())
