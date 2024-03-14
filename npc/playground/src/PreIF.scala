@@ -69,7 +69,6 @@ class PreIF_s extends Module {
   when(PreIF.raddr_ok){
     wait_br_addr_ok:=false.B
   }
-  //如果遇到阻塞情况，那么if级也要发生阻塞
 
   PreIF.to_if.bits.pc    :=PreIF_pc
   PreIF.to_if.bits.nextpc:=PreIF_nextpc
