@@ -23,7 +23,7 @@ class PreIF_s extends Module {
   val fetch_wen=dontTouch(Wire(Bool()))
   val PreIF_flush=dontTouch(Wire(Bool()))
   val PreIF_raddr_ok=dontTouch(Wire(Bool()))
-
+  val wait_br_addr_ok=dontTouch(RegInit(false.B))
   //因为preif用pc取指，当传入分支跳转的nextpc时，需要修改pc为nextpc
   //并取消发起fetch
   val br_stall=PreIF.for_ex.Br_B.stall || PreIF.for_id.Br_J.stall 
@@ -31,7 +31,7 @@ class PreIF_s extends Module {
                   PreIF.for_ex.epc.taken  ||
                   PreIF.for_id.Br_J.taken)
 
-  PreIF_raddr_ok:=PreIF.raddr_ok
+  PreIF_raddr_ok:=(PreIF.raddr_ok&& ~br_modify)&&(Mux(wait_br_addr_ok,false.B,PreIF.raddr_ok))
   fetch_wen:=PreIF.to_if.ready && !br_stall
 
   PreIF_flush:=PreIF.for_ex.flush || PreIF.for_id.flush
@@ -64,6 +64,10 @@ class PreIF_s extends Module {
  
   when(PreIF_ready_go || br_modify){ 
     PreIF_pc := PreIF_nextpc //reg类型，更新慢一拍
+    wait_br_addr_ok:=true.B
+  }
+  when(PreIF.raddr_ok){
+    wait_br_addr_ok:=false.B
   }
   //如果遇到阻塞情况，那么if级也要发生阻塞
 
