@@ -168,7 +168,7 @@ module EX_stage(	// @[<stdin>:1268:3]
       : 32'h0;	// @[<stdin>:1268:3, playground/src/EX_stage.scala:42:17, :50:61, :158:45]
   assign EX_to_preif_flush = to_flush;	// @[<stdin>:1268:3, playground/src/EX_stage.scala:66:46]
   assign EX_mem_addr = _Alu_io_result & 32'hFFFFFFFC;	// @[<stdin>:1268:3, playground/src/EX_stage.scala:42:17, :93:{30,32}]
-  assign EX_write_en = st_wen;	// @[<stdin>:1268:3, playground/src/EX_stage.scala:27:28]
+  assign EX_write_en = st_wen & ex_valid;	// @[<stdin>:1268:3, playground/src/EX_stage.scala:27:28, :32:33, :102:22]
   assign EX_wstrb =
     EX_IO_bits_st_type == 3'h3
       ? 4'hF
@@ -183,6 +183,6 @@ module EX_stage(	// @[<stdin>:1268:3]
                         : {1'h0, _Alu_io_result[1:0] == 2'h1 ? 2'h2 : 2'h1}})
               : 4'h0;	// @[<stdin>:1268:3, playground/src/EX_stage.scala:28:30, :42:17, :50:61, :80:33, :81:49, :87:49, :94:46]
   assign EX_wdata = EX_IO_bits_rdata2;	// @[<stdin>:1268:3]
-  assign EX_read_en = ld_wen;	// @[<stdin>:1268:3, playground/src/EX_stage.scala:26:28]
+  assign EX_read_en = ld_wen & ex_valid;	// @[<stdin>:1268:3, playground/src/EX_stage.scala:26:28, :32:33, :106:21]
 endmodule
 
