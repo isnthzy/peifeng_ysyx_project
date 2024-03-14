@@ -45,6 +45,7 @@ class EX_stage extends Module {
   Alu.io.src2:=EX.IO.bits.src2
   
   //分支跳转
+  EX.to_preif.Br_B.stall:=(EX.IO.bits.b_taken&&ex_valid)&&ex_ready_go
   EX.to_preif.Br_B.taken:=EX.IO.bits.b_taken&&ex_valid
   EX.to_preif.Br_B.target:=MuxLookup(EX.IO.bits.br_type,0.U)(Seq(
                           BR_XXX -> 0.U,
@@ -98,11 +99,11 @@ class EX_stage extends Module {
   ))
 //---------------------------AXI BRIDEG---------------------------
   EX.mem_addr:=ram_addr
-  EX.write_en:=st_wen
+  EX.write_en:=st_wen&&ex_valid
   EX.wstrb:=st_wstrb
   EX.wdata:=EX.IO.bits.rdata2
   
-  EX.read_en:=ld_wen
+  EX.read_en:=ld_wen&&ex_valid
   ex_clog:=(((~EX.wdata_ok)&&st_wen)
            ||(~EX.raddr_ok)&&ld_wen)&&ex_valid
 //---------------------------AXI BRIDEG---------------------------

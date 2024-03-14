@@ -31,19 +31,19 @@ class IF_stage extends Module {
   IF.to_id.valid:=Mux(if_flush, false.B , if_valid && if_ready_go)
 
   
-  val if_inst_ok_buffer=dontTouch(RegInit(false.B))
-  val if_inst_buffer=dontTouch(RegInit(0.U(32.W)))
-  val if_use_inst_buffer=dontTouch(RegInit(false.B))
-  if_inst:=Mux(if_use_inst_buffer,if_inst_buffer,IF.rdata)
-  if_inst_ok:=if_inst_ok_buffer
+  val if_inst_ok_buff=dontTouch(RegInit(false.B))
+  val if_inst_buff=dontTouch(RegInit(0.U(32.W)))
+  val if_use_inst_buff=dontTouch(RegInit(false.B))
+  if_inst:=Mux(if_use_inst_buff,if_inst_buff,IF.rdata)
+  if_inst_ok:=if_inst_ok_buff
   when(IF.IO.fire){
-    if_use_inst_buffer:=false.B
-    if_inst_ok_buffer:=false.B
+    if_use_inst_buff:=false.B
+    if_inst_ok_buff:=false.B
   }
   when(IF.rdata_ok){
-    if_inst_buffer:=IF.rdata
-    if_use_inst_buffer:=true.B
-    if_inst_ok_buffer:=true.B
+    if_inst_buff:=IF.rdata
+    if_use_inst_buff:=true.B
+    if_inst_ok_buff:=true.B
     if_inst_ok:=true.B
   }
   //加buffer是为了在if级暂存取到的指令，避免因为流水与下一级握手失败if级失去指

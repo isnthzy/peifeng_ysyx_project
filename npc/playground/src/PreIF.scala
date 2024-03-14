@@ -1,7 +1,6 @@
 import chisel3._
 import chisel3.util._
 import config.Configs._
-import os.truncate
 
 class PreIF_s extends Module {
   val PreIF=IO(new Bundle {
@@ -23,23 +22,24 @@ class PreIF_s extends Module {
   val PreIF_ready_go=dontTouch(Wire(Bool()))
   val fetch_wen=dontTouch(Wire(Bool()))
   val PreIF_flush=dontTouch(Wire(Bool()))
-  val br_modify=dontTouch(Wire(Bool()))
+  val PreIF_raddr_ok=dontTouch(Wire(Bool()))
+  val wait_br_addr_ok=dontTouch(RegInit(false.B))
+  val br=Wire(new br_bus())
   //因为preif用pc取指，当传入分支跳转的nextpc时，需要修改pc为nextpc
   //并取消发起fetch
+  br.stall:=PreIF.for_ex.Br_B.stall || PreIF.for_id.Br_J.stall 
+  val br_modify=( PreIF.for_ex.Br_B.taken ||
+                  PreIF.for_ex.epc.taken  ||
+                  PreIF.for_id.Br_J.taken)
 
-  br_modify:=( PreIF.for_ex.Br_B.taken ||
-               PreIF.for_ex.epc.taken  ||
-               PreIF.for_id.Br_J.taken)
-
-
-  fetch_wen:=PreIF.to_if.ready && !br_modify
+  PreIF_raddr_ok:=(PreIF.raddr_ok&& ~br_modify)&&(Mux(wait_br_addr_ok,false.B,PreIF.raddr_ok))
+  fetch_wen:=PreIF.to_if.ready && !br.stall
 
   PreIF_flush:=PreIF.for_ex.flush || PreIF.for_id.flush
 
-  PreIF_ready_go:= fetch_wen && PreIF.raddr_ok
+  PreIF_ready_go:= fetch_wen && PreIF_raddr_ok
   PreIF.to_if.valid:= Mux(PreIF_flush,false.B, ~reset.asBool && PreIF_ready_go)
 
-  val br=Wire(new br_bus())
   br.taken:=PreIF.for_id.Br_J.taken || PreIF.for_ex.Br_B.taken
   br.target:=Mux(PreIF.for_ex.Br_B.taken, PreIF.for_ex.Br_B.target, PreIF.for_id.Br_J.target)
 
@@ -64,8 +64,11 @@ class PreIF_s extends Module {
  
   when(PreIF_ready_go || br_modify){ 
     PreIF_pc := PreIF_nextpc //reg类型，更新慢一拍
+    wait_br_addr_ok:=true.B
   }
-  //如果遇到阻塞情况，那么if级也要发生阻塞
+  when(PreIF.raddr_ok){
+    wait_br_addr_ok:=false.B
+  }
 
   PreIF.to_if.bits.pc    :=PreIF_pc
   PreIF.to_if.bits.nextpc:=PreIF_nextpc
