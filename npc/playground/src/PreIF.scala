@@ -24,22 +24,22 @@ class PreIF_s extends Module {
   val PreIF_flush=dontTouch(Wire(Bool()))
   val PreIF_raddr_ok=dontTouch(Wire(Bool()))
   val wait_br_addr_ok=dontTouch(RegInit(false.B))
+  val br=Wire(new br_bus())
   //因为preif用pc取指，当传入分支跳转的nextpc时，需要修改pc为nextpc
   //并取消发起fetch
-  val br_stall=PreIF.for_ex.Br_B.stall || PreIF.for_id.Br_J.stall 
+  br.stall:=PreIF.for_ex.Br_B.stall || PreIF.for_id.Br_J.stall 
   val br_modify=( PreIF.for_ex.Br_B.taken ||
                   PreIF.for_ex.epc.taken  ||
                   PreIF.for_id.Br_J.taken)
 
   PreIF_raddr_ok:=(PreIF.raddr_ok&& ~br_modify)&&(Mux(wait_br_addr_ok,false.B,PreIF.raddr_ok))
-  fetch_wen:=PreIF.to_if.ready && !br_stall
+  fetch_wen:=PreIF.to_if.ready && !br.stall
 
   PreIF_flush:=PreIF.for_ex.flush || PreIF.for_id.flush
 
   PreIF_ready_go:= fetch_wen && PreIF_raddr_ok
   PreIF.to_if.valid:= Mux(PreIF_flush,false.B, ~reset.asBool && PreIF_ready_go)
 
-  val br=Wire(new br_bus())
   br.taken:=PreIF.for_id.Br_J.taken || PreIF.for_ex.Br_B.taken
   br.target:=Mux(PreIF.for_ex.Br_B.taken, PreIF.for_ex.Br_B.target, PreIF.for_id.Br_J.target)
 
