@@ -11,17 +11,20 @@ class Axi4Bridge extends Module {
     val w=Decoupled(new AxiWriteDataBundle())
     val b=Flipped(Decoupled(new AxiWriteResponseBundle()))
 
-    val addr=Input(UInt(ADDR_WIDTH.W))
-    val write_en=Input(Bool())
-    val wstrb=Input(UInt(4.W))
-    val wdata=Input(UInt(DATA_WIDTH.W))
-    val waddr_ok=Output(Bool())
-    val wdata_ok=Output(Bool())
+    val al=Flipped(new AxiBridgeAddrLoad)
+    val dl=Flipped(new AxiBridgeDataLoad)
+    val s=Flipped(new AxiBridgeStore)
+    // val addr=Input(UInt(ADDR_WIDTH.W))
+    // val write_en=Input(Bool())
+    // val wstrb=Input(UInt(4.W))
+    // val wdata=Input(UInt(DATA_WIDTH.W))
+    // val waddr_ok=Output(Bool())
+    // val wdata_ok=Output(Bool())
 
-    val read_en=Input(Bool())
-    val rdata=Output(UInt(DATA_WIDTH.W))
-    val raddr_ok=Output(Bool())
-    val rdata_ok=Output(Bool())
+    // val read_en=Input(Bool())
+    // val rdata=Output(UInt(DATA_WIDTH.W))
+    // val raddr_ok=Output(Bool())
+    // val rdata_ok=Output(Bool())
   })
 
 //---------------------------AXI4 Lite---------------------------
@@ -41,17 +44,17 @@ class Axi4Bridge extends Module {
 
   val ReadRequstState=RegInit(ar_idle)
   when(ReadRequstState===ar_idle){
-    when(io.read_en){
+    when(io.al.ren){
       when(WaitWriteIdle){
         when(BrespFire){
           ReadRequstState:=ar_wait_ready
-          araddrReg:=io.addr
+          araddrReg:=io.al.raddr
           arvalidReg:=true.B    
         }
         //如果此时是等待写回复并且已经回复的状态就可以发起ar
       }.otherwise{
         ReadRequstState:=ar_wait_ready
-        araddrReg:=io.addr
+        araddrReg:=io.al.raddr
         arvalidReg:=true.B
       }
     }
@@ -77,9 +80,9 @@ class Axi4Bridge extends Module {
   io.ar.bits.prot:=0.U
   io.r.ready:=rreadyReg
 
-  io.raddr_ok:= io.ar.fire
-  io.rdata_ok:= WaitReadIdle&&RrespFire
-  io.rdata:= ram_rdata
+  io.al.raddr_ok:= io.ar.fire
+  io.dl.rdata_ok:= WaitReadIdle&&RrespFire
+  io.dl.rdata:= ram_rdata
   /*
     如果状态位为
     1.等待read事务空闲，此时读相应，已读出来数据
@@ -101,25 +104,25 @@ class Axi4Bridge extends Module {
   when(WriteRequstState===wr_idle){
     //当ls级为lw等待rready时,ex级为sw，此时r,aw,w都在等ready，在此处进行一个小仲裁，先让lw握手，
     //等待下一个节点给aw和w握手
-    when(io.write_en){
+    when(io.s.wen){
       when(WaitReadIdle){
         when(RrespFire){
           WriteRequstState:=wr_wait_ready
           awvalidReg:=true.B
-          awaddrReg:=io.addr
+          awaddrReg:=io.s.waddr
           
           wvalidReg:=true.B
-          wdataReg:=io.wdata
-          wstrbReg:=io.wstrb
+          wdataReg:=io.s.wdata
+          wstrbReg:=io.s.wstrb
         }
       }.otherwise{
         WriteRequstState:=wr_wait_ready
         awvalidReg:=true.B
-        awaddrReg:=io.addr
+        awaddrReg:=io.s.waddr
         
         wvalidReg:=true.B
-        wdataReg:=io.wdata
-        wstrbReg:=io.wstrb
+        wdataReg:=io.s.wdata
+        wstrbReg:=io.s.wstrb
       }
     }
   }.elsewhen(WriteRequstState===wr_wait_ready){
@@ -145,7 +148,7 @@ class Axi4Bridge extends Module {
   io.w.bits.strb:=wstrbReg
   io.b.ready:=breadyReg
 
-  io.waddr_ok:= io.aw.fire&&io.w.fire
-  io.wdata_ok:= WaitWriteIdle&&BrespFire
+  io.s.waddr_ok:= io.aw.fire&&io.w.fire
+  io.s.wdata_ok:= WaitWriteIdle&&BrespFire
 //---------------------------AXI4 Lite---------------------------
 }

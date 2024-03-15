@@ -39,3 +39,24 @@ class AxiReadDataBundle extends Bundle {
   val data = UInt(DATA_WIDTH.W)
   val resp = UInt(2.W)
 }
+
+
+class AxiBridgeAddrLoad extends Bundle{
+  val ren=Output(Bool())
+  val raddr=Output(UInt(ADDR_WIDTH.W))
+  val raddr_ok=Input(Bool())
+} //缩写为al接口
+
+class AxiBridgeDataLoad extends Bundle{
+  val rdata=Input(UInt(DATA_WIDTH.W))
+  val rdata_ok=Input(Bool())
+} //缩写为dl接口
+
+class AxiBridgeStore extends Bundle{
+  val wen=Output(Bool())
+  val waddr=Output(UInt(ADDR_WIDTH.W))
+  val waddr_ok=Input(Bool())
+  val wstrb=Output(UInt((DATA_WIDTH/8).W))
+  val wdata=Output(UInt(DATA_WIDTH.W))
+  val wdata_ok=Input(Bool())
+} //缩写为s接口

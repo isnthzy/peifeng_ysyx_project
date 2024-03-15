@@ -5,14 +5,15 @@ import config.Configs._
 
 class IF_stage extends Module {
   val IF=IO(new Bundle {
-    val IO = Flipped(Decoupled(new preif_to_if_bus()))
+    val IO = Flipped(Decoupled(new pf_to_if_bus()))
     val to_id =Decoupled(new if_to_id_bus())
     
     val for_id=Input(new id_to_if_bus())
     val for_ex=Input(new ex_to_if_bus())
     
-    val rdata=Input(UInt(DATA_WIDTH.W))
-    val rdata_ok=Input(Bool())
+    val dl=new AxiBridgeDataLoad()
+    // val rdata=Input(UInt(DATA_WIDTH.W))
+    // val rdata_ok=Input(Bool())
   })
   val if_clog=dontTouch(Wire(Bool()))
   val if_inst=dontTouch(WireDefault(0.U(32.W)))
@@ -34,14 +35,14 @@ class IF_stage extends Module {
   val if_inst_ok_buff=dontTouch(RegInit(false.B))
   val if_inst_buff=dontTouch(RegInit(0.U(32.W)))
   val if_use_inst_buff=dontTouch(RegInit(false.B))
-  if_inst:=Mux(if_use_inst_buff,if_inst_buff,IF.rdata)
+  if_inst:=Mux(if_use_inst_buff,if_inst_buff,IF.dl.rdata)
   if_inst_ok:=if_inst_ok_buff
   when(IF.IO.fire){
     if_use_inst_buff:=false.B
     if_inst_ok_buff:=false.B
   }
-  when(IF.rdata_ok){
-    if_inst_buff:=IF.rdata
+  when(IF.dl.rdata_ok){
+    if_inst_buff:=IF.dl.rdata
     if_use_inst_buff:=true.B
     if_inst_ok_buff:=true.B
     if_inst_ok:=true.B
