@@ -40,15 +40,7 @@ class SimTop extends Module {
 
   AXi4LiteBridgeIF.io.al<>PF_stage.PF.al
   AXi4LiteBridgeIF.io.s<>PF_stage.PF.s
-  // AXi4LiteBridgeIF.io.addr:=PF_stage.PF.mem_addr
-  // AXi4LiteBridgeIF.io.write_en:=PF_stage.PF.write_en
-  // AXi4LiteBridgeIF.io.wstrb:=PF_stage.PF.wstrb
-  // AXi4LiteBridgeIF.io.wdata:=PF_stage.PF.wdata
-  // PF_stage.PF.waddr_ok:=AXi4LiteBridgeIF.io.waddr_ok
-  // PF_stage.PF.wdata_ok:=AXi4LiteBridgeIF.io.wdata_ok
-  // AXi4LiteBridgeIF.io.read_en:=PF_stage.PF.read_en
-  // PF_stage.PF.raddr_ok:=AXi4LiteBridgeIF.io.raddr_ok
-  
+
 
 // IF begin
   StageConnect(PF_stage.PF.to_if,IF_stage.IF.IO)
@@ -56,8 +48,7 @@ class SimTop extends Module {
   IF_stage.IF.for_ex<>EX_stage.EX.to_if
 
   IF_stage.IF.dl<>AXi4LiteBridgeIF.io.dl
-  // IF_stage.IF.rdata:=AXi4LiteBridgeIF.io.rdata
-  // IF_stage.IF.rdata_ok:=AXi4LiteBridgeIF.io.rdata_ok
+
 // ID begin
   StageConnect(IF_stage.IF.to_id,ID_stage.ID.IO) //左边是out，右边是in
   ID_stage.ID.for_ex<>EX_stage.EX.to_id
@@ -68,21 +59,10 @@ class SimTop extends Module {
   StageConnect(ID_stage.ID.to_ex,EX_stage.EX.IO)
   AXi4LiteBridge.io.al<>EX_stage.EX.al
   AXi4LiteBridge.io.s <>EX_stage.EX.s
-  // AXi4LiteBridge.io.addr:=EX_stage.EX.mem_addr
-  // AXi4LiteBridge.io.write_en:=EX_stage.EX.write_en
-  // AXi4LiteBridge.io.wstrb:=EX_stage.EX.wstrb
-  // AXi4LiteBridge.io.wdata:=EX_stage.EX.wdata
-  // EX_stage.EX.waddr_ok:=AXi4LiteBridge.io.waddr_ok
-  // EX_stage.EX.wdata_ok:=AXi4LiteBridge.io.wdata_ok
-  
-  // AXi4LiteBridge.io.read_en:=EX_stage.EX.read_en
-  // EX_stage.EX.raddr_ok:=AXi4LiteBridge.io.raddr_ok
 
 // LS begin
   StageConnect(EX_stage.EX.to_ls,LS_stage.LS.IO)
   LS_stage.LS.dl<>AXi4LiteBridge.io.dl
-  // LS_stage.LS.rdata:=AXi4LiteBridge.io.rdata
-  // LS_stage.LS.rdata_ok:=AXi4LiteBridge.io.rdata_ok
 
 // WB begin
   StageConnect(LS_stage.LS.to_wb,WB_stage.WB.IO)

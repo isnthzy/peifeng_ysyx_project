@@ -11,16 +11,6 @@ class PreIF_stage extends Module {
 
     val al=new AxiBridgeAddrLoad()
     val s=new AxiBridgeStore()
-    // val mem_addr=Output(UInt(ADDR_WIDTH.W))
-
-    // val write_en=Output(Bool())
-    // val wstrb=Output(UInt(4.W))
-    // val wdata=Output(UInt(DATA_WIDTH.W))
-    // val waddr_ok=Input(Bool())
-    // val wdata_ok=Input(Bool())
-
-    // val read_en=Output(Bool())
-    // val raddr_ok=Input(Bool())
   })
   val pf_ready_go=dontTouch(Wire(Bool()))
   val fetch_wen=dontTouch(Wire(Bool()))

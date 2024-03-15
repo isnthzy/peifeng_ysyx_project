@@ -11,8 +11,6 @@ class LS_stage extends Module {
     val to_id =Output(new ls_to_id_bus())
 
     val dl=new AxiBridgeDataLoad()
-    // val rdata=Input(UInt(DATA_WIDTH.W))
-    // val rdata_ok=Input(Bool())
   })
 
   val data_ram_rdata=dontTouch(Wire(UInt(DATA_WIDTH.W)))
