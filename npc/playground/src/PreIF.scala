@@ -9,8 +9,8 @@ class PreIF_stage extends Module {
     val for_id=Input(new id_to_pf_bus())
     val for_ex=Input(new ex_to_pf_bus())
 
-    val al=new AxiBridgeAddrLoad()
-    val s=new AxiBridgeStore()
+    val al=new AxiBridgeAddrLoad() //类sram plus的地址读通道
+    val s=new AxiBridgeStore() //类sram plus的存储通道
   })
   val pf_ready_go=dontTouch(Wire(Bool()))
   val fetch_wen=dontTouch(Wire(Bool()))

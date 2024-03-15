@@ -11,7 +11,7 @@ class IF_stage extends Module {
     val for_id=Input(new id_to_if_bus())
     val for_ex=Input(new ex_to_if_bus())
     
-    val dl=new AxiBridgeDataLoad()
+    val dl=new AxiBridgeDataLoad() //类sram plus的读数据响应通道
   })
   val if_clog=dontTouch(Wire(Bool()))
   val if_inst=dontTouch(WireDefault(0.U(32.W)))

@@ -41,18 +41,18 @@ class AxiReadDataBundle extends Bundle {
 }
 
 
-class AxiBridgeAddrLoad extends Bundle{
+class AxiBridgeAddrLoad extends Bundle{ //类sram plus的地址读通道
   val ren=Output(Bool())
   val raddr=Output(UInt(ADDR_WIDTH.W))
   val raddr_ok=Input(Bool())
 } //缩写为al接口
 
-class AxiBridgeDataLoad extends Bundle{
+class AxiBridgeDataLoad extends Bundle{ //类sram plus的读数据响应通道
   val rdata=Input(UInt(DATA_WIDTH.W))
   val rdata_ok=Input(Bool())
 } //缩写为dl接口
 
-class AxiBridgeStore extends Bundle{
+class AxiBridgeStore extends Bundle{ //类sram plus的存储通道
   val wen=Output(Bool())
   val waddr=Output(UInt(ADDR_WIDTH.W))
   val waddr_ok=Input(Bool())
