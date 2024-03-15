@@ -13,13 +13,13 @@ class Axi4LiteSlave extends Bundle{
 }
 
 
-// class Axi4LiteMaster extends Bundle{
-//   val ar=Decoupled(new AxiAddressBundle())
-//   val r=Flipped(Decoupled(new AxiReadDataBundle()))
-//   val aw=Decoupled(new AxiAddressBundle())
-//   val w=Decoupled(new AxiWriteDataBundle())
-//   val b=Flipped(Decoupled(new AxiWriteResponseBundle()))
-// }
+class Axi4LiteMaster extends Bundle{
+  val ar=Decoupled(new AxiAddressBundle())
+  val r=Flipped(Decoupled(new AxiReadDataBundle()))
+  val aw=Decoupled(new AxiAddressBundle())
+  val w=Decoupled(new AxiWriteDataBundle())
+  val b=Flipped(Decoupled(new AxiWriteResponseBundle()))
+}
 
 class AxiWriteDataBundle extends Bundle {
   val data = UInt(DATA_WIDTH.W)
@@ -40,7 +40,7 @@ class AxiReadDataBundle extends Bundle {
   val resp = UInt(2.W)
 }
 
-
+/*-----------------------------AxiBridgeBundle-----------------------------*/
 class AxiBridgeAddrLoad extends Bundle{ //类sram plus的地址读通道
   val ren=Output(Bool())
   val raddr=Output(UInt(ADDR_WIDTH.W))
@@ -60,3 +60,5 @@ class AxiBridgeStore extends Bundle{ //类sram plus的存储通道
   val wdata=Output(UInt(DATA_WIDTH.W))
   val wdata_ok=Input(Bool())
 } //缩写为s接口
+
+/*-----------------------------AxiBridgeBundle-----------------------------*/

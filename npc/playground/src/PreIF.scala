@@ -2,7 +2,7 @@ import chisel3._
 import chisel3.util._
 import config.Configs._
 
-class PreIF_stage extends Module {
+class PF_stage extends Module { //PreIF_stage
   val PF=IO(new Bundle {
     val to_if =Decoupled(new pf_to_if_bus())
     
@@ -10,7 +10,7 @@ class PreIF_stage extends Module {
     val for_ex=Input(new ex_to_pf_bus())
 
     val al=new AxiBridgeAddrLoad() //类sram plus的地址读通道
-    val s=new AxiBridgeStore() //类sram plus的存储通道
+    val s =new AxiBridgeStore() //类sram plus的存储通道
   })
   val pf_ready_go=dontTouch(Wire(Bool()))
   val fetch_wen=dontTouch(Wire(Bool()))
@@ -37,8 +37,8 @@ class PreIF_stage extends Module {
   根源上是addr_ok可能对应的是错误的pc的取指请求
   所以，我们要写个正确的raddr_ok，来反应正确放行
   考虑以下两种情况
-  1.raddr_ok的时候,正好接受到分支传输，这时候pf_raddr_ok置低，表明读地址通道没有真正的ok
-  2.pf已经发起ar通道，此时等待raddr_ok，这时候pf_raddr_ok置低，表明读地址通道没有真正的ok
+  1.raddr_ok的时候,正好接受到分支传输。我们这时候应该把pf_raddr_ok置低，表明读地址通道没有真正的ok
+  2.pf已经发起ar通道，此时等待raddr_ok。我们这时候应该把pf_raddr_ok置低，表明读地址通道没有真正的ok
   3.pf提前发起ar通道，raddr_ok提前传输，流入下一级。这种情况不会出现，因为取指请求只有在if级ready了才能发起
   所以，解决1,2我们需要等待真正的读地址通道ok，当接受到分支传输时，至高wait_br_addr_ok寄存器信号，表明需要等待分支的addr_ok返回
   当分支的addr_ok返回后，说明取到了分支的跳转后的指令，pf_raddr_ok至高此时放行ready_go，流向下一级
@@ -55,7 +55,7 @@ class PreIF_stage extends Module {
   br.target:=Mux(PF.for_ex.Br_B.taken, PF.for_ex.Br_B.target, PF.for_id.Br_J.target)
 
 
-  val pf_pc     = RegInit(START_ADDR)
+  val pf_pc     =RegInit(START_ADDR)
   val pf_snpc   = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
   val pf_dnpc   = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
   val pf_nextpc = dontTouch(Wire(UInt(ADDR_WIDTH.W)))

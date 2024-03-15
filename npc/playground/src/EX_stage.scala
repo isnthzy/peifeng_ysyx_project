@@ -13,7 +13,7 @@ class EX_stage extends Module {
     val to_pf =Output(new ex_to_pf_bus())
 
     val al=new AxiBridgeAddrLoad() //类sram plus的地址读通道
-    val s=new AxiBridgeStore() //类sram plus的存储通道
+    val s =new AxiBridgeStore() //类sram plus的存储通道
   })
   val ld_wen=dontTouch(Wire(Bool()))
   val st_wen=dontTouch(Wire(Bool()))

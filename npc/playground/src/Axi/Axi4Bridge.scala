@@ -14,17 +14,7 @@ class Axi4Bridge extends Module {
     val al=Flipped(new AxiBridgeAddrLoad)
     val dl=Flipped(new AxiBridgeDataLoad)
     val s=Flipped(new AxiBridgeStore)
-    // val addr=Input(UInt(ADDR_WIDTH.W))
-    // val write_en=Input(Bool())
-    // val wstrb=Input(UInt(4.W))
-    // val wdata=Input(UInt(DATA_WIDTH.W))
-    // val waddr_ok=Output(Bool())
-    // val wdata_ok=Output(Bool())
 
-    // val read_en=Input(Bool())
-    // val rdata=Output(UInt(DATA_WIDTH.W))
-    // val raddr_ok=Output(Bool())
-    // val rdata_ok=Output(Bool())
   })
 
 //---------------------------AXI4 Lite---------------------------
