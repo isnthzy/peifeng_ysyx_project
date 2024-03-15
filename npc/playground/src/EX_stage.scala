@@ -10,18 +10,10 @@ class EX_stage extends Module {
     
     val to_id =Output(new ex_to_id_bus())
     val to_if =Output(new ex_to_if_bus())
-    val to_preif =Output(new ex_to_preif_bus())
+    val to_pf =Output(new ex_to_pf_bus())
 
-    val mem_addr=Output(UInt(ADDR_WIDTH.W))
-    val write_en=Output(Bool())
-    val wstrb=Output(UInt(4.W))
-    val wdata=Output(UInt(DATA_WIDTH.W))
-    val waddr_ok=Input(Bool())
-    val wdata_ok=Input(Bool())
-
-    val read_en=Output(Bool())
-    val raddr_ok=Input(Bool())
-
+    val al=new AxiBridgeAddrLoad() //类sram plus的地址读通道
+    val s =new AxiBridgeStore() //类sram plus的存储通道
   })
   val ld_wen=dontTouch(Wire(Bool()))
   val st_wen=dontTouch(Wire(Bool()))
@@ -45,9 +37,9 @@ class EX_stage extends Module {
   Alu.io.src2:=EX.IO.bits.src2
   
   //分支跳转
-  EX.to_preif.Br_B.stall:=(EX.IO.bits.b_taken&&ex_valid)&&ex_ready_go
-  EX.to_preif.Br_B.taken:=EX.IO.bits.b_taken&&ex_valid
-  EX.to_preif.Br_B.target:=MuxLookup(EX.IO.bits.br_type,0.U)(Seq(
+  EX.to_pf.Br_B.stall:=(EX.IO.bits.b_taken&&ex_valid)&&ex_ready_go
+  EX.to_pf.Br_B.taken:=EX.IO.bits.b_taken&&ex_valid
+  EX.to_pf.Br_B.target:=MuxLookup(EX.IO.bits.br_type,0.U)(Seq(
                           BR_XXX -> 0.U,
                           BR_LTU -> Alu.io.result,
                           BR_LT  -> Alu.io.result,
@@ -61,12 +53,12 @@ class EX_stage extends Module {
   //如果是跳转，发起flush
   //如果是b跳转，ex级向if，preif，id级发起flush (损失三个周期，b跳转在ex级计算)
   val to_flush=Wire(Bool())
-  to_flush:=(EX.to_preif.Br_B.taken
+  to_flush:=(EX.to_pf.Br_B.taken
          || (EX.IO.bits.csr_cmd===CSR.MRET )
          || (EX.IO.bits.csr_cmd===CSR.ECALL))&&ex_valid 
   EX.to_id.flush:=to_flush
   EX.to_if.flush:=to_flush
-  EX.to_preif.flush:=to_flush
+  EX.to_pf.flush:=to_flush
 
   //对id发起阻塞
   EX.to_id.clog:=(EX.IO.bits.ld_type=/=0.U)&&ex_valid
@@ -98,14 +90,15 @@ class EX_stage extends Module {
     ST_SW  -> "b1111".U
   ))
 //---------------------------AXI BRIDEG---------------------------
-  EX.mem_addr:=ram_addr
-  EX.write_en:=st_wen&&ex_valid
-  EX.wstrb:=st_wstrb
-  EX.wdata:=EX.IO.bits.rdata2
+  EX.s.wen:=st_wen&&ex_valid
+  EX.s.waddr:=ram_addr
+  EX.s.wstrb:=st_wstrb
+  EX.s.wdata:=EX.IO.bits.rdata2
   
-  EX.read_en:=ld_wen&&ex_valid
-  ex_clog:=(((~EX.wdata_ok)&&st_wen)
-           ||(~EX.raddr_ok)&&ld_wen)&&ex_valid
+  EX.al.ren:=ld_wen&&ex_valid
+  EX.al.raddr:=ram_addr
+  ex_clog:=(((~EX.s.wdata_ok)&&st_wen)
+           ||(~EX.al.raddr_ok)&&ld_wen)&&ex_valid
 //---------------------------AXI BRIDEG---------------------------
 
 
@@ -121,8 +114,8 @@ class EX_stage extends Module {
   EX.to_id.csr.ecpt.mcause_in:=11.U
   EX.to_id.csr.ecpt.pc_wb:=EX.IO.bits.pc
   
-  EX.to_preif.epc.taken:=(EX.IO.bits.pc_sel===PC_EPC)&&ex_valid
-  EX.to_preif.epc.target:=Mux((EX.IO.bits.csr_cmd===CSR.MRET ),EX.IO.bits.csr_global.mepc,
+  EX.to_pf.epc.taken:=(EX.IO.bits.pc_sel===PC_EPC)&&ex_valid
+  EX.to_pf.epc.target:=Mux((EX.IO.bits.csr_cmd===CSR.MRET ),EX.IO.bits.csr_global.mepc,
                         Mux((EX.IO.bits.csr_cmd===CSR.ECALL),EX.IO.bits.csr_global.mtvec,0.U))
   
 

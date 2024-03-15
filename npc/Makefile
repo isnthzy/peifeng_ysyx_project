@@ -5,7 +5,7 @@ $(shell mkdir -p $(BUILD_DIR))
 IMG?=
 ARGS?= --log=$(BUILD_DIR)/npc-log.txt
 
-NXDC_FILES = constr/SimTop.nxdc
+# NXDC_FILES = constr/SimTop.nxdc
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc 
@@ -74,6 +74,7 @@ checkformat:
 
 clean:
 	-rm -rf $(BUILD_DIR)
+	-rm -rf ./vsrc/*
 
 cnt_cp:= $(shell find csrc/ -name "*.cpp" -or -name "*.h" | xargs grep -ve "^$$" | wc -l)
 cnt_v := $(shell find vsrc/ -name "*.sv" -or -name "*.scala" | xargs grep -ve "^$$" | wc -l)

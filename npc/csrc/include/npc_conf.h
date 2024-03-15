@@ -5,18 +5,18 @@
 
 /*---------------------------------------------------------------------------------*/
 
-// #define CONFIG_TRACE 1
-// #define CONFIG_ITRACE 1
-// #define CONFIG_FTRACE 1
-// #define CONFIG_MTRACE 1
-// #define CONFIG_DIFFTEST 1
+#define CONFIG_TRACE 1
+#define CONFIG_ITRACE 1
+#define CONFIG_FTRACE 1
+#define CONFIG_MTRACE 1
+#define CONFIG_DIFFTEST 1
 
 #define NPCLOG_NUM 1000000 //trace最多记录多少个log
 //TRACE开关
 
 /*---------------------------------------------------------------------------------*/
 
-#define CONFIG_MEM_RANDOM 1
+// #define CONFIG_MEM_RANDOM 1
 //随机化内存开关,可能会导致与ref_difftest无法通过(例如rt-thread)
 
 /*---------------------------------------------------------------------------------*/

@@ -97,11 +97,11 @@ class To_wb_dpic_bus extends Bundle{
 //-----------------dpi bundle-----------------
 
 //--------------to preif---------------
-class id_to_preif_bus extends Bundle{
+class id_to_pf_bus extends Bundle{
   val Br_J=new br_bus()
   val flush=Bool()
 }
-class ex_to_preif_bus extends Bundle{
+class ex_to_pf_bus extends Bundle{
   val epc=new epc_to_if_bus()
   val Br_B=new br_bus()
   val flush=Bool()
@@ -140,7 +140,7 @@ class ls_to_ex_bus extends Bundle{
   val WaitloadOk=Bool()
 }
 //----------------to ex----------------
-class preif_to_if_bus extends Bundle{
+class pf_to_if_bus extends Bundle{
   val nextpc=UInt(ADDR_WIDTH.W)
   val pc  =UInt(ADDR_WIDTH.W)
 }

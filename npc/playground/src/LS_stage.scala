@@ -10,17 +10,16 @@ class LS_stage extends Module {
 
     val to_id =Output(new ls_to_id_bus())
 
-    val rdata=Input(UInt(DATA_WIDTH.W))
-    val rdata_ok=Input(Bool())
+    val dl=new AxiBridgeDataLoad()
   })
-  // dontTouch(LS.r);
+
   val data_ram_rdata=dontTouch(Wire(UInt(DATA_WIDTH.W)))
-  data_ram_rdata:=LS.rdata
+  data_ram_rdata:=LS.dl.rdata
   val ls_clog=dontTouch(Wire(Bool()))
 
   val ls_valid=dontTouch(RegInit(false.B))
   val ls_ready_go=dontTouch(Wire(Bool()))
-  ls_clog:= (LS.IO.bits.ld_wen && ~LS.rdata_ok)&&ls_valid
+  ls_clog:= (LS.IO.bits.ld_wen && ~LS.dl.rdata_ok)&&ls_valid
   ls_ready_go:=Mux(ls_clog,false.B,true.B)
   LS.IO.ready := !ls_valid || ls_ready_go &&LS.to_wb.ready
   when(LS.IO.ready){

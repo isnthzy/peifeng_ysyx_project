@@ -17,6 +17,7 @@
 !utils/
 build/
 vsrc/*
+vsrc/dpic/*
 
 # mill
 out/

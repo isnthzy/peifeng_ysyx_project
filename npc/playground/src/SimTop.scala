@@ -9,7 +9,7 @@ class SimTop extends Module {
     val debug_wdata=Output(UInt(DATA_WIDTH.W))
     val debug_wen  =Output(Bool())
   })
-  val PreIF_s  = Module(new PreIF_s())
+  val PF_stage = Module(new PF_stage())
   val IF_stage = Module(new IF_stage())
   val ID_stage = Module(new ID_stage())
   val EX_stage = Module(new EX_stage())
@@ -18,43 +18,37 @@ class SimTop extends Module {
   
   val Axi4Lite_Sram_Mem = Module(new Axi4Lite_Sram_Mem())
   val Axi4Lite_Sram_If=Module(new Axi4Lite_Sram_If())
-  val AXi4LiteBridge=Module(new Axi4Bridge())
-  val AXi4LiteBridgeIF=Module(new Axi4Bridge())
+  val Axi4LiteBridge=Module(new Axi4Bridge())
+  val Axi4LiteBridgeIF=Module(new Axi4Bridge())
 //AxiBridge
-  AXi4LiteBridge.io.ar<>Axi4Lite_Sram_Mem.io.ar
-  AXi4LiteBridge.io.r <>Axi4Lite_Sram_Mem.io.r
-  AXi4LiteBridge.io.aw<>Axi4Lite_Sram_Mem.io.aw
-  AXi4LiteBridge.io.w <>Axi4Lite_Sram_Mem.io.w
-  AXi4LiteBridge.io.b <>Axi4Lite_Sram_Mem.io.b
+  Axi4LiteBridge.io.ar<>Axi4Lite_Sram_Mem.io.ar
+  Axi4LiteBridge.io.r <>Axi4Lite_Sram_Mem.io.r
+  Axi4LiteBridge.io.aw<>Axi4Lite_Sram_Mem.io.aw
+  Axi4LiteBridge.io.w <>Axi4Lite_Sram_Mem.io.w
+  Axi4LiteBridge.io.b <>Axi4Lite_Sram_Mem.io.b
 
-  AXi4LiteBridgeIF.io.ar<>Axi4Lite_Sram_If.io.ar
-  AXi4LiteBridgeIF.io.r <>Axi4Lite_Sram_If.io.r
-  AXi4LiteBridgeIF.io.aw<>Axi4Lite_Sram_If.io.aw
-  AXi4LiteBridgeIF.io.w <>Axi4Lite_Sram_If.io.w
-  AXi4LiteBridgeIF.io.b <>Axi4Lite_Sram_If.io.b
+  Axi4LiteBridgeIF.io.ar<>Axi4Lite_Sram_If.io.ar
+  Axi4LiteBridgeIF.io.r <>Axi4Lite_Sram_If.io.r
+  Axi4LiteBridgeIF.io.aw<>Axi4Lite_Sram_If.io.aw
+  Axi4LiteBridgeIF.io.w <>Axi4Lite_Sram_If.io.w
+  Axi4LiteBridgeIF.io.b <>Axi4Lite_Sram_If.io.b
 //AxiBridge
 
 // PreIF begin
-  PreIF_s.PreIF.for_id<>ID_stage.ID.to_preif
-  PreIF_s.PreIF.for_ex<>EX_stage.EX.to_preif
+  PF_stage.PF.for_id<>ID_stage.ID.to_pf
+  PF_stage.PF.for_ex<>EX_stage.EX.to_pf
 
-  AXi4LiteBridgeIF.io.addr:=PreIF_s.PreIF.mem_addr
-  AXi4LiteBridgeIF.io.write_en:=PreIF_s.PreIF.write_en
-  AXi4LiteBridgeIF.io.wstrb:=PreIF_s.PreIF.wstrb
-  AXi4LiteBridgeIF.io.wdata:=PreIF_s.PreIF.wdata
-  PreIF_s.PreIF.waddr_ok:=AXi4LiteBridgeIF.io.waddr_ok
-  PreIF_s.PreIF.wdata_ok:=AXi4LiteBridgeIF.io.wdata_ok
-  AXi4LiteBridgeIF.io.read_en:=PreIF_s.PreIF.read_en
-  PreIF_s.PreIF.raddr_ok:=AXi4LiteBridgeIF.io.raddr_ok
-  
+  Axi4LiteBridgeIF.io.al<>PF_stage.PF.al
+  Axi4LiteBridgeIF.io.s <>PF_stage.PF.s
+
 
 // IF begin
-  StageConnect(PreIF_s.PreIF.to_if,IF_stage.IF.IO)
+  StageConnect(PF_stage.PF.to_if,IF_stage.IF.IO)
   IF_stage.IF.for_id<>ID_stage.ID.to_if
   IF_stage.IF.for_ex<>EX_stage.EX.to_if
-  
-  IF_stage.IF.rdata:=AXi4LiteBridgeIF.io.rdata
-  IF_stage.IF.rdata_ok:=AXi4LiteBridgeIF.io.rdata_ok
+
+  IF_stage.IF.dl<>Axi4LiteBridgeIF.io.dl
+
 // ID begin
   StageConnect(IF_stage.IF.to_id,ID_stage.ID.IO) //左边是out，右边是in
   ID_stage.ID.for_ex<>EX_stage.EX.to_id
@@ -63,20 +57,12 @@ class SimTop extends Module {
 
 // EX begin
   StageConnect(ID_stage.ID.to_ex,EX_stage.EX.IO)
-  AXi4LiteBridge.io.addr:=EX_stage.EX.mem_addr
-  AXi4LiteBridge.io.write_en:=EX_stage.EX.write_en
-  AXi4LiteBridge.io.wstrb:=EX_stage.EX.wstrb
-  AXi4LiteBridge.io.wdata:=EX_stage.EX.wdata
-  EX_stage.EX.waddr_ok:=AXi4LiteBridge.io.waddr_ok
-  EX_stage.EX.wdata_ok:=AXi4LiteBridge.io.wdata_ok
-  
-  AXi4LiteBridge.io.read_en:=EX_stage.EX.read_en
-  EX_stage.EX.raddr_ok:=AXi4LiteBridge.io.raddr_ok
+  Axi4LiteBridge.io.al<>EX_stage.EX.al
+  Axi4LiteBridge.io.s <>EX_stage.EX.s
 
 // LS begin
   StageConnect(EX_stage.EX.to_ls,LS_stage.LS.IO)
-  LS_stage.LS.rdata:=AXi4LiteBridge.io.rdata
-  LS_stage.LS.rdata_ok:=AXi4LiteBridge.io.rdata_ok
+  LS_stage.LS.dl<>Axi4LiteBridge.io.dl
 
 // WB begin
   StageConnect(LS_stage.LS.to_wb,WB_stage.WB.IO)
