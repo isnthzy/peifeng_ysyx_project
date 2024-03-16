@@ -41,7 +41,7 @@ class AxiArbiter extends Module {
     }
   }.elsewhen(ArbiterState===arb_wait_ls_arready){
     when(io.out.al.raddr_ok){
-      io.fs.al.raddr_ok:=true.B
+      io.ls.al.raddr_ok:=true.B
       ArbiterState:=arb_wait_ls_rresp
     }
   }.elsewhen(ArbiterState===arb_wait_fs_rresp){
@@ -68,14 +68,14 @@ class AxiArbiter extends Module {
   io.fs.s.waddr_ok:=false.B
   io.fs.s.wdata_ok:=false.B
 
-  io.fs.al.raddr_ok:=WireDefault(false.B)
-  io.fs.dl.rdata_ok:=WireDefault(false.B)
-  io.fs.dl.rdata:=WireDefault(0.U)
-  io.ls.al.raddr_ok:=WireDefault(false.B)
-  io.ls.dl.rdata_ok:=WireDefault(false.B)
-  io.ls.dl.rdata:=WireDefault(0.U)
-  io.out.al.ren:=WireDefault(false.B)
-  io.out.al.raddr:=WireDefault(0.U)
+  // io.fs.al.raddr_ok:=WireDefault(false.B)
+  // io.fs.dl.rdata_ok:=WireDefault(false.B)
+  // io.fs.dl.rdata:=WireDefault(0.U)
+  // io.ls.al.raddr_ok:=WireDefault(false.B)
+  // io.ls.dl.rdata_ok:=WireDefault(false.B)
+  // io.ls.dl.rdata:=WireDefault(0.U)
+  // io.out.al.ren:=WireDefault(false.B)
+  // io.out.al.raddr:=WireDefault(0.U)
   io.out.s<>io.ls.s
 }
 
