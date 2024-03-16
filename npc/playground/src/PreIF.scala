@@ -45,9 +45,9 @@ class PF_stage extends Module { //PreIF_stage
    */
   val resetnReg=RegInit(false.B)
   resetnReg:= ~reset.asBool
-  val resetnNext=RegNext(resetnReg,false.B)
-  dontTouch(resetnNext)
-  fetch_wen:=PF.to_if.ready && !br.stall
+  val resetnNext=RegNext(resetnReg,false.B) //保证取指时机符合axi规范
+
+  fetch_wen:=PF.to_if.ready && !br.stall && resetnNext
 
   pf_flush:=PF.for_ex.flush || PF.for_id.flush
 
