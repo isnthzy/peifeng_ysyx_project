@@ -30,7 +30,7 @@ class AxiArbiter extends Module {
   val out_ren_reg=RegInit(false.B)
   val out_raddr_reg=RegInit(0.U(ADDR_WIDTH.W))
   
-  when(ArbiterState===arb_idle){
+  when(ArbiterState===arb_idle){ //000
     when(io.fs.al.ren&&io.ls.al.ren){
       ArbiterState:=arb_wait_ls_arready
       out_ren_reg:=io.ls.al.ren
@@ -38,12 +38,16 @@ class AxiArbiter extends Module {
 
       fs_ren_reg:=io.fs.al.ren
       fs_raddr_reg:=io.fs.al.raddr
-    }.otherwise{
+    }.elsewhen(io.fs.al.ren){
       ArbiterState:=arb_wait_fs_arready
       out_ren_reg:=io.fs.al.ren
       out_raddr_reg:=io.fs.al.raddr
+    }.elsewhen(io.ls.al.ren){
+      ArbiterState:=arb_wait_ls_arready
+      out_ren_reg:=io.ls.al.ren
+      out_raddr_reg:=io.ls.al.raddr
     }
-  }.elsewhen(ArbiterState===arb_wait_fs_arready){
+  }.elsewhen(ArbiterState===arb_wait_fs_arready){ //001
     when(io.out.al.raddr_ok){
       fs_raddr_ok:=true.B
       ArbiterState:=arb_wait_fs_rresp
@@ -51,7 +55,7 @@ class AxiArbiter extends Module {
       out_ren_reg:=false.B
       out_raddr_reg:=0.U
     }
-  }.elsewhen(ArbiterState===arb_wait_ls_arready){
+  }.elsewhen(ArbiterState===arb_wait_ls_arready){ //010
     when(io.out.al.raddr_ok){
       ls_raddr_ok:=true.B
       ArbiterState:=arb_wait_ls_rresp
@@ -59,14 +63,14 @@ class AxiArbiter extends Module {
       out_ren_reg:=false.B
       out_raddr_reg:=0.U
     }
-  }.elsewhen(ArbiterState===arb_wait_fs_rresp){
+  }.elsewhen(ArbiterState===arb_wait_fs_rresp){  //011
     when(io.out.dl.rdata_ok){
       ArbiterState:=arb_idle
 
       fs_rdata_ok:=io.out.dl.rdata_ok
       fs_rdata:=io.out.dl.rdata
     }
-  }.elsewhen(ArbiterState===arb_wait_ls_rresp){
+  }.elsewhen(ArbiterState===arb_wait_ls_rresp){  //100
     when(io.out.dl.rdata_ok){
       ls_rdata_ok:=io.out.dl.rdata_ok
       ls_rdata:=io.out.dl.rdata
