@@ -17,9 +17,9 @@ class SimTop extends Module {
   val WB_stage = Module(new WB_stage())
   
   val Axi4Lite_Sram_Mem = Module(new Axi4Lite_Sram_Mem())
-  val Axi4Lite_Sram_If=Module(new Axi4Lite_Sram_If())
+  // val Axi4Lite_Sram_If=Module(new Axi4Lite_Sram_If())
   val Axi4LiteBridge=Module(new Axi4Bridge())
-  val Axi4LiteBridgeIF=Module(new Axi4Bridge())
+  // val Axi4LiteBridgeIF=Module(new Axi4Bridge())
   val AxiArbiter=Module(new AxiArbiter())
 //AxiBridge
   Axi4LiteBridge.io.ar<>Axi4Lite_Sram_Mem.io.ar
