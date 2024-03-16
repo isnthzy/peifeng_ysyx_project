@@ -63,8 +63,8 @@ class AxiArbiter extends Module {
   }.elsewhen(ArbiterState===arb_wait_ls_rresp){
     when(io.out.dl.rdata_ok){
       // io.ls.dl:=io.out.dl
-      ls_rdata_ok:=io.ls.dl.rdata_ok
-      ls_rdata:=io.ls.dl.rdata
+      ls_rdata_ok:=io.out.dl.rdata_ok
+      ls_rdata:=io.out.dl.rdata
       when(fs_ren_reg){
         ArbiterState:=arb_wait_fs_arready
         out_ren:=fs_ren_reg
