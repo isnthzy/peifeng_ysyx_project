@@ -43,11 +43,11 @@ class PF_stage extends Module { //PreIF_stage
   所以，解决1,2我们需要等待真正的读地址通道ok，当接受到分支传输时，至高wait_br_addr_ok寄存器信号，表明需要等待分支的addr_ok返回
   当分支的addr_ok返回后，说明取到了分支的跳转后的指令，pf_raddr_ok至高此时放行ready_go，流向下一级
    */
-  val resetnReg=RegInit(false.B)
-  resetnReg:= ~reset.asBool
-  val resetnNext=RegNext(resetnReg,false.B) //保证取指时机符合axi规范
+  // val resetnReg=RegInit(false.B)
+  // resetnReg:= ~reset.asBool
+  // val resetnNext=RegNext(resetnReg,false.B) //保证取指时机符合axi规范
 
-  fetch_wen:=PF.to_if.ready && !br.stall && resetnNext
+  fetch_wen:=PF.to_if.ready && !br.stall && ~reset.asBool
 
   pf_flush:=PF.for_ex.flush || PF.for_id.flush
 
