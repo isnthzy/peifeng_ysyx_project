@@ -45,7 +45,7 @@ class PF_stage extends Module { //PreIF_stage
    */
   val resetnReg=RegInit(false.B)
   resetnReg:= ~reset.asBool
-  val resetnNext=RegNext(resetnReg)
+  val resetnNext=RegNext(resetnReg,false.B)
   dontTouch(resetnNext)
   fetch_wen:=PF.to_if.ready && !br.stall
 
