@@ -20,6 +20,7 @@ class SimTop extends Module {
   val Axi4Lite_Sram_If=Module(new Axi4Lite_Sram_If())
   val Axi4LiteBridge=Module(new Axi4Bridge())
   val Axi4LiteBridgeIF=Module(new Axi4Bridge())
+  val AxiArbiter=Module(new AxiArbiter())
 //AxiBridge
   Axi4LiteBridge.io.ar<>Axi4Lite_Sram_Mem.io.ar
   Axi4LiteBridge.io.r <>Axi4Lite_Sram_Mem.io.r
@@ -27,12 +28,26 @@ class SimTop extends Module {
   Axi4LiteBridge.io.w <>Axi4Lite_Sram_Mem.io.w
   Axi4LiteBridge.io.b <>Axi4Lite_Sram_Mem.io.b
 
-  Axi4LiteBridgeIF.io.ar<>Axi4Lite_Sram_If.io.ar
-  Axi4LiteBridgeIF.io.r <>Axi4Lite_Sram_If.io.r
-  Axi4LiteBridgeIF.io.aw<>Axi4Lite_Sram_If.io.aw
-  Axi4LiteBridgeIF.io.w <>Axi4Lite_Sram_If.io.w
-  Axi4LiteBridgeIF.io.b <>Axi4Lite_Sram_If.io.b
+  // Axi4LiteBridgeIF.io.ar<>Axi4Lite_Sram_If.io.ar
+  // Axi4LiteBridgeIF.io.r <>Axi4Lite_Sram_If.io.r
+  // Axi4LiteBridgeIF.io.aw<>Axi4Lite_Sram_If.io.aw
+  // Axi4LiteBridgeIF.io.w <>Axi4Lite_Sram_If.io.w
+  // Axi4LiteBridgeIF.io.b <>Axi4Lite_Sram_If.io.b
 //AxiBridge
+
+//AxiArbiter
+  AxiArbiter.io.fs.al<>PF_stage.PF.al
+  AxiArbiter.io.fs.s <>PF_stage.PF.s
+  AxiArbiter.io.fs.dl<>IF_stage.IF.dl
+
+  AxiArbiter.io.ls.al<>EX_stage.EX.al
+  AxiArbiter.io.ls.s <>EX_stage.EX.s
+  AxiArbiter.io.ls.dl<>LS_stage.LS.dl
+
+  Axi4LiteBridge.io.al<>AxiArbiter.io.out.al
+  Axi4LiteBridge.io.s <>AxiArbiter.io.out.s
+  Axi4LiteBridge.io.dl<>AxiArbiter.io.out.dl
+//AxiArbiter
 
 // PreIF begin
   PF_stage.PF.for_id<>ID_stage.ID.to_pf
