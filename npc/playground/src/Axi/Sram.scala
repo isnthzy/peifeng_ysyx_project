@@ -2,7 +2,7 @@ import chisel3._
 import chisel3.util._
 import config.Configs._
 import Control._
-class Axi4Lite_Sram_Mem extends Module {
+class Axi4LiteSram extends Module {
   val io=IO(new Axi4LiteSlave())
   val dpi_sram=Module(new dpi_sram())
   

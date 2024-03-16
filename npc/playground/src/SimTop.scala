@@ -16,23 +16,16 @@ class SimTop extends Module {
   val LS_stage = Module(new LS_stage())
   val WB_stage = Module(new WB_stage())
   
-  val Axi4Lite_Sram_Mem = Module(new Axi4Lite_Sram_Mem())
-  // val Axi4Lite_Sram_If=Module(new Axi4Lite_Sram_If())
+  val Axi4LiteSram = Module(new Axi4LiteSram())
   val Axi4LiteBridge=Module(new Axi4Bridge())
-  // val Axi4LiteBridgeIF=Module(new Axi4Bridge())
   val AxiArbiter=Module(new AxiArbiter())
 //AxiBridge
-  Axi4LiteBridge.io.ar<>Axi4Lite_Sram_Mem.io.ar
-  Axi4LiteBridge.io.r <>Axi4Lite_Sram_Mem.io.r
-  Axi4LiteBridge.io.aw<>Axi4Lite_Sram_Mem.io.aw
-  Axi4LiteBridge.io.w <>Axi4Lite_Sram_Mem.io.w
-  Axi4LiteBridge.io.b <>Axi4Lite_Sram_Mem.io.b
+  Axi4LiteBridge.io.ar<>Axi4LiteSram.io.ar
+  Axi4LiteBridge.io.r <>Axi4LiteSram.io.r
+  Axi4LiteBridge.io.aw<>Axi4LiteSram.io.aw
+  Axi4LiteBridge.io.w <>Axi4LiteSram.io.w
+  Axi4LiteBridge.io.b <>Axi4LiteSram.io.b
 
-  // Axi4LiteBridgeIF.io.ar<>Axi4Lite_Sram_If.io.ar
-  // Axi4LiteBridgeIF.io.r <>Axi4Lite_Sram_If.io.r
-  // Axi4LiteBridgeIF.io.aw<>Axi4Lite_Sram_If.io.aw
-  // Axi4LiteBridgeIF.io.w <>Axi4Lite_Sram_If.io.w
-  // Axi4LiteBridgeIF.io.b <>Axi4Lite_Sram_If.io.b
 //AxiBridge
 
 //AxiArbiter
@@ -53,16 +46,10 @@ class SimTop extends Module {
   PF_stage.PF.for_id<>ID_stage.ID.to_pf
   PF_stage.PF.for_ex<>EX_stage.EX.to_pf
 
-  // Axi4LiteBridgeIF.io.al<>PF_stage.PF.al
-  // Axi4LiteBridgeIF.io.s <>PF_stage.PF.s
-
-
 // IF begin
   StageConnect(PF_stage.PF.to_if,IF_stage.IF.IO)
   IF_stage.IF.for_id<>ID_stage.ID.to_if
   IF_stage.IF.for_ex<>EX_stage.EX.to_if
-
-  // IF_stage.IF.dl<>Axi4LiteBridgeIF.io.dl
 
 // ID begin
   StageConnect(IF_stage.IF.to_id,ID_stage.ID.IO) //左边是out，右边是in
@@ -72,12 +59,9 @@ class SimTop extends Module {
 
 // EX begin
   StageConnect(ID_stage.ID.to_ex,EX_stage.EX.IO)
-  // Axi4LiteBridge.io.al<>EX_stage.EX.al
-  // Axi4LiteBridge.io.s <>EX_stage.EX.s
 
 // LS begin
   StageConnect(EX_stage.EX.to_ls,LS_stage.LS.IO)
-  // LS_stage.LS.dl<>Axi4LiteBridge.io.dl
 
 // WB begin
   StageConnect(LS_stage.LS.to_wb,WB_stage.WB.IO)

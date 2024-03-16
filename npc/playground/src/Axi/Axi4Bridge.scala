@@ -36,7 +36,7 @@ class Axi4Bridge extends Module {
   val ReadRequstState=RegInit(ar_idle)
   when(ReadRequstState===ar_idle){
     when(io.al.ren){
-      when(~LoadStoreFire){ //仲裁当取指和store同时发生时,阻塞取指,先让store通过
+      when(~LoadStoreFire){ //仲裁:当取指(load)和store同时发生时,阻塞取指(load),先让store通过
         when(WaitWriteIdle){
           when(BrespFire){
             ReadRequstState:=ar_wait_ready
