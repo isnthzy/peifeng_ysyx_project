@@ -74,6 +74,8 @@ class AxiArbiter extends Module {
   io.ls.al.raddr_ok:=WireDefault(false.B)
   io.ls.dl.rdata_ok:=WireDefault(false.B)
   io.ls.dl.rdata:=WireDefault(0.U)
+  io.out.al.ren:=WireDefault(false.B)
+  io.out.al.raddr:=WireDefault(0.U)
   io.out.s<>io.ls.s
 }
 
