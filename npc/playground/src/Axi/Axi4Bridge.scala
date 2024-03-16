@@ -22,6 +22,7 @@ class Axi4Bridge extends Module {
   //如果write不是idle状态，拉高信号
   val BrespFire=dontTouch(Wire(Bool()))
   //b通道握手，拉高信号
+  val LoadStoreFire=io.al.ren&&io.s.wen
 
   val WaitReadIdle=dontTouch(Wire(Bool()))
   val RrespFire=dontTouch(Wire(Bool()))
@@ -35,17 +36,19 @@ class Axi4Bridge extends Module {
   val ReadRequstState=RegInit(ar_idle)
   when(ReadRequstState===ar_idle){
     when(io.al.ren){
-      when(WaitWriteIdle){
-        when(BrespFire){
+      when(~LoadStoreFire){ //仲裁当取指和store同时发生时，先让store通过
+        when(WaitWriteIdle){
+          when(BrespFire){
+            ReadRequstState:=ar_wait_ready
+            araddrReg:=io.al.raddr
+            arvalidReg:=true.B    
+          }
+          //如果此时是等待写回复并且已经回复的状态就可以发起ar
+        }.otherwise{
           ReadRequstState:=ar_wait_ready
           araddrReg:=io.al.raddr
-          arvalidReg:=true.B    
+          arvalidReg:=true.B
         }
-        //如果此时是等待写回复并且已经回复的状态就可以发起ar
-      }.otherwise{
-        ReadRequstState:=ar_wait_ready
-        araddrReg:=io.al.raddr
-        arvalidReg:=true.B
       }
     }
   }.elsewhen(ReadRequstState===ar_wait_ready){
