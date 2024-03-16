@@ -65,6 +65,8 @@ class AxiArbiter extends Module {
     }
   }
   
+  io.fs.s.waddr_ok:=false.B
+  io.fs.s.wdata_ok:=false.B
   io.out.s<>io.ls.s
 }
 
