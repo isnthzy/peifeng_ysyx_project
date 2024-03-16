@@ -53,8 +53,8 @@ class SimTop extends Module {
   PF_stage.PF.for_id<>ID_stage.ID.to_pf
   PF_stage.PF.for_ex<>EX_stage.EX.to_pf
 
-  Axi4LiteBridgeIF.io.al<>PF_stage.PF.al
-  Axi4LiteBridgeIF.io.s <>PF_stage.PF.s
+  // Axi4LiteBridgeIF.io.al<>PF_stage.PF.al
+  // Axi4LiteBridgeIF.io.s <>PF_stage.PF.s
 
 
 // IF begin
@@ -62,7 +62,7 @@ class SimTop extends Module {
   IF_stage.IF.for_id<>ID_stage.ID.to_if
   IF_stage.IF.for_ex<>EX_stage.EX.to_if
 
-  IF_stage.IF.dl<>Axi4LiteBridgeIF.io.dl
+  // IF_stage.IF.dl<>Axi4LiteBridgeIF.io.dl
 
 // ID begin
   StageConnect(IF_stage.IF.to_id,ID_stage.ID.IO) //左边是out，右边是in
@@ -72,12 +72,12 @@ class SimTop extends Module {
 
 // EX begin
   StageConnect(ID_stage.ID.to_ex,EX_stage.EX.IO)
-  Axi4LiteBridge.io.al<>EX_stage.EX.al
-  Axi4LiteBridge.io.s <>EX_stage.EX.s
+  // Axi4LiteBridge.io.al<>EX_stage.EX.al
+  // Axi4LiteBridge.io.s <>EX_stage.EX.s
 
 // LS begin
   StageConnect(EX_stage.EX.to_ls,LS_stage.LS.IO)
-  LS_stage.LS.dl<>Axi4LiteBridge.io.dl
+  // LS_stage.LS.dl<>Axi4LiteBridge.io.dl
 
 // WB begin
   StageConnect(LS_stage.LS.to_wb,WB_stage.WB.IO)
