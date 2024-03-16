@@ -14,17 +14,7 @@ class Axi4Bridge extends Module {
     val al=Flipped(new AxiBridgeAddrLoad)
     val dl=Flipped(new AxiBridgeDataLoad)
     val s=Flipped(new AxiBridgeStore)
-    // val addr=Input(UInt(ADDR_WIDTH.W))
-    // val write_en=Input(Bool())
-    // val wstrb=Input(UInt(4.W))
-    // val wdata=Input(UInt(DATA_WIDTH.W))
-    // val waddr_ok=Output(Bool())
-    // val wdata_ok=Output(Bool())
 
-    // val read_en=Input(Bool())
-    // val rdata=Output(UInt(DATA_WIDTH.W))
-    // val raddr_ok=Output(Bool())
-    // val rdata_ok=Output(Bool())
   })
 
 //---------------------------AXI4 Lite---------------------------
@@ -32,6 +22,7 @@ class Axi4Bridge extends Module {
   //如果write不是idle状态，拉高信号
   val BrespFire=dontTouch(Wire(Bool()))
   //b通道握手，拉高信号
+  val LoadStoreFire=io.al.ren&&io.s.wen
 
   val WaitReadIdle=dontTouch(Wire(Bool()))
   val RrespFire=dontTouch(Wire(Bool()))
@@ -45,17 +36,19 @@ class Axi4Bridge extends Module {
   val ReadRequstState=RegInit(ar_idle)
   when(ReadRequstState===ar_idle){
     when(io.al.ren){
-      when(WaitWriteIdle){
-        when(BrespFire){
+      when(~LoadStoreFire){ //仲裁:当取指(load)和store同时发生时,阻塞取指(load),先让store通过
+        when(WaitWriteIdle){
+          when(BrespFire){
+            ReadRequstState:=ar_wait_ready
+            araddrReg:=io.al.raddr
+            arvalidReg:=true.B    
+          }
+          //如果此时是等待写回复并且已经回复的状态就可以发起ar
+        }.otherwise{
           ReadRequstState:=ar_wait_ready
           araddrReg:=io.al.raddr
-          arvalidReg:=true.B    
+          arvalidReg:=true.B
         }
-        //如果此时是等待写回复并且已经回复的状态就可以发起ar
-      }.otherwise{
-        ReadRequstState:=ar_wait_ready
-        araddrReg:=io.al.raddr
-        arvalidReg:=true.B
       }
     }
   }.elsewhen(ReadRequstState===ar_wait_ready){

@@ -44,7 +44,8 @@ class PF_stage extends Module { //PreIF_stage
   当分支的addr_ok返回后，说明取到了分支的跳转后的指令，pf_raddr_ok至高此时放行ready_go，流向下一级
    */
 
-  fetch_wen:=PF.to_if.ready && !br.stall
+  fetch_wen:=PF.to_if.ready && !br.stall && ~reset.asBool 
+  //~reset.asBool 保证取指时机符合axi规范
 
   pf_flush:=PF.for_ex.flush || PF.for_id.flush
 

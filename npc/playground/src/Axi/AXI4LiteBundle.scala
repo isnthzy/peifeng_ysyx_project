@@ -13,13 +13,13 @@ class Axi4LiteSlave extends Bundle{
 }
 
 
-// class Axi4LiteMaster extends Bundle{
-//   val ar=Decoupled(new AxiAddressBundle())
-//   val r=Flipped(Decoupled(new AxiReadDataBundle()))
-//   val aw=Decoupled(new AxiAddressBundle())
-//   val w=Decoupled(new AxiWriteDataBundle())
-//   val b=Flipped(Decoupled(new AxiWriteResponseBundle()))
-// }
+class Axi4LiteMaster extends Bundle{
+  val ar=Decoupled(new AxiAddressBundle())
+  val r=Flipped(Decoupled(new AxiReadDataBundle()))
+  val aw=Decoupled(new AxiAddressBundle())
+  val w=Decoupled(new AxiWriteDataBundle())
+  val b=Flipped(Decoupled(new AxiWriteResponseBundle()))
+}
 
 class AxiWriteDataBundle extends Bundle {
   val data = UInt(DATA_WIDTH.W)
