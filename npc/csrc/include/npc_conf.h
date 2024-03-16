@@ -5,18 +5,18 @@
 
 /*---------------------------------------------------------------------------------*/
 
-#define CONFIG_TRACE 1
-#define CONFIG_ITRACE 1
-#define CONFIG_FTRACE 1
-#define CONFIG_MTRACE 1
-#define CONFIG_DIFFTEST 1
+// #define CONFIG_TRACE 1
+// #define CONFIG_ITRACE 1
+// #define CONFIG_FTRACE 1
+// #define CONFIG_MTRACE 1
+// #define CONFIG_DIFFTEST 1
 
 #define NPCLOG_NUM 1000000 //trace最多记录多少个log
 //TRACE开关
 
 /*---------------------------------------------------------------------------------*/
 
-#define TRACE_VCD 1
+// #define TRACE_VCD 1
 /* 波形生成开关 */
 
 /*---------------------------------------------------------------------------------*/
@@ -34,7 +34,7 @@
 
 /*---------------------------------------------------------------------------------*/
 
-#define MTRACE_LOGBUF_SIZE 100
+#define MTRACE_LOGBUF_SIZE 10
 #define ITRACE_LOGBUF_SIZE 10
 #define DTRACE_LOGBUF_SIZE 10
 #define ETRACE_LOGBUF_SIZE 10
