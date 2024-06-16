@@ -10,8 +10,8 @@ ARGS?= --log=$(BUILD_DIR)/npc-log.txt
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc 
 VERILATOR_CFLAGS += --trace --timing
-# VERILATOR_CFLAGS += --prof-cfuncs 
-VERILATOR_CFLAGS += -O3 --x-assign fast --x-initial fast --noassert 
+VERILATOR_CFLAGS += --prof-cfuncs 
+# VERILATOR_CFLAGS += -O3 --x-assign fast --x-initial fast --noassert 
 #优化加速
 				
 INC_PATH ?=
