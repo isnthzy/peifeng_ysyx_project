@@ -1,5 +1,6 @@
 *.*
 *
+.metals/
 !*/
 !/nemu/*
 !/nexus-am/*
@@ -15,3 +16,4 @@
 !fceux-am/*
 !.vscode/*
 !*.nxdc
+!Todo.md
