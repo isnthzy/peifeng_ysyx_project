@@ -21,6 +21,7 @@ vsrc/dpic/*
 
 # mill
 out/
+.metals/
 .bsp/
 .idea/
 .idea_modules/
