@@ -1,8 +1,11 @@
+package FuncUnit
+
 import chisel3._
 import chisel3.util._
 import config.Configs._
-
+import Util.{Sext,Zext,Mux1hDefMap}
 import Control._
+import Util.Mux1hMap
 
 class ImmGen extends Module {
   val io=IO(new Bundle {
@@ -16,11 +19,11 @@ class ImmGen extends Module {
   val ImmU = Cat(io.inst(31, 12), 0.U(12.W))
   val ImmJ = Cat(io.inst(31), io.inst(19, 12), io.inst(20), io.inst(30, 21), 0.U(1.W))
 
-  io.out := MuxLookup(io.sel, 0.U)(Seq(
-      IMM_I -> Sext(ImmI, 32),
-      IMM_S -> Sext(ImmS, 32),
-      IMM_B -> Sext(ImmB, 32),
-      IMM_U -> Sext(ImmU, 32),
-      IMM_J -> Sext(ImmJ, 32)
+  io.out := Mux1hDefMap(io.sel,Map(
+    IMM_I -> Sext(ImmI, 32),
+    IMM_S -> Sext(ImmS, 32),
+    IMM_B -> Sext(ImmB, 32),
+    IMM_U -> Sext(ImmU, 32),
+    IMM_J -> Sext(ImmJ, 32)
   ))
 }

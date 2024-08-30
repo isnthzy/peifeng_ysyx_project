@@ -1,36 +1,30 @@
+package PipeLine
 import chisel3._
 import chisel3.util._
 import config.Configs._
-import Control._
+import Bundles._
+import FuncUnit.{Decode,ImmGen,RegFile}
 
-class ID_stage extends Module {
-  val ID=IO(new Bundle {
-    val IO = Flipped(Decoupled(new if_to_id_bus()))
-    val to_ex =Decoupled(new id_to_ex_bus())
+class IdStage extends Module {
+  val id=IO(new Bundle {
+    val in=Flipped(Decoupled(new If2IdBusBundle()))
+    val to_id=Decoupled(new Id2ExBusBundle())
 
-    val for_ex=Input(new ex_to_id_bus())
-    val for_ls=Input(new ls_to_id_bus())
-    val for_wb=Input(new wb_to_id_bus())
-    val to_if=Output(new id_to_if_bus())
-    val to_pf=Output(new id_to_pf_bus())
   })
-  val id_clog=dontTouch(Wire(Bool()))
-  val id_flush=dontTouch(Wire(Bool()))
-  //id_clog需要结合decoder的地址计算是否发起阻塞，放在下边处理
-  //应对lw指令的处理
-  id_flush:=ID.for_ex.flush
-
-  val id_valid=dontTouch(RegInit(false.B))
-  val id_ready_go=dontTouch(Wire(Bool()))
-  id_ready_go:=Mux(id_clog,false.B,true.B)
-  ID.IO.ready := !id_valid || id_ready_go && ID.to_ex.ready
-  when(ID.IO.ready){
-    id_valid:=ID.IO.valid
+  val idFlush=dontTouch(Wire(Bool()))
+  val idValid=dontTouch(Wire(Bool()))
+  val idValidR=RegInit(false.B)
+  val idReadyGo=dontTouch(Wire(Bool()))
+  id.in.ready:=id.to_id.ready&& ~idValidR || idReadyGo
+  when(idFlush){
+    idValidR:=false.B
+  }.elsewhen(id.in.ready){
+    idValidR:=true.B
   }
-  ID.to_ex.valid:=Mux(id_flush, false.B , id_valid && id_ready_go)
-  //flush是将下一级置为无效
-
-  val dc=Module(new Decode())
+  idValid:=idValidR&& ~idFlush
+  idReadyGo:=true.B
+  id.to_id.valid:= idValid&&idReadyGo
+  val Decode=Module(new Decode())
   val ImmGen=Module(new ImmGen())
   val imm=dontTouch(Wire(UInt(32.W)))
   val rs1=dontTouch(Wire(UInt(5.W)))
@@ -40,18 +34,18 @@ class ID_stage extends Module {
   val opcode=dontTouch(Wire(UInt(7.W)))
   val csr_addr=dontTouch(Wire(UInt(12.W)))
   
-  dc.io.inst:=ID.IO.bits.inst
+  Decode.io.inst:=id.in.bits.inst
 
-  ImmGen.io.inst:=ID.IO.bits.inst
-  ImmGen.io.sel :=dc.io.imm_sel
+  ImmGen.io.inst:=id.in.bits.inst
+  ImmGen.io.sel :=Decode.io.immType
 
   imm := ImmGen.io.out
-  rs2 := ID.IO.bits.inst(24, 20)
-  rs1 := ID.IO.bits.inst(19, 15)
-  funct3 := ID.IO.bits.inst(14, 12)
-  rd := ID.IO.bits.inst(11, 7)
-  opcode := ID.IO.bits.inst(6, 0)
-  csr_addr := ID.IO.bits.inst(31, 20)
+  rs2 := id.in.bits.inst(24, 20)
+  rs1 := id.in.bits.inst(19, 15)
+  funct3 := id.in.bits.inst(14, 12)
+  rd := id.in.bits.inst(11, 7)
+  opcode := id.in.bits.inst(6, 0)
+  csr_addr := id.in.bits.inst(31, 20)
 
   val Regfile=Module(new RegFile())
   Regfile.io.raddr1:=rs1
@@ -111,7 +105,7 @@ class ID_stage extends Module {
 
   val src1=MuxLookup(dc.io.A_sel,0.U)(Seq(
     A_RS1 -> rdata1,
-    A_PC  -> ID.IO.bits.pc
+    A_PC  -> id.in.bits.pc
   ))
   val src2=MuxLookup(dc.io.B_sel,0.U)(Seq(
     B_RS2 -> rdata2,
@@ -158,13 +152,13 @@ class ID_stage extends Module {
   ID.to_ex.bits.src2:=src2
   ID.to_ex.bits.rdata1:=rdata1
   ID.to_ex.bits.rdata2:=rdata2
-  ID.to_ex.bits.inst:=ID.IO.bits.inst
-  ID.to_ex.bits.pc  :=ID.IO.bits.pc
-  ID.to_ex.bits.nextpc:=ID.IO.bits.nextpc
+  ID.to_ex.bits.inst:=id.in.bits.inst
+  ID.to_ex.bits.pc  :=id.in.bits.pc
+  ID.to_ex.bits.nextpc:=id.in.bits.nextpc
 
   /*---------------------传递信号到wb级再由wb级处理dpi信号----------------------*/
-  ID.to_ex.bits.dpic_bundle.id.inv_flag:=(dc.io.illegal&&ID.IO.bits.nextpc=/="h80000000".U)
+  ID.to_ex.bits.dpic_bundle.id.inv_flag:=(dc.io.illegal&&id.in.bits.nextpc=/="h80000000".U)
   ID.to_ex.bits.dpic_bundle.ex:=0.U.asTypeOf(new for_ex_dpi_bundle)
   ID.to_ex.bits.dpic_bundle.ls:=0.U.asTypeOf(new for_ls_dpi_bundle)
+  
 }
-

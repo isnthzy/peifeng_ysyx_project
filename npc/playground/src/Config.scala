@@ -12,3 +12,7 @@ object Configs {
   val RISCV32E_ECALLREG = 15.U
   val RISCV32_ECALLREG = 17.U
 }
+
+object ISAConfig{
+  val RV32E = false
+}

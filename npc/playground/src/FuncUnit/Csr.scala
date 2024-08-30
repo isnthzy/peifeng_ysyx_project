@@ -1,16 +1,10 @@
+package FuncUnit
+
 import chisel3._
 import chisel3.util._
 import config.Configs._
 
 object CSR {
-  val N = 0.U(5.W)
-  val W = 1.U(5.W)
-  val S = 2.U(5.W)
-  val MRET  = 3.U(5.W)
-  val ECALL = 4.U(5.W)
-  val BREAK = 5.U(5.W)
-
-
   val MTVEC=0x305.U(12.W)
   val MSTATUS=0x300.U(12.W)
   val MEPC=0x341.U(12.W)
