@@ -94,7 +94,7 @@ object Control {
   val BR_GE  = "0101"
   val BR_NE  = "0110"
   val BR_JAL = "0111"
-  val BR_JR  = "1000"
+  val BR_JALR= "1000"
 
   // st_type
   val ST_XXX = "00"
@@ -113,7 +113,7 @@ object Control {
   // wb_sel
   val WB_ALU = "00"
   val WB_MEM = "01"
-  val WB_CSR = "10"
+
 
   val ALU_XXX    = "0000"
   val ALU_ADD    = "0001"
@@ -126,8 +126,11 @@ object Control {
   val ALU_SLTU   = "1000"
   val ALU_SRL    = "1001"
   val ALU_SRA    = "1010"
-  val ALU_COPY_B = "1011"
-  val ALU_LUI    = "1100"
+  val ALU_LUI    = "1011"
+  val ALU_EQ     = "1100"
+  val ALU_COPY_B = "1101"
+  val ALU_PC4    = "1110"
+
   
   val CSR_XXXX =  "0000"
   val CSR_RW   =  "0001"
@@ -139,6 +142,8 @@ object Control {
   import Instructions._
   // format: off
   val decode_default: String =
+  //NOTE: A_sel和B_sel并不代表只用这些，可能会有隐含的被使用，例如cond跳转的imm为隐式计算
+  //alu的结果通过aSel和bSel计算（当pc或imm与rs同时出现时，译码会按照rs计算，imm被隐式计算） 
   //                                                                               wb_en     illegal?
   //              A_sel   B_sel  imm_sel   alu_op   br_type  st_type ld_type wb_sel  | csr_cmd    |
   //                 |       |     |          |          |      |       |        |   |  |         |
@@ -146,22 +151,22 @@ object Control {
   val decode_table: TruthTable = TruthTable(Map(
     LUI   ->  Seq( A_XXX,  B_IMM, IMM_U, ALU_LUI   , BR_XXX, ST_XXX, LD_XXX, WB_ALU, Y, CSR_XXXX, N),
     AUIPC ->  Seq( A_PC,   B_IMM, IMM_U, ALU_ADD   , BR_XXX, ST_XXX, LD_XXX, WB_ALU, Y, CSR_XXXX, N),
-    JAL   ->  Seq( A_PC,   B_IMM, IMM_J, ALU_XXX   , BR_JAL, ST_XXX, LD_XXX, WB_ALU, Y, CSR_XXXX, N),
-    JALR  ->  Seq( A_RS1,  B_IMM, IMM_I, ALU_XXX   , BR_JR , ST_XXX, LD_XXX, WB_ALU, Y, CSR_XXXX, N),    
-    BEQ   ->  Seq( A_PC,   B_IMM, IMM_B, ALU_ADD   , BR_EQ , ST_XXX, LD_XXX, WB_ALU, N, CSR_XXXX, N),
-    BNE   ->  Seq( A_PC,   B_IMM, IMM_B, ALU_ADD   , BR_NE , ST_XXX, LD_XXX, WB_ALU, N, CSR_XXXX, N),
-    BLT   ->  Seq( A_PC,   B_IMM, IMM_B, ALU_ADD   , BR_LT , ST_XXX, LD_XXX, WB_ALU, N, CSR_XXXX, N),
-    BGE   ->  Seq( A_PC,   B_IMM, IMM_B, ALU_ADD   , BR_GE , ST_XXX, LD_XXX, WB_ALU, N, CSR_XXXX, N),
-    BLTU  ->  Seq( A_PC,   B_IMM, IMM_B, ALU_ADD   , BR_LTU, ST_XXX, LD_XXX, WB_ALU, N, CSR_XXXX, N),
-    BGEU  ->  Seq( A_PC,   B_IMM, IMM_B, ALU_ADD   , BR_GEU, ST_XXX, LD_XXX, WB_ALU, N, CSR_XXXX, N),
+    JAL   ->  Seq( A_PC,   B_XXX, IMM_J, ALU_PC4   , BR_JAL, ST_XXX, LD_XXX, WB_ALU, Y, CSR_XXXX, N),
+    JALR  ->  Seq( A_PC,   B_XXX, IMM_I, ALU_PC4   , BR_JALR,ST_XXX, LD_XXX, WB_ALU, Y, CSR_XXXX, N),    
+    BEQ   ->  Seq( A_RS1,  B_RS2, IMM_B, ALU_EQ    , BR_EQ , ST_XXX, LD_XXX, WB_ALU, N, CSR_XXXX, N),
+    BNE   ->  Seq( A_RS1,  B_RS2, IMM_B, ALU_EQ    , BR_NE , ST_XXX, LD_XXX, WB_ALU, N, CSR_XXXX, N),
+    BLT   ->  Seq( A_RS1,  B_RS2, IMM_B, ALU_SLT   , BR_LT , ST_XXX, LD_XXX, WB_ALU, N, CSR_XXXX, N),
+    BGE   ->  Seq( A_RS1,  B_RS2, IMM_B, ALU_SLT   , BR_GE , ST_XXX, LD_XXX, WB_ALU, N, CSR_XXXX, N),
+    BLTU  ->  Seq( A_RS1,  B_RS2, IMM_B, ALU_SLTU  , BR_LTU, ST_XXX, LD_XXX, WB_ALU, N, CSR_XXXX, N),
+    BGEU  ->  Seq( A_RS1,  B_RS2, IMM_B, ALU_SLTU  , BR_GEU, ST_XXX, LD_XXX, WB_ALU, N, CSR_XXXX, N),
     LB    ->  Seq( A_RS1,  B_IMM, IMM_I, ALU_ADD   , BR_XXX, ST_XXX, LD_LB , WB_MEM, Y, CSR_XXXX, N),
     LH    ->  Seq( A_RS1,  B_IMM, IMM_I, ALU_ADD   , BR_XXX, ST_XXX, LD_LH , WB_MEM, Y, CSR_XXXX, N),
     LW    ->  Seq( A_RS1,  B_IMM, IMM_I, ALU_ADD   , BR_XXX, ST_XXX, LD_LW , WB_MEM, Y, CSR_XXXX, N),
     LBU   ->  Seq( A_RS1,  B_IMM, IMM_I, ALU_ADD   , BR_XXX, ST_XXX, LD_LBU, WB_MEM, Y, CSR_XXXX, N),
     LHU   ->  Seq( A_RS1,  B_IMM, IMM_I, ALU_ADD   , BR_XXX, ST_XXX, LD_LHU, WB_MEM, Y, CSR_XXXX, N),
-    SB    ->  Seq( A_RS1,  B_IMM, IMM_S, ALU_ADD   , BR_XXX, ST_SB , LD_XXX, WB_ALU, N, CSR_XXXX, N),
-    SH    ->  Seq( A_RS1,  B_IMM, IMM_S, ALU_ADD   , BR_XXX, ST_SH , LD_XXX, WB_ALU, N, CSR_XXXX, N),
-    SW    ->  Seq( A_RS1,  B_IMM, IMM_S, ALU_ADD   , BR_XXX, ST_SW , LD_XXX, WB_ALU, N, CSR_XXXX, N),
+    SB    ->  Seq( A_RS1,  B_RS2, IMM_S, ALU_ADD   , BR_XXX, ST_SB , LD_XXX, WB_ALU, N, CSR_XXXX, N),
+    SH    ->  Seq( A_RS1,  B_RS2, IMM_S, ALU_ADD   , BR_XXX, ST_SH , LD_XXX, WB_ALU, N, CSR_XXXX, N),
+    SW    ->  Seq( A_RS1,  B_RS2, IMM_S, ALU_ADD   , BR_XXX, ST_SW , LD_XXX, WB_ALU, N, CSR_XXXX, N),
     ADDI  ->  Seq( A_RS1,  B_IMM, IMM_I, ALU_ADD   , BR_XXX, ST_XXX, LD_XXX, WB_ALU, Y, CSR_XXXX, N),
     SLTI  ->  Seq( A_RS1,  B_IMM, IMM_I, ALU_SLT   , BR_XXX, ST_XXX, LD_XXX, WB_ALU, Y, CSR_XXXX, N),
     SLTIU ->  Seq( A_RS1,  B_IMM, IMM_I, ALU_SLTU  , BR_XXX, ST_XXX, LD_XXX, WB_ALU, Y, CSR_XXXX, N),
@@ -182,13 +187,13 @@ object Control {
     OR    ->  Seq( A_RS1,  B_RS2, IMM_X, ALU_OR    , BR_XXX, ST_XXX, LD_XXX, WB_ALU, Y, CSR_XXXX, N),
     AND   ->  Seq( A_RS1,  B_RS2, IMM_X, ALU_AND   , BR_XXX, ST_XXX, LD_XXX, WB_ALU, Y, CSR_XXXX, N),
     //
-    CSRRW ->  Seq( A_XXX,  B_CSR, IMM_X, ALU_COPY_B, BR_XXX, ST_XXX, LD_XXX, WB_CSR, Y, CSR_RW  , N),
-    CSRRS ->  Seq( A_XXX,  B_CSR, IMM_X, ALU_COPY_B, BR_XXX, ST_XXX, LD_XXX, WB_CSR, Y, CSR_RS  , N),
+    CSRRW ->  Seq( A_RS1,  B_CSR, IMM_X, ALU_COPY_B, BR_XXX, ST_XXX, LD_XXX, WB_ALU, Y, CSR_RW  , N),
+    CSRRS ->  Seq( A_RS1,  B_CSR, IMM_X, ALU_COPY_B, BR_XXX, ST_XXX, LD_XXX, WB_ALU, Y, CSR_RS  , N),
     //
-    MRET  ->  Seq( A_XXX,  B_XXX, IMM_X, ALU_XXX   , BR_XXX, ST_XXX, LD_XXX, WB_CSR, N, CSR_MRET, N),
-    ECALL ->  Seq( A_RS1,  B_RS2, IMM_X, ALU_ADD   , BR_XXX, ST_XXX, LD_XXX, WB_CSR, N, CSR_ECAL, N),
+    MRET  ->  Seq( A_XXX,  B_XXX, IMM_X, ALU_XXX   , BR_XXX, ST_XXX, LD_XXX, WB_ALU, N, CSR_MRET, N),
+    ECALL ->  Seq( A_RS1,  B_RS2, IMM_X, ALU_ADD   , BR_XXX, ST_XXX, LD_XXX, WB_ALU, N, CSR_ECAL, N),
     //
-    EBREAK->  Seq( A_RS1,  B_RS2, IMM_X, ALU_ADD   , BR_XXX, ST_XXX, LD_XXX, WB_CSR, N, CSR_BREK, N))
+    EBREAK->  Seq( A_RS1,  B_RS2, IMM_X, ALU_ADD   , BR_XXX, ST_XXX, LD_XXX, WB_ALU, N, CSR_BREK, N))
     .map({ case (k, v) => k -> BitPat(s"b${v.reduce(_ + _)}") }), BitPat(s"b$decode_default"));
   // format: on
 }

@@ -1,7 +1,10 @@
 import chisel3._
 import chisel3.util._
 import config.Configs._
-import java.awt.MouseInfo
+import PipeLine.{PfStage,IfStage,IdStage,ExStage,LsStage,WbStage}
+import Axi.{Axi4Bridge,AxiArbiter}
+import FuncUnit.CsrFile
+import IP.Axi4LiteSram
 
 class SimTop extends Module {
   val io = IO(new Bundle {
@@ -9,12 +12,13 @@ class SimTop extends Module {
     val debug_wdata=Output(UInt(DATA_WIDTH.W))
     val debug_wen  =Output(Bool())
   })
-  val PF_stage = Module(new PF_stage())
-  val IF_stage = Module(new IF_stage())
-  val ID_stage = Module(new ID_stage())
-  val EX_stage = Module(new EX_stage())
-  val LS_stage = Module(new LS_stage())
-  val WB_stage = Module(new WB_stage())
+  val PreFetch  = Module(new PfStage())
+  val InstFetch = Module(new IfStage())
+  val InstDecode= Module(new IdStage())
+  val Execute   = Module(new ExStage())
+  val LoadStore = Module(new LsStage())
+  val WriteBack = Module(new WbStage())
+  val CsrFile   = Module(new CsrFile())
   
   val Axi4LiteSram = Module(new Axi4LiteSram())
   val Axi4LiteBridge=Module(new Axi4Bridge())
@@ -29,13 +33,13 @@ class SimTop extends Module {
 //AxiBridge
 
 //AxiArbiter
-  AxiArbiter.io.fs.al<>PF_stage.PF.al
-  AxiArbiter.io.fs.s <>PF_stage.PF.s
-  AxiArbiter.io.fs.dl<>IF_stage.IF.dl
+  AxiArbiter.io.fs.al<>PreFetch.pf.al
+  AxiArbiter.io.fs.s <>PreFetch.pf.s
+  AxiArbiter.io.fs.dl<>InstFetch.fs.dl
 
-  AxiArbiter.io.ls.al<>EX_stage.EX.al
-  AxiArbiter.io.ls.s <>EX_stage.EX.s
-  AxiArbiter.io.ls.dl<>LS_stage.LS.dl
+  AxiArbiter.io.ls.al<>Execute.ex.al
+  AxiArbiter.io.ls.s <>Execute.ex.s
+  AxiArbiter.io.ls.dl<>LoadStore.ls.dl
 
   Axi4LiteBridge.io.al<>AxiArbiter.io.out.al
   Axi4LiteBridge.io.s <>AxiArbiter.io.out.s
@@ -43,34 +47,29 @@ class SimTop extends Module {
 //AxiArbiter
 
 // PreIF begin
-  PF_stage.PF.for_id<>ID_stage.ID.to_pf
-  PF_stage.PF.for_ex<>EX_stage.EX.to_pf
+  PreFetch.pf.from_id<>InstDecode.id.fw_pf
+  PreFetch.pf.from_ex<>Execute.ex.fw_pf
 
-// IF begin
-  StageConnect(PF_stage.PF.to_if,IF_stage.IF.IO)
-  IF_stage.IF.for_id<>ID_stage.ID.to_if
-  IF_stage.IF.for_ex<>EX_stage.EX.to_if
+// if begin
+  StageConnect(PreFetch.pf.to_if,InstFetch.fs.in)
+  InstFetch.fs.from_id<>InstDecode.id.fw_if
+  InstFetch.fs.from_ex<>Execute.ex.fw_if
 
-// ID begin
-  StageConnect(IF_stage.IF.to_id,ID_stage.ID.IO) //左边是out，右边是in
-  ID_stage.ID.for_ex<>EX_stage.EX.to_id
-  ID_stage.ID.for_ls<>LS_stage.LS.to_id
-  ID_stage.ID.for_wb<>WB_stage.WB.to_id
+// id begin
+  StageConnect(InstFetch.fs.to_id,InstDecode.id.in) //左边是out，右边是in
+  InstDecode.id.from_ex<>Execute.ex.fw_id
+  InstDecode.id.from_ls<>LoadStore.ls.fw_id
+  InstDecode.id.from_wb<>WriteBack.wb.fw_id
 
-// EX begin
-  StageConnect(ID_stage.ID.to_ex,EX_stage.EX.IO)
+// ex begin
+  StageConnect(InstDecode.id.to_ex,Execute.ex.in)
 
-// LS begin
-  StageConnect(EX_stage.EX.to_ls,LS_stage.LS.IO)
+// ls begin
+  StageConnect(Execute.ex.to_ls,LoadStore.ls.in)
 
-// WB begin
-  StageConnect(LS_stage.LS.to_wb,WB_stage.WB.IO)
+// wb begin
+  StageConnect(LoadStore.ls.to_wb,WriteBack.wb.in)
 
-
-//debug
-  io.debug_waddr:=WB_stage.WB.debug_waddr
-  io.debug_wdata:=WB_stage.WB.debug_wdata
-  io.debug_wen  :=WB_stage.WB.debug_wen
 }
 
 object StageConnect {

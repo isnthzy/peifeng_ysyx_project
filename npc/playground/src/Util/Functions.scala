@@ -1,6 +1,7 @@
 package Util
 import chisel3._
 import chisel3.util._  
+import java.io.ObjectInputFilter.Config
 
 object Sext{ //有符号位宽扩展
   def apply(num:UInt,e_width:Int) = {
@@ -42,3 +43,18 @@ object Mux1hDefMap{ //便于把宏转换成Mux1h的索引
     Mux1hMap(rd_addr,UIntMap)
   }
 }
+
+object SDEF{ //将string定义的宏转换为uint类型便于使用
+  def apply(s: String) = {
+    val bnum="b"+s
+    bnum.U
+  }
+}//String def -> uint def
+
+object LYDebugLog{ //将string定义的宏转换为uint类型便于使用
+  def apply(s: String) = {
+    if(config.GenCtrl.VERILATOR_SIM){
+      println(s)
+    }
+  }
+}//String def -> uint def

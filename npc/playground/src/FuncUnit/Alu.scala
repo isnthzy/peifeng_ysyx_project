@@ -37,6 +37,10 @@ class Alu extends Module {
   
   val alu_sltu= (io.src1.asUInt < io.src2.asUInt).asUInt
 
+  val alu_eq  = io.src1===io.src2
+
+  val alu_pc4 = io.src1+4.U
+
   val alu_lui = Cat(io.src2(31,12),0.U(12.W))
 
   io.result := Mux1hDefMap(io.op,Map(
@@ -50,7 +54,9 @@ class Alu extends Module {
     ALU_SRA -> alu_sra,
     ALU_SLT -> alu_slt,
     ALU_SLTU-> alu_sltu,
+    ALU_LUI -> alu_lui,
+    ALU_EQ  -> alu_eq,
+    ALU_PC4 -> alu_pc4,
     ALU_COPY_B -> io.src2,
-    ALU_LUI -> alu_lui
   ))
 }

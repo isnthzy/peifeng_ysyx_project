@@ -16,3 +16,7 @@ object Configs {
 object ISAConfig{
   val RV32E = false
 }
+
+object GenCtrl{
+  val VERILATOR_SIM=true
+}
