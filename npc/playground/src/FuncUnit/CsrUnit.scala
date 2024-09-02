@@ -23,21 +23,26 @@ class CsrFile extends Module{
   })
   // csr_addr，csr寄存器的地址
   // in写入csr的值，out用于写入rd寄存器的值
-  // val mtvec  =RegInit(0.U(DATA_WIDTH.W))
+  val mtvec  =RegInit(0.U(DATA_WIDTH.W))
   val mstatus=RegInit("h1800".U(DATA_WIDTH.W))
   val mepc   =RegInit(0.U(DATA_WIDTH.W))
   val mcause =RegInit(0.U(DATA_WIDTH.W))
-  // val mtval  =RegInit(0.U(DATA_WIDTH.W))
-  
-  // val csr_assert_wen=WireDefault(false.B)
-  // io.global.mtvec:=WireDefault(0.U(ADDR_WIDTH.W))
-  // io.global.mepc:=WireDefault(0.U(ADDR_WIDTH.W))
 
   io.from_csr.rdData:=Mux1hMap(io.from_csr.rdAddr,Map(
     CSR.MSTATUS->mstatus,
     CSR.MEPC->mepc,
     CSR.MCAUSE->mcause,
   ))
+
+
+//mstatus
+
+//mepc
+
+//mcause
+
+//mtvec
+  
 
 //
 

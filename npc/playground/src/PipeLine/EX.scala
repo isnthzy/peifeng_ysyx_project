@@ -24,10 +24,12 @@ class ExStage extends Module {
     val s =Output(new AxiBridgeStore())
   })
   val exFlush=dontTouch(Wire(Bool()))
+  val exExcpEn=dontTouch(Wire(Bool()))
   exFlush:=ex.from_ls.flush
   val exValid=dontTouch(Wire(Bool()))
   val exValidR=RegInit(false.B)
   val exReadyGo=dontTouch(Wire(Bool()))
+  val exStall=dontTouch(Wire(Bool()))
   ex.in.ready:=ex.to_ls.ready&& ~exValidR || exReadyGo
   when(exFlush){
     exValidR:=false.B
@@ -35,7 +37,7 @@ class ExStage extends Module {
     exValidR:=ex.in.valid
   }
   exValid:=exValidR&& ~exFlush
-  exReadyGo:=true.B
+  exReadyGo:= ~exStall || exExcpEn
   ex.to_ls.valid:= exValid&&exReadyGo
 
   val csrWrData=Mux1hDefMap(ex.in.bits.csrOp,Map(
@@ -125,7 +127,20 @@ class ExStage extends Module {
   ex.al.ren:=loadEn&&exValid
   ex.al.raddr:=memAddr
 
+  exStall:=(storeEn&& ex.s.wdata_ok 
+         || loadEn && ex.al.raddr_ok)&&exValid
+//NOTE:Excp
+  val AddrMisaligned=(memSize(1)&&memAddr(0)
+                  || !memSize   &&memAddr.asUInt.orR)
+  val exExcpType=Wire(new ExExcpTypeBundle())
+  exExcpType.num:=ex.in.bits.excpType
+  exExcpType.lam:=AddrMisaligned&&loadEn&&exValid
+  exExcpType.sam:=AddrMisaligned&&storeEn&&exValid
+  exExcpEn:=exExcpType.asUInt.orR
+  ex.to_ls.bits.excpEn:=exExcpEn
+  ex.to_ls.bits.excpType:=exExcpType
 //NOTE:
+  ex.to_ls.bits.memBadAddr:=memAddr
   ex.to_ls.bits.csrWen :=csrWen
   ex.to_ls.bits.csrWrAddr:=ex.in.bits.csrWrAddr
   ex.to_ls.bits.csrWrData:=csrWrData

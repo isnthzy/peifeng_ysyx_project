@@ -21,10 +21,12 @@ class IdStage extends Module {
     val from_csr=new PipeLine4CsrBundle()
   })
   val idFlush=dontTouch(Wire(Bool()))
+  val idExcpEn=dontTouch(Wire(Bool()))
   idFlush:=id.from_ex.flush||id.from_ls.flush
   val idValid=dontTouch(Wire(Bool()))
   val idValidR=RegInit(false.B)
   val idReadyGo=dontTouch(Wire(Bool()))
+  val idStall=dontTouch(Wire(Bool()))
   id.in.ready:=id.to_ex.ready&& ~idValidR || idReadyGo
   when(idFlush){
     idValidR:=false.B
@@ -32,7 +34,7 @@ class IdStage extends Module {
     idValidR:=id.in.valid
   }
   idValid:=idValidR&& ~idFlush
-  idReadyGo:=true.B
+  idReadyGo:= ~idStall||idExcpEn
   id.to_ex.valid:= idValid&&idReadyGo
   val Decode=Module(new Decode())
   val ImmGen=Module(new ImmGen())
@@ -72,6 +74,7 @@ class IdStage extends Module {
   val rdata2=dontTouch(Wire(UInt(DATA_WIDTH.W)))
   val rdata1Ready=dontTouch(Wire(Bool()))
   val rdata2Ready=dontTouch(Wire(Bool()))
+  idStall:= ~(rdata1Ready&&rdata2Ready)
   when(Decode.io.aSel===SDEF(A_PC)){
     rdata1Ready:=true.B
     rdata1:=0.U
@@ -165,6 +168,19 @@ class IdStage extends Module {
   id.fw_if.flush:=brJumpTaken
 
   val brCondTarget=jal_target
+
+//NOTE:Excp
+  val idExcpType=Wire(new IdExcpTypeBundle())
+  idExcpType.num:=id.in.bits.excpType
+  idExcpType.ine:=Decode.io.illigal
+  idExcpType.bkp:=false.B
+  idExcpType.ecu:=false.B
+  idExcpType.ecs:=false.B
+  idExcpType.ecm:=Decode.io.csrOp===SDEF(CSR_ECAL)
+  idExcpEn:=idExcpType.asUInt.orR
+  id.to_ex.bits.excpEn:=idExcpEn
+  id.to_ex.bits.excpType:=idExcpType
+
 //------------------------------------------
   id.to_ex.bits.pc:=id.in.bits.pc
   id.to_ex.bits.rd:=rd

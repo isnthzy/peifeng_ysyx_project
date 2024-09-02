@@ -31,7 +31,7 @@ class SingleDualPortRAM(val size: Int, val width: Int) extends RawModule {
   withClock(io.clkb) {
     when(io.addra===io.addrb){
       LYDebugLog("IP found read store conflict\n")
-      io.doutb:=Fill(width.U,false.B)
+      io.doutb:=Fill(width,false.B)
     }.otherwise{
       io.doutb := mem.read(io.addrb, true.B)
     }

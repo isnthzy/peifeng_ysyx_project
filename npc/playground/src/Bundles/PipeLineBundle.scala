@@ -6,6 +6,8 @@ import FuncUnit.Control._
 
 
 class Pf2IfBusBundle extends Bundle{
+  val excpEn=Bool()
+  val excpType=new PfExcpTypeBundle()
   val pc=UInt(ADDR_WIDTH.W)
 }
 
@@ -35,11 +37,15 @@ class If4LsBusBundle extends Bundle{
 }
 
 class If2IdBusBundle extends Bundle{
+  val excpEn=Bool()
+  val excpType=new IfExcpTypeBundle()
   val pc=UInt(ADDR_WIDTH.W)
   val inst=UInt(DATA_WIDTH.W)
 }
 
 class Id2ExBusBundle extends Bundle{
+  val excpEn=Bool()
+  val excpType=new IdExcpTypeBundle()
   val pc=UInt(ADDR_WIDTH.W)
   val rd=UInt(5.W)
   val src1=UInt(DATA_WIDTH.W)
@@ -71,6 +77,9 @@ class Id4WbBusBundle extends Bundle{
 }
 
 class Ex2LsBusBundle extends Bundle{
+  val excpEn=Bool()
+  val excpType=new ExExcpTypeBundle()
+  val memBadAddr=UInt(ADDR_WIDTH.W)
   val csrWen=Bool()
   val csrWrAddr=UInt(12.W)
   val csrWrData=UInt(32.W)

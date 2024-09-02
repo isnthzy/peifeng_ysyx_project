@@ -29,7 +29,8 @@
                     "/usr/local/share/verilator/include/",
                     "/usr/include/"
                 ]
-            }
+            },
+            "compileCommands": "${workspaceFolder}/nemu/compile_commands.json"
         }
     ],
     "version": 4

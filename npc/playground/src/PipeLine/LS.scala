@@ -66,16 +66,62 @@ class LsStage extends Module {
   ls.fw_id.rf.waddr:=ls.in.bits.rd
   ls.fw_id.rf.wdata:=ls_result
 
+//Excp:
+  val LsExcpType=new LsExcpTypeBundle()
+  LsExcpType.laf:=false.B
+  LsExcpType.saf:=false.B
+  LsExcpType.lpf:=false.B
+  LsExcpType.spf:=false.B
+  val excpType=new ExcpTypeBundle()
+  excpType.iam:=ls.in.bits.excpType.num.num.num.iam
+  excpType.iaf:=ls.in.bits.excpType.num.num.iaf
+  excpType.ine:=ls.in.bits.excpType.num.ine
+  excpType.bkp:=ls.in.bits.excpType.num.bkp
+  excpType.lam:=ls.in.bits.excpType.lam
+  excpType.laf:=LsExcpType.laf
+  excpType.sam:=ls.in.bits.excpType.sam
+  excpType.saf:=LsExcpType.saf
+  excpType.ecu:=ls.in.bits.excpType.num.ecu
+  excpType.ecs:=ls.in.bits.excpType.num.ecs
+  excpType.ecm:=ls.in.bits.excpType.num.ecm
+  excpType.ipf:=ls.in.bits.excpType.num.num.ipf
+  excpType.lpf:=LsExcpType.lpf
+  excpType.spf:=LsExcpType.spf
+
+  val memBadAddr=ls.in.bits.memBadAddr //为访存地址，
+  val excpNum=excpType.asUInt
+  val excpResult=new ExcpResultBundle()
+  excpResult:=MuxCase(0.U,Seq(
+    excpNum(0)  -> Cat(ECODE.IAM,lsValid ,ls.in.bits.pc    ),
+    excpNum(1)  -> Cat(ECODE.IAF,lsValid ,ls.in.bits.pc    ),
+    excpNum(2)  -> Cat(ECODE.INE,0.U(1.W),0.U(ADDR_WIDTH.W)),
+    excpNum(3)  -> Cat(ECODE.BKP,0.U(1.W),0.U(ADDR_WIDTH.W)),
+    excpNum(4)  -> Cat(ECODE.LAM,lsValid ,memBadAddr       ),
+    excpNum(5)  -> Cat(ECODE.LAF,0.U(1.W),0.U(ADDR_WIDTH.W)),
+    excpNum(6)  -> Cat(ECODE.SAM,lsValid ,memBadAddr       ),
+    excpNum(7)  -> Cat(ECODE.SAF,0.U(1.W),0.U(ADDR_WIDTH.W)),
+    excpNum(8)  -> Cat(ECODE.ECU,lsValid ,ls.in.bits.pc    ),
+    excpNum(9)  -> Cat(ECODE.ECS,lsValid ,ls.in.bits.pc    ),
+    excpNum(10) -> Cat(ECODE.ECM,lsValid ,ls.in.bits.pc    ),
+    excpNum(11) -> Cat(ECODE.IPF,lsValid ,memBadAddr       ),
+    excpNum(12) -> Cat(ECODE.LPF,lsValid ,memBadAddr       ),
+    excpNum(13) -> Cat(ECODE.SPF,lsValid ,memBadAddr       ),
+  ))
+
   ls.to_csr.wen:=ls.in.bits.csrWen
   ls.to_csr.wrAddr:=ls.in.bits.csrWrAddr
   ls.to_csr.wrData:=ls.in.bits.csrWrData
+  ls.to_csr.excpResult:=excpResult
 
   val refetchFlush=ls.in.bits.csrWen
-  ls.fw_pf.flush.refetch:=refetchFlush
+  val toPipelineFlush=Wire(new PipelineFlushsBundle())
+  toPipelineFlush.refetch:=refetchFlush
+  toPipelineFlush.excp   :=excpNum.asUInt.orR
+  ls.fw_pf.flush:=toPipelineFlush
   ls.fw_pf.refetchPC:=ls.in.bits.pc+4.U
-  ls.fw_if.flush:=refetchFlush
-  ls.fw_id.flush:=refetchFlush
-  ls.fw_ex.flush:=refetchFlush
+  ls.fw_if.flush:=toPipelineFlush.asUInt.orR
+  ls.fw_id.flush:=toPipelineFlush.asUInt.orR
+  ls.fw_ex.flush:=toPipelineFlush.asUInt.orR
 
 //NOTE:
   ls.to_wb.bits.rd:=ls.in.bits.rd

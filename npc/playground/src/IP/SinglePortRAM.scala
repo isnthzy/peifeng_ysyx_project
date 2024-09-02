@@ -22,6 +22,6 @@ class SinglePortRAM(val size: Int, val width: Int) extends RawModule {
     when(io.wea) {
       mem.write(io.addra, io.dina)
     }
-    io.doutb := mem.read(io.addrb, true.B)
+    io.douta := mem.read(io.addra, true.B)
   }
 }

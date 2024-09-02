@@ -17,5 +17,5 @@ class BranchTakeBundle extends Bundle{
 class PipelineFlushsBundle extends Bundle{
   val refetch=Bool()
   val excp=Bool()
-  val ertn=Bool()
+  val xret=Bool()
 }
