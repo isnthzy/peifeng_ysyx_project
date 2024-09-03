@@ -80,6 +80,7 @@ class Ex2LsBusBundle extends Bundle{
   val excpEn=Bool()
   val excpType=new ExExcpTypeBundle()
   val memBadAddr=UInt(ADDR_WIDTH.W)
+  val isMret=Bool()
   val csrWen=Bool()
   val csrWrAddr=UInt(12.W)
   val csrWrData=UInt(32.W)

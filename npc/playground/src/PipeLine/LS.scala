@@ -111,12 +111,15 @@ class LsStage extends Module {
   ls.to_csr.wen:=ls.in.bits.csrWen
   ls.to_csr.wrAddr:=ls.in.bits.csrWrAddr
   ls.to_csr.wrData:=ls.in.bits.csrWrData
+  ls.to_csr.excpFlush :=excpNum.asUInt.orR
+  ls.to_csr.mretFlush :=ls.in.bits.isMret
   ls.to_csr.excpResult:=excpResult
 
   val refetchFlush=ls.in.bits.csrWen
   val toPipelineFlush=Wire(new PipelineFlushsBundle())
   toPipelineFlush.refetch:=refetchFlush
   toPipelineFlush.excp   :=excpNum.asUInt.orR
+  toPipelineFlush.xret   :=ls.in.bits.isMret
   ls.fw_pf.flush:=toPipelineFlush
   ls.fw_pf.refetchPC:=ls.in.bits.pc+4.U
   ls.fw_if.flush:=toPipelineFlush.asUInt.orR

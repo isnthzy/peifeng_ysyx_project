@@ -27,13 +27,19 @@ class PfStage extends Module {
   pf.to_if.valid:=pfReadyGo
   fetchReq:= ~reset.asBool&& ~pfFlush && pf.to_if.ready && ~pfExcpEn
 
-  val regPC=RegInit(START_ADDR)
+  val regPC  = RegInit(START_ADDR)
   val snpc   = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
   val dnpc   = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
   val nextpc = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
+
+  val flush_sign=pf.from_ls.flush.asUInt.orR
+  val flushed_pc=Mux(pf.from_ls.flush.excp,pf.csrEntries.mtvec,
+                  Mux(pf.from_ls.flush.xret,pf.csrEntries.mepc,
+                    Mux(pf.from_ls.flush.refetch,pf.from_ls.refetchPC,0.U)))
   snpc:=regPC
-  dnpc:=Mux(pf.from_id.brJump.taken,pf.from_id.brJump.target,
-          Mux(pf.from_ex.brCond.taken,pf.from_ex.brCond.target,0.U))
+  dnpc:=Mux(flush_sign,flushed_pc,
+          Mux(pf.from_id.brJump.taken,pf.from_id.brJump.target,
+            Mux(pf.from_ex.brCond.taken,pf.from_ex.brCond.target,0.U)))
 
   nextpc:=Mux(pfFlush,dnpc,snpc)
   when(pfReadyGo||pfFlush){

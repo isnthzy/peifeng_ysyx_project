@@ -15,6 +15,7 @@
 
 #include <dlfcn.h>
 #include "../include/npc_common.h"
+#include "../include/diffstate.h"
 #define DIFFTEST_TO_REF 1
 #define DIFFTEST_TO_DUT 0
 #define DIFF_CHECK(addr1, addr2, atpc,name) if(addr1!=addr2){\

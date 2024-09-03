@@ -46,6 +46,7 @@ class ExStage extends Module {
   ))
   val csrWen=(ex.in.bits.csrOp===SDEF(CSR_RW)
             ||ex.in.bits.csrOp===SDEF(CSR_RS))
+  val isMret=ex.in.bits.csrWrAddr===SDEF(CSR_MRET)
 
   val Alu=Module(new Alu())
   Alu.io.src1:=ex.in.bits.src1
@@ -141,6 +142,7 @@ class ExStage extends Module {
   ex.to_ls.bits.excpType:=exExcpType
 //NOTE:
   ex.to_ls.bits.memBadAddr:=memAddr
+  ex.to_ls.bits.isMret :=isMret
   ex.to_ls.bits.csrWen :=csrWen
   ex.to_ls.bits.csrWrAddr:=ex.in.bits.csrWrAddr
   ex.to_ls.bits.csrWrData:=csrWrData

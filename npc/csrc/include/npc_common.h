@@ -2,15 +2,17 @@
 #define __NPCCOMMON_H__
 #include "macro.h"
 #include "npc_conf.h"
-#include <assert.h>
-#include <iostream>
 #include <stdlib.h>
+#include <assert.h>
 #include <stdbool.h>
-#include <string.h>
 #include <inttypes.h>
+#include <iostream>
+#include <string.h>
+
 typedef uint32_t word_t;
-typedef word_t vaddr_t;
-typedef word_t paddr_t;
+typedef MUXDEF(CONFIG_ARCH_64,uint64_t, uint32_t) vaddr_t;
+typedef MUXDEF(CONFIG_ARCH_64,uint64_t, uint32_t) paddr_t;
+typedef MUXDEF(CONFIG_ARCH_64,uint64_t, uint32_t) data_t;
 #define CONFIG_MSIZE 0x8000000
 #define START_ADDR   0x80000000
 #define CONFIG_MBASE 0x80000000
