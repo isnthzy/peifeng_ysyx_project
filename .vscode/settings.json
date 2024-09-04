@@ -121,7 +121,9 @@
         "sdl_stbimage.h": "c",
         "palcommon.h": "c",
         "main.h": "c",
-        "decode.h": "c"
+        "decode.h": "c",
+        "macro.h": "c",
+        "npc_conf.h": "c"
     },
     "C_Cpp.intelliSenseEngine": "default",
     "digital-ide.dont-show-again.propose.issue": true,

@@ -1,6 +1,10 @@
+package FuncUnit
+
 import chisel3._
 import chisel3.util._
-import Alus._
+import Util.{Sext,Zext,Mux1hDefMap}
+import Control._
+
 class Alu extends Module {
   val io = IO(new Bundle {
     val op = Input(UInt(4.W))
@@ -33,8 +37,13 @@ class Alu extends Module {
   
   val alu_sltu= (io.src1.asUInt < io.src2.asUInt).asUInt
 
+  val alu_eq  = io.src1===io.src2
+
+  val alu_pc4 = io.src1+4.U
+
   val alu_lui = Cat(io.src2(31,12),0.U(12.W))
-  io.result := MuxLookup(io.op, 0.U)(Seq(
+
+  io.result := Mux1hDefMap(io.op,Map(
     ALU_ADD -> alu_add, 
     ALU_SUB -> alu_sub,
     ALU_AND -> alu_and,
@@ -45,7 +54,9 @@ class Alu extends Module {
     ALU_SRA -> alu_sra,
     ALU_SLT -> alu_slt,
     ALU_SLTU-> alu_sltu,
+    ALU_LUI -> alu_lui,
+    ALU_EQ  -> alu_eq,
+    ALU_PC4 -> alu_pc4,
     ALU_COPY_B -> io.src2,
-    ALU_LUI -> alu_lui
   ))
 }

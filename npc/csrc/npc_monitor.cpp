@@ -1,5 +1,8 @@
 #include "include/npc_common.h"
 #include "include/npc_verilator.h"
+#include "include/diffstate.h"
+extern Difftest* difftest;
+
 void step_and_dump_wave();
 void init_difftest(char *ref_so_file, long img_size, int port);
 void init_device();
@@ -76,14 +79,14 @@ void reset(int n){
 }
 
 void pipe_init(){
-  //让流水线初始化第一条指令到wb级，以实现到wb级si就执行一次的功能
-  int n=4;
-  while(n--){
-    top->clock=1;
-    step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
-    top->clock=0;
-    step_and_dump_wave();
-  }
+  // //让流水线初始化第一条指令到wb级，以实现到wb级si就执行一次的功能
+  // int n=4;
+  // while(n--){
+  //   top->clock=1;
+  //   step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
+  //   top->clock=0;
+  //   step_and_dump_wave();
+  // }
 }
 
 void init_sim(){
@@ -199,7 +202,10 @@ void init_monitor(int argc, char *argv[]) {
   IFDEF(CONFIG_DEVICE, init_device());
 
   /* Initialize differential testing. */
-  if(difftest_flag) init_difftest(diff_so_file, img_size, difftest_port);
+  if(difftest_flag){
+    difftest->init_difftest(diff_so_file, difftest_port);
+    difftest->set_img_size(img_size);
+  }
 
   /* Initialize the simple debugger. */
   init_sdb();

@@ -1,7 +1,10 @@
+package IP
+
 import chisel3._
 import chisel3.util._
 import config.Configs._
-import Control._
+import FuncUnit.Control._
+import Axi.Axi4LiteSlave
 class Axi4LiteSram extends Module {
   val io=IO(new Axi4LiteSlave())
   val dpi_sram=Module(new dpi_sram())

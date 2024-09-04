@@ -3,6 +3,7 @@
 #include "include/npc_verilator.h"
 #include "include/iringbuf.h"
 #include "include/difftest.h"
+#include "include/diffstate.h"
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 extern void wp_trace(char *decodelog);
 #define MAX_INST_TO_PRINT 10
@@ -12,6 +13,7 @@ uint64_t get_time();
 // CPU_state cpu;
 CPU_state cpu = { .pc=RESET_VECTOR , .mstatus=0x1800};//解锁新用法
 CPU_info cpu_info={};
+extern Difftest* difftest;
 extern bool ftrace_flag;
 extern bool difftest_flag;
 static bool g_print_step = false;
@@ -26,84 +28,83 @@ void device_update();
 void step_and_dump_wave(){
   top->eval();
   contextp->timeInc(1); //时间+1
-  top->eval();
 #ifdef TRACE_VCD
   tfp->dump(contextp->time()); //使用时间
-#endif
+#endif 
 }
 
 
 
-//----------------------------dpi-c----------------------------
-extern "C" void sim_break(int pc,int ret_reg_data){
-  npc_state.halt_ret=ret_reg_data;
-  npc_state.halt_pc=pc;
-  npc_state.state=NPC_END;
-}
-extern "C" void inv_break(int pc){
-  npc_state.halt_pc=pc;
-  npc_state.state=NPC_ABORT;
-}
+// //----------------------------dpi-c----------------------------
+// extern "C" void sim_break(int pc,int ret_reg_data){
+//   npc_state.halt_ret=ret_reg_data;
+//   npc_state.halt_pc=pc;
+//   npc_state.state=NPC_END;
+// }
+// extern "C" void inv_break(int pc){
+//   npc_state.halt_pc=pc;
+//   npc_state.state=NPC_ABORT;
+// }
 
-extern "C" void cpu_use_func(int pc,int nextpc,svBit is_ret,svBit is_jal,svBit is_rd0){
-  //调用cpu_use_func后，is_jal=1 jal,is_jal=0 jalr
-  #ifdef CONFIG_FTRACE
-  if(ftrace_flag){
-    if(is_jal){ //jal指令
-      func_call(pc,nextpc,false);
-    }else{   //jalr指令
-      if(is_ret){
-        func_ret(pc);
-      }else if(is_rd0){ //jalr是跳转,jr不是(jr被编译器优化为尾调用)
-        func_call(pc,nextpc,true);
-      }else{
-        func_call(pc,nextpc,false);
-      }
-    }
-  }
-  #endif
-}
+// extern "C" void cpu_use_func(int pc,int nextpc,svBit is_ret,svBit is_jal,svBit is_rd0){
+//   //调用cpu_use_func后，is_jal=1 jal,is_jal=0 jalr
+//   #ifdef CONFIG_FTRACE
+//   if(ftrace_flag){
+//     if(is_jal){ //jal指令
+//       func_call(pc,nextpc,false);
+//     }else{   //jalr指令
+//       if(is_ret){
+//         func_ret(pc);
+//       }else if(is_rd0){ //jalr是跳转,jr不是(jr被编译器优化为尾调用)
+//         func_call(pc,nextpc,true);
+//       }else{
+//         func_call(pc,nextpc,false);
+//       }
+//     }
+//   }
+//   #endif
+// }
 
-extern "C" void get_info(int pc,int nextpc,int inst,svBit dpi_valid){
-  // printf("pc: %x\n",pc);
-  if(dpi_valid){
-    cpu.pc=pc;
-    cpu_info.nextpc=nextpc;
-    cpu_info.inst=inst;
-  }
-  cpu_info.valid=dpi_valid;
-}
+// extern "C" void get_info(int pc,int nextpc,int inst,svBit dpi_valid){
+//   // printf("pc: %x\n",pc);
+//   if(dpi_valid){
+//     cpu.pc=pc;
+//     cpu_info.nextpc=nextpc;
+//     cpu_info.inst=inst;
+//   }
+//   cpu_info.valid=dpi_valid;
+// }
 
-extern "C" void prt_debug(const svBitVecVal* debug_1,int debug_2){
-  printf("debug_1: %x debug_2: %x\n",*debug_1,debug_2);
-}
+// extern "C" void prt_debug(const svBitVecVal* debug_1,int debug_2){
+//   printf("debug_1: %x debug_2: %x\n",*debug_1,debug_2);
+// }
 
-#define MTVEC 0x305
-#define MSTATUS 0x300
-#define MEPC 0x341
-#define MCAUSE 0x342
-extern "C" void sync_csrfile_regs(int waddr,int wdata){
-  switch (waddr)
-  {
-  case MTVEC: cpu.mtvec=wdata; break;
-  case MSTATUS: cpu.mstatus=wdata; break;
-  case MEPC: cpu.mepc=wdata; break;
-  case MCAUSE: cpu.mcause=wdata; break;
-  default:
-    panic("unknown csr address");
-    break;
-  }
-}
+// #define MTVEC 0x305
+// #define MSTATUS 0x300
+// #define MEPC 0x341
+// #define MCAUSE 0x342
+// extern "C" void sync_csrfile_regs(int waddr,int wdata){
+//   switch (waddr)
+//   {
+//   case MTVEC: cpu.mtvec=wdata; break;
+//   case MSTATUS: cpu.mstatus=wdata; break;
+//   case MEPC: cpu.mepc=wdata; break;
+//   case MCAUSE: cpu.mcause=wdata; break;
+//   default:
+//     panic("unknown csr address");
+//     break;
+//   }
+// }
 
-extern "C" void sync_csr_exception_regs(int mcause_in,int pc_wb){
-  cpu.mcause=mcause_in;
-  cpu.mepc=pc_wb;
-}
+// extern "C" void sync_csr_exception_regs(int mcause_in,int pc_wb){
+//   cpu.mcause=mcause_in;
+//   cpu.mepc=pc_wb;
+// }
 
-extern "C" void Csr_assert(){
-  panic("csr寄存器异常读写");
-}
-//----------------------------dpi-c----------------------------
+// extern "C" void Csr_assert(){
+//   panic("csr寄存器异常读写");
+// }
+// //----------------------------dpi-c----------------------------
 
 
 void npc_quit(){
@@ -137,60 +138,57 @@ void putIringbuf(){
 }
 
 
-static void trace_and_difftest(){
-  g_nr_guest_inst++; //记录总共执行了多少步
-  #ifdef CONFIG_DIFFTEST
-  static bool first_diff=true;
-  if(difftest_flag){
-    /*第一次不进行diff,因为nemu的寄存器写入是瞬间写，npc是延迟一拍后写
-    因此diff时机是npc执行结束了，进入下一排执行了，reg能取出来了，进行diff*/
-    if(!first_diff) difftest_step(cpu.pc,cpu_info.nextpc);
-    first_diff=false;
-  }
-  #endif
+// static void trace_and_difftest(){
+//   g_nr_guest_inst++; //记录总共执行了多少步
+//   #ifdef CONFIG_DIFFTEST
+//   static bool first_diff=true;
+//   if(difftest_flag){
+//     /*第一次不进行diff,因为nemu的寄存器写入是瞬间写，npc是延迟一拍后写
+//     因此diff时机是npc执行结束了，进入下一排执行了，reg能取出来了，进行diff*/
+//     if(!first_diff) difftest_step(cpu.pc,cpu_info.nextpc);
+//     first_diff=false;
+//   }
+//   #endif
 
-  static char logbuf[128];
-  static char tmp_dis[64];
-  #ifdef CONFIG_TRACE
-  static word_t tmp_inst;
-  tmp_inst=cpu_info.inst;
-  disassemble(tmp_dis, sizeof(tmp_dis),cpu.pc, (uint8_t*)&tmp_inst,4);
-  sprintf(logbuf,"[%ld]\t0x%08x: %08x\t%s",g_nr_guest_inst,cpu.pc,tmp_inst,tmp_dis);
-  #ifdef CONFIG_ITRACE
-  log_write("%s\n",logbuf);
-  enqueueIRingBuffer(&iring_buffer,logbuf); //入队环形缓冲区
-  #endif
-  wp_trace(logbuf);
-  if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s\n",logbuf)); }
-  #endif
-}
+//   static char logbuf[128];
+//   static char tmp_dis[64];
+//   #ifdef CONFIG_TRACE
+//   static word_t tmp_inst;
+//   tmp_inst=cpu_info.inst;
+//   disassemble(tmp_dis, sizeof(tmp_dis),cpu.pc, (uint8_t*)&tmp_inst,4);
+//   sprintf(logbuf,"[%ld]\t0x%08x: %08x\t%s",g_nr_guest_inst,cpu.pc,tmp_inst,tmp_dis);
+//   #ifdef CONFIG_ITRACE
+//   log_write("%s\n",logbuf);
+//   enqueueIRingBuffer(&iring_buffer,logbuf); //入队环形缓冲区
+//   #endif
+//   wp_trace(logbuf);
+//   if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s\n",logbuf)); }
+//   #endif
+// }
 
 
 static void npc_execute(uint64_t n) {
-  static vaddr_t lastpc=0;
-  //用于跳过阻塞，无效的指令
   for (;n > 0; n --) {
-    do{
-      top->clock=1;
+    top->clock=1;
 
-      step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
-      cpy_reg();
-      if(cpu_info.valid){
-        trace_and_difftest();
-        IFDEF(CONFIG_DEVICE, device_update());
-      }
-      /*------------------------分割线每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次*/
+    step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
     
+    difftest->diff_step();
+    // cpy_reg();
+    // if(cpu_info.valid){
+    //   trace_and_difftest();
+    //   IFDEF(CONFIG_DEVICE, device_update());
+    // }
+    /*------------------------分割线每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次*/
+  
 
-      top->clock=0;
-      step_and_dump_wave();
-      if (npc_state.state != NPC_RUNNING) return;
-    }while(cpu.pc==lastpc);
-    lastpc=cpu.pc;
+    top->clock=0;
+    step_and_dump_wave();
+    if (npc_state.state != NPC_RUNNING) return;
   }
-  if(g_nr_guest_inst>CONFIG_MAX_EXE_INST){
-    panic("Too many instructions(Suspected to be in a traploop)");
-  }
+  // if(g_nr_guest_inst>CONFIG_MAX_EXE_INST){
+  //   panic("Too many instructions(Suspected to be in a traploop)");
+  // }
 }
 
 void init_traces(){
