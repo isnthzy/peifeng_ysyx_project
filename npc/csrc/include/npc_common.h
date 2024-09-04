@@ -31,7 +31,6 @@ typedef MUXDEF(CONFIG_ARCH_64,uint64_t, uint32_t) data_t;
 #define gpr(idx) (cpu.gpr[check_reg_idx(idx)])
 
 word_t expr(char *e, bool *success);
-void sdb_mainloop();
 typedef struct {
   word_t gpr[MUXDEF(CONFIG_RVE, 16, 32)];
   vaddr_t pc;

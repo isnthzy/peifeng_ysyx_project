@@ -46,9 +46,9 @@
   DIFFTEST_DPIC_FUNC_DECL(StoreEvent) (  \
     DPIC_ARG_BYTE index,                 \
     DPIC_ARG_BYTE valid,                 \
-    DPIC_ARG_LONG storePAddr,            \
-    DPIC_ARG_LONG storeVAddr,            \
-    DPIC_ARG_LONG storeData              \
+    DPIC_ARG_LONG paddr,            \
+    DPIC_ARG_LONG vaddr,            \
+    DPIC_ARG_LONG data              \
   )
 
 // v_difftest_LoadEvent
@@ -57,7 +57,8 @@
     DPIC_ARG_BYTE index,                 \
     DPIC_ARG_BYTE valid,                 \
     DPIC_ARG_LONG paddr,                 \
-    DPIC_ARG_LONG vaddr                  \
+    DPIC_ARG_LONG vaddr,                 \
+    DPIC_ARG_LONG data                   \
   )
 
 // v_difftest_CSRState
@@ -66,7 +67,7 @@
     DPIC_ARG_LONG mstatus,              \
     DPIC_ARG_LONG mtvec,                \
     DPIC_ARG_LONG mepc,                 \
-    DPIC_ARG_LONG mcause,               \
+    DPIC_ARG_LONG mcause                \
   )
 
 // v_difftest_GRegState
@@ -110,7 +111,7 @@ INTERFACE_INSTR_COMMIT;
 INTERFACE_EXCP_EVENT;
 INTERFACE_STORE_EVENT;
 INTERFACE_LOAD_EVENT;
-// INTERFACE_CSRREG_STATE;
+INTERFACE_CSRREG_STATE;
 INTERFACE_GREG_STATE;
 
 
