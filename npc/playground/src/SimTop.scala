@@ -6,7 +6,7 @@ import Axi.{Axi4Bridge,AxiArbiter}
 import DiffTest.DiffCommit
 import FuncUnit.CsrFile
 import IP.Axi4LiteSram
-import config.GenCtrl
+import CoreConfig.Configs.GenCtrl
 
 class SimTop extends Module {
   val io = IO(new Bundle {
