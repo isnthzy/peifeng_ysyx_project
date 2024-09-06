@@ -124,27 +124,6 @@ class IdStage extends Module {
     }
   }
 
-
-  // //在id级实例化CSR，通过ex前递写回
-  // val csr_out_data=dontTouch(Wire(UInt(DATA_WIDTH.W)))
-  // val Csrfile=Module(new CsrFile())
-  // Csrfile.io.csr_cmd:=dc.io.csr_cmd
-  // csr_out_data:=Mux(csr_addr===id.from_ex.csr.waddr,id.from_ex.csr.wdata,Csrfile.io.out)
-  // //简化的csr实现，先用前递代替，实际上应该是清空
-  // Csrfile.io.csr_raddr:=csr_addr
-  // Csrfile.io.csr_wen:=id.from_ex.csr.wen
-  // Csrfile.io.csr_waddr:=id.from_ex.csr.waddr
-  // Csrfile.io.csr_wdata:=id.from_ex.csr.wdata
-  // Csrfile.io.ecpt_wen :=id.from_ex.csr.ecpt.wen
-  // Csrfile.io.mepc_in  :=id.from_ex.csr.ecpt.pc_wb
-  // Csrfile.io.mcause_in:=id.from_ex.csr.ecpt.mcause_in
-
-  // id.to_ex.bits.csr_addr:=csr_addr
-  // id.to_ex.bits.csr_cmd:=dc.io.csr_cmd
-  // id.to_ex.bits.pc_sel:=dc.io.pc_sel
-  // id.to_ex.bits.csr_global<>Csrfile.io.global
-  val csr_rdata=Wire(UInt(DATA_WIDTH.W))
-
   val src1=Mux1hDefMap(Decode.io.aSel,Map(
     A_RS1 -> rdata1,
     A_PC  -> id.in.bits.pc

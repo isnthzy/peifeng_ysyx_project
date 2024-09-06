@@ -18,7 +18,6 @@ class WbStage extends Module {
   val wbValid=dontTouch(Wire(Bool()))
   val wbValidR=RegInit(false.B)
   val wbReadyGo=dontTouch(Wire(Bool()))
-  val wbStall=dontTouch(Wire(Bool()))
   wb.in.ready:= !wbValid || wbReadyGo
   when(wb.in.ready){
     wbValidR:=true.B

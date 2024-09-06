@@ -50,6 +50,8 @@ class CsrFile extends Module{
     CSR.MCAUSE ->mcause.asUInt,
   ))
 
+  io.csrEntries.mtvec  :=mtvec.asUInt
+  io.csrEntries.mepc   :=mepc
 
 //mstatus
   val mstatusWrData=io.to_csr.wrData.asTypeOf(new CsrStatusBundle())
