@@ -19,7 +19,7 @@ object CSR {
 class CsrFile extends Module{
   val io=IO(new Bundle{
     val to_csr=Input(new Ls2CsrBundle())
-    val from_csr=Flipped(new PipeLine4CsrBundle())
+    val from_csr=new PipeLine4CsrBundle()
     val csrEntries=Output(new CsrEntriesBundle())
     val diffCSR=Output(new DiffCsrRegBundle())
   })
