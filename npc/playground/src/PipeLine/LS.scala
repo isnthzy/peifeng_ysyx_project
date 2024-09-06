@@ -68,10 +68,10 @@ class LsStage extends Module {
 
 //Excp:
   val LsExcpType=new LsExcpTypeBundle()
-  LsExcpType.laf:=false.B
-  LsExcpType.saf:=false.B
-  LsExcpType.lpf:=false.B
-  LsExcpType.spf:=false.B
+  LsExcpType.laf:=0.U
+  LsExcpType.saf:=0.U
+  LsExcpType.lpf:=0.U
+  LsExcpType.spf:=0.U
   val excpType=new ExcpTypeBundle()
   excpType.iam:=ls.in.bits.excpType.num.num.num.iam
   excpType.iaf:=ls.in.bits.excpType.num.num.iaf
