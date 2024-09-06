@@ -7,6 +7,7 @@ import DiffTest.DiffCommit
 import FuncUnit.CsrFile
 import IP.Axi4LiteSram
 import CoreConfig.GenCtrl
+import DiffTest.dpic._
 
 class SimTop extends Module {
   val io = IO(new Bundle {
@@ -85,8 +86,9 @@ class SimTop extends Module {
     DiffCommit.diff.excp :=WriteBack.wb.diffExcpCommit
     DiffCommit.diff.csr  :=CsrFile.io.diffCSR
     DiffCommit.diff.reg  :=InstDecode.id.diffREG
+    DPIC.collect()
   }
-
+  
   // io.debug_pc   :=WriteBack.wb.diffInstrCommit.pc 
   // io.debug_waddr:=WriteBack.wb.diffInstrCommit.wdest
   // io.debug_wdata:=WriteBack.wb.diffInstrCommit.wdata
