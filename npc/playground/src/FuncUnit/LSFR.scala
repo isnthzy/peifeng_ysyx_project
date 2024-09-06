@@ -2,7 +2,6 @@ package FuncUnit
 
 import chisel3._
 import chisel3.util._
-import config.Configs._
 import Control._
 
 class LSFR extends Module {

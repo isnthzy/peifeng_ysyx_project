@@ -1,8 +1,10 @@
 package Bundles
 import chisel3._
 import chisel3.util._
-import config.Configs._
+
+import CoreConfig.Configs.{ADDR_WIDTH,DATA_WIDTH}
 import FuncUnit.Control._
+import Difftest._
 
 
 class Pf2IfBusBundle extends Bundle{
@@ -47,6 +49,7 @@ class Id2ExBusBundle extends Bundle{
   val excpEn=Bool()
   val excpType=new IdExcpTypeBundle()
   val pc=UInt(ADDR_WIDTH.W)
+  val inst=UInt(32.W)
   val rd=UInt(5.W)
   val src1=UInt(DATA_WIDTH.W)
   val src2=UInt(DATA_WIDTH.W)
@@ -77,6 +80,9 @@ class Id4WbBusBundle extends Bundle{
 }
 
 class Ex2LsBusBundle extends Bundle{
+  val diffLoad =new DiffLoadBundle()
+  val diffStore=new DiffStoreBundle()
+
   val excpEn=Bool()
   val excpType=new ExExcpTypeBundle()
   val memBadAddr=UInt(ADDR_WIDTH.W)
@@ -85,6 +91,7 @@ class Ex2LsBusBundle extends Bundle{
   val csrWrAddr=UInt(12.W)
   val csrWrData=UInt(32.W)
   val pc=UInt(ADDR_WIDTH.W)
+  val inst=UInt(32.W)
   val rd=UInt(5.W)
   val result=UInt(DATA_WIDTH.W)
   val addrLow2Bit=UInt(2.W)
@@ -100,6 +107,13 @@ class Ex4LsBusBundle extends Bundle{
 }
 
 class Ls2WbBusBundle extends Bundle{
+  val diffLoad =new DiffLoadBundle()
+  val diffStore=new DiffStoreBundle()
+  val diffExcp =new DiffExcpBundle()
+
+  val excpEn=Bool()
+  val pc=UInt(ADDR_WIDTH.W)
+  val inst=UInt(32.W)
   val rd=UInt(5.W)
   val result=UInt(DATA_WIDTH.W)
   val rfWen =Bool()

@@ -2,7 +2,7 @@ package PipeLine
 
 import chisel3._
 import chisel3.util._
-import config.Configs._
+import CoreConfig.Configs._
 import Bundles._
 import Axi.AxiBridgeDataLoad
 import Util.{Mux1hMap,Mux1hDefMap,Sext,Zext}
@@ -19,7 +19,7 @@ class LsStage extends Module {
     val fw_ex=Output(new Ex4LsBusBundle())
 
     val to_csr=Output(new Ls2CsrBundle())
-    val dl=Output(new AxiBridgeDataLoad())
+    val dl=new AxiBridgeDataLoad()
   })
   val lsValid=dontTouch(Wire(Bool()))
   val lsValidR=RegInit(false.B)
@@ -67,12 +67,12 @@ class LsStage extends Module {
   ls.fw_id.rf.wdata:=ls_result
 
 //Excp:
-  val LsExcpType=new LsExcpTypeBundle()
+  val LsExcpType=Wire(new LsExcpTypeBundle())
   LsExcpType.laf:=false.B
   LsExcpType.saf:=false.B
   LsExcpType.lpf:=false.B
   LsExcpType.spf:=false.B
-  val excpType=new ExcpTypeBundle()
+  val excpType=Wire(new ExcpTypeBundle())
   excpType.iam:=ls.in.bits.excpType.num.num.num.iam
   excpType.iaf:=ls.in.bits.excpType.num.num.iaf
   excpType.ine:=ls.in.bits.excpType.num.ine
@@ -90,7 +90,7 @@ class LsStage extends Module {
 
   val memBadAddr=ls.in.bits.memBadAddr //为访存地址，
   val excpNum=excpType.asUInt
-  val excpResult=new ExcpResultBundle()
+  val excpResult=Wire(new ExcpResultBundle())
   excpResult:=MuxCase(0.U,Seq(
     excpNum(0)  -> Cat(ECODE.IAM,lsValid ,ls.in.bits.pc    ),
     excpNum(1)  -> Cat(ECODE.IAF,lsValid ,ls.in.bits.pc    ),
@@ -106,7 +106,7 @@ class LsStage extends Module {
     excpNum(11) -> Cat(ECODE.IPF,lsValid ,memBadAddr       ),
     excpNum(12) -> Cat(ECODE.LPF,lsValid ,memBadAddr       ),
     excpNum(13) -> Cat(ECODE.SPF,lsValid ,memBadAddr       ),
-  ))
+  )).asTypeOf(new ExcpResultBundle())
 
   ls.to_csr.wen:=ls.in.bits.csrWen
   ls.to_csr.wrAddr:=ls.in.bits.csrWrAddr
@@ -125,8 +125,20 @@ class LsStage extends Module {
   ls.fw_if.flush:=toPipelineFlush.asUInt.orR
   ls.fw_id.flush:=toPipelineFlush.asUInt.orR
   ls.fw_ex.flush:=toPipelineFlush.asUInt.orR
-
+//diff
+  ls.to_wb.bits.diffExcp.excpValid:=toPipelineFlush.excp
+  ls.to_wb.bits.diffExcp.isMret   :=ls.in.bits.isMret
+  ls.to_wb.bits.diffExcp.intrptNo :=0.U
+  ls.to_wb.bits.diffExcp.cause    :=excpResult.ecode
+  ls.to_wb.bits.diffExcp.exceptionPC:=ls.in.bits.pc
+  ls.to_wb.bits.diffExcp.exceptionInst:=ls.in.bits.inst
+  ls.to_wb.bits.diffLoad:=ls.in.bits.diffLoad
+  ls.to_wb.bits.diffStore:=ls.in.bits.diffStore
+  ls.to_wb.bits.diffLoad.data:=ls.dl.rdata
 //NOTE:
+  ls.to_wb.bits.excpEn:=excpNum.asUInt.orR
+  ls.to_wb.bits.pc:=ls.in.bits.pc
+  ls.to_wb.bits.inst:=ls.in.bits.inst
   ls.to_wb.bits.rd:=ls.in.bits.rd
   ls.to_wb.bits.result:=ls_result
   ls.to_wb.bits.rfWen:=ls.in.bits.rfWen

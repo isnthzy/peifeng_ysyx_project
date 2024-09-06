@@ -1,7 +1,7 @@
 package PipeLine
 import chisel3._
 import chisel3.util._
-import config.Configs._
+import CoreConfig.Configs._
 import Bundles._
 import FuncUnit.Control._
 import FuncUnit.{Decode,ImmGen,RegFile}
@@ -18,7 +18,9 @@ class IdStage extends Module {
     val from_ex=Input(new Id4ExBusBundle())
     val from_ls=Input(new Id4LsBusBundle())
     val from_wb=Input(new Id4WbBusBundle())
-    val from_csr=new PipeLine4CsrBundle()
+    val from_csr=Flipped(new PipeLine4CsrBundle())
+
+    val diffREG=Output((Vec(32, UInt(32.W))))
   })
   val idFlush=dontTouch(Wire(Bool()))
   val idExcpEn=dontTouch(Wire(Bool()))
@@ -66,6 +68,8 @@ class IdStage extends Module {
     SDEF(CSR_BREK)  ->10.U,
     SDEF(CSR_ECAL) ->RISCV32E_ECALLREG
   ))
+  id.diffREG:=Regfile.io.diffREG
+
   //当ebreak时，算出reg(10)+0的结果并通知dpi-c，即reg(10)==return
   //当ecall时，算出reg(ECALL_REG)+0的结果并传递给WB的csr处理
 
@@ -120,27 +124,6 @@ class IdStage extends Module {
     }
   }
 
-
-  // //在id级实例化CSR，通过ex前递写回
-  // val csr_out_data=dontTouch(Wire(UInt(DATA_WIDTH.W)))
-  // val Csrfile=Module(new CsrFile())
-  // Csrfile.io.csr_cmd:=dc.io.csr_cmd
-  // csr_out_data:=Mux(csr_addr===id.from_ex.csr.waddr,id.from_ex.csr.wdata,Csrfile.io.out)
-  // //简化的csr实现，先用前递代替，实际上应该是清空
-  // Csrfile.io.csr_raddr:=csr_addr
-  // Csrfile.io.csr_wen:=id.from_ex.csr.wen
-  // Csrfile.io.csr_waddr:=id.from_ex.csr.waddr
-  // Csrfile.io.csr_wdata:=id.from_ex.csr.wdata
-  // Csrfile.io.ecpt_wen :=id.from_ex.csr.ecpt.wen
-  // Csrfile.io.mepc_in  :=id.from_ex.csr.ecpt.pc_wb
-  // Csrfile.io.mcause_in:=id.from_ex.csr.ecpt.mcause_in
-
-  // id.to_ex.bits.csr_addr:=csr_addr
-  // id.to_ex.bits.csr_cmd:=dc.io.csr_cmd
-  // id.to_ex.bits.pc_sel:=dc.io.pc_sel
-  // id.to_ex.bits.csr_global<>Csrfile.io.global
-  val csr_rdata=Wire(UInt(DATA_WIDTH.W))
-
   val src1=Mux1hDefMap(Decode.io.aSel,Map(
     A_RS1 -> rdata1,
     A_PC  -> id.in.bits.pc
@@ -183,6 +166,7 @@ class IdStage extends Module {
 
 //------------------------------------------
   id.to_ex.bits.pc:=id.in.bits.pc
+  id.to_ex.bits.inst:=id.in.bits.inst
   id.to_ex.bits.rd:=rd
   id.to_ex.bits.src1:=src1  
   id.to_ex.bits.src2:=src2

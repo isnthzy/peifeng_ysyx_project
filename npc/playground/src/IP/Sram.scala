@@ -2,7 +2,7 @@ package IP
 
 import chisel3._
 import chisel3.util._
-import config.Configs._
+import CoreConfig.Configs._
 import FuncUnit.Control._
 import Axi.Axi4LiteSlave
 class Axi4LiteSram extends Module {

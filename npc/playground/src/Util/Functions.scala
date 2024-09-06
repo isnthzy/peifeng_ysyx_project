@@ -1,7 +1,6 @@
 package Util
 import chisel3._
 import chisel3.util._  
-import java.io.ObjectInputFilter.Config
 
 object Sext{ //有符号位宽扩展
   def apply(num:UInt,e_width:Int) = {
@@ -53,7 +52,7 @@ object SDEF{ //将string定义的宏转换为uint类型便于使用
 
 object LYDebugLog{ //将string定义的宏转换为uint类型便于使用
   def apply(s: String) = {
-    if(config.GenCtrl.VERILATOR_SIM){
+    if(CoreConfig.GenCtrl.VERILATOR_SIM){
       println(s)
     }
   }

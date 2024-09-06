@@ -2,7 +2,7 @@ package FuncUnit
 
 import chisel3._
 import chisel3.util._
-import config.Configs._
+import CoreConfig.Configs._
 import Util.{Sext,Zext,Mux1hDefMap}
 import Control._
 import Util.Mux1hMap

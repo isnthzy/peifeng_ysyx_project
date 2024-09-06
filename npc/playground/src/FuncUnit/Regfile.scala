@@ -2,7 +2,7 @@ package FuncUnit
 
 import chisel3._
 import chisel3.util._  
-import config.Configs._
+import CoreConfig.Configs._
 
 class RegFile extends Module{
   val io=IO(new Bundle {
@@ -13,6 +13,7 @@ class RegFile extends Module{
     val raddr2=Input(UInt(5.W))
     val rdata2=Output(UInt(DATA_WIDTH.W))
     val wen=Input(Bool())
+    val diffREG=Output((Vec(32, UInt(32.W))))
   })
   val rf=RegInit(VecInit(Seq.fill(32)(0.U(32.W))))
   when(io.wen){ 
@@ -24,4 +25,6 @@ class RegFile extends Module{
   }
   io.rdata1:=rf(io.raddr1)
   io.rdata2:=rf(io.raddr2)
+
+  io.diffREG:=rf
 } 

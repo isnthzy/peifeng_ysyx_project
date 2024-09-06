@@ -3,7 +3,7 @@ import chisel3._
 import chisel3.util._
 import Axi._
 import Bundles._
-import config.Configs._
+import CoreConfig.Configs._
 
 class PfStage extends Module {
   val pf=IO(new Bundle {
