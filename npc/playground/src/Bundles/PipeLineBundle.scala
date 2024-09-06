@@ -1,7 +1,7 @@
 package Bundles
 import chisel3._
 import chisel3.util._
-import config.Configs._
+import CoreConfig.Configs._
 import FuncUnit.Control._
 import Difftest._
 
@@ -9,7 +9,7 @@ import Difftest._
 class Pf2IfBusBundle extends Bundle{
   val excpEn=Bool()
   val excpType=new PfExcpTypeBundle()
-  val pc=UInt(32.W)
+  val pc=UInt(ADDR_WIDTH.W)
 }
 
 class Pf4IdBusBundle extends Bundle{

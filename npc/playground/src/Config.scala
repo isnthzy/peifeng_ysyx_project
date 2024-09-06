@@ -1,4 +1,4 @@
-package config
+package CoreConfig
 import chisel3._
 
 object Configs {
