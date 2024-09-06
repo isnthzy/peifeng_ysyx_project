@@ -9,7 +9,7 @@ import Difftest._
 class Pf2IfBusBundle extends Bundle{
   val excpEn=Bool()
   val excpType=new PfExcpTypeBundle()
-  val pc=UInt(ADDR_WIDTH.W)
+  val pc=UInt(32.W)
 }
 
 class Pf4IdBusBundle extends Bundle{
