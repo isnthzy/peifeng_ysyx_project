@@ -22,42 +22,42 @@ class DiffCommit extends Module{
     val dpicReg  =DPIC(new GRegState())
   })
 
-  diff.dpicInstr.index:=diff.instr.index
-  diff.dpicInstr.valid:=diff.instr.valid
-  diff.dpicInstr.pc:=diff.instr.pc
-  diff.dpicInstr.instr:=diff.instr.instr
-  diff.dpicInstr.skip:=diff.instr.skip
-  diff.dpicInstr.wen:=diff.instr.wen
-  diff.dpicInstr.wdest:=diff.instr.wdest  
-  diff.dpicInstr.wdata:=diff.instr.wdata
-  diff.dpicInstr.csrRstat:=diff.instr.csrRstat
-  diff.dpicInstr.csrData:=diff.instr.csrData
+  // diff.dpicInstr.index:=diff.instr.index
+  // diff.dpicInstr.valid:=diff.instr.valid
+  // diff.dpicInstr.pc:=diff.instr.pc
+  // diff.dpicInstr.instr:=diff.instr.instr
+  // diff.dpicInstr.skip:=diff.instr.skip
+  // diff.dpicInstr.wen:=diff.instr.wen
+  // diff.dpicInstr.wdest:=diff.instr.wdest  
+  // diff.dpicInstr.wdata:=diff.instr.wdata
+  // diff.dpicInstr.csrRstat:=diff.instr.csrRstat
+  // diff.dpicInstr.csrData:=diff.instr.csrData
 
-  diff.dpicExcp.excp_valid:=diff.excp.excpValid
-  diff.dpicExcp.isMret:=diff.excp.isMret
-  diff.dpicExcp.intrptNo:=diff.excp.intrptNo
-  diff.dpicExcp.cause:=diff.excp.cause
-  diff.dpicExcp.exceptionPC:=diff.excp.exceptionPC
-  diff.dpicExcp.exceptionInst:=diff.excp.exceptionInst
+  // diff.dpicExcp.excp_valid:=diff.excp.excpValid
+  // diff.dpicExcp.isMret:=diff.excp.isMret
+  // diff.dpicExcp.intrptNo:=diff.excp.intrptNo
+  // diff.dpicExcp.cause:=diff.excp.cause
+  // diff.dpicExcp.exceptionPC:=diff.excp.exceptionPC
+  // diff.dpicExcp.exceptionInst:=diff.excp.exceptionInst
 
-  diff.dpicLoad.index:=diff.load.index
-  diff.dpicLoad.valid:=diff.load.valid
-  diff.dpicLoad.vaddr:=diff.load.vaddr
-  diff.dpicLoad.paddr:=diff.load.paddr
-  diff.dpicLoad.data:=diff.load.data
+  // diff.dpicLoad.index:=diff.load.index
+  // diff.dpicLoad.valid:=diff.load.valid
+  // diff.dpicLoad.vaddr:=diff.load.vaddr
+  // diff.dpicLoad.paddr:=diff.load.paddr
+  // diff.dpicLoad.data:=diff.load.data
 
-  diff.dpicStore.index:=diff.store.index
-  diff.dpicStore.valid:=diff.store.valid
-  diff.dpicStore.paddr:=diff.store.paddr
-  diff.dpicStore.vaddr:=diff.store.vaddr
-  diff.dpicStore.data:=diff.store.data
+  // diff.dpicStore.index:=diff.store.index
+  // diff.dpicStore.valid:=diff.store.valid
+  // diff.dpicStore.paddr:=diff.store.paddr
+  // diff.dpicStore.vaddr:=diff.store.vaddr
+  // diff.dpicStore.data:=diff.store.data
 
-  diff.dpicCsr.mstatus:=diff.csr.mstatus
-  diff.dpicCsr.mepc:=diff.csr.mepc
-  diff.dpicCsr.mcause:=diff.csr.mcause
-  diff.dpicCsr.mtvec:=diff.csr.mtvec
+  // diff.dpicCsr.mstatus:=diff.csr.mstatus
+  // diff.dpicCsr.mepc:=diff.csr.mepc
+  // diff.dpicCsr.mcause:=diff.csr.mcause
+  // diff.dpicCsr.mtvec:=diff.csr.mtvec
 
-  diff.dpicReg.gpr:=diff.reg
+  // diff.dpicReg.gpr:=diff.reg
 
 }
 
