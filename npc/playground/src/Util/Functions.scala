@@ -1,7 +1,6 @@
 package Util
 import chisel3._
 import chisel3.util._  
-import java.io.ObjectInputFilter.Config
 
 object Sext{ //有符号位宽扩展
   def apply(num:UInt,e_width:Int) = {
