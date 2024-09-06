@@ -20,5 +20,5 @@ object ISAConfig{
 }
 
 object GenCtrl{
-  val VERILATOR_SIM=true
+  val VERILATOR_SIM=false
 }
