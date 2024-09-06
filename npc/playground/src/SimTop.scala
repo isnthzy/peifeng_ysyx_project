@@ -10,10 +10,10 @@ import config.GenCtrl
 
 class SimTop extends Module {
   val io = IO(new Bundle {
-    val debug_pc   =Output(UInt(ADDR_WIDTH.W))
-    val debug_waddr=Output(UInt(5.W))
-    val debug_wdata=Output(UInt(DATA_WIDTH.W))
-    val debug_wen  =Output(Bool())
+    // val debug_pc   =Output(UInt(ADDR_WIDTH.W))
+    // val debug_waddr=Output(UInt(5.W))
+    // val debug_wdata=Output(UInt(DATA_WIDTH.W))
+    // val debug_wen  =Output(Bool())
   })
   val PreFetch  = Module(new PfStage())
   val InstFetch = Module(new IfStage())
@@ -83,10 +83,10 @@ class SimTop extends Module {
     DiffCommit.diff.reg  :=InstDecode.id.diffREG
   }
 
-  io.debug_pc   :=WriteBack.wb.diffInstrCommit.pc 
-  io.debug_waddr:=WriteBack.wb.diffInstrCommit.wdest
-  io.debug_wdata:=WriteBack.wb.diffInstrCommit.wdata
-  io.debug_wen  :=WriteBack.wb.diffInstrCommit.wen
+  // io.debug_pc   :=WriteBack.wb.diffInstrCommit.pc 
+  // io.debug_waddr:=WriteBack.wb.diffInstrCommit.wdest
+  // io.debug_wdata:=WriteBack.wb.diffInstrCommit.wdata
+  // io.debug_wen  :=WriteBack.wb.diffInstrCommit.wen
 }
 
 object StageConnect {
