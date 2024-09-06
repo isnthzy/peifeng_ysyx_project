@@ -84,7 +84,7 @@ class SimTop extends Module {
   }
 
   io.debug_pc   :=WriteBack.wb.diffInstrCommit.pc 
-  io.debug_waddr:=WriteBack.wb.diffInstrCommit.waddr
+  io.debug_waddr:=WriteBack.wb.diffInstrCommit.wdest
   io.debug_wdata:=WriteBack.wb.diffInstrCommit.wdata
   io.debug_wen  :=WriteBack.wb.diffInstrCommit.wen
 }
