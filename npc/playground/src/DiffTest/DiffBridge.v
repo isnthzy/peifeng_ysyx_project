@@ -9,7 +9,7 @@ module DiffBridge(
     input [ 7:0] wdest,
     input [63:0] wdata,
     input        csrRstat,
-    input [31:0] csrData,
+    input [63:0] csrData,
 
     input        excp_valid,
     input        isMret,
@@ -76,15 +76,11 @@ DifftestInstrCommit DifftestInstrCommit(
     .pc                 (the_pc         ),
     .instr              (instr          ),
     .skip               (skip           ),
-    .is_TLBFILL         (is_TLBFILL     ),
-    .TLBFILL_index      (TLBFILL_index  ),
-    .is_CNTinst         (is_CNTinst     ),
-    .timer_64_value     (timer_64_value  ),
     .wen                (wen            ),
     .wdest              (wdest          ),
     .wdata              (wdata          ),
-    .csr_rstat          (csr_rstat      ),
-    .csr_data           (csr_data       )
+    .csrRstat           (csrRstat       ),
+    .csrData            (csrData        )
 );
 
 
@@ -111,7 +107,7 @@ DifftestExcpEvent DifftestExcpEvent(
     .clock              (clock          ),
     .excp_valid         (excp_valid     ),
     .isMret             (isMret         ),
-    .intrNo             (intrptNo       ),
+    .iintrptNo          (intrptNo       ),
     .cause              (cause          ),
     .exceptionPC        (exceptionPC    ),
     .exceptionInst      (exceptionInst  )

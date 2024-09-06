@@ -42,7 +42,7 @@
     `DPIC_ARG_BYTE wdest,
     `DPIC_ARG_LONG wdata,
     `DPIC_ARG_BIT  csrRstat,
-    `DPIC_ARG_INT  csrData
+    `DPIC_ARG_LONG csrData
 );
 `DIFFTEST_MOD_DECL(InstrCommit)(
     input        clock,

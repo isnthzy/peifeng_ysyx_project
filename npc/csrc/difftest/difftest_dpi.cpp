@@ -1,5 +1,6 @@
 #include "../include/difftest_dpic.h"
 #include "../include/diffstate.h"
+#include "../include/npc_common.h"
 
 #define RETURN_NO_NULL \
   if (difftest == NULL) return;
@@ -11,14 +12,14 @@ INTERFACE_INSTR_COMMIT {
   auto packet = difftest->get_instr_commit(index);
   packet->valid    = valid;
   if (packet->valid) {
-    packet->pc            = pc;
+    packet->pc            = (vaddr_t)pc;
     packet->inst          = instr;
     packet->skip          = skip;
     packet->wen           = wen;
     packet->wdest         = wdest;
-    packet->wdata         = wdata;
+    packet->wdata         = (data_t)wdata;
     packet->csr_rstat     = csrRstat;
-    packet->csr_data      = csrData ;
+    packet->csr_data      = (data_t)csrData ;
   }
 }
 
@@ -29,8 +30,8 @@ INTERFACE_EXCP_EVENT {
   packet->is_mret   = isMret;
   packet->interrupt = intrptNo;
   packet->exception = cause;
-  packet->exceptionPC = exceptionPC;
-  packet->exceptionIst = exceptionInst;
+  packet->exceptionPC   = exceptionPC;
+  packet->exceptionInst = exceptionInst;
 }
 
 INTERFACE_STORE_EVENT {
@@ -38,9 +39,9 @@ INTERFACE_STORE_EVENT {
   auto packet = difftest->get_store_event(index);
   packet->valid = valid;
   if (packet->valid) {
-    packet->paddr = paddr;
-    packet->vaddr = vaddr;
-    packet->data  = data;
+    packet->paddr = (paddr_t)paddr;
+    packet->vaddr = (vaddr_t)vaddr;
+    packet->data  = (data_t)data;
   }
 }
 
@@ -49,19 +50,19 @@ INTERFACE_LOAD_EVENT {
   auto packet = difftest->get_load_event(index);
   packet->valid = valid;
   if (packet->valid) {
-    packet->paddr = paddr;
-    packet->vaddr = vaddr;
-    packet->data  = data;
+    packet->paddr = (paddr_t)paddr;
+    packet->vaddr = (vaddr_t)vaddr;
+    packet->data  = (data_t)data;
   }
 }
 
 INTERFACE_CSRREG_STATE {
     RETURN_NO_NULL
     auto packet = difftest->get_csr_state();
-    packet->mstatus = mstatus;
-    packet->mtvec   = mtvec;
-    packet->mepc    = mepc;
-    packet->mcause  = mcause;
+    packet->mstatus = (data_t)mstatus;
+    packet->mtvec   = (data_t)mtvec;
+    packet->mepc    = (data_t)mepc;
+    packet->mcause  = (data_t)mcause;
 }
 
 
