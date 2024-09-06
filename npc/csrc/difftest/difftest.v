@@ -65,7 +65,6 @@ endmodule
 
 // DifftestExcpEvent
 `DIFFTEST_DPIC_FUNC_DECL(ExcpEvent) (
-    `DPIC_ARG_BYTE coreid,
     `DPIC_ARG_BIT  excp_valid,
     `DPIC_ARG_BIT  isMret,
     `DPIC_ARG_INT  intrNo,
