@@ -97,7 +97,7 @@ class DiffBridge extends BlackBox with HasBlackBoxPath{
     val wdest = Input(UInt(8.W))
     val wdata = Input(UInt(64.W))
     val csrRstat = Input(Bool())
-    val csrData = Input(UInt(32.W))
+    val csrData = Input(UInt(64.W))
 
     val excp_valid = Input(Bool())
     val isMret = Input(Bool())
