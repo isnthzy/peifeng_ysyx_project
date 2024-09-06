@@ -106,7 +106,7 @@ class LsStage extends Module {
     excpNum(11) -> Cat(ECODE.IPF,lsValid ,memBadAddr       ),
     excpNum(12) -> Cat(ECODE.LPF,lsValid ,memBadAddr       ),
     excpNum(13) -> Cat(ECODE.SPF,lsValid ,memBadAddr       ),
-  ))
+  )).asTypeOf(new ExcpResultBundle())
 
   ls.to_csr.wen:=ls.in.bits.csrWen
   ls.to_csr.wrAddr:=ls.in.bits.csrWrAddr
