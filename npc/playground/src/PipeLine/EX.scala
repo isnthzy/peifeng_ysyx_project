@@ -21,7 +21,7 @@ class ExStage extends Module {
     val from_ls=Input(new Ex4LsBusBundle)
 
     val al=Flipped(new AxiBridgeAddrLoad())
-    val s =Output(new AxiBridgeStore())
+    val s =new AxiBridgeStore()
   })
   val exFlush=dontTouch(Wire(Bool()))
   val exExcpEn=dontTouch(Wire(Bool()))
