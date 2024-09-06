@@ -131,7 +131,6 @@ endmodule
 
 // DifftestCSRRegState
 `DIFFTEST_DPIC_FUNC_DECL(CSRRegState) (
-    `DPIC_ARG_BYTE coreid,
     `DPIC_ARG_LONG mstatus,
     `DPIC_ARG_LONG mtvec,
     `DPIC_ARG_LONG mepc,
