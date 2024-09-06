@@ -67,11 +67,11 @@ class LsStage extends Module {
   ls.fw_id.rf.wdata:=ls_result
 
 //Excp:
-  val LsExcpType=new LsExcpTypeBundle()
-  LsExcpType.laf:=0.U
-  LsExcpType.saf:=0.U
-  LsExcpType.lpf:=0.U
-  LsExcpType.spf:=0.U
+  val LsExcpType=Wire(new LsExcpTypeBundle())
+  LsExcpType.laf:=false.B
+  LsExcpType.saf:=false.B
+  LsExcpType.lpf:=false.B
+  LsExcpType.spf:=false.B
   val excpType=new ExcpTypeBundle()
   excpType.iam:=ls.in.bits.excpType.num.num.num.iam
   excpType.iaf:=ls.in.bits.excpType.num.num.iaf
