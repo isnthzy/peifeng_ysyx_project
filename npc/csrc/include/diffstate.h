@@ -13,7 +13,7 @@ typedef struct {
   uint32_t interrupt = 0;
   uint32_t exception = 0;
   vaddr_t  exceptionPC = 0;
-  uint32_t exceptionIst = 0;
+  uint32_t exceptionInst = 0;
 } excp_event_t;
 
 typedef struct {

@@ -20,5 +20,5 @@ object ISAConfig{
 }
 
 object GenCtrl{
-  def VERILATOR_SIM=false
+  def VERILATOR_SIM=true
 }

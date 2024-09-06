@@ -27,13 +27,13 @@
     DPIC_ARG_BYTE wdest,                 \
     DPIC_ARG_LONG wdata,                 \
     DPIC_ARG_BIT  csrRstat,             \
-    DPIC_ARG_INT  csrData               \
+    DPIC_ARG_LONG csrData               \
   )
 
 // v_difftest_ExcpEvent
 #define INTERFACE_EXCP_EVENT             \
   DIFFTEST_DPIC_FUNC_DECL(ExcpEvent) (   \
-    DPIC_ARG_BYTE excp_valid,            \
+    DPIC_ARG_BIT  excp_valid,            \
     DPIC_ARG_BIT  isMret,                \
     DPIC_ARG_INT  intrptNo,                \
     DPIC_ARG_INT  cause,                 \
