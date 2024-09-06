@@ -52,24 +52,28 @@ class SimTop extends Module {
 // PreIF begin
   PreFetch.pf.from_id<>InstDecode.id.fw_pf
   PreFetch.pf.from_ex<>Execute.ex.fw_pf
+  PreFetch.pf.from_ls<>LoadStore.ls.fw_pf
+  PreFetch.pf.csrEntries:=CsrFile.io.csrEntries
 
 // if begin
   StageConnect(PreFetch.pf.to_if,InstFetch.fs.in)
   InstFetch.fs.from_id<>InstDecode.id.fw_if
   InstFetch.fs.from_ex<>Execute.ex.fw_if
+  InstFetch.fs.from_ls<>LoadStore.ls.fw_if
 
 // id begin
   StageConnect(InstFetch.fs.to_id,InstDecode.id.in) //左边是out，右边是in
   InstDecode.id.from_ex<>Execute.ex.fw_id
   InstDecode.id.from_ls<>LoadStore.ls.fw_id
   InstDecode.id.from_wb<>WriteBack.wb.fw_id
+  InstDecode.id.from_csr<>CsrFile.io.from_csr
 
 // ex begin
   StageConnect(InstDecode.id.to_ex,Execute.ex.in)
 
 // ls begin
   StageConnect(Execute.ex.to_ls,LoadStore.ls.in)
-
+  LoadStore.ls.to_csr<>CsrFile.io.to_csr
 // wb begin
   StageConnect(LoadStore.ls.to_wb,WriteBack.wb.in)
 
