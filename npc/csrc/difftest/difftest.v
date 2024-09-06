@@ -55,7 +55,7 @@
     input [ 7:0] wdest,
     input [63:0] wdata,
     input        csrRstat,
-    input [31:0] csrData
+    input [63:0] csrData
 );
     `DIFFTEST_MOD_DPIC_CALL_BEGIN_WITH_EN(valid, InstrCommit) (
         index,
@@ -66,8 +66,8 @@ endmodule
 // DifftestExcpEvent
 `DIFFTEST_DPIC_FUNC_DECL(ExcpEvent) (
     `DPIC_ARG_BYTE coreid,
-    `DPIC_ARG_BYTE excp_valid,
-    `DPIC_ARG_BIT  eret,
+    `DPIC_ARG_BIT  excp_valid,
+    `DPIC_ARG_BIT  isMret,
     `DPIC_ARG_INT  intrNo,
     `DPIC_ARG_INT  cause,
     `DPIC_ARG_LONG exceptionPC,
