@@ -84,7 +84,7 @@ DifftestInstrCommit DifftestInstrCommit(
 );
 
 
-DifftestStoreEvent DifftestStoreEvent_1(
+DifftestStoreEvent DifftestStoreEvent(
     .clock              (clock          ),
     .index              (storeIndex     ),
     .valid              (storeValid     ),
@@ -99,7 +99,7 @@ DifftestLoadEvent DifftestLoadEvent(
     .valid              (loadValid      ),
     .paddr              (loadPaddr      ),
     .vaddr              (loadVaddr      ),
-    .data               (loadData       ),
+    .data               (loadData       )
 );
 
 
@@ -107,7 +107,7 @@ DifftestExcpEvent DifftestExcpEvent(
     .clock              (clock          ),
     .excp_valid         (excp_valid     ),
     .isMret             (isMret         ),
-    .iintrptNo          (intrptNo       ),
+    .intrptNo           (intrptNo       ),
     .cause              (cause          ),
     .exceptionPC        (exceptionPC    ),
     .exceptionInst      (exceptionInst  )

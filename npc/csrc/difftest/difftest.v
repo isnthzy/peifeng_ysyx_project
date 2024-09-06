@@ -123,7 +123,7 @@ endmodule
     input [ 7:0] valid,
     input [63:0] paddr,
     input [63:0] vaddr,
-    input [63:0] data,
+    input [63:0] data
 );
     `DIFFTEST_MOD_DPIC_CALL_BEGIN(LoadEvent) (
          index, valid, paddr, vaddr, data
