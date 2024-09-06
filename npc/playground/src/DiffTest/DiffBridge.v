@@ -72,7 +72,7 @@ module DiffBridge(
 DifftestInstrCommit DifftestInstrCommit(
     .clock              (clock          ),
     .index              (index          ),
-    .valid              (instrvalid     ),
+    .valid              (instrValid     ),
     .pc                 (the_pc         ),
     .instr              (instr          ),
     .skip               (skip           ),
