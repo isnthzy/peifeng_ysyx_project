@@ -19,7 +19,7 @@ class LsStage extends Module {
     val fw_ex=Output(new Ex4LsBusBundle())
 
     val to_csr=Output(new Ls2CsrBundle())
-    val dl=Output(new AxiBridgeDataLoad())
+    val dl=new AxiBridgeDataLoad()
   })
   val lsValid=dontTouch(Wire(Bool()))
   val lsValidR=RegInit(false.B)
