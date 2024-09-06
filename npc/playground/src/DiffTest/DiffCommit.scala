@@ -13,51 +13,50 @@ class DiffCommit extends Module{
     val load =Input(new DiffLoadBundle())
     val csr  =Input(new DiffCsrRegBundle())
     val reg  =Input(Vec(32,UInt(32.W)))
-
-    val dpicInstr=DPIC(new InsrtCommit())
-    val dpicExcp =DPIC(new ExcpEvent())
-    val dpicLoad =DPIC(new LoadEvent())
-    val dpicStore=DPIC(new StoreEvent())
-    val dpicCsr  =DPIC(new CSRRegState())
-    val dpicReg  =DPIC(new GRegState())
   })
 
-  // diff.dpicInstr.index:=diff.instr.index
-  // diff.dpicInstr.valid:=diff.instr.valid
-  // diff.dpicInstr.pc:=diff.instr.pc
-  // diff.dpicInstr.instr:=diff.instr.instr
-  // diff.dpicInstr.skip:=diff.instr.skip
-  // diff.dpicInstr.wen:=diff.instr.wen
-  // diff.dpicInstr.wdest:=diff.instr.wdest  
-  // diff.dpicInstr.wdata:=diff.instr.wdata
-  // diff.dpicInstr.csrRstat:=diff.instr.csrRstat
-  // diff.dpicInstr.csrData:=diff.instr.csrData
+  val dpicInstr=DPIC(new InsrtCommit())
+  val dpicExcp =DPIC(new ExcpEvent())
+  val dpicLoad =DPIC(new LoadEvent())
+  val dpicStore=DPIC(new StoreEvent())
+  val dpicCsr  =DPIC(new CSRRegState())
+  val dpicReg  =DPIC(new GRegState())
+  dpicInstr.index:=diff.instr.index
+  dpicInstr.valid:=diff.instr.valid
+  dpicInstr.pc:=diff.instr.pc
+  dpicInstr.instr:=diff.instr.instr
+  dpicInstr.skip:=diff.instr.skip
+  dpicInstr.wen:=diff.instr.wen
+  dpicInstr.wdest:=diff.instr.wdest  
+  dpicInstr.wdata:=diff.instr.wdata
+  dpicInstr.csrRstat:=diff.instr.csrRstat
+  dpicInstr.csrData:=diff.instr.csrData
 
-  // diff.dpicExcp.excp_valid:=diff.excp.excpValid
-  // diff.dpicExcp.isMret:=diff.excp.isMret
-  // diff.dpicExcp.intrptNo:=diff.excp.intrptNo
-  // diff.dpicExcp.cause:=diff.excp.cause
-  // diff.dpicExcp.exceptionPC:=diff.excp.exceptionPC
-  // diff.dpicExcp.exceptionInst:=diff.excp.exceptionInst
+  dpicExcp.excp_valid:=diff.excp.excpValid
+  dpicExcp.isMret:=diff.excp.isMret
+  dpicExcp.intrptNo:=diff.excp.intrptNo
+  dpicExcp.cause:=diff.excp.cause
+  dpicExcp.exceptionPC:=diff.excp.exceptionPC
+  dpicExcp.exceptionInst:=diff.excp.exceptionInst
 
-  // diff.dpicLoad.index:=diff.load.index
-  // diff.dpicLoad.valid:=diff.load.valid
-  // diff.dpicLoad.vaddr:=diff.load.vaddr
-  // diff.dpicLoad.paddr:=diff.load.paddr
-  // diff.dpicLoad.data:=diff.load.data
+  dpicLoad.index:=diff.load.index
+  dpicLoad.valid:=diff.load.valid
+  dpicLoad.vaddr:=diff.load.vaddr
+  dpicLoad.paddr:=diff.load.paddr
+  dpicLoad.data:=diff.load.data
 
-  // diff.dpicStore.index:=diff.store.index
-  // diff.dpicStore.valid:=diff.store.valid
-  // diff.dpicStore.paddr:=diff.store.paddr
-  // diff.dpicStore.vaddr:=diff.store.vaddr
-  // diff.dpicStore.data:=diff.store.data
+  dpicStore.index:=diff.store.index
+  dpicStore.valid:=diff.store.valid
+  dpicStore.paddr:=diff.store.paddr
+  dpicStore.vaddr:=diff.store.vaddr
+  dpicStore.data:=diff.store.data
 
-  // diff.dpicCsr.mstatus:=diff.csr.mstatus
-  // diff.dpicCsr.mepc:=diff.csr.mepc
-  // diff.dpicCsr.mcause:=diff.csr.mcause
-  // diff.dpicCsr.mtvec:=diff.csr.mtvec
+  dpicCsr.mstatus:=diff.csr.mstatus
+  dpicCsr.mepc:=diff.csr.mepc
+  dpicCsr.mcause:=diff.csr.mcause
+  dpicCsr.mtvec:=diff.csr.mtvec
 
-  // diff.dpicReg.gpr:=diff.reg
+  dpicReg.gpr:=diff.reg
 
 }
 
