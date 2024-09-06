@@ -6,7 +6,6 @@ import Axi.{Axi4Bridge,AxiArbiter}
 import DiffTest.DiffCommit
 import FuncUnit.CsrFile
 import IP.Axi4LiteSram
-import org.json4s.Diff
 import config.GenCtrl
 
 class SimTop extends Module {
