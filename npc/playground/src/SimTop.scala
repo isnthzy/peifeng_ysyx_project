@@ -86,7 +86,7 @@ class SimTop extends Module {
     DiffCommit.diff.excp :=WriteBack.wb.diffExcpCommit
     DiffCommit.diff.csr  :=CsrFile.io.diffCSR
     DiffCommit.diff.reg  :=InstDecode.id.diffREG
-    DPIC.collect()
+
   }
   
   // io.debug_pc   :=WriteBack.wb.diffInstrCommit.pc 

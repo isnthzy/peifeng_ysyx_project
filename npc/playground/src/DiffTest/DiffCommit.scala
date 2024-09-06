@@ -57,7 +57,7 @@ class DiffCommit extends Module{
   dpicCsr.mtvec:=diff.csr.mtvec
 
   dpicReg.gpr:=diff.reg
-
+  DPIC.collect()
 }
 
 trait DiffParameter{
