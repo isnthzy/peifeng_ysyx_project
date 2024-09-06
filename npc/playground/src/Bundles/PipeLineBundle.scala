@@ -1,7 +1,8 @@
 package Bundles
 import chisel3._
 import chisel3.util._
-import CoreConfig.Configs._
+
+import CoreConfig.Configs.{ADDR_WIDTH,DATA_WIDTH}
 import FuncUnit.Control._
 import Difftest._
 
