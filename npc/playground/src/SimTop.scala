@@ -1,6 +1,6 @@
 import chisel3._
 import chisel3.util._
-import config.Configs._
+import CoreConfig.Configs._
 import PipeLine.{PfStage,IfStage,IdStage,ExStage,LsStage,WbStage}
 import Axi.{Axi4Bridge,AxiArbiter}
 import DiffTest.DiffCommit
