@@ -18,7 +18,7 @@ class IdStage extends Module {
     val from_ex=Input(new Id4ExBusBundle())
     val from_ls=Input(new Id4LsBusBundle())
     val from_wb=Input(new Id4WbBusBundle())
-    val from_csr=new PipeLine4CsrBundle()
+    val from_csr=Flipped(new PipeLine4CsrBundle())
 
     val diffREG=Output((Vec(32, UInt(32.W))))
   })
