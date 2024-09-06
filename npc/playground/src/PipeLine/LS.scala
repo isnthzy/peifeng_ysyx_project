@@ -125,8 +125,20 @@ class LsStage extends Module {
   ls.fw_if.flush:=toPipelineFlush.asUInt.orR
   ls.fw_id.flush:=toPipelineFlush.asUInt.orR
   ls.fw_ex.flush:=toPipelineFlush.asUInt.orR
-
+//diff
+  ls.to_wb.bits.diffExcp.excpValid:=toPipelineFlush.excp
+  ls.to_wb.bits.diffExcp.isMret   :=ls.in.bits.isMret
+  ls.to_wb.bits.diffExcp.intrptNo :=0.U
+  ls.to_wb.bits.diffExcp.cause    :=excpResult.ecode
+  ls.to_wb.bits.diffExcp.exceptionPC:=ls.in.bits.pc
+  ls.to_wb.bits.diffExcp.exceptionInst:=ls.in.bits.inst
+  ls.to_wb.bits.diffLoad:=ls.in.bits.diffLoad
+  ls.to_wb.bits.diffStore:=ls.in.bits.diffStore
+  ls.to_wb.bits.diffLoad.data:=ls.dl.rdata
 //NOTE:
+  ls.to_wb.bits.excpEn:=excpNum.asUInt.orR
+  ls.to_wb.bits.pc:=ls.in.bits.pc
+  ls.to_wb.bits.inst:=ls.in.bits.inst
   ls.to_wb.bits.rd:=ls.in.bits.rd
   ls.to_wb.bits.result:=ls_result
   ls.to_wb.bits.rfWen:=ls.in.bits.rfWen

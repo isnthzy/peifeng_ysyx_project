@@ -24,6 +24,10 @@
 typedef concat(__GUEST_ISA__, _CPU_state) CPU_state;
 typedef concat(__GUEST_ISA__, _ISADecodeInfo) ISADecodeInfo;
 
+typedef concat(__GUEST_ISA__, _NPC_state) NPC_state; 
+//NOTE:未实现la，mips的单独抽象 ,NPC_state是单独在nemu和npc上的抽象
+//不统一为CPU_state的原因是统一CPU_state要做的工作量大
+
 // monitor
 extern unsigned char isa_logo[];
 void init_isa();

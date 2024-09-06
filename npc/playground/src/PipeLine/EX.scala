@@ -140,6 +140,19 @@ class ExStage extends Module {
   exExcpEn:=exExcpType.asUInt.orR
   ex.to_ls.bits.excpEn:=exExcpEn
   ex.to_ls.bits.excpType:=exExcpType
+
+//
+  ex.to_ls.bits.diffStore.valid:=storeEn
+  ex.to_ls.bits.diffStore.index:=0.U
+  ex.to_ls.bits.diffStore.paddr:=memAddr
+  ex.to_ls.bits.diffStore.vaddr:=memAddr
+  ex.to_ls.bits.diffStore.data:=memWdata
+  
+  ex.to_ls.bits.diffLoad.valid:=loadEn
+  ex.to_ls.bits.diffLoad.index:=0.U
+  ex.to_ls.bits.diffLoad.paddr:=memAddr
+  ex.to_ls.bits.diffLoad.vaddr:=memAddr
+  ex.to_ls.bits.diffLoad.data:=DontCare
 //NOTE:
   ex.to_ls.bits.memBadAddr:=memAddr
   ex.to_ls.bits.isMret :=isMret
@@ -147,6 +160,7 @@ class ExStage extends Module {
   ex.to_ls.bits.csrWrAddr:=ex.in.bits.csrWrAddr
   ex.to_ls.bits.csrWrData:=csrWrData
   ex.to_ls.bits.pc:=ex.in.bits.pc
+  ex.to_ls.bits.inst:=ex.in.bits.inst
   ex.to_ls.bits.rd:=ex.in.bits.rd
   ex.to_ls.bits.result:=exResult
   ex.to_ls.bits.addrLow2Bit:=memAddr(1,0)

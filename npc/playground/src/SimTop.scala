@@ -3,8 +3,11 @@ import chisel3.util._
 import config.Configs._
 import PipeLine.{PfStage,IfStage,IdStage,ExStage,LsStage,WbStage}
 import Axi.{Axi4Bridge,AxiArbiter}
+import DiffTest.DiffCommit
 import FuncUnit.CsrFile
 import IP.Axi4LiteSram
+import org.json4s.Diff
+import config.GenCtrl
 
 class SimTop extends Module {
   val io = IO(new Bundle {
@@ -70,6 +73,15 @@ class SimTop extends Module {
 // wb begin
   StageConnect(LoadStore.ls.to_wb,WriteBack.wb.in)
 
+  if(GenCtrl.VERILATOR_SIM){
+    val DiffCommit= Module(new DiffCommit())
+    DiffCommit.diff.instr:=WriteBack.wb.diffInstrCommit
+    DiffCommit.diff.load :=WriteBack.wb.diffLoadCommit
+    DiffCommit.diff.store:=WriteBack.wb.diffStoreCommit
+    DiffCommit.diff.excp :=WriteBack.wb.diffExcpCommit
+    DiffCommit.diff.csr  :=CsrFile.io.diffCSR
+    DiffCommit.diff.reg  :=InstDecode.id.diffREG
+  }
 }
 
 object StageConnect {

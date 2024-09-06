@@ -4,6 +4,7 @@ import chisel3._
 import chisel3.util._
 import config.Configs._
 import Bundles._
+import Bundles.Difftest._
 import Util.Mux1hMap
 import chisel3.experimental.BundleLiterals._
 
@@ -20,7 +21,7 @@ class CsrFile extends Module{
     val to_csr=Input(new Ls2CsrBundle())
     val from_csr=Flipped(new PipeLine4CsrBundle())
     val csrEntries=Output(new CsrEntriesBundle())
-    // val diff_csr=Output()
+    val diffCSR=Output(new DiffCsrRegBundle())
   })
   // csr_addr，csr寄存器的地址
   // in写入csr的值，out用于写入rd寄存器的值
@@ -79,7 +80,10 @@ class CsrFile extends Module{
     mtvec.mode:=mtvecWrData.mode
   }
 //
-
+  io.diffCSR.mcause :=mcause.asUInt
+  io.diffCSR.mepc   :=mepc.asUInt
+  io.diffCSR.mstatus:=mstatus.asUInt
+  io.diffCSR.mtvec  :=mtvec.asUInt
 }
 
 

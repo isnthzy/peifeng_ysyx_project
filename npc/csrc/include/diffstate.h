@@ -62,7 +62,6 @@ typedef struct {
   base_state_t base;
   greg_state_t regs;
   csr_state_t  csr;
-
 } difftest_core_state_t;
 
 typedef struct{
