@@ -14,7 +14,7 @@ class PfStage extends Module {
     val from_ls=Input(new Pf4LsBusBundle())
 
     val csrEntries=Input(new CsrEntriesBundle)
-    val al=Flipped(new AxiBridgeAddrLoad())
+    val al=new AxiBridgeAddrLoad()
     val s =new AxiBridgeStore()
   })
   val pfFlush=dontTouch(Wire(Bool()))
