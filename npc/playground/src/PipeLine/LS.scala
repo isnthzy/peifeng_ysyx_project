@@ -90,7 +90,7 @@ class LsStage extends Module {
 
   val memBadAddr=ls.in.bits.memBadAddr //为访存地址，
   val excpNum=excpType.asUInt
-  val excpResult=new ExcpResultBundle()
+  val excpResult=Wire(new ExcpResultBundle())
   excpResult:=MuxCase(0.U,Seq(
     excpNum(0)  -> Cat(ECODE.IAM,lsValid ,ls.in.bits.pc    ),
     excpNum(1)  -> Cat(ECODE.IAF,lsValid ,ls.in.bits.pc    ),
