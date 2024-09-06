@@ -2,7 +2,7 @@ package Bundles.Difftest
 
 import chisel3._
 import chisel3.util._
-import config.Configs._
+import CoreConfig.Configs._
 
 class DiffInstrBundle extends Bundle{
   val index=UInt(8.W)

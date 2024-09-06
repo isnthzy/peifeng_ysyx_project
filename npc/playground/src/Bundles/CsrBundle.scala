@@ -2,7 +2,7 @@ package Bundles
 
 import chisel3._
 import chisel3.util._  
-import config.Configs._
+import CoreConfig.Configs._
 
 class Ls2CsrBundle extends Bundle{
   val wen=Bool()

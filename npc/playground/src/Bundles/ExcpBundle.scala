@@ -2,7 +2,7 @@ package Bundles
 
 import chisel3._
 import chisel3.util._
-import config.Configs._
+import CoreConfig.Configs._
 
 object ECODE{ //简化写法，按照手册英文首字母简写
   val IAM= 0.U(6.W) //Instruction address misaligned
