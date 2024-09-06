@@ -2,7 +2,7 @@ package PipeLine
 
 import chisel3._
 import chisel3.util._
-import config.Configs._
+import CoreConfig.Configs._
 import Bundles._
 import FuncUnit.{Alu}
 import FuncUnit.Control._
