@@ -46,7 +46,6 @@
 );
 `DIFFTEST_MOD_DECL(InstrCommit)(
     input        clock,
-    input [ 7:0] coreid,
     input [ 7:0] index,
     input        valid,
     input [63:0] pc,
@@ -134,69 +133,20 @@ endmodule
 // DifftestCSRRegState
 `DIFFTEST_DPIC_FUNC_DECL(CSRRegState) (
     `DPIC_ARG_BYTE coreid,
-    `DPIC_ARG_LONG crmd,
-    `DPIC_ARG_LONG prmd,
-    `DPIC_ARG_LONG euen,
-    `DPIC_ARG_LONG ecfg,
-    `DPIC_ARG_LONG estat,
-    `DPIC_ARG_LONG era,
-    `DPIC_ARG_LONG badv,
-    `DPIC_ARG_LONG eentry,
-    `DPIC_ARG_LONG tlbidx,
-    `DPIC_ARG_LONG tlbehi,
-    `DPIC_ARG_LONG tlbelo0,
-    `DPIC_ARG_LONG tlbelo1,
-    `DPIC_ARG_LONG asid,
-    `DPIC_ARG_LONG pgdl,
-    `DPIC_ARG_LONG pgdh,
-    `DPIC_ARG_LONG save0,
-    `DPIC_ARG_LONG save1,
-    `DPIC_ARG_LONG save2,
-    `DPIC_ARG_LONG save3,
-    `DPIC_ARG_LONG tid,
-    `DPIC_ARG_LONG tcfg,
-    `DPIC_ARG_LONG tval,
-    `DPIC_ARG_LONG ticlr,
-    `DPIC_ARG_LONG llbctl,
-    `DPIC_ARG_LONG tlbrentry,
-    `DPIC_ARG_LONG dmw0,
-    `DPIC_ARG_LONG dmw1
+    `DPIC_ARG_LONG mstatus,
+    `DPIC_ARG_LONG mtvec,
+    `DPIC_ARG_LONG mepc,
+    `DPIC_ARG_LONG mcause
 );
 `DIFFTEST_MOD_DECL(CSRRegState)(
     input        clock,
-    input [63:0] crmd,
-    input [63:0] prmd,
-    input [63:0] euen,
-    input [63:0] ecfg,
-    input [63:0] estat,
-    input [63:0] era,
-    input [63:0] badv,
-    input [63:0] eentry,
-    input [63:0] tlbidx,
-    input [63:0] tlbehi,
-    input [63:0] tlbelo0,
-    input [63:0] tlbelo1,
-    input [63:0] asid,
-    input [63:0] pgdl,
-    input [63:0] pgdh,
-    input [63:0] save0,
-    input [63:0] save1,
-    input [63:0] save2,
-    input [63:0] save3,
-    input [63:0] tid,
-    input [63:0] tcfg,
-    input [63:0] tval,
-    input [63:0] ticlr,
-    input [63:0] llbctl,
-    input [63:0] tlbrentry,
-    input [63:0] dmw0,
-    input [63:0] dmw1
+    input [63:0] mstatus,
+    input [63:0] mtvec,
+    input [63:0] mepc,
+    input [63:0] mcause
 );
     `DIFFTEST_MOD_DPIC_CALL_BEGIN(CSRRegState) (
-        crmd, prmd, euen, ecfg, estat, era, badv, eentry,
-        tlbidx, tlbehi, tlbelo0, tlbelo1, asid, pgdl, pgdh, save0,
-        save1, save2, save3, tid, tcfg, tval, ticlr, llbctl, tlbrentry,
-        dmw0, dmw1
+        mstatus, mtvec, mepc, mcause
         ) `DIFFTEST_MOD_DPIC_CALL_END(CSRRegState)
 endmodule
 
