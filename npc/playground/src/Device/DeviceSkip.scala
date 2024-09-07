@@ -10,8 +10,8 @@ class DeviceSkip extends Module with DeviceAddr{
     val addr = Input(UInt(ADDR_WIDTH.W))
     val skip = Output(Bool())
   })
-  val readSkip  = false.B 
-  val writeSkip = false.B
+  val readSkip  = Wire(Bool()) 
+  val writeSkip = Wire(Bool()) 
   io.skip := readSkip || writeSkip
 
   readSkip:=(
