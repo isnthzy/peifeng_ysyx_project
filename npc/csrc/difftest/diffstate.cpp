@@ -1,5 +1,6 @@
 #include "../include/diffstate.h"
 #include "../include/npc_debug.h"
+#include "../include/npc_memory.h"
 
 #define DIFF_CHECK(addr1, addr2, atpc,name) if(addr1!=addr2){\
   wLog("The %s is different\nref:0x%08x dut:0x%08x",name,addr1,addr2); \
@@ -8,7 +9,6 @@
 }
 
 extern const char *regs[];
-uint8_t* guest_to_host(paddr_t paddr);
 
 
 void Difftest::init_difftest(char *ref_so_file, int port){
