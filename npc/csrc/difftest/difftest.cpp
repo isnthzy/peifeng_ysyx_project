@@ -41,22 +41,21 @@ int Difftest::diff_step(){
       step_skip_num++;
     }
     
-    #ifdef CONFIG_TRACE
-    static char logbuf[128];
-    static char tmp_dis[64];
-    uint32_t tmp_inst=dut_commit.commit[idx_commit_num].inst;
-    vaddr_t tmp_pc=dut_commit.commit[idx_commit_num].pc;
-    disassemble(tmp_dis, sizeof(tmp_dis),tmp_pc, (uint8_t*)&tmp_inst,4);
-    sprintf(logbuf,"[%ld]\t0x%08x: %08x\t%s",total_inst,tmp_pc,tmp_inst,tmp_dis);
-    #ifdef CONFIG_ITRACE
-    log_write("%s\n",logbuf);
-    enqueueIRingBuffer(&iring_buffer,logbuf); //入队环形缓冲区
-    #endif
-    wp_trace(logbuf);
-    if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s\n",logbuf)); }
-    #endif
+    // #ifdef CONFIG_TRACE
+    // static char logbuf[128];
+    // static char tmp_dis[64];
+    // uint32_t tmp_inst=dut_commit.commit[idx_commit_num].inst;
+    // vaddr_t tmp_pc=dut_commit.commit[idx_commit_num].pc;
+    // disassemble(tmp_dis, sizeof(tmp_dis),tmp_pc, (uint8_t*)&tmp_inst,4);
+    // sprintf(logbuf,"[%ld]\t0x%08x: %08x\t%s",total_inst,tmp_pc,tmp_inst,tmp_dis);
+    // #ifdef CONFIG_ITRACE
+    // log_write("%s\n",logbuf);
+    // enqueueIRingBuffer(&iring_buffer,logbuf); //入队环形缓冲区
+    // #endif
+    // wp_trace(logbuf);
+    // if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s\n",logbuf)); }
+    // #endif
   }
-
   return 0;
   // if(step_skip_num>0){
   //   nemu_proxy->ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
