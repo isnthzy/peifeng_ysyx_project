@@ -34,7 +34,7 @@ class WbStage extends Module {
   wb.diffInstrCommit.valid:=realValid
   wb.diffInstrCommit.pc   :=wb.in.bits.pc
   wb.diffInstrCommit.instr:=wb.in.bits.inst
-  wb.diffInstrCommit.skip :=false.B
+  wb.diffInstrCommit.skip :=wb.in.bits.isDeviceSkip
   wb.diffInstrCommit.wen  :=wb.in.bits.rfWen&&wbValid
   wb.diffInstrCommit.wdest:=wb.in.bits.rd
   wb.diffInstrCommit.wdata:=wb.in.bits.result

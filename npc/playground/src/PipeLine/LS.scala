@@ -136,6 +136,7 @@ class LsStage extends Module {
   ls.to_wb.bits.diffStore:=ls.in.bits.diffStore
   ls.to_wb.bits.diffLoad.data:=ls.dl.rdata
 //NOTE:
+  ls.to_wb.bits.isDeviceSkip:=ls.in.bits.isDeviceSkip
   ls.to_wb.bits.excpEn:=excpNum.asUInt.orR
   ls.to_wb.bits.pc:=ls.in.bits.pc
   ls.to_wb.bits.inst:=ls.in.bits.inst

@@ -1,5 +1,5 @@
-#include "diffstate.h"
-#include "../include/debug.h"
+#include "../include/diffstate.h"
+#include "../include/npc_debug.h"
 
 #define DIFF_CHECK(addr1, addr2, atpc,name) if(addr1!=addr2){\
   wLog("The %s is different\nref:0x%08x dut:0x%08x",name,addr1,addr2); \
@@ -69,8 +69,9 @@ int Difftest::diff_step(){
 
   if(!checkregs()){
     display();
+    return NPC_ABORT;
   }else{
-    
+    return NPC_RUNNING;
   }
 }
 

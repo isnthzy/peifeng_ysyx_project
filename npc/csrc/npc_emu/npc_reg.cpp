@@ -2,48 +2,48 @@
 #include "../include/npc_verilator.h"
 extern CPU_state cpu;
 
-void cpy_reg() {
-  // cpu.mstatus=top->rootp->SimTop__DOT__ID_stage__DOT__Csrfile__DOT__mstatus;
-  // cpu.mepc=top->rootp->SimTop__DOT__ID_stage__DOT__Csrfile__DOT__mepc;
-  // cpu.mtvec=top->rootp->SimTop__DOT__ID_stage__DOT__Csrfile__DOT__mtvec;
-  // cpu.mcause=top->rootp->SimTop__DOT__ID_stage__DOT__Csrfile__DOT__mcause;
-  //csr寄存器通过dpic修改（因为csr指令在ex级处理）
+// void cpy_reg() {
+//   // cpu.mstatus=top->rootp->SimTop__DOT__ID_stage__DOT__Csrfile__DOT__mstatus;
+//   // cpu.mepc=top->rootp->SimTop__DOT__ID_stage__DOT__Csrfile__DOT__mepc;
+//   // cpu.mtvec=top->rootp->SimTop__DOT__ID_stage__DOT__Csrfile__DOT__mtvec;
+//   // cpu.mcause=top->rootp->SimTop__DOT__ID_stage__DOT__Csrfile__DOT__mcause;
+//   //csr寄存器通过dpic修改（因为csr指令在ex级处理）
 
-  cpu.gpr[0]=0;
-  cpu.gpr[1]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_1;
-  cpu.gpr[2]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_2;
-  cpu.gpr[3]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_3;
-  cpu.gpr[4]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_4;
-  cpu.gpr[5]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_5;
-  cpu.gpr[6]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_6;
-  cpu.gpr[7]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_7;
-  cpu.gpr[8]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_8;
-  cpu.gpr[9]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_9;
-  cpu.gpr[10]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_10;
-  cpu.gpr[11]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_11;
-  cpu.gpr[12]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_12;
-  cpu.gpr[13]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_13;
-  cpu.gpr[14]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_14;
-  cpu.gpr[15]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_15;
-#ifndef CONFIG_RVE
-  cpu.gpr[16]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_16;
-  cpu.gpr[17]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_17;
-  cpu.gpr[18]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_18;
-  cpu.gpr[19]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_19;
-  cpu.gpr[20]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_20;
-  cpu.gpr[21]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_21;
-  cpu.gpr[22]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_22;
-  cpu.gpr[23]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_23;
-  cpu.gpr[24]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_24;
-  cpu.gpr[25]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_25;
-  cpu.gpr[26]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_26;
-  cpu.gpr[27]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_27;
-  cpu.gpr[28]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_28;
-  cpu.gpr[29]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_29;
-  cpu.gpr[30]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_30;
-  cpu.gpr[31]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_31;
-#endif
-}
+//   cpu.gpr[0]=0;
+//   cpu.gpr[1]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_1;
+//   cpu.gpr[2]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_2;
+//   cpu.gpr[3]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_3;
+//   cpu.gpr[4]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_4;
+//   cpu.gpr[5]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_5;
+//   cpu.gpr[6]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_6;
+//   cpu.gpr[7]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_7;
+//   cpu.gpr[8]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_8;
+//   cpu.gpr[9]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_9;
+//   cpu.gpr[10]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_10;
+//   cpu.gpr[11]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_11;
+//   cpu.gpr[12]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_12;
+//   cpu.gpr[13]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_13;
+//   cpu.gpr[14]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_14;
+//   cpu.gpr[15]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_15;
+// #ifndef CONFIG_RVE
+//   cpu.gpr[16]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_16;
+//   cpu.gpr[17]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_17;
+//   cpu.gpr[18]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_18;
+//   cpu.gpr[19]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_19;
+//   cpu.gpr[20]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_20;
+//   cpu.gpr[21]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_21;
+//   cpu.gpr[22]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_22;
+//   cpu.gpr[23]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_23;
+//   cpu.gpr[24]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_24;
+//   cpu.gpr[25]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_25;
+//   cpu.gpr[26]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_26;
+//   cpu.gpr[27]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_27;
+//   cpu.gpr[28]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_28;
+//   cpu.gpr[29]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_29;
+//   cpu.gpr[30]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_30;
+//   cpu.gpr[31]=top->rootp->SimTop__DOT__ID_stage__DOT__Regfile__DOT__rf_31;
+// #endif
+// }
 
 
 int check_reg_idx(int idx) {

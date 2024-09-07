@@ -4,6 +4,7 @@ import chisel3._
 import chisel3.util._
 import CoreConfig.Configs._
 import Bundles._
+import Device.DeviceSkip
 import FuncUnit.{Alu}
 import FuncUnit.Control._
 import Util.{Mux1hDefMap,SDEF}
@@ -140,7 +141,10 @@ class ExStage extends Module {
   exExcpEn:=exExcpType.asUInt.orR
   ex.to_ls.bits.excpEn:=exExcpEn
   ex.to_ls.bits.excpType:=exExcpType
-
+//
+  val DeviceSkip=Module(new DeviceSkip())
+  DeviceSkip.io.addr:=memAddr
+  val isDeviceSkip=DeviceSkip.io.skip
 //
   ex.to_ls.bits.diffStore.valid:=storeEn
   ex.to_ls.bits.diffStore.index:=0.U
@@ -154,6 +158,7 @@ class ExStage extends Module {
   ex.to_ls.bits.diffLoad.vaddr:=memAddr
   ex.to_ls.bits.diffLoad.data:=DontCare
 //NOTE:
+  ex.to_ls.bits.isDeviceSkip:=isDeviceSkip
   ex.to_ls.bits.memBadAddr:=memAddr
   ex.to_ls.bits.isMret :=isMret
   ex.to_ls.bits.csrWen :=csrWen

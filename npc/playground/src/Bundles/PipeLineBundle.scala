@@ -83,6 +83,7 @@ class Ex2LsBusBundle extends Bundle{
   val diffLoad =new DiffLoadBundle()
   val diffStore=new DiffStoreBundle()
 
+  val isDeviceSkip=Bool()
   val excpEn=Bool()
   val excpType=new ExExcpTypeBundle()
   val memBadAddr=UInt(ADDR_WIDTH.W)
@@ -111,6 +112,7 @@ class Ls2WbBusBundle extends Bundle{
   val diffStore=new DiffStoreBundle()
   val diffExcp =new DiffExcpBundle()
 
+  val isDeviceSkip=Bool()
   val excpEn=Bool()
   val pc=UInt(ADDR_WIDTH.W)
   val inst=UInt(32.W)

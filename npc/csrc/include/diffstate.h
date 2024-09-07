@@ -55,7 +55,7 @@ typedef struct {
 } load_event_t;
 
 typedef struct {
-  data_t  gpr[32];
+  data_t  gpr[MUXDEF(CONFIG_RVE,16,32)];
 } greg_state_t;
 
 typedef struct {

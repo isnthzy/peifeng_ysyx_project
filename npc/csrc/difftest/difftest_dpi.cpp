@@ -5,7 +5,7 @@
 #define RETURN_NO_NULL \
   if (difftest == NULL) return;
 
-extern Difftest* difftest = NULL;
+extern Difftest* difftest;
 
 INTERFACE_INSTR_COMMIT {
   RETURN_NO_NULL
@@ -85,6 +85,7 @@ INTERFACE_GREG_STATE {
     packet->gpr[13] = gpr_13;
     packet->gpr[14] = gpr_14;
     packet->gpr[15] = gpr_15;
+  #ifndef CONFIG_RVE
     packet->gpr[16] = gpr_16;
     packet->gpr[17] = gpr_17;
     packet->gpr[18] = gpr_18;
@@ -101,4 +102,5 @@ INTERFACE_GREG_STATE {
     packet->gpr[29] = gpr_29;
     packet->gpr[30] = gpr_30;
     packet->gpr[31] = gpr_31;
+  #endif
 }

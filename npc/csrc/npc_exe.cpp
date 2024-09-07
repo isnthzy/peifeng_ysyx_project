@@ -173,7 +173,7 @@ static void npc_execute(uint64_t n) {
 
     step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
     
-    difftest->diff_step();
+    npc_state.state=difftest->diff_step();
     // cpy_reg();
     // if(cpu_info.valid){
     //   trace_and_difftest();
