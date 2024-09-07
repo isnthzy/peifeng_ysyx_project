@@ -16,7 +16,7 @@
 #ifndef __CPU_DIFFTEST_H__
 #define __CPU_DIFFTEST_H__
 
-#include "npc_common.h"
+#include "../npc_common.h"
 
 
 void difftest_skip_ref();

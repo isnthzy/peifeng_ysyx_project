@@ -1,5 +1,5 @@
-#include "../include/diffstate.h"
-#include "../include/nemuproxy.h"
+#include "../include/difftest/diffstate.h"
+#include "../include/difftest/nemuproxy.h"
 #include <dlfcn.h>
 #include <assert.h>
 

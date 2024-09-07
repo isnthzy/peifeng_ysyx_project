@@ -1,9 +1,8 @@
 #include "../include/npc_common.h"
 #include "../include/npc_verilator.h"
-#include "../include/iringbuf.h"
-#include "../include/npc_memory.h"
-#include "../include/iringbuf.h"
-#include "../include/npc_device.h"
+#include "../include/util/iringbuf.h"
+#include "../include/npc/npc_memory.h"
+#include "../include/npc/npc_device.h"
 extern CPU_state cpu;
 extern CPU_info cpu_info;
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN={};

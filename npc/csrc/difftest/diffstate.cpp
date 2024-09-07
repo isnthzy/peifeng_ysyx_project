@@ -1,6 +1,6 @@
-#include "../include/diffstate.h"
-#include "../include/npc_debug.h"
-#include "../include/npc_memory.h"
+#include "../include/difftest/diffstate.h"
+#include "../include/util/debug.h"
+#include "../include/npc/npc_memory.h"
 
 #define DIFF_CHECK(addr1, addr2, atpc,name) if(addr1!=addr2){\
   wLog("The %s is different\nref:0x%08x dut:0x%08x",name,addr1,addr2); \

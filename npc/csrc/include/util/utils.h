@@ -17,18 +17,7 @@
 #define NPC_UTILS_H
 #include "../npc_common.h"
 
-// ----------- state -----------
-
-typedef struct {
-  int state;
-  word_t halt_pc;
-  uint32_t halt_ret;
-} NPCState;
-
-extern NPCState npc_state;
-
 // ----------- log -----------
-
 #define ANSI_FG_BLACK   "\33[1;30m"
 #define ANSI_FG_RED     "\33[1;31m"
 #define ANSI_FG_GREEN   "\33[1;32m"

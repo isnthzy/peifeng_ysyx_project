@@ -16,7 +16,6 @@
 #ifndef __NPCDEBUG_H__
 #define __NPCDEBUG_H__
 #include <stdio.h>
-#include "utils.h"
 
 void npc_quit();
 

@@ -1,7 +1,7 @@
 #include "../include/npc_common.h"
-#include "../include/npc_debug.h"
-#include "../include/npc_reg.h"
-#include "../include/npc_memory.h"
+#include "../include/util/debug.h"
+#include "../include/npc/npc_reg.h"
+#include "../include/npc/npc_memory.h"
 #include <regex.h>
 #include <assert.h>
 #include <stdlib.h>

@@ -1,8 +1,8 @@
 #ifndef DIFFTEST_DPIC_H
 #define DIFFTEST_DPIC_H
 
-#include "stdint.h"
-#include "npc_conf.h"
+#include <stdint.h>
+#include "../npc_conf.h"
 
 #define DIFFTEST_DPIC_FUNC_NAME(name) \
     v_difftest_##name

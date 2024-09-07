@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "../include/ftrace.h"
+#include "../include/util/ftrace.h"
 
 int func_depth=0;
 char n_spaces[64];

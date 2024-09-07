@@ -1,7 +1,7 @@
 #ifndef NPC_EXE_H
 #define NPC_EXE_H
 #include "../npc_common.h"
-#include "include/util/iringbuf.h"
+#include "../util/iringbuf.h"
 
 IRingBuffer mtrace_buffer;
 IRingBuffer iring_buffer;

@@ -2,8 +2,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "../include/npc_common.h"
-#include "../include/npc_memory.h"
-#include "../include/npc_sdb.h"
+#include "../include/npc/npc_memory.h"
+#include "../include/npc/npc_sdb.h"
 static int is_batch_mode = false;
 static int cmd_c(char *args) {
   npc_exev(-1);

@@ -1,7 +1,9 @@
 #ifndef __NPCCOMMON_H__
 #define __NPCCOMMON_H__
+
 #include "util/macro.h"
 #include "util/debug.h"
+#include "util/utils.h"
 #include "npc_conf.h"
 #include <stdbool.h>
 #include <inttypes.h>
@@ -43,5 +45,16 @@ typedef struct {
   word_t inst;
   bool valid;
 }CPU_info;
+
+// ----------- state -----------
+
+typedef struct {
+  int state;
+  word_t halt_pc;
+  uint32_t halt_ret;
+} NPCState;
+
+extern NPCState npc_state;
+
 
 #endif

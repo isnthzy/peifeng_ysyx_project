@@ -1,6 +1,6 @@
 #ifndef DIFFSTATE_H
 #define DIFFSTATE_H
-#include "npc_common.h"
+#include "../npc_common.h"
 #include "nemuproxy.h"
 
 #define DIFFTEST_TO_REF 1

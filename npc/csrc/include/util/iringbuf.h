@@ -1,7 +1,7 @@
 #ifndef _IRINGBUF_H__
 #define _IRINGBUF_H__
 #include <stdbool.h>
-#include "npc_conf.h"
+#include "../npc_conf.h"
 #define MAX_STRING_LENGTH 128
 typedef struct {
     char buffer[IRINGBUF_MAX_NUM][MAX_STRING_LENGTH];
