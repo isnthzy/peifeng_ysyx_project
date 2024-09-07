@@ -1,6 +1,7 @@
 #include "../include/diffstate.h"
 #include "../include/nemuproxy.h"
 #include <dlfcn.h>
+#include <assert.h>
 
 void NemuProxy::init_nemu_proxy(char *ref_so_file, int port){
   assert(ref_so_file != NULL);

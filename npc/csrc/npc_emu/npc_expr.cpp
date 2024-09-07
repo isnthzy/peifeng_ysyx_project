@@ -1,6 +1,8 @@
 #include "../include/npc_common.h"
 #include "../include/npc_debug.h"
 #include <regex.h>
+#include <assert.h>
+#include <stdlib.h>
 
 #define UNUSED(x) (void)(x)
 word_t isa_reg_str2val(const char *s, bool *success);

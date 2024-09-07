@@ -1,5 +1,6 @@
 #include "../include/npc_common.h"
 #include <sys/time.h>
+#include <stdlib.h>
 
 static uint64_t boot_time = 0;
 static uint64_t get_time_internal() {

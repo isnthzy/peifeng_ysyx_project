@@ -1,4 +1,5 @@
 #include "../include/npc_common.h"
+#include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 word_t pmem_read(paddr_t addr, int len);
