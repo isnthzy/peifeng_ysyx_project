@@ -1,10 +1,14 @@
 #ifndef __NPCCOMMON_H__
 #define __NPCCOMMON_H__
-#include "macro.h"
+
+#include "util/macro.h"
+#include "util/debug.h"
+#include "util/utils.h"
 #include "npc_conf.h"
 #include <stdbool.h>
 #include <inttypes.h>
 
+enum { NPC_RUNNING, NPC_STOP, NPC_END, NPC_ABORT, NPC_QUIT };
 typedef uint32_t word_t;
 typedef MUXDEF(CONFIG_RV64,uint64_t, uint32_t) vaddr_t;
 typedef MUXDEF(CONFIG_RV64,uint64_t, uint32_t) paddr_t;
@@ -41,5 +45,16 @@ typedef struct {
   word_t inst;
   bool valid;
 }CPU_info;
-#include "npc_debug.h"
+
+// ----------- state -----------
+
+typedef struct {
+  int state;
+  word_t halt_pc;
+  uint32_t halt_ret;
+} NPCState;
+
+extern NPCState npc_state;
+
+
 #endif

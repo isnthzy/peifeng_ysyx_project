@@ -1,5 +1,5 @@
-#include "../include/difftest_dpic.h"
-#include "../include/diffstate.h"
+#include "../include/difftest/difftest_dpic.h"
+#include "../include/difftest/difftest.h"
 #include "../include/npc_common.h"
 
 #define RETURN_NO_NULL \

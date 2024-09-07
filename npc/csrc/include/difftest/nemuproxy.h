@@ -1,6 +1,6 @@
 #ifndef NEMUPROXY_H
 #define NEMUPROXY_H 
-#include "npc_common.h"
+#include "../npc_common.h"
 
 
 class NemuProxy {

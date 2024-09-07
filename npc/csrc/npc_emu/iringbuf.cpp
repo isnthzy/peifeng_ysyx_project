@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
-#include "../include/iringbuf.h"
+#include "../include/util/iringbuf.h"
 
 void initializeIRingBuffer(IRingBuffer* buffer,int size) {
     memset(buffer->buffer, 0, sizeof(buffer->buffer));
