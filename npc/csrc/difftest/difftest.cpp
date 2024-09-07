@@ -31,8 +31,8 @@ void Difftest::first_commit(){
 }
 int Difftest::diff_step(){
   //TODO:define返回值，用来判断diff运行的状况
-  idx_commit_num=0;
-  step_skip_num=0;
+  difftest->idx_commit_num=0;
+  difftest->step_skip_num=0;
   return 0;
   // while(idx_commit_num<DIFFTEST_COMMIT_WIDTH&&dut_commit.commit[idx_commit_num].valid){
   //   total_inst+=1;
