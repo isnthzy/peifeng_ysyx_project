@@ -189,11 +189,13 @@ void init_monitor(int argc, char *argv[]) {
   IFDEF(CONFIG_DEVICE, init_device());
 
   /* Initialize differential testing. */
-  if(difftest_flag){
-    difftest = new Difftest();
+  //先实现带difftest的功能，在对difftest进行剥离
+  difftest = new Difftest();
 
-    difftest->init_difftest(diff_so_file, difftest_port);
-    difftest->set_img_size(img_size);
+  difftest->init_difftest(diff_so_file, difftest_port);
+  difftest->set_img_size(img_size);
+  if(difftest_flag){
+
   }
 
   /* Initialize the simple debugger. */
