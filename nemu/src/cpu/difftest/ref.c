@@ -64,17 +64,17 @@ __EXPORT void difftest_raise_intr(word_t NO) {
 
 __EXPORT void difftest_ref_reg_display() {
   fflush(NULL);
-  put("\n==============  REF Regs  ==============");
-  for (int i = 0; i < 32; i += 4) {
-    put("%s(r%2d): 0x%08x %s(r%2d): 0x%08x %s(r%2d): 0x%08x %s(r%2d): 0x%08x", 
+  puts("\n==============  REF Regs  ==============");
+  for (int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i += 4) {
+    printf("%s(r%2d): 0x%08x %s(r%2d): 0x%08x %s(r%2d): 0x%08x %s(r%2d): 0x%08x \n", 
       regs[i]  , i  , cpu.gpr[i]  ,regs[i+1], i+1, cpu.gpr[i+1],
       regs[i+2], i+2, cpu.gpr[i+2],regs[i+3], i+3, cpu.gpr[i+3]);
   }
-  put("pc: 0x%08x inst: 0x%08x", cpu.pc, 0);
-  put("MSTATUS: 0x%08x, MTVEC: 0x%08x, MEPC: 0x%08x", cpu.mstatus, cpu.mtvec, cpu.mepc);
-  put(" MCAUSE: 0x%08x", cpu.mcause);
-  put("*******************************************************************************");
-  put("\n==============  REF Regs  ==============");
+  printf("pc: 0x%08x inst: 0x%08x \n", cpu.pc, 0);
+  printf("MSTATUS: 0x%08x, MTVEC: 0x%08x, MEPC: 0x%08x \n", cpu.mstatus, cpu.mtvec, cpu.mepc);
+  printf(" MCAUSE: 0x%08x \n", cpu.mcause);
+  puts("*******************************************************************************");
+  puts("\n==============  REF Regs  ==============");
   fflush(NULL);
 }
 
