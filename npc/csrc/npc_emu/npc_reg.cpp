@@ -4,7 +4,6 @@
 #include "../include/difftest/difftest.h"
 
 #define gpr(idx) (difftest->get_dut_gpr(idx))
-// extern CPU_state cpu;
 
 // void cpy_reg() {
 //   // cpu.mstatus=top->rootp->SimTop__DOT__ID_stage__DOT__Csrfile__DOT__mstatus;
