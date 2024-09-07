@@ -66,7 +66,7 @@ void device_update() {
 
 
 void  device_write(paddr_t addr,int len,word_t data){
-  difftest_skip_ref();
+  // difftest_skip_ref();
   if(addr==SERIAL_PORT){
     putchar(data);
     return;
@@ -88,7 +88,7 @@ void  device_write(paddr_t addr,int len,word_t data){
 
 word_t device_read(paddr_t addr,int len){
   static uint64_t rtc_us=0;
-  difftest_skip_ref();
+  // difftest_skip_ref();
   if(addr==RTC_ADDR||addr==RTC_ADDR+4){
     rtc_us=get_time();
     if(addr==RTC_ADDR)   return (uint32_t)rtc_us;

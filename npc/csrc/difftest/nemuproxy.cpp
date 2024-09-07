@@ -1,5 +1,5 @@
-#include "diffstate.h"
-#include "nemuproxy.h"
+#include "../include/diffstate.h"
+#include "../include/nemuproxy.h"
 #include <dlfcn.h>
 
 void NemuProxy::init_nemu_proxy(char *ref_so_file, int port){

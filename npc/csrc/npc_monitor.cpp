@@ -1,7 +1,7 @@
 #include "include/npc_common.h"
 #include "include/npc_verilator.h"
 #include "include/diffstate.h"
-extern Difftest* difftest;
+Difftest* difftest= NULL;
 
 void step_and_dump_wave();
 void init_difftest(char *ref_so_file, long img_size, int port);
@@ -203,6 +203,7 @@ void init_monitor(int argc, char *argv[]) {
 
   /* Initialize differential testing. */
   if(difftest_flag){
+    difftest = new Difftest;
     difftest->init_difftest(diff_so_file, difftest_port);
     difftest->set_img_size(img_size);
   }

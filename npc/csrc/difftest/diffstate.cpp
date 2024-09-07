@@ -69,8 +69,9 @@ int Difftest::diff_step(){
 
   if(!checkregs()){
     display();
+    return NPC_ABORT;
   }else{
-    
+    return NPC_RUNNING;
   }
 }
 

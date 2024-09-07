@@ -15,6 +15,19 @@ object Configs {
   def INST_NOP = "h00000013".U(32.W)
 }
 
+trait DeviceAddr{
+  //NOTE:警告，请确保设备地址与协同仿真框架一致，避免skip信号提交错误
+  def DEVICE_BASE = 0xa0000000.U(32.W)
+  def SERIAL_PORT = DEVICE_BASE + 0x00003f8.U(32.W)
+  def RTC_ADDR    = DEVICE_BASE + 0x0000048.U(32.W)
+  def KBD_ADDR    = DEVICE_BASE + 0x0000060.U(32.W)
+  def VGACTL_ADDR = DEVICE_BASE + 0x0000100.U(32.W)
+  def SYNC_ADDR   = VGACTL_ADDR + 4.U(32.W)
+  def FB_ADDR     = DEVICE_BASE + 0x1000000.U(32.W)
+
+  def SCREEN_SIZE = 400*300
+}
+
 object ISAConfig{
   def RV32E = false
 }
