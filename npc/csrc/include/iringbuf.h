@@ -22,4 +22,8 @@ bool isIRingBufferFull(const IRingBuffer* buffer);
 bool enqueueIRingBuffer(IRingBuffer* buffer, const char* data);
 // 出队操作
 bool dequeueIRingBuffer(IRingBuffer* buffer, char* data);
+
+void putIringbuf();
+
+void mputIringbuf();
 #endif

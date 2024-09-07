@@ -1,15 +1,13 @@
 #include "../include/npc_common.h"
 #include "../include/npc_verilator.h"
 #include "../include/iringbuf.h"
-word_t paddr_read(paddr_t addr, int len);
-void paddr_write(paddr_t addr, int len, word_t data);
-extern  void  device_write(paddr_t addr,int len,word_t data);
-extern word_t device_read(paddr_t addr,int len);
+#include "../include/npc_memory.h"
+#include "../include/iringbuf.h"
+#include "../include/npc_device.h"
 extern CPU_state cpu;
 extern CPU_info cpu_info;
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN={};
 // static uint8_t pmem[CONFIG_MSIZE];
-extern IRingBuffer mtrace_buffer;
 
 
 void init_mem() {
@@ -50,7 +48,6 @@ void pmem_write(paddr_t addr, int len, word_t data) {
   host_write(guest_to_host(addr), len, data);
 }
 
-extern void putIringbuf();
 void mputIringbuf(){
   while(!isIRingBufferEmpty(&mtrace_buffer)){
     char pop_iringbufdata[100];
