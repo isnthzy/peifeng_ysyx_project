@@ -10,24 +10,7 @@
 #define SYNC_ADDR   (VGACTL_ADDR + 4)
 #define FB_ADDR     (DEVICE_BASE + 0x1000000)
 
-#ifndef CONFIG_DIFFTEST
-void difftest_skip_ref(){}
-#endif
 extern CPU_state cpu;
-extern uint64_t get_time();
-extern void out_of_bound(paddr_t addr);
-extern void difftest_skip_ref();
-
-void send_key(uint8_t scancode, bool is_keydown);
-void init_i8042();
-void init_vga();
-void vga_update_screen();
-void change_vga_sync(word_t data);
-uint32_t get_vga_vgactl();
-uint32_t key_dequeue();
-uint32_t screen_size();
-word_t vmem_read(paddr_t addr,int len);
-void vmem_write(paddr_t addr,int len,word_t data);
 
 void init_device() {
 
