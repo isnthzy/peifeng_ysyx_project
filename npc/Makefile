@@ -93,5 +93,5 @@ sim:com
 
 gdb:com
 	$(call git_commit, "gdb RTL") # DO NOT REMOVE THIS LINE!!!
-	gdb -ex "handle SIGSEGV noprint nostop" -ex "set print thread-events off" $(BIN) $(ARGS) $(IMG)
+	gdb -ex "handle SIGSEGV noprint nostop" -ex "set print thread-events off" $(BIN)  $(IMG)
 -include ../Makefile
