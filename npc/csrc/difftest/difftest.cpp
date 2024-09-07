@@ -1,6 +1,8 @@
 #include "../include/difftest/difftest.h"
 #include "../include/util/debug.h"
 #include "../include/npc/npc_memory.h"
+#include "../include/npc/npc_device.h"
+
 
 #define DIFF_CHECK(addr1, addr2, atpc,name) if(addr1!=addr2){\
   wLog("The %s is different\nref:0x%08x dut:0x%08x",name,addr1,addr2); \
@@ -34,25 +36,56 @@ int Difftest::diff_step(){
   while(idx_commit_num<DIFFTEST_COMMIT_WIDTH&&dut_commit.commit[idx_commit_num].valid){
     total_inst+=1;
     idx_commit_num++;
+    IFDEF(CONFIG_DEVICE, device_update(););
     if(dut_commit.commit[idx_commit_num].skip){
       step_skip_num++;
     }
+    
+    #ifdef CONFIG_TRACE
+    static char logbuf[128];
+    static char tmp_dis[64];
+    uint32_t tmp_inst=dut_commit.commit[idx_commit_num].inst;
+    vaddr_t tmp_pc=dut_commit.commit[idx_commit_num].pc;
+    disassemble(tmp_dis, sizeof(tmp_dis),tmp_pc, (uint8_t*)&tmp_inst,4);
+    sprintf(logbuf,"[%ld]\t0x%08x: %08x\t%s",total_inst,tmp_pc,tmp_inst,tmp_dis);
+    #ifdef CONFIG_ITRACE
+    log_write("%s\n",logbuf);
+    enqueueIRingBuffer(&iring_buffer,logbuf); //入队环形缓冲区
+    #endif
+    wp_trace(logbuf);
+    if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s\n",logbuf)); }
+    #endif
   }
 
   if(step_skip_num>0){
     nemu_proxy->ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
-    return 0;
+    return NPC_RUNNING;
   }//NOTE:跳过指令
 
   if(total_inst>CONFIG_MAX_EXE_INST){
     panic("Too many instructions(Suspected to be in a traploop)");
   }//NOTE:最大边界检测
 
+  if(idx_commit_num > 0){
+    dut.base.pc   = dut_commit.commit[idx_commit_num-1].pc;
+    dut.base.inst = dut_commit.commit[idx_commit_num-1].inst;
+  }
+
   first_commit(); //当第一条指令提交时，开始同步
 
 
-  if(idx_commit_num>0&&false){
-    //TODO:检测是否是退出指令（ebreak）
+  if(idx_commit_num>0&&dut_commit.excp.excp_valid&&dut_commit.excp.exception==0x3){
+    for(int i = 0;i<idx_commit_num;i++){
+      if(dut_commit.commit[i].pc==dut_commit.excp.exceptionPC){
+        if(dut_commit.commit[i].wdata==0x0){
+          npc_state.halt_pc = dut_commit.commit[i].pc;
+          return NPC_SUCCESS_END;
+        }else{
+          npc_state.halt_pc = dut_commit.commit[i].pc;
+          return NPC_ERROR_END;
+        }
+      }
+    }
   }  
 
   for(int i=0;i<idx_commit_num;i++){

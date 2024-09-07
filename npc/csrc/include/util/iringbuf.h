@@ -26,4 +26,8 @@ bool dequeueIRingBuffer(IRingBuffer* buffer, char* data);
 void putIringbuf();
 
 void mputIringbuf();
+
+extern IRingBuffer mtrace_buffer;
+extern IRingBuffer iring_buffer;
+
 #endif

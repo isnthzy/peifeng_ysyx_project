@@ -10,7 +10,6 @@
 #define SYNC_ADDR   (VGACTL_ADDR + 4)
 #define FB_ADDR     (DEVICE_BASE + 0x1000000)
 
-extern CPU_state cpu;
 
 void init_device() {
 

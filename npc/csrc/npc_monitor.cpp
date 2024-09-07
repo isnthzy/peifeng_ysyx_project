@@ -4,6 +4,8 @@
 #include "include/npc/npc_memory.h"
 #include "include/npc/npc_monitor.h"
 Difftest* difftest= NULL;
+IRingBuffer mtrace_buffer;
+IRingBuffer iring_buffer;
 
 bool ftrace_flag=false;
 bool difftest_flag=false;

@@ -9,12 +9,11 @@
 #define MAX_INST_TO_PRINT 10
 
 // CPU_state cpu;
-CPU_state cpu = { .pc=RESET_VECTOR , .mstatus=0x1800};//解锁新用法
-CPU_info cpu_info={};
-extern Difftest* difftest;
+// CPU_state cpu = { .pc=RESET_VECTOR , .mstatus=0x1800};//解锁新用法
+// CPU_info cpu_info={};
 extern bool ftrace_flag;
 extern bool difftest_flag;
-static bool g_print_step = false;
+bool g_print_step = false;
 
 static uint64_t g_timer = 0; // unit: us
 uint64_t g_nr_guest_inst; //可以复用作为指令计数器，记录指令总共走了多少步
@@ -103,7 +102,6 @@ void step_and_dump_wave(){
 
 void npc_quit(){
   reg_dut_display();
-  npc_state.halt_pc=cpu.pc;
   npc_state.state=NPC_QUIT;
 }
 // void assert_fail_msg() {
@@ -195,7 +193,7 @@ void init_traces(){
 void npc_exev(uint64_t step){ //之所以不用int因为int是有符号的，批处理传入-1就是-1，无法达到效果
   g_print_step = (step<MAX_INST_TO_PRINT);
   switch (npc_state.state) {
-    case NPC_END: case NPC_ABORT: case NPC_QUIT:
+    case NPC_SUCCESS_END: case NPC_ERROR_END: case NPC_ABORT: case NPC_QUIT:
       printf("Program execution has ended. To restart the program, exit NPC and run again.\n");
       return;
     default: npc_state.state = NPC_RUNNING;
@@ -208,14 +206,14 @@ void npc_exev(uint64_t step){ //之所以不用int因为int是有符号的，批
 
   switch (npc_state.state) {
     case NPC_RUNNING: npc_state.state = NPC_STOP; break;
-    case NPC_END: case NPC_ABORT:
-      if(npc_state.state==NPC_ABORT||npc_state.halt_ret!=0){
+    case NPC_SUCCESS_END: case NPC_ERROR_END: case NPC_ABORT:
+      if(npc_state.state==NPC_ABORT||npc_state.state!=NPC_ERROR_END){
         IFDEF(CONFIG_ITRACE, putIringbuf()); 
         IFDEF(CONFIG_MTRACE, mputIringbuf()); 
       }
       Log("npc: %s at pc = " FMT_WORD,
           (npc_state.state == NPC_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED):
-           (npc_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_CYAN):
+           (npc_state.state == NPC_SUCCESS_END ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_CYAN):
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
           npc_state.halt_pc);
     case NPC_QUIT: statistic();

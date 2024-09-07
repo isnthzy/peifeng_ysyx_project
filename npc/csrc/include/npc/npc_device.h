@@ -8,6 +8,7 @@ word_t device_read(paddr_t addr,int len);
 uint64_t get_time();
 void out_of_bound(paddr_t addr);
 void difftest_skip_ref();
+void device_update();
 
 void send_key(uint8_t scancode, bool is_keydown);
 void init_i8042();
