@@ -3,12 +3,13 @@
 #include "include/difftest/difftest.h"
 #include "include/npc/npc_memory.h"
 #include "include/npc/npc_monitor.h"
-Difftest* difftest = NULL;
+Difftest* difftest;
 IRingBuffer mtrace_buffer;
 IRingBuffer iring_buffer;
 
 bool ftrace_flag=false;
-bool difftest_flag=false;
+bool difftest_flag=true;
+
 static const uint32_t defaultImg [] = {
   0x00000413, //00
   0x00009117, //04
@@ -189,7 +190,7 @@ void init_monitor(int argc, char *argv[]) {
 
   /* Initialize differential testing. */
   if(difftest_flag){
-    // difftest = new Difftest();
+    difftest = new Difftest();
 
     difftest->init_difftest(diff_so_file, difftest_port);
     difftest->set_img_size(img_size);
