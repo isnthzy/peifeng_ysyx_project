@@ -2,11 +2,16 @@
 #define DIFFSTATE_H
 #include "../npc_common.h"
 #include "nemuproxy.h"
+#include "../util/iringbuf.h"
+#include "../util/utils.h"
 
 #define DIFFTEST_TO_REF 1
 #define DIFFTEST_TO_DUT 0
 
 extern const char *regs[];
+extern bool g_print_step;
+void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
+void wp_trace(char *decodelog);
 
 typedef struct {
   uint8_t  excp_valid = 0;
@@ -89,9 +94,9 @@ class Difftest{
     long img_size;
     bool sim_over=false;
 
-    int total_inst=0;
-    int idx_commit_num;
-    int step_skip_num;
+    uint64_t total_inst=0;
+    uint32_t idx_commit_num;
+    uint32_t step_skip_num;
 
   public:
     void init_difftest(char *ref_so_file, int port);
@@ -102,7 +107,14 @@ class Difftest{
     bool checkregs();
     void set_img_size(long size){ img_size=size; }
 
+    vaddr_t get_dut_pc(){
+      return dut.base.pc;
+    }
 
+    data_t get_dut_gpr(int index){
+      assert(index >= 0 && index <MUXDEF(CONFIG_RVE, 16, 32));
+      return index;
+    }
     inline excp_event_t* get_excp_event(){
       return &(dut_commit.excp);
     }
@@ -129,4 +141,6 @@ class Difftest{
 
 };
 
+
+extern Difftest* difftest;
 #endif

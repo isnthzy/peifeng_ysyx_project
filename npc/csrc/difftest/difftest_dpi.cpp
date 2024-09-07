@@ -5,8 +5,6 @@
 #define RETURN_NO_NULL \
   if (difftest == NULL) return;
 
-extern Difftest* difftest;
-
 INTERFACE_INSTR_COMMIT {
   RETURN_NO_NULL
   auto packet = difftest->get_instr_commit(index);

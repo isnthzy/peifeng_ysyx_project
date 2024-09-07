@@ -17,7 +17,7 @@ void sim_exit(){
   #endif
 }
 int is_exit_status_bad() {
-  int good = (npc_state.state == NPC_END && npc_state.halt_ret == 0) ||
+  int good = (npc_state.state == NPC_SUCCESS_END ) ||
     (npc_state.state == NPC_QUIT);
   sim_exit();
   return !good;

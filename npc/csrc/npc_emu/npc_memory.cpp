@@ -3,8 +3,8 @@
 #include "../include/util/iringbuf.h"
 #include "../include/npc/npc_memory.h"
 #include "../include/npc/npc_device.h"
-extern CPU_state cpu;
-extern CPU_info cpu_info;
+// extern CPU_state cpu;
+// extern CPU_info cpu_info;
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN={};
 // static uint8_t pmem[CONFIG_MSIZE];
 
@@ -58,8 +58,8 @@ void mputIringbuf(){
 
 void out_of_bound(paddr_t addr) {
   IFDEF(CONFIG_ITRACE,putIringbuf()); 
-  panic("(npc)address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
-      addr, PMEM_LEFT, PMEM_RIGHT,cpu.pc);
+  panic("(npc)address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "]",
+      addr, PMEM_LEFT, PMEM_RIGHT);
 }
 //----------------------------dpi-c----------------------------
 
