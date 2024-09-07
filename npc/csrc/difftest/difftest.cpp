@@ -33,13 +33,14 @@ int Difftest::diff_step(){
   //TODO:define返回值，用来判断diff运行的状况
   idx_commit_num=0;
   step_skip_num=0;
-  while(idx_commit_num<DIFFTEST_COMMIT_WIDTH&&dut_commit.commit[idx_commit_num].valid){
-    total_inst+=1;
-    idx_commit_num++;
-    // IFDEF(CONFIG_DEVICE, device_update(););
-    if(dut_commit.commit[idx_commit_num].skip){
-      step_skip_num++;
-    }
+  return 0;
+  // while(idx_commit_num<DIFFTEST_COMMIT_WIDTH&&dut_commit.commit[idx_commit_num].valid){
+  //   total_inst+=1;
+  //   idx_commit_num++;
+  //   IFDEF(CONFIG_DEVICE, device_update(););
+  //   if(dut_commit.commit[idx_commit_num].skip){
+  //     step_skip_num++;
+  //   }
     
     // #ifdef CONFIG_TRACE
     // static char logbuf[128];
@@ -55,8 +56,8 @@ int Difftest::diff_step(){
     // wp_trace(logbuf);
     // if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s\n",logbuf)); }
     // #endif
-  }
-  return 0;
+  // }
+  // return 0;
   // if(step_skip_num>0){
   //   nemu_proxy->ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
   //   return NPC_RUNNING;
