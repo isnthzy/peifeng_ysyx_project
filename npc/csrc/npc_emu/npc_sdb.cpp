@@ -1,7 +1,8 @@
-#include "../include/npc_common.h"
+#include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-word_t pmem_read(paddr_t addr, int len);
+#include "../include/npc_common.h"
+#include "../include/npc_memory.h"
 static int is_batch_mode = false;
 void reg_dut_display();
 void npc_exev(uint64_t step);

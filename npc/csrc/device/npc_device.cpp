@@ -1,4 +1,5 @@
 #include "../include/npc_common.h"
+#include "../include/npc_device.h"
 #include <SDL2/SDL.h>
 #define TIMER_HZ 60
 #define DEVICE_BASE 0xa0000000

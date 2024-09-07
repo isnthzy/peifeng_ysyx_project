@@ -2,12 +2,8 @@
 #define __NPCCOMMON_H__
 #include "macro.h"
 #include "npc_conf.h"
-#include <stdlib.h>
-#include <assert.h>
 #include <stdbool.h>
 #include <inttypes.h>
-#include <iostream>
-#include <string.h>
 
 typedef uint32_t word_t;
 typedef MUXDEF(CONFIG_RV64,uint64_t, uint32_t) vaddr_t;

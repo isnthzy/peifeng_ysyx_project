@@ -6,6 +6,7 @@
 #define DIFFTEST_TO_REF 1
 #define DIFFTEST_TO_DUT 0
 
+extern const char *regs[];
 
 typedef struct {
   uint8_t  excp_valid = 0;

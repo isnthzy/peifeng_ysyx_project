@@ -1,5 +1,6 @@
 #include "../include/npc_common.h"
 #include "../include/npc_verilator.h"
+#include "../include/npc_reg.h"
 extern CPU_state cpu;
 
 // void cpy_reg() {

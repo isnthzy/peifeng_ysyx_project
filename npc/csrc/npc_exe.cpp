@@ -4,6 +4,10 @@
 #include "include/iringbuf.h"
 #include "include/difftest.h"
 #include "include/diffstate.h"
+
+IRingBuffer mtrace_buffer;
+IRingBuffer iring_buffer;
+
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 extern void wp_trace(char *decodelog);
 #define MAX_INST_TO_PRINT 10
@@ -20,9 +24,6 @@ static bool g_print_step = false;
 static uint64_t g_timer = 0; // unit: us
 
 uint64_t g_nr_guest_inst; //可以复用作为指令计数器，记录指令总共走了多少步
-IRingBuffer iring_buffer;
-IRingBuffer mtrace_buffer;
-extern void mputIringbuf();
 void device_update();
 
 void step_and_dump_wave(){

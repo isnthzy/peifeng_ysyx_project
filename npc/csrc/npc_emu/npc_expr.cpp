@@ -1,10 +1,13 @@
 #include "../include/npc_common.h"
 #include "../include/npc_debug.h"
+#include "../include/npc_reg.h"
+#include "../include/npc_memory.h"
 #include <regex.h>
+#include <assert.h>
+#include <stdlib.h>
 
 #define UNUSED(x) (void)(x)
-word_t isa_reg_str2val(const char *s, bool *success);
-word_t pmem_read(paddr_t addr, int len);
+
 int tokens_num=0; //放一个全局变量记录tokens的个数
 enum {
   TK_NOTYPE = 256, TK_EQ,
