@@ -3,7 +3,6 @@
 #include "include/npc_verilator.h"
 #include "include/util/iringbuf.h"
 #include "include/difftest/difftest.h"
-#include "include/difftest/diffstate.h"
 #include "include/npc/npc_reg.h"
 #include "include/npc/npc_device.h"
 #include "include/npc/npc_exe.h"
