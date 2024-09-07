@@ -13,13 +13,11 @@
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
 
-#ifndef __NPCUTILS_H__
-#define __NPCUTILS_H__
-#include "npc_common.h"
+#ifndef NPC_UTILS_H
+#define NPC_UTILS_H
+#include "../npc_common.h"
 
 // ----------- state -----------
-
-enum { NPC_RUNNING, NPC_STOP, NPC_END, NPC_ABORT, NPC_QUIT };
 
 typedef struct {
   int state;
@@ -28,10 +26,6 @@ typedef struct {
 } NPCState;
 
 extern NPCState npc_state;
-
-// ----------- timer -----------
-
-// uint64_t get_time();
 
 // ----------- log -----------
 

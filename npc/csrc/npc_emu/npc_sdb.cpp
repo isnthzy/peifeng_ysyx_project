@@ -3,17 +3,8 @@
 #include <readline/history.h>
 #include "../include/npc_common.h"
 #include "../include/npc_memory.h"
+#include "../include/npc_sdb.h"
 static int is_batch_mode = false;
-void reg_dut_display();
-void npc_exev(uint64_t step);
-void sdb_mainloop();
-void init_regex();
-void init_wp_pool();
-
-void add_watch(char *expr,word_t addr);
-void display_watch();
-void remove_watch(int num);
-
 static int cmd_c(char *args) {
   npc_exev(-1);
   return 0;

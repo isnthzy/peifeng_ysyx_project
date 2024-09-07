@@ -1,19 +1,14 @@
 #include "include/npc_common.h"
-#include "include/ftrace.h"
+#include "include/util/ftrace.h"
 #include "include/npc_verilator.h"
-#include "include/iringbuf.h"
-#include "include/difftest.h"
-#include "include/diffstate.h"
-
-IRingBuffer mtrace_buffer;
-IRingBuffer iring_buffer;
-
-void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
-extern void wp_trace(char *decodelog);
+#include "include/util/iringbuf.h"
+#include "include/difftest/difftest.h"
+#include "include/difftest/diffstate.h"
+#include "include/npc/npc_reg.h"
+#include "include/npc/npc_device.h"
+#include "include/npc/npc_exe.h"
 #define MAX_INST_TO_PRINT 10
-void reg_dut_display();
-void cpy_reg();
-uint64_t get_time();
+
 // CPU_state cpu;
 CPU_state cpu = { .pc=RESET_VECTOR , .mstatus=0x1800};//解锁新用法
 CPU_info cpu_info={};
@@ -21,10 +16,9 @@ extern Difftest* difftest;
 extern bool ftrace_flag;
 extern bool difftest_flag;
 static bool g_print_step = false;
-static uint64_t g_timer = 0; // unit: us
 
+static uint64_t g_timer = 0; // unit: us
 uint64_t g_nr_guest_inst; //可以复用作为指令计数器，记录指令总共走了多少步
-void device_update();
 
 void step_and_dump_wave(){
   top->eval();

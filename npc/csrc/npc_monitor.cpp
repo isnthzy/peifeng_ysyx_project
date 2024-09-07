@@ -1,8 +1,8 @@
 #include "include/npc_common.h"
 #include "include/npc_verilator.h"
-#include "include/diffstate.h"
-#include "include/npc_memory.h"
-#include "include/npc_monitor.h"
+#include "include/difftest/diffstate.h"
+#include "include/npc/npc_memory.h"
+#include "include/npc/npc_monitor.h"
 Difftest* difftest= NULL;
 
 bool ftrace_flag=false;
