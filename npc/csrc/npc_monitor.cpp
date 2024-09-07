@@ -2,13 +2,8 @@
 #include "include/npc_verilator.h"
 #include "include/diffstate.h"
 #include "include/npc_memory.h"
+#include "include/npc_monitor.h"
 Difftest* difftest= NULL;
-
-void step_and_dump_wave();
-void init_difftest(char *ref_so_file, long img_size, int port);
-void init_device();
-void init_mem();
-void init_traces();
 
 bool ftrace_flag=false;
 bool difftest_flag=false;
