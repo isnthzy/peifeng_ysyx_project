@@ -189,7 +189,7 @@ void init_monitor(int argc, char *argv[]) {
 
   /* Initialize differential testing. */
   if(difftest_flag){
-    difftest = new Difftest();
+    // difftest = new Difftest();
 
     difftest->init_difftest(diff_so_file, difftest_port);
     difftest->set_img_size(img_size);
