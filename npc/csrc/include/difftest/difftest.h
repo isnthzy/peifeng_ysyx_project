@@ -1,44 +1,132 @@
-/***************************************************************************************
-* Copyright (c) 2014-2022 Zihao Yu, Nanjing University
-*
-* NEMU is licensed under Mulan PSL v2.
-* You can use this software according to the terms and conditions of the Mulan PSL v2.
-* You may obtain a copy of Mulan PSL v2 at:
-*          http://license.coscl.org.cn/MulanPSL2
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*
-* See the Mulan PSL v2 for more details.
-***************************************************************************************/
-
-#ifndef __CPU_DIFFTEST_H__
-#define __CPU_DIFFTEST_H__
-
+#ifndef DIFFSTATE_H
+#define DIFFSTATE_H
 #include "../npc_common.h"
+#include "nemuproxy.h"
+
+#define DIFFTEST_TO_REF 1
+#define DIFFTEST_TO_DUT 0
+
+extern const char *regs[];
+
+typedef struct {
+  uint8_t  excp_valid = 0;
+  uint8_t  is_mret    = 0;
+  uint32_t interrupt = 0;
+  uint32_t exception = 0;
+  vaddr_t  exceptionPC = 0;
+  uint32_t exceptionInst = 0;
+} excp_event_t;
+
+typedef struct {
+  vaddr_t  pc;
+  uint32_t inst;
+} base_state_t; //不参与dpi提交，在diff_step时保留关键信息
+
+typedef struct {
+  uint8_t  valid = 0;
+  vaddr_t  pc;
+  uint32_t inst;
+  uint8_t  skip;
+  uint8_t  wen;
+  uint8_t  wdest;
+  data_t   wdata;
+  uint8_t  csr_rstat;
+  data_t   csr_data;
+} instr_commit_t;
+
+typedef struct __attribute__((packed)) {
+  data_t  mstatus;
+  data_t  mtvec;
+  data_t  mepc;
+  data_t  mcause;
+} csr_state_t;
+
+typedef struct {
+  uint8_t  valid = 0;
+  paddr_t  paddr;
+  vaddr_t  vaddr;
+  data_t   data;
+} store_event_t;
+
+typedef struct {
+  uint8_t valid = 0;
+  paddr_t paddr;
+  vaddr_t vaddr;
+  data_t  data;
+} load_event_t;
+
+typedef struct {
+  data_t  gpr[MUXDEF(CONFIG_RVE,16,32)];
+} greg_state_t;
+
+typedef struct {
+  base_state_t base;
+  greg_state_t regs;
+  csr_state_t  csr;
+} difftest_core_state_t;
+
+typedef struct{
+  excp_event_t excp;
+  instr_commit_t commit[DIFFTEST_COMMIT_WIDTH];
+  store_event_t store[DIFFTEST_COMMIT_WIDTH];
+  load_event_t load[DIFFTEST_COMMIT_WIDTH];
+} difftest_core_commit_t;
 
 
-void difftest_skip_ref();
-void difftest_skip_dut(int nr_ref, int nr_dut);
-void difftest_set_patch(void (*fn)(void *arg), void *arg);
-void difftest_step(vaddr_t pc, vaddr_t npc);
-void difftest_detach();
-void difftest_attach();
+class Difftest{
+  private:
+    difftest_core_state_t dut;
+    difftest_core_state_t ref;
 
-// extern void (*ref_difftest_memcpy)(paddr_t addr, void *buf, size_t n, bool direction);
-// extern void (*ref_difftest_regcpy)(void *dut, bool direction);
-// extern void (*ref_difftest_exec)(uint64_t n);
-// extern void (*ref_difftest_raise_intr)(uint64_t NO);
+    difftest_core_commit_t dut_commit; //dut_commit 提交分析信息，dut和ref用于结构体同步
 
-// static inline bool difftest_check_reg(const char *name, vaddr_t pc, data_t ref, data_t dut) {
-//   if (ref != dut) {
-//     Log("%s is different after executing instruction at pc = " FMT_WORD
-//         ", right = " FMT_WORD ", wrong = " FMT_WORD ", diff = " FMT_WORD,
-//         name, pc, ref, dut, ref ^ dut);
-//     return false;
-//   }
-//   return true;
-// }
+    data_t* dut_regs_ptr=(data_t *)&dut.regs;
+    data_t* ref_regs_ptr=(data_t *)&ref.regs;
+
+    NemuProxy* nemu_proxy=NULL;
+    /* the index of instructions per commit */
+    uint32_t idx_commit = 0;
+    long img_size;
+    bool sim_over=false;
+
+    int total_inst=0;
+    int idx_commit_num;
+    int step_skip_num;
+
+  public:
+    void init_difftest(char *ref_so_file, int port);
+    void exit_difftest();
+    void first_commit();
+    int  diff_step();
+    void display();
+    bool checkregs();
+    void set_img_size(long size){ img_size=size; }
+
+
+    inline excp_event_t* get_excp_event(){
+      return &(dut_commit.excp);
+    }
+
+    inline instr_commit_t* get_instr_commit(uint8_t index){
+      return &(dut_commit.commit[index]);
+    }
+
+    inline csr_state_t* get_csr_state(){
+      return &(dut.csr);
+    }
+
+    inline store_event_t* get_store_event(uint8_t index){
+      return &(dut_commit.store[index]);
+    }
+
+    inline load_event_t* get_load_event(uint8_t index){
+      return &(dut_commit.load[index]);
+    }
+
+    inline greg_state_t* get_greg_state(){
+      return &(dut.regs);
+    }
+
+};
 
 #endif
