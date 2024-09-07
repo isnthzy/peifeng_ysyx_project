@@ -91,12 +91,12 @@ class Difftest{
     NemuProxy* nemu_proxy=NULL;
     /* the index of instructions per commit */
     uint32_t idx_commit = 0;
-    long img_size;
+    long img_size=0;
     bool sim_over=false;
 
     uint64_t total_inst=0;
-    uint32_t idx_commit_num;
-    uint32_t step_skip_num;
+    uint32_t idx_commit_num=0;
+    uint32_t step_skip_num=0;
 
   public:
     void init_difftest(char *ref_so_file, int port);
