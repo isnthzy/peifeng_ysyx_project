@@ -33,8 +33,6 @@ int Difftest::diff_step(){
   idx_commit_num=0;
   step_skip_num=0;
   while(idx_commit_num<DIFFTEST_COMMIT_WIDTH&&dut_commit.commit[idx_commit_num].valid){
-    total_inst+=1;
-    idx_commit_num++;
     IFDEF(CONFIG_DEVICE, device_update(););
     if(dut_commit.commit[idx_commit_num].skip){
       step_skip_num++;
@@ -44,7 +42,7 @@ int Difftest::diff_step(){
     static char logbuf[128];
     static char tmp_dis[64];
     uint32_t tmp_inst=dut_commit.commit[idx_commit_num].inst;
-    vaddr_t  tmp_pc=get_pc(idx_commit_num);
+    vaddr_t  tmp_pc  =dut_commit.commit[idx_commit_num].pc;
     printf("%d %x %x %d %x %x\n",idx_commit_num,tmp_inst,tmp_pc,
            dut_commit.commit[idx_commit_num].wen,dut_commit.commit[idx_commit_num].wdest,dut_commit.commit[idx_commit_num].wdata);
 
@@ -57,6 +55,9 @@ int Difftest::diff_step(){
     wp_trace(logbuf);
     if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s\n",logbuf)); }
     #endif
+
+    total_inst++;
+    idx_commit_num++;
   }
   if(step_skip_num>0){
     nemu_proxy->ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
