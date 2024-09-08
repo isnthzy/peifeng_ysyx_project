@@ -36,7 +36,7 @@ class PfStage extends Module {
   val flushed_pc=Mux(pf.from_ls.flush.excp,pf.csrEntries.mtvec,
                   Mux(pf.from_ls.flush.xret,pf.csrEntries.mepc,
                     Mux(pf.from_ls.flush.refetch,pf.from_ls.refetchPC,0.U)))
-  snpc:=regPC
+  snpc:=regPC + 4.U
   dnpc:=Mux(flush_sign,flushed_pc,
           Mux(pf.from_id.brJump.taken,pf.from_id.brJump.target,
             Mux(pf.from_ex.brCond.taken,pf.from_ex.brCond.target,0.U)))
