@@ -4,10 +4,9 @@
 #include "../include/npc/npc_device.h"
 
 
-#define DIFF_CHECK(addr1, addr2, atpc,name) if(addr1!=addr2){\
+#define DIFF_CHECK(addr1, addr2, return,name) if(addr1!=addr2){\
   wLog("The %s is different\nref:0x%08x dut:0x%08x",name,addr1,addr2); \
-  wLog("at pc:0x%08x",atpc); \
-  return false;\
+  return=false;\
 }
 
 
@@ -109,26 +108,29 @@ int Difftest::diff_step(){
 
 }
 
+
 bool Difftest::checkregs(){
+  bool check_result=true;
   for(int i=0;i<MUXDEF(CONFIG_RVE, 16, 32);i++){
     if(ref.regs.gpr[i]!=dut.regs.gpr[i]){
       wLog("The reg:%s(rf_%d) is different\nref:0x%08x dut:0x%08x",
         regs[i],i,ref.regs.gpr[i],dut.regs.gpr[i]);
-      wLog("at pc:0x%08x",ref.base.pc);
-      return false;
+      check_result=false;
     }
   }
-  DIFF_CHECK(ref.base.pc     ,dut.base.pc     ,  ref.base.pc,"pc");
-  DIFF_CHECK(ref.csr.mtvec   ,dut.csr.mtvec   ,  ref.base.pc,"mtvec");
-  DIFF_CHECK(ref.csr.mepc    ,dut.csr.mepc    ,  ref.base.pc,"mepc ");
-  DIFF_CHECK(ref.csr.mstatus ,dut.csr.mstatus ,  ref.base.pc,"mstatus"); //mret实现不完整
-  // DIFF_CHECK(ref_r->mcause ,cpu.mcause , pc,"mcause");
-  return true;
+  DIFF_CHECK(ref.base.pc     ,dut.base.pc     ,check_result ,"pc");
+  DIFF_CHECK(ref.csr.mtvec   ,dut.csr.mtvec   ,check_result ,"mtvec");
+  DIFF_CHECK(ref.csr.mepc    ,dut.csr.mepc    ,check_result ,"mepc ");
+  DIFF_CHECK(ref.csr.mstatus ,dut.csr.mstatus ,check_result ,"mstatus"); //mret实现不完整
+  if(!check_result){
+    wLog("at pc:0x%08x",ref.base.pc);
+  }
+  return check_result;
 }
 
 void Difftest::display(){
   fflush(NULL);
-  wLog("\n=================================  DUT  Regs  =================================");
+  wLog("=================================  DUT  Regs  =================================");
   for (int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i += 4) {
     wLog("%s(r%2d): 0x%08x %s(r%2d): 0x%08x %s(r%2d): 0x%08x %s(r%2d): 0x%08x", 
       regs[i]  , i  , dut_regs_ptr[i]  ,regs[i+1], i+1, dut_regs_ptr[i+1],
