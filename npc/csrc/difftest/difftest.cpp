@@ -126,7 +126,7 @@ bool Difftest::checkregs(){
 
 void Difftest::display(){
   fflush(NULL);
-  wLog("\n==============  DUT Regs  ==============");
+  wLog("\n============================  DUT Regs  ============================");
   for (int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i += 4) {
     wLog("%s(r%2d): 0x%08x %s(r%2d): 0x%08x %s(r%2d): 0x%08x %s(r%2d): 0x%08x", 
       regs[i]  , i  , dut_regs_ptr[i]  ,regs[i+1], i+1, dut_regs_ptr[i+1],
@@ -135,8 +135,6 @@ void Difftest::display(){
   wLog("pc: 0x%08x inst: 0x%08x", dut.base.pc, dut.base.inst);
   wLog("MSTATUS: 0x%08x, MTVEC: 0x%08x, MEPC: 0x%08x", dut.csr.mstatus, dut.csr.mtvec, dut.csr.mepc);
   wLog(" MCAUSE: 0x%08x", dut.csr.mcause);
-  wLog("*******************************************************************************");
-  wLog("\n==============  REF Regs  ==============");
   fflush(NULL);
 
   nemu_proxy->ref_reg_display();
