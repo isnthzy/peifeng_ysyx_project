@@ -115,6 +115,11 @@ class Difftest{
       assert(index >= 0 && index <MUXDEF(CONFIG_RVE, 16, 32));
       return index;
     }
+
+    void get_ref_reg_display(){
+      nemu_proxy->ref_reg_display();
+    }
+
     inline excp_event_t* get_excp_event(){
       return &(dut_commit.excp);
     }

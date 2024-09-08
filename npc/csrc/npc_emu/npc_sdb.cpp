@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include "../include/difftest/difftest.h"
 #include "../include/npc_common.h"
 #include "../include/npc/npc_memory.h"
 #include "../include/npc/npc_sdb.h"
@@ -31,6 +32,8 @@ static int cmd_info(char *args) {
   char subcmd = arg[0];
   if(subcmd=='r'){
     reg_dut_display();
+  }else if(subcmd=='d'){
+    difftest->get_ref_reg_display();
   }else if(subcmd=='w'){
     display_watch();
   }else{
@@ -120,7 +123,8 @@ static struct {
   { "q", "Exit NPC", cmd_q },
   { "si", " \"si [N]\" Lets the program pause after executing N instructions in a single step.\
 When N is not given, the default is 1", cmd_si },
-  { "info", "info r:Printing Register Status \n \
+  { "info", "info r:Printing ref Register Status \n \
+  info d:Printing dut Register Status \
   info w:Print watchpoint information",cmd_info },
   { "x", "\"x N EXPR\"Find the value of the expression EXPR, use the result as the starting memory \
 address,\n and output N consecutive 4-byte outputs in hexadecimal." ,cmd_x},
