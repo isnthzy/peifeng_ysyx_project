@@ -34,77 +34,77 @@ int Difftest::diff_step(){
   idx_commit_num=0;
   step_skip_num=0;
   return 0;
-  // while(idx_commit_num<DIFFTEST_COMMIT_WIDTH&&dut_commit.commit[idx_commit_num].valid){
-  //   total_inst+=1;
-  //   idx_commit_num++;
-  //   IFDEF(CONFIG_DEVICE, device_update(););
-  //   if(dut_commit.commit[idx_commit_num].skip){
-  //     step_skip_num++;
-  //   }
+  while(idx_commit_num<DIFFTEST_COMMIT_WIDTH&&dut_commit.commit[idx_commit_num].valid){
+    total_inst+=1;
+    idx_commit_num++;
+    IFDEF(CONFIG_DEVICE, device_update(););
+    if(dut_commit.commit[idx_commit_num].skip){
+      step_skip_num++;
+    }
     
-    // #ifdef CONFIG_TRACE
-    // static char logbuf[128];
-    // static char tmp_dis[64];
-    // uint32_t tmp_inst=dut_commit.commit[idx_commit_num].inst;
-    // vaddr_t tmp_pc=dut_commit.commit[idx_commit_num].pc;
-    // disassemble(tmp_dis, sizeof(tmp_dis),tmp_pc, (uint8_t*)&tmp_inst,4);
-    // sprintf(logbuf,"[%ld]\t0x%08x: %08x\t%s",total_inst,tmp_pc,tmp_inst,tmp_dis);
-    // #ifdef CONFIG_ITRACE
-    // log_write("%s\n",logbuf);
-    // enqueueIRingBuffer(&iring_buffer,logbuf); //入队环形缓冲区
-    // #endif
-    // wp_trace(logbuf);
-    // if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s\n",logbuf)); }
-    // #endif
-  // }
-  // return 0;
-  // if(step_skip_num>0){
-  //   nemu_proxy->ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
-  //   return NPC_RUNNING;
-  // }//NOTE:跳过指令
+    #ifdef CONFIG_TRACE
+    static char logbuf[128];
+    static char tmp_dis[64];
+    uint32_t tmp_inst=dut_commit.commit[idx_commit_num].inst;
+    vaddr_t tmp_pc=dut_commit.commit[idx_commit_num].pc;
+    disassemble(tmp_dis, sizeof(tmp_dis),tmp_pc, (uint8_t*)&tmp_inst,4);
+    sprintf(logbuf,"[%ld]\t0x%08x: %08x\t%s",total_inst,tmp_pc,tmp_inst,tmp_dis);
+    #ifdef CONFIG_ITRACE
+    log_write("%s\n",logbuf);
+    enqueueIRingBuffer(&iring_buffer,logbuf); //入队环形缓冲区
+    #endif
+    wp_trace(logbuf);
+    if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s\n",logbuf)); }
+    #endif
+  }
+  return 0;
+  if(step_skip_num>0){
+    nemu_proxy->ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
+    return NPC_RUNNING;
+  }//NOTE:跳过指令
 
-  // if(total_inst>CONFIG_MAX_EXE_INST){
-  //   panic("Too many instructions(Suspected to be in a traploop)");
-  // }//NOTE:最大边界检测
+  if(total_inst>CONFIG_MAX_EXE_INST){
+    panic("Too many instructions(Suspected to be in a traploop)");
+  }//NOTE:最大边界检测
 
-  // if(idx_commit_num > 0){
-  //   dut.base.pc   = dut_commit.commit[idx_commit_num-1].pc;
-  //   dut.base.inst = dut_commit.commit[idx_commit_num-1].inst;
-  // }
+  if(idx_commit_num > 0){
+    dut.base.pc   = dut_commit.commit[idx_commit_num-1].pc;
+    dut.base.inst = dut_commit.commit[idx_commit_num-1].inst;
+  }
 
-  // first_commit(); //当第一条指令提交时，开始同步
+  first_commit(); //当第一条指令提交时，开始同步
 
 
-  // if(idx_commit_num>0&&dut_commit.excp.excp_valid&&dut_commit.excp.exception==0x3){
-  //   for(int i = 0;i<idx_commit_num;i++){
-  //     if(dut_commit.commit[i].pc==dut_commit.excp.exceptionPC){
-  //       if(dut_commit.commit[i].wdata==0x0){
-  //         npc_state.halt_pc = dut_commit.commit[i].pc;
-  //         return NPC_SUCCESS_END;
-  //       }else{
-  //         npc_state.halt_pc = dut_commit.commit[i].pc;
-  //         return NPC_ERROR_END;
-  //       }
-  //     }
-  //   }
-  // }  
+  if(idx_commit_num>0&&dut_commit.excp.excp_valid&&dut_commit.excp.exception==0x3){
+    for(int i = 0;i<idx_commit_num;i++){
+      if(dut_commit.commit[i].pc==dut_commit.excp.exceptionPC){
+        if(dut_commit.commit[i].wdata==0x0){
+          npc_state.halt_pc = dut_commit.commit[i].pc;
+          return NPC_SUCCESS_END;
+        }else{
+          npc_state.halt_pc = dut_commit.commit[i].pc;
+          return NPC_ERROR_END;
+        }
+      }
+    }
+  }  
 
-  // for(int i=0;i<idx_commit_num;i++){
-  //   nemu_proxy->ref_difftest_exec(1);
-  // }//发射了几条指令就执行几次
+  for(int i=0;i<idx_commit_num;i++){
+    nemu_proxy->ref_difftest_exec(1);
+  }//发射了几条指令就执行几次
 
-  // if(dut_commit.excp.excp_valid){
-  //   nemu_proxy->ref_difftest_raise_intr(dut_commit.excp.exception);
-  // }
+  if(dut_commit.excp.excp_valid){
+    nemu_proxy->ref_difftest_raise_intr(dut_commit.excp.exception);
+  }
 
-  // nemu_proxy->ref_difftest_regcpy(&ref, DIFFTEST_TO_DUT);
+  nemu_proxy->ref_difftest_regcpy(&ref, DIFFTEST_TO_DUT);
 
-  // if(!checkregs()){
-  //   display();
-  //   return NPC_ABORT;
-  // }else{
-  //   return NPC_RUNNING;
-  // }
+  if(!checkregs()){
+    display();
+    return NPC_ABORT;
+  }else{
+    return NPC_RUNNING;
+  }
 }
 
 bool Difftest::checkregs(){
