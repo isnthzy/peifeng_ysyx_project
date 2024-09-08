@@ -18,10 +18,7 @@ INTERFACE_INSTR_COMMIT {
     packet->wdata         = (data_t)wdata;
     packet->csr_rstat     = csrRstat;
     packet->csr_data      = (data_t)csrData ;
-
-    
   }
-  if(valid){printf("%d %x %x %x\n",valid,index,packet->pc,packet->inst);}
 }
 
 INTERFACE_EXCP_EVENT {
