@@ -21,15 +21,14 @@ void Difftest::exit_difftest(){
 }
 
 void Difftest::first_commit(){
-  static bool is_first_commit = true;
-  if(dut_commit.commit[0].valid&&is_first_commit){
+  if(dut_commit.commit[0].valid){
     nemu_proxy->ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
     nemu_proxy->ref_difftest_regcpy(&dut, DIFFTEST_TO_REF); //同步整个结构体
-    is_first_commit=false;
   }
 }
 int Difftest::diff_step(){
   //TODO:define返回值，用来判断diff运行的状况
+  static bool is_first_commit = true;
   idx_commit_num=0;
   step_skip_num=0;
   while(idx_commit_num<DIFFTEST_COMMIT_WIDTH&&dut_commit.commit[idx_commit_num].valid){
@@ -71,9 +70,6 @@ int Difftest::diff_step(){
     dut.base.inst = dut_commit.commit[idx_commit_num-1].inst;
   }
 
-  first_commit(); //当第一条指令提交时，开始同步
-
-
   if(idx_commit_num>0&&dut_commit.excp.excp_valid&&dut_commit.excp.exception==0x3){
     for(int i = 0;i<idx_commit_num;i++){
       if(dut_commit.commit[i].pc==dut_commit.excp.exceptionPC){
@@ -88,9 +84,14 @@ int Difftest::diff_step(){
     }
   }  
 
-  for(int i=0;i<idx_commit_num;i++){
-    nemu_proxy->ref_difftest_exec(1);
-  }//发射了几条指令就执行几次
+  if(is_first_commit){
+    first_commit(); //NOTE:当第一条指令提交时，开始同步
+    is_first_commit=false;
+  }else{
+    for(int i=0;i<idx_commit_num;i++){
+      nemu_proxy->ref_difftest_exec(1);
+    }//NOTE:发射了几条指令就执行几次
+  }
 
   if(dut_commit.excp.excp_valid){
     nemu_proxy->ref_difftest_raise_intr(dut_commit.excp.exception);
