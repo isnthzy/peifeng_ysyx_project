@@ -46,7 +46,7 @@ class PfStage extends Module {
     regPC:=nextpc
   }
 
-  pf.al.ren  :=pfReadyGo
+  pf.al.ren  :=fetchReq
   pf.al.raddr:=regPC
   pf.s.wen:=DontCare
   pf.s.waddr:=DontCare
