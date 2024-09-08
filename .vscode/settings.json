@@ -123,7 +123,9 @@
         "main.h": "c",
         "decode.h": "c",
         "macro.h": "c",
-        "npc_conf.h": "c"
+        "npc_conf.h": "c",
+        "debug.h": "c",
+        "utils.h": "c"
     },
     "C_Cpp.intelliSenseEngine": "default",
     "digital-ide.dont-show-again.propose.issue": true,
