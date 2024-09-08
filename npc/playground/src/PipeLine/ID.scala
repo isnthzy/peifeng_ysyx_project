@@ -137,16 +137,16 @@ class IdStage extends Module {
   Regfile.io.wdata:=id.from_wb.rf.wdata
   Regfile.io.wen  :=id.from_wb.rf.wen
 
-  val isJal=Decode.io.brType===SDEF(BR_JAL)
+  val isJal =Decode.io.brType===SDEF(BR_JAL)
   val isJalr=Decode.io.brType===SDEF(BR_JALR)
-  val brJumpTaken=isJal||isJalr
+  val brJumpTaken=(isJal||isJalr)&&idValidR
 
   val jal_target=id.in.bits.pc+imm
   val jalr_target=Cat((rdata1+imm)(31,1),0.U(1.W))
   val brJumpTarget=((Fill(ADDR_WIDTH,isJal) &jal_target)
                   | (Fill(ADDR_WIDTH,isJalr)&jal_target))
 
-  id.fw_pf.brJump.taken:=brJumpTaken && idValidR
+  id.fw_pf.brJump.taken:=brJumpTaken
   id.fw_pf.brJump.target:=brJumpTarget
   id.fw_if.flush:=brJumpTaken
 
