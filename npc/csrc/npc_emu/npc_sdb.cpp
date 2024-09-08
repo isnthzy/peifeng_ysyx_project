@@ -31,9 +31,9 @@ static int cmd_info(char *args) {
   char *arg = strtok(NULL, " ");
   char subcmd = arg[0];
   if(subcmd=='r'){
-    reg_dut_display();
-  }else if(subcmd=='d'){
     difftest->get_ref_reg_display();
+  }else if(subcmd=='d'){
+    reg_dut_display();
   }else if(subcmd=='w'){
     display_watch();
   }else{
