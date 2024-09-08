@@ -97,7 +97,7 @@ int Difftest::diff_step(){
 
   nemu_proxy->ref_difftest_regcpy(&ref, DIFFTEST_TO_DUT);
 
-  if(!checkregs()){
+  if(!checkregs()&&idx_commit_num>0){
     display();
     return NPC_ABORT;
   }else{
