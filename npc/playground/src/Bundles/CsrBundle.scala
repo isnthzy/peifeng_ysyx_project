@@ -32,7 +32,8 @@ class CsrStatusBundle extends Bundle{
   //32位
   val sd=UInt(1.W)
   val wpri30_23=UInt(8.W)
-  val todo22_11=UInt(12.W)
+  val todo22_13=UInt(10.W)
+  val mpp   =UInt(2.W)
   val vs    =UInt(2.W)
   val spp   =UInt(1.W)
   val mpie  =UInt(1.W)
