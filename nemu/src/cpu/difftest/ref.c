@@ -47,10 +47,10 @@ typedef struct {
   base_state_t base;
   greg_state_t regs;
   csr_state_t  csr;
-} NPC_state;  //一翻思索后感觉这个表不适合做抽象，因为这是面向dut的传递参数写的,ref要与npc保持一致
+} diff_context;  //一翻思索后感觉这个表不适合做抽象，因为这是面向dut的传递参数写的,ref要与npc保持一致
 
 __EXPORT void difftest_regcpy(void *dut, bool direction) {
-  NPC_state* dut_t=dut; 
+  diff_context* dut_t=dut; 
   if (direction == DIFFTEST_TO_REF) {
     for(int i=0;i<MUXDEF(CONFIG_RVE, 16, 32);i++){
       cpu.gpr[i]=dut_t->regs.gpr[i];
@@ -65,7 +65,7 @@ __EXPORT void difftest_regcpy(void *dut, bool direction) {
     for(int i=0;i<MUXDEF(CONFIG_RVE, 16, 32);i++){
       dut_t->regs.gpr[i]=cpu.gpr[i];
     }
-    dut_t->base.pc    =cpu.pc;
+    dut_t->base.pc    =cpu.lastpc;
     dut_t->csr.mstatus=cpu.mstatus;
     dut_t->csr.mepc   =cpu.mepc;
     dut_t->csr.mtvec  =cpu.mtvec;

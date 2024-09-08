@@ -21,6 +21,7 @@
 typedef struct {
   word_t  gpr[MUXDEF(CONFIG_RVE, 16, 32)];
   vaddr_t pc;
+  vaddr_t lastpc; //鉴于nemu执行比对与npc对不齐，因此用lastpc与npc对比
   word_t  mstatus;
   word_t  mepc;
   word_t  mtvec;
