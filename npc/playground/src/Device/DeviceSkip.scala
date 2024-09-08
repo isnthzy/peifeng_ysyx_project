@@ -7,12 +7,13 @@ import CoreConfig._
 
 class DeviceSkip extends Module with DeviceAddr{
   val io = IO(new Bundle {
+    val isLoadStore = Input(Bool())
     val addr = Input(UInt(ADDR_WIDTH.W))
     val skip = Output(Bool())
   })
   val readSkip  = Wire(Bool()) 
   val writeSkip = Wire(Bool()) 
-  io.skip := readSkip || writeSkip
+  io.skip := ( readSkip || writeSkip ) && io.isLoadStore
 
   readSkip:=(
     (io.addr===RTC_ADDR || io.addr === RTC_ADDR+4.U)
