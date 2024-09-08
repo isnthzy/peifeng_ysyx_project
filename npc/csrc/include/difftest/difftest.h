@@ -123,6 +123,10 @@ class Difftest{
       nemu_proxy->ref_reg_display();
     }
 
+    uint32_t get_pc(uint8_t index){
+      return dut_commit.commit[index].pc;
+    }
+
     inline excp_event_t* get_excp_event(){
       return &(dut_commit.excp);
     }

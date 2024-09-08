@@ -44,7 +44,7 @@ int Difftest::diff_step(){
     static char logbuf[128];
     static char tmp_dis[64];
     uint32_t tmp_inst=dut_commit.commit[idx_commit_num].inst;
-    vaddr_t  tmp_pc=dut_commit.commit[idx_commit_num].pc;
+    vaddr_t  tmp_pc=get_pc(idx_commit_num);
     printf("%d %x %x %d %x %x\n",idx_commit_num,tmp_inst,tmp_pc,
            dut_commit.commit[idx_commit_num].wen,dut_commit.commit[idx_commit_num].wdest,dut_commit.commit[idx_commit_num].wdata);
 
