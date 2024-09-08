@@ -47,7 +47,7 @@ typedef struct {
   base_state_t base;
   greg_state_t regs;
   csr_state_t  csr;
-} NPC_state;  //一翻思索后感觉这个表不适合做抽象，因为这是面向dut的传递参数写的
+} NPC_state;  //一翻思索后感觉这个表不适合做抽象，因为这是面向dut的传递参数写的,ref要与npc保持一致
 
 __EXPORT void difftest_regcpy(void *dut, bool direction) {
   NPC_state* dut_t=dut; 
