@@ -160,21 +160,20 @@ void putIringbuf(){
 
 static void npc_execute(uint64_t n) {
   for (;n > 0; n --) {
-    top->clock=1;
-
-    step_and_dump_wave(); //step_and_dump_wave();要放对位置，因为放错位置排查好几个小时
-    
-    npc_state.state=difftest->diff_step();
-    // cpy_reg();
-    // if(cpu_info.valid){
-    //   trace_and_difftest();
-    //   IFDEF(CONFIG_DEVICE, device_update());
-    // }
-    /*------------------------分割线每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次*/
-  
-
-    top->clock=0;
-    step_and_dump_wave();
+    int state = 0;
+    do{
+      top->clock=1;
+      step_and_dump_wave(); //NOTE:要放对位置，因为放错位置排查好几个小时
+      state=difftest->diff_step();
+      // cpy_reg();
+      // if(cpu_info.valid){
+      //   trace_and_difftest();
+      //   IFDEF(CONFIG_DEVICE, device_update());
+      // }
+      //NOTE:每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次
+      top->clock=0;
+      step_and_dump_wave();
+    }while(state==NPC_NOCOMMIT);
     if (npc_state.state != NPC_RUNNING) return;
   }
   // if(g_nr_guest_inst>CONFIG_MAX_EXE_INST){
