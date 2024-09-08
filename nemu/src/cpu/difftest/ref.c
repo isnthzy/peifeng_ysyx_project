@@ -64,7 +64,7 @@ __EXPORT void difftest_raise_intr(word_t NO) {
 
 __EXPORT void difftest_ref_reg_display() {
   fflush(NULL);
-  puts("\n==============  REF Regs  ==============");
+  puts("\n=================================  REF  Regs  =================================");
   for (int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i += 4) {
     printf("%s(r%2d): 0x%08x %s(r%2d): 0x%08x %s(r%2d): 0x%08x %s(r%2d): 0x%08x \n", 
       regs[i]  , i  , cpu.gpr[i]  ,regs[i+1], i+1, cpu.gpr[i+1],
@@ -73,8 +73,6 @@ __EXPORT void difftest_ref_reg_display() {
   printf("pc: 0x%08x inst: 0x%08x \n", cpu.pc, 0);
   printf("MSTATUS: 0x%08x, MTVEC: 0x%08x, MEPC: 0x%08x \n", cpu.mstatus, cpu.mtvec, cpu.mepc);
   printf(" MCAUSE: 0x%08x \n", cpu.mcause);
-  puts("*******************************************************************************");
-  puts("\n==============  REF Regs  ==============");
   fflush(NULL);
 }
 

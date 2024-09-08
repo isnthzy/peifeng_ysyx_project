@@ -126,7 +126,7 @@ bool Difftest::checkregs(){
 
 void Difftest::display(){
   fflush(NULL);
-  wLog("\n=================================  DUT Regs  =================================");
+  wLog("\n=================================  DUT  Regs  =================================");
   for (int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i += 4) {
     wLog("%s(r%2d): 0x%08x %s(r%2d): 0x%08x %s(r%2d): 0x%08x %s(r%2d): 0x%08x", 
       regs[i]  , i  , dut_regs_ptr[i]  ,regs[i+1], i+1, dut_regs_ptr[i+1],
