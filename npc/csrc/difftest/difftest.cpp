@@ -25,6 +25,7 @@ void Difftest::first_commit(){
   if(dut_commit.commit[0].valid&&is_first_commit){
     nemu_proxy->ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
     nemu_proxy->ref_difftest_regcpy(&dut, DIFFTEST_TO_REF); //同步整个结构体
+    printf("mstatus: %x\n",dut.csr.mstatus);
     is_first_commit=false;
   }
 }
