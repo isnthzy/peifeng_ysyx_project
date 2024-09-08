@@ -33,7 +33,6 @@ int Difftest::diff_step(){
   //TODO:define返回值，用来判断diff运行的状况
   idx_commit_num=0;
   step_skip_num=0;
-  return 0;
   while(idx_commit_num<DIFFTEST_COMMIT_WIDTH&&dut_commit.commit[idx_commit_num].valid){
     total_inst+=1;
     idx_commit_num++;
@@ -57,7 +56,6 @@ int Difftest::diff_step(){
     if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s\n",logbuf)); }
     #endif
   }
-  return 0;
   if(step_skip_num>0){
     nemu_proxy->ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
     return NPC_RUNNING;
