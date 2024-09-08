@@ -146,7 +146,7 @@ class IdStage extends Module {
   val brJumpTarget=((Fill(ADDR_WIDTH,isJal) &jal_target)
                   | (Fill(ADDR_WIDTH,isJalr)&jal_target))
 
-  id.fw_pf.brJump.taken:=brJumpTaken
+  id.fw_pf.brJump.taken:=brJumpTaken && idValidR
   id.fw_pf.brJump.target:=brJumpTarget
   id.fw_if.flush:=brJumpTaken
 

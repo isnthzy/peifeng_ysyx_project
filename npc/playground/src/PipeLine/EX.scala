@@ -67,7 +67,7 @@ class ExStage extends Module {
                 || (ex.in.bits.brType===SDEF(BR_GEU)&& ~Alu.io.result(0)))
                 
   val brCondTarget=ex.in.bits.pc+ex.in.bits.imm
-  ex.fw_pf.brCond.taken:=brCondTaken
+  ex.fw_pf.brCond.taken:=brCondTaken && exValidR
   ex.fw_pf.brCond.target:=brCondTarget
   ex.fw_if.flush:=brCondTaken
   ex.fw_id.flush:=brCondTaken
