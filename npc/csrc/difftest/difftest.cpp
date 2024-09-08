@@ -96,13 +96,17 @@ int Difftest::diff_step(){
   }
 
   nemu_proxy->ref_difftest_regcpy(&ref, DIFFTEST_TO_DUT);
-
-  if(!checkregs()&&idx_commit_num>0){
-    display();
-    return NPC_ABORT;
+  if(idx_commit_num>0){ //NOTE:检测是否有效提交,无效提交返回NPC_RUNNING(不检查)
+    if(!checkregs()){
+      display();
+      return NPC_ABORT;
+    }else{
+      return NPC_RUNNING;
+    }
   }else{
     return NPC_RUNNING;
   }
+
 }
 
 bool Difftest::checkregs(){
