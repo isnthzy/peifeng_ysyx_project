@@ -18,6 +18,8 @@ INTERFACE_INSTR_COMMIT {
     packet->wdata         = (data_t)wdata;
     packet->csr_rstat     = csrRstat;
     packet->csr_data      = (data_t)csrData ;
+
+    printf("%x %x\n",(vaddr_t)pc,instr);
   }
 }
 
