@@ -91,12 +91,12 @@ class Difftest{
     NemuProxy* nemu_proxy=NULL;
     /* the index of instructions per commit */
     uint32_t idx_commit = 0;
-    long img_size;
+    long img_size=0;
     bool sim_over=false;
 
     uint64_t total_inst=0;
-    uint32_t idx_commit_num;
-    uint32_t step_skip_num;
+    uint32_t idx_commit_num=0;
+    uint32_t step_skip_num=0;
 
   public:
     void init_difftest(char *ref_so_file, int port);
@@ -115,6 +115,11 @@ class Difftest{
       assert(index >= 0 && index <MUXDEF(CONFIG_RVE, 16, 32));
       return index;
     }
+
+    void get_ref_reg_display(){
+      nemu_proxy->ref_reg_display();
+    }
+
     inline excp_event_t* get_excp_event(){
       return &(dut_commit.excp);
     }

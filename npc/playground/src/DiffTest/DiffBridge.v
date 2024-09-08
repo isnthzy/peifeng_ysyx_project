@@ -35,7 +35,7 @@ module DiffBridge(
     input [63:0] mepc,
     input [63:0] mcause,
 
-    input [63:0] REG,
+    input [63:0] REG_0,
     input [63:0] REG_1,
     input [63:0] REG_2,
     input [63:0] REG_3,

@@ -33,6 +33,7 @@ int Difftest::diff_step(){
   //TODO:define返回值，用来判断diff运行的状况
   idx_commit_num=0;
   step_skip_num=0;
+  return 0;
   while(idx_commit_num<DIFFTEST_COMMIT_WIDTH&&dut_commit.commit[idx_commit_num].valid){
     total_inst+=1;
     idx_commit_num++;
@@ -56,7 +57,7 @@ int Difftest::diff_step(){
     if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s\n",logbuf)); }
     #endif
   }
-
+  return 0;
   if(step_skip_num>0){
     nemu_proxy->ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
     return NPC_RUNNING;
@@ -125,8 +126,8 @@ bool Difftest::checkregs(){
 
 void Difftest::display(){
   fflush(NULL);
-  wLog("\n==============  DUT Regs  ==============");
-  for (int i = 0; i < 32; i += 4) {
+  wLog("\n=================================  DUT  Regs  =================================");
+  for (int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i += 4) {
     wLog("%s(r%2d): 0x%08x %s(r%2d): 0x%08x %s(r%2d): 0x%08x %s(r%2d): 0x%08x", 
       regs[i]  , i  , dut_regs_ptr[i]  ,regs[i+1], i+1, dut_regs_ptr[i+1],
       regs[i+2], i+2, dut_regs_ptr[i+2],regs[i+3], i+3, dut_regs_ptr[i+3]);
@@ -134,8 +135,6 @@ void Difftest::display(){
   wLog("pc: 0x%08x inst: 0x%08x", dut.base.pc, dut.base.inst);
   wLog("MSTATUS: 0x%08x, MTVEC: 0x%08x, MEPC: 0x%08x", dut.csr.mstatus, dut.csr.mtvec, dut.csr.mepc);
   wLog(" MCAUSE: 0x%08x", dut.csr.mcause);
-  wLog("*******************************************************************************");
-  wLog("\n==============  REF Regs  ==============");
   fflush(NULL);
 
   nemu_proxy->ref_reg_display();

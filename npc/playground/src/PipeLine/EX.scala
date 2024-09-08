@@ -64,7 +64,7 @@ class ExStage extends Module {
                 || (ex.in.bits.brType===SDEF(BR_LT) &&  Alu.io.result(0))
                 || (ex.in.bits.brType===SDEF(BR_LTU)&&  Alu.io.result(0))
                 || (ex.in.bits.brType===SDEF(BR_GE) && ~Alu.io.result(0))
-                || (ex.in.bits.brType===SDEF(BR_GEU)&& ~Alu.io.result(0)))
+                || (ex.in.bits.brType===SDEF(BR_GEU)&& ~Alu.io.result(0)))&&exValidR
                 
   val brCondTarget=ex.in.bits.pc+ex.in.bits.imm
   ex.fw_pf.brCond.taken:=brCondTaken
@@ -120,7 +120,7 @@ class ExStage extends Module {
    |Fill(ADDR_WIDTH, !memSize )&memStoreSrc
   )
   val storeEn=ex.in.bits.stType=/=SDEF(ST_XXX)
-  val loadEn=ex.in.bits.ldType=/=SDEF(LD_XXX)
+  val loadEn =ex.in.bits.ldType=/=SDEF(LD_XXX)
 //NOTE:
   ex.s.wen:=storeEn&&exValid
   ex.s.waddr:=memAddr
@@ -143,6 +143,7 @@ class ExStage extends Module {
   ex.to_ls.bits.excpType:=exExcpType
 //
   val DeviceSkip=Module(new DeviceSkip())
+  DeviceSkip.io.isLoadStore:=(loadEn||storeEn)&&exValidR
   DeviceSkip.io.addr:=memAddr
   val isDeviceSkip=DeviceSkip.io.skip
 //

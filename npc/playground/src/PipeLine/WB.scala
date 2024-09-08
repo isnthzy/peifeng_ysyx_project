@@ -20,7 +20,7 @@ class WbStage extends Module {
   val wbReadyGo=dontTouch(Wire(Bool()))
   wb.in.ready:= !wbValid || wbReadyGo
   when(wb.in.ready){
-    wbValidR:=true.B
+    wbValidR:=wb.in.valid
   }
   wbValid:=wbValidR
   wbReadyGo:=true.B

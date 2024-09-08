@@ -137,9 +137,9 @@ class IdStage extends Module {
   Regfile.io.wdata:=id.from_wb.rf.wdata
   Regfile.io.wen  :=id.from_wb.rf.wen
 
-  val isJal=Decode.io.brType===SDEF(BR_JAL)
+  val isJal =Decode.io.brType===SDEF(BR_JAL)
   val isJalr=Decode.io.brType===SDEF(BR_JALR)
-  val brJumpTaken=isJal||isJalr
+  val brJumpTaken=(isJal||isJalr)&&idValidR
 
   val jal_target=id.in.bits.pc+imm
   val jalr_target=Cat((rdata1+imm)(31,1),0.U(1.W))

@@ -4,7 +4,7 @@ export PATH := $(PATH):$(abspath ./utils)
 $(shell mkdir -p $(BUILD_DIR))
 IMG?=
 ARGS?= --log=$(BUILD_DIR)/npc-log.txt
-
+ARGS+= --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 # NXDC_FILES = constr/SimTop.nxdc
 
 VERILATOR = verilator
@@ -26,8 +26,8 @@ CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 CXXFLAGS += -Wall -Werror 
 LDFLAGS += -lreadline  -lSDL2
 
-# CXXFLAGS += -ggdb -DVL_DEBUG=1 -D_GLIBCXX_DEBUG -fsanitize=address,undefined
-# LDFLAGS  += -ggdb -fsanitize=address,undefined
+CXXFLAGS += -ggdb -DVL_DEBUG=1 -D_GLIBCXX_DEBUG
+LDFLAGS  += -ggdb -fsanitize=address,undefined
 #gdb调试段错误相关代码
 
 ##分隔符 llvm用于反汇编itrace
@@ -93,5 +93,5 @@ sim:com
 
 gdb:com
 	$(call git_commit, "gdb RTL") # DO NOT REMOVE THIS LINE!!!
-	gdb -ex "handle SIGSEGV noprint nostop" -ex "set print thread-events off" $(BIN) $(ARGS) $(IMG)
+	gdb -ex "handle SIGSEGV noprint nostop" -ex "set print thread-events off" $(BIN)  $(IMG)
 -include ../Makefile
