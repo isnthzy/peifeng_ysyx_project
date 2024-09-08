@@ -36,19 +36,19 @@ __EXPORT void difftest_regcpy(void *dut, bool direction) {
     }
     cpu.pc=dut_t->base.pc;
     cpu.mstatus=dut_t->csr.mstatus;
-    cpu.mepc=dut_t->csr.mepc;
-    cpu.mtvec=dut_t->csr.mtvec;
-    cpu.mcause=dut_t->csr.mcause;
-
+    cpu.mepc   =dut_t->csr.mepc;
+    cpu.mtvec  =dut_t->csr.mtvec;
+    cpu.mcause =dut_t->csr.mcause;
+    printf("mstatus: %x",dut_t->csr.mstatus);
   }else{
     for(int i=0;i<MUXDEF(CONFIG_RVE, 16, 32);i++){
       dut_t->regs.gpr[i]=cpu.gpr[i];
     }
-    dut_t->base.pc=cpu.pc;
+    dut_t->base.pc    =cpu.pc;
     dut_t->csr.mstatus=cpu.mstatus;
-    dut_t->csr.mepc=cpu.mepc;
-    dut_t->csr.mtvec=cpu.mtvec;
-    dut_t->csr.mcause=cpu.mcause;
+    dut_t->csr.mepc   =cpu.mepc;
+    dut_t->csr.mtvec  =cpu.mtvec;
+    dut_t->csr.mcause =cpu.mcause;
   }
   // assert(0);
 }
