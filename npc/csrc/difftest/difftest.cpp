@@ -4,10 +4,9 @@
 #include "../include/npc/npc_device.h"
 
 
-#define DIFF_CHECK(addr1, addr2, atpc,name) if(addr1!=addr2){\
+#define DIFF_CHECK(addr1, addr2, return,name) if(addr1!=addr2){\
   wLog("The %s is different\nref:0x%08x dut:0x%08x",name,addr1,addr2); \
-  wLog("at pc:0x%08x",atpc); \
-  return false;\
+  return=false;\
 }
 
 
@@ -33,10 +32,7 @@ int Difftest::diff_step(){
   //TODO:define返回值，用来判断diff运行的状况
   idx_commit_num=0;
   step_skip_num=0;
-  return 0;
   while(idx_commit_num<DIFFTEST_COMMIT_WIDTH&&dut_commit.commit[idx_commit_num].valid){
-    total_inst+=1;
-    idx_commit_num++;
     IFDEF(CONFIG_DEVICE, device_update(););
     if(dut_commit.commit[idx_commit_num].skip){
       step_skip_num++;
@@ -46,7 +42,8 @@ int Difftest::diff_step(){
     static char logbuf[128];
     static char tmp_dis[64];
     uint32_t tmp_inst=dut_commit.commit[idx_commit_num].inst;
-    vaddr_t tmp_pc=dut_commit.commit[idx_commit_num].pc;
+    vaddr_t  tmp_pc  =dut_commit.commit[idx_commit_num].pc;
+
     disassemble(tmp_dis, sizeof(tmp_dis),tmp_pc, (uint8_t*)&tmp_inst,4);
     sprintf(logbuf,"[%ld]\t0x%08x: %08x\t%s",total_inst,tmp_pc,tmp_inst,tmp_dis);
     #ifdef CONFIG_ITRACE
@@ -56,8 +53,10 @@ int Difftest::diff_step(){
     wp_trace(logbuf);
     if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s\n",logbuf)); }
     #endif
+
+    total_inst++;
+    idx_commit_num++;
   }
-  return 0;
   if(step_skip_num>0){
     nemu_proxy->ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
     return NPC_RUNNING;
@@ -97,36 +96,43 @@ int Difftest::diff_step(){
     nemu_proxy->ref_difftest_raise_intr(dut_commit.excp.exception);
   }
 
-  nemu_proxy->ref_difftest_regcpy(&ref, DIFFTEST_TO_DUT);
+  if(idx_commit_num==0){ //NOTE:检测是否有效提交,无效提交返回NPC_NOCOMMIT(不检查)
+    return NPC_NOCOMMIT;
+  }
 
+  nemu_proxy->ref_difftest_regcpy(&ref, DIFFTEST_TO_DUT);
   if(!checkregs()){
     display();
     return NPC_ABORT;
   }else{
     return NPC_RUNNING;
   }
+
 }
 
+
 bool Difftest::checkregs(){
+  bool check_result=true;
   for(int i=0;i<MUXDEF(CONFIG_RVE, 16, 32);i++){
     if(ref.regs.gpr[i]!=dut.regs.gpr[i]){
       wLog("The reg:%s(rf_%d) is different\nref:0x%08x dut:0x%08x",
         regs[i],i,ref.regs.gpr[i],dut.regs.gpr[i]);
-      wLog("at pc:0x%08x",ref.base.pc);
-      return false;
+      check_result=false;
     }
   }
-  DIFF_CHECK(ref.base.pc     ,dut.base.pc     ,  ref.base.pc,"pc");
-  DIFF_CHECK(ref.csr.mtvec   ,dut.csr.mtvec   ,  ref.base.pc,"mtvec");
-  DIFF_CHECK(ref.csr.mepc    ,dut.csr.mepc    ,  ref.base.pc,"mepc ");
-  DIFF_CHECK(ref.csr.mstatus ,dut.csr.mstatus ,  ref.base.pc,"mstatus"); //mret实现不完整
-  // DIFF_CHECK(ref_r->mcause ,cpu.mcause , pc,"mcause");
-  return true;
+  DIFF_CHECK(ref.base.pc     ,dut.base.pc     ,check_result ,"pc");
+  DIFF_CHECK(ref.csr.mtvec   ,dut.csr.mtvec   ,check_result ,"mtvec");
+  DIFF_CHECK(ref.csr.mepc    ,dut.csr.mepc    ,check_result ,"mepc ");
+  DIFF_CHECK(ref.csr.mstatus ,dut.csr.mstatus ,check_result ,"mstatus"); //mret实现不完整
+  if(!check_result){
+    wLog("at pc:0x%08x",ref.base.pc);
+  }
+  return check_result;
 }
 
 void Difftest::display(){
   fflush(NULL);
-  wLog("\n=================================  DUT  Regs  =================================");
+  wLog("=================================  DUT  Regs  =================================");
   for (int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i += 4) {
     wLog("%s(r%2d): 0x%08x %s(r%2d): 0x%08x %s(r%2d): 0x%08x %s(r%2d): 0x%08x", 
       regs[i]  , i  , dut_regs_ptr[i]  ,regs[i+1], i+1, dut_regs_ptr[i+1],

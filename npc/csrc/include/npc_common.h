@@ -9,7 +9,7 @@
 #include <inttypes.h>
 #include <assert.h>
 
-enum { NPC_RUNNING, NPC_STOP, NPC_SUCCESS_END, NPC_ERROR_END, NPC_ABORT, NPC_QUIT };
+enum { NPC_RUNNING, NPC_STOP, NPC_SUCCESS_END, NPC_ERROR_END, NPC_ABORT, NPC_NOCOMMIT,NPC_QUIT };
 typedef uint32_t word_t;
 typedef MUXDEF(CONFIG_RV64,uint64_t, uint32_t) vaddr_t;
 typedef MUXDEF(CONFIG_RV64,uint64_t, uint32_t) paddr_t;

@@ -105,7 +105,10 @@ class Difftest{
     int  diff_step();
     void display();
     bool checkregs();
-    void set_img_size(long size){ img_size=size; }
+
+    void set_img_size(long size){ 
+      img_size=size; 
+    }
 
     vaddr_t get_dut_pc(){
       return dut.base.pc;
