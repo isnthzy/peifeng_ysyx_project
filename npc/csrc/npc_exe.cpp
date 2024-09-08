@@ -165,15 +165,11 @@ static void npc_execute(uint64_t n) {
       top->clock=1;
       step_and_dump_wave(); //NOTE:要放对位置，因为放错位置排查好几个小时
       state=difftest->diff_step();
-      // cpy_reg();
-      // if(cpu_info.valid){
-      //   trace_and_difftest();
-      //   IFDEF(CONFIG_DEVICE, device_update());
-      // }
       //NOTE:每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次
       top->clock=0;
       step_and_dump_wave();
     }while(state==NPC_NOCOMMIT);
+    npc_state.state=state;
     if (npc_state.state != NPC_RUNNING) return;
   }
   // if(g_nr_guest_inst>CONFIG_MAX_EXE_INST){
