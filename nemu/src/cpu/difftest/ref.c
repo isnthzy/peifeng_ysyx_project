@@ -28,27 +28,47 @@ __EXPORT void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction)
 }
 //`direction`为`DIFFTEST_TO_DUT`时, 获取REF的寄存器状态到`dut`
 //`direction`为`DIFFTEST_TO_REF`时, 设置REF的寄存器状态为`dut`
+typedef struct {
+  vaddr_t  pc;
+  uint32_t inst;
+} base_state_t; //不参与dpi提交，在diff_step时保留关键信息
+
+typedef struct {
+  word_t  gpr[MUXDEF(CONFIG_RVE, 16, 32)];
+} greg_state_t;
+
+typedef struct __attribute__((packed)) {
+  word_t  mstatus;
+  word_t  mtvec;
+  word_t  mepc;
+  word_t  mcause;
+} csr_state_t;
+typedef struct {
+  base_state_t base;
+  greg_state_t regs;
+  csr_state_t  csr;
+} diff_context;  //一翻思索后感觉这个表不适合做抽象，因为这是面向dut的传递参数写的,ref要与npc保持一致
+
 __EXPORT void difftest_regcpy(void *dut, bool direction) {
-  NPC_state* dut_t=dut; 
+  diff_context* dut_t=dut; 
   if (direction == DIFFTEST_TO_REF) {
     for(int i=0;i<MUXDEF(CONFIG_RVE, 16, 32);i++){
       cpu.gpr[i]=dut_t->regs.gpr[i];
     }
-    cpu.pc=dut_t->base.pc;
+    cpu.lastpc =dut_t->base.pc;
     cpu.mstatus=dut_t->csr.mstatus;
-    cpu.mepc=dut_t->csr.mepc;
-    cpu.mtvec=dut_t->csr.mtvec;
-    cpu.mcause=dut_t->csr.mcause;
-
+    cpu.mepc   =dut_t->csr.mepc;
+    cpu.mtvec  =dut_t->csr.mtvec;
+    cpu.mcause =dut_t->csr.mcause;
   }else{
     for(int i=0;i<MUXDEF(CONFIG_RVE, 16, 32);i++){
       dut_t->regs.gpr[i]=cpu.gpr[i];
     }
-    dut_t->base.pc=cpu.pc;
+    dut_t->base.pc    =cpu.lastpc;
     dut_t->csr.mstatus=cpu.mstatus;
-    dut_t->csr.mepc=cpu.mepc;
-    dut_t->csr.mtvec=cpu.mtvec;
-    dut_t->csr.mcause=cpu.mcause;
+    dut_t->csr.mepc   =cpu.mepc;
+    dut_t->csr.mtvec  =cpu.mtvec;
+    dut_t->csr.mcause =cpu.mcause;
   }
   // assert(0);
 }

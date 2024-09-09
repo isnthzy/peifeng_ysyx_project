@@ -25,89 +25,10 @@ void step_and_dump_wave(){
 #endif 
 }
 
-
-
-// //----------------------------dpi-c----------------------------
-// extern "C" void sim_break(int pc,int ret_reg_data){
-//   npc_state.halt_ret=ret_reg_data;
-//   npc_state.halt_pc=pc;
-//   npc_state.state=NPC_END;
-// }
-// extern "C" void inv_break(int pc){
-//   npc_state.halt_pc=pc;
-//   npc_state.state=NPC_ABORT;
-// }
-
-// extern "C" void cpu_use_func(int pc,int nextpc,svBit is_ret,svBit is_jal,svBit is_rd0){
-//   //调用cpu_use_func后，is_jal=1 jal,is_jal=0 jalr
-//   #ifdef CONFIG_FTRACE
-//   if(ftrace_flag){
-//     if(is_jal){ //jal指令
-//       func_call(pc,nextpc,false);
-//     }else{   //jalr指令
-//       if(is_ret){
-//         func_ret(pc);
-//       }else if(is_rd0){ //jalr是跳转,jr不是(jr被编译器优化为尾调用)
-//         func_call(pc,nextpc,true);
-//       }else{
-//         func_call(pc,nextpc,false);
-//       }
-//     }
-//   }
-//   #endif
-// }
-
-// extern "C" void get_info(int pc,int nextpc,int inst,svBit dpi_valid){
-//   // printf("pc: %x\n",pc);
-//   if(dpi_valid){
-//     cpu.pc=pc;
-//     cpu_info.nextpc=nextpc;
-//     cpu_info.inst=inst;
-//   }
-//   cpu_info.valid=dpi_valid;
-// }
-
-// extern "C" void prt_debug(const svBitVecVal* debug_1,int debug_2){
-//   printf("debug_1: %x debug_2: %x\n",*debug_1,debug_2);
-// }
-
-// #define MTVEC 0x305
-// #define MSTATUS 0x300
-// #define MEPC 0x341
-// #define MCAUSE 0x342
-// extern "C" void sync_csrfile_regs(int waddr,int wdata){
-//   switch (waddr)
-//   {
-//   case MTVEC: cpu.mtvec=wdata; break;
-//   case MSTATUS: cpu.mstatus=wdata; break;
-//   case MEPC: cpu.mepc=wdata; break;
-//   case MCAUSE: cpu.mcause=wdata; break;
-//   default:
-//     panic("unknown csr address");
-//     break;
-//   }
-// }
-
-// extern "C" void sync_csr_exception_regs(int mcause_in,int pc_wb){
-//   cpu.mcause=mcause_in;
-//   cpu.mepc=pc_wb;
-// }
-
-// extern "C" void Csr_assert(){
-//   panic("csr寄存器异常读写");
-// }
-// //----------------------------dpi-c----------------------------
-
-
 void npc_quit(){
   reg_dut_display();
   npc_state.state=NPC_QUIT;
 }
-// void assert_fail_msg() {
-  
-//   statistic();
-// }
-
 
 static void statistic() {
   IFNDEF(CONFIG_TARGET_AM, setlocale(LC_NUMERIC, ""));
@@ -127,36 +48,6 @@ void putIringbuf(){
 
   }
 }
-
-
-// static void trace_and_difftest(){
-//   g_nr_guest_inst++; //记录总共执行了多少步
-//   #ifdef CONFIG_DIFFTEST
-//   static bool first_diff=true;
-//   if(difftest_flag){
-//     /*第一次不进行diff,因为nemu的寄存器写入是瞬间写，npc是延迟一拍后写
-//     因此diff时机是npc执行结束了，进入下一排执行了，reg能取出来了，进行diff*/
-//     if(!first_diff) difftest_step(cpu.pc,cpu_info.nextpc);
-//     first_diff=false;
-//   }
-//   #endif
-
-//   static char logbuf[128];
-//   static char tmp_dis[64];
-//   #ifdef CONFIG_TRACE
-//   static word_t tmp_inst;
-//   tmp_inst=cpu_info.inst;
-//   disassemble(tmp_dis, sizeof(tmp_dis),cpu.pc, (uint8_t*)&tmp_inst,4);
-//   sprintf(logbuf,"[%ld]\t0x%08x: %08x\t%s",g_nr_guest_inst,cpu.pc,tmp_inst,tmp_dis);
-//   #ifdef CONFIG_ITRACE
-//   log_write("%s\n",logbuf);
-//   enqueueIRingBuffer(&iring_buffer,logbuf); //入队环形缓冲区
-//   #endif
-//   wp_trace(logbuf);
-//   if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s\n",logbuf)); }
-//   #endif
-// }
-
 
 static void npc_execute(uint64_t n) {
   for (;n > 0; n --) {

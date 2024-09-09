@@ -28,6 +28,22 @@ void Difftest::first_commit(){
     is_first_commit=false;
   }
 }
+
+/*
+NOTE:diffstep的执行顺序
+首先算出这次提交的数量和需要跳过的提交数量，提交的时候顺便把这次提交的指令记录到itrace中
+以提交数量为根据，计算出提交的最后一个pc（例如提交了两条指令，那么base.pc的结果就为第二条指令的pc）
+//TODO:死锁检查
+判断是不是无提交指令，无提交指令则直接返回让NPC继续执行
+判断是否是第一次提交，如果是第一次提交，同步NPC初始化内容等各项事务
+判断是否是退出指令，如果是，则退出
+NEMU根据这次提交的指令数量，决定执行几次
+发现当前提交的指令是跳过指令，传输diff同步，覆盖掉NEMU提交结果
+拉取NEMU的寄存器结果
+对比寄存器，进行diff同步
+*/
+
+
 int Difftest::diff_step(){
   //TODO:define返回值，用来判断diff运行的状况
   idx_commit_num=0;
@@ -57,14 +73,15 @@ int Difftest::diff_step(){
     total_inst++;
     idx_commit_num++;
   }
-  if(step_skip_num>0){
-    nemu_proxy->ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
-    return NPC_RUNNING;
-  }//NOTE:跳过指令
 
   if(total_inst>CONFIG_MAX_EXE_INST){
     panic("Too many instructions(Suspected to be in a traploop)");
   }//NOTE:最大边界检测
+
+  //TODO:死锁检查设计在无提交检查前面
+  if(idx_commit_num==0){ //NOTE:检测是否有效提交,无效提交返回NPC_NOCOMMIT(不检查)
+    return NPC_NOCOMMIT;
+  }
 
   if(idx_commit_num > 0){
     dut.base.pc   = dut_commit.commit[idx_commit_num-1].pc;
@@ -90,14 +107,16 @@ int Difftest::diff_step(){
 
   for(int i=0;i<idx_commit_num;i++){
     nemu_proxy->ref_difftest_exec(1);
+    dut_commit.commit[i].valid=false; //因为结构体不像波形你这周期拉高下周期就回去了，所以手动清0
   }//发射了几条指令就执行几次
+
+  if(step_skip_num>0){
+    nemu_proxy->ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
+    return NPC_RUNNING;
+  }//NOTE:遇到跳过指令，等NEMU执行完后对NEMU的寄存器结果同步，然后返回NPC_RUNNING
 
   if(dut_commit.excp.excp_valid){
     nemu_proxy->ref_difftest_raise_intr(dut_commit.excp.exception);
-  }
-
-  if(idx_commit_num==0){ //NOTE:检测是否有效提交,无效提交返回NPC_NOCOMMIT(不检查)
-    return NPC_NOCOMMIT;
   }
 
   nemu_proxy->ref_difftest_regcpy(&ref, DIFFTEST_TO_DUT);

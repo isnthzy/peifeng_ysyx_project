@@ -25,28 +25,9 @@ typedef struct {
   word_t  mepc;
   word_t  mtvec;
   word_t  mcause;
+  vaddr_t lastpc; //NOTE:不参与与spike的同步，适用于与NPC差异diff(解决nemu的pc快一拍的问题)
 } MUXDEF(CONFIG_RV64, riscv64_CPU_state, riscv32_CPU_state);
 
-typedef struct {
-  vaddr_t  pc;
-  uint32_t inst;
-} base_state_t; //不参与dpi提交，在diff_step时保留关键信息
-
-typedef struct {
-  word_t  gpr[32];
-} greg_state_t;
-
-typedef struct __attribute__((packed)) {
-  word_t  mstatus;
-  word_t  mtvec;
-  word_t  mepc;
-  word_t  mcause;
-} csr_state_t;
-typedef struct {
-  base_state_t base;
-  greg_state_t regs;
-  csr_state_t  csr;
-} MUXDEF(CONFIG_RV64, riscv64_NPC_state, riscv32_NPC_state);
 
 // decode
 typedef struct {
