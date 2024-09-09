@@ -55,12 +55,11 @@ __EXPORT void difftest_regcpy(void *dut, bool direction) {
     for(int i=0;i<MUXDEF(CONFIG_RVE, 16, 32);i++){
       cpu.gpr[i]=dut_t->regs.gpr[i];
     }
-    cpu.pc=dut_t->base.pc;
+    cpu.lastpc =dut_t->base.pc;
     cpu.mstatus=dut_t->csr.mstatus;
     cpu.mepc   =dut_t->csr.mepc;
     cpu.mtvec  =dut_t->csr.mtvec;
     cpu.mcause =dut_t->csr.mcause;
-    printf("mstatus: %x",dut_t->csr.mstatus);
   }else{
     for(int i=0;i<MUXDEF(CONFIG_RVE, 16, 32);i++){
       dut_t->regs.gpr[i]=cpu.gpr[i];
