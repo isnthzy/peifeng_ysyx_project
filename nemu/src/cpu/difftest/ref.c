@@ -17,7 +17,6 @@
 #include <cpu/cpu.h>
 #include <difftest-def.h>
 #include <memory/paddr.h>
-void cpu_exec(uint64_t n,bool is_ref);
 extern char *regs[];
 __EXPORT void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
   if(direction == DIFFTEST_TO_REF){ //DIFFTEST_TO_REF,target is ref
@@ -55,7 +54,8 @@ __EXPORT void difftest_regcpy(void *dut, bool direction) {
     for(int i=0;i<MUXDEF(CONFIG_RVE, 16, 32);i++){
       cpu.gpr[i]=dut_t->regs.gpr[i];
     }
-    cpu.lastpc =dut_t->base.pc;
+    // cpu.inst   =dut_t->base.inst;
+    // cpu.lastpc =dut_t->base.pc;
     cpu.mstatus=dut_t->csr.mstatus;
     cpu.mepc   =dut_t->csr.mepc;
     cpu.mtvec  =dut_t->csr.mtvec;
@@ -64,6 +64,7 @@ __EXPORT void difftest_regcpy(void *dut, bool direction) {
     for(int i=0;i<MUXDEF(CONFIG_RVE, 16, 32);i++){
       dut_t->regs.gpr[i]=cpu.gpr[i];
     }
+    dut_t->base.inst  =cpu.inst;
     dut_t->base.pc    =cpu.lastpc;
     dut_t->csr.mstatus=cpu.mstatus;
     dut_t->csr.mepc   =cpu.mepc;
@@ -90,7 +91,7 @@ __EXPORT void difftest_ref_reg_display() {
       regs[i]  , i  , cpu.gpr[i]  ,regs[i+1], i+1, cpu.gpr[i+1],
       regs[i+2], i+2, cpu.gpr[i+2],regs[i+3], i+3, cpu.gpr[i+3]);
   }
-  printf("pc: 0x%08x inst: 0x%08x \n", cpu.pc, 0);
+  printf("pc: 0x%08x inst: 0x%08x \n", cpu.pc, cpu.inst);
   printf("MSTATUS: 0x%08x, MTVEC: 0x%08x, MEPC: 0x%08x \n", cpu.mstatus, cpu.mtvec, cpu.mepc);
   printf(" MCAUSE: 0x%08x \n", cpu.mcause);
   fflush(NULL);
