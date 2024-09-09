@@ -43,8 +43,8 @@ void putIringbuf(){
   while(!isIRingBufferEmpty(&iring_buffer)){
     char pop_iringbufdata[100];
     dequeueIRingBuffer(&iring_buffer,pop_iringbufdata);
-    if(iring_buffer.num==0) wLog("[itrace]-->%s",pop_iringbufdata);
-    else wLog("[itrace]   %s",pop_iringbufdata);
+    if(iring_buffer.num==0) printf("[itrace]-->%s\n",pop_iringbufdata);
+    else printf("[itrace]   %s\n",pop_iringbufdata);
 
   }
 }
