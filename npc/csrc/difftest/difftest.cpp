@@ -33,10 +33,10 @@ void Difftest::first_commit(){
 NOTE:diffstep的执行顺序
 首先算出这次提交的数量和需要跳过的提交数量，提交的时候顺便把这次提交的指令记录到itrace中
 以提交数量为根据，计算出提交的最后一个pc（例如提交了两条指令，那么base.pc的结果就为第二条指令的pc）
-//TODO:死锁检查
+//死锁检查
 判断是不是无提交指令，无提交指令则直接返回让NPC继续执行
 判断是否是第一次提交，如果是第一次提交，同步NPC初始化内容等各项事务
-判断是否是退出指令，如果是，则退出
+异常判断，如果是退出指令，则退出，其他异常（待实现）
 NEMU根据这次提交的指令数量，决定执行几次
 发现当前提交的指令是跳过指令，传输diff同步，覆盖掉NEMU提交结果
 拉取NEMU的寄存器结果
@@ -100,18 +100,29 @@ int Difftest::diff_step(){
 
   first_commit(); //当第一条指令提交时，开始同步
 
-
-  if(idx_commit_num>0&&dut_commit.excp.excp_valid&&dut_commit.excp.exception==0x3){
+  int excp_inst_idx=0;
+  if(idx_commit_num>0&&dut_commit.excp.excp_valid){
     for(int i = 0;i<idx_commit_num;i++){
       if(dut_commit.commit[i].pc==dut_commit.excp.exceptionPC){
-        if(dut_commit.commit[i].wdata==0x0){
-          npc_state.halt_pc = dut_commit.commit[i].pc;
-          return NPC_SUCCESS_END;
-        }else{
-          npc_state.halt_pc = dut_commit.commit[i].pc;
-          return NPC_ERROR_END;
-        }
+        excp_inst_idx=i;
       }
+    }
+    if(dut_commit.excp.exception==0x3){
+      if(dut_commit.commit[excp_inst_idx].wdata==0x0){
+        npc_state.halt_pc = dut_commit.commit[excp_inst_idx].pc;
+        return NPC_SUCCESS_END;
+      }else{
+        npc_state.halt_pc = dut_commit.commit[excp_inst_idx].pc;
+        return NPC_ERROR_END;
+      }
+    }else if(dut_commit.excp.exception==0x11){
+      wLog("TODO: excp_code = 0x11 ");
+      npc_state.halt_pc = dut_commit.commit[excp_inst_idx].pc;
+      return NPC_ABORT;
+    }else{
+      wLog("excp_code = %d",dut_commit.excp.exception);
+      npc_state.halt_pc = dut_commit.commit[excp_inst_idx].pc;
+      return NPC_ABORT;
     }
   }  
 

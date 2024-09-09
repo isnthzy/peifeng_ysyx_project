@@ -119,8 +119,8 @@ class ExStage extends Module {
    |Fill(ADDR_WIDTH,memSize(1))&memShCont
    |Fill(ADDR_WIDTH, !memSize )&memStoreSrc
   )
-  val storeEn=ex.in.bits.stType=/=SDEF(ST_XXX)
-  val loadEn =ex.in.bits.ldType=/=SDEF(LD_XXX)
+  val storeEn=ex.in.bits.stType=/=SDEF(ST_XXX)&& ~exExcpEn
+  val loadEn =ex.in.bits.ldType=/=SDEF(LD_XXX)&& ~exExcpEn
 //NOTE:
   ex.s.wen:=storeEn&&exValid
   ex.s.waddr:=memAddr
@@ -133,7 +133,7 @@ class ExStage extends Module {
          || loadEn && ex.al.raddr_ok)&&exValid
 //NOTE:Excp
   val AddrMisaligned=(memSize(1)&&memAddr(0)
-                  || !memSize   &&memAddr.asUInt.orR)
+                  || !memSize   &&memAddr(1,0).asUInt.orR)
   val exExcpType=Wire(new ExExcpTypeBundle())
   exExcpType.num:=ex.in.bits.excpType
   exExcpType.lam:=AddrMisaligned&&loadEn&&exValid

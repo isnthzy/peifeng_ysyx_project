@@ -28,7 +28,7 @@ class WbStage extends Module {
 
   wb.fw_id.rf.waddr:=wb.in.bits.rd
   wb.fw_id.rf.wdata:=wb.in.bits.result
-  wb.fw_id.rf.wen  :=wb.in.bits.rfWen&&wbValid
+  wb.fw_id.rf.wen  :=wb.in.bits.rfWen&&realValid
 
   wb.diffInstrCommit.index:=0.U
   wb.diffInstrCommit.valid:=realValid
