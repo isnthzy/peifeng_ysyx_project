@@ -194,10 +194,8 @@ void init_monitor(int argc, char *argv[]) {
   /* Initialize differential testing. */
   //NOTE:未传入difftest参数时，difftest的nemu_proxy为不可用状态
   difftest = new Difftest();
-  if(difftest_flag){
-    difftest->init_difftest(diff_so_file, difftest_port);
-    difftest->set_img_size(img_size);
-  }
+  difftest->init_difftest(diff_so_file, difftest_port);
+  difftest->set_img_size(img_size);
 
   /* Initialize the simple debugger. */
   init_sdb();
