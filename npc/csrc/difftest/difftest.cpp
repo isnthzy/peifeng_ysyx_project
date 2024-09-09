@@ -83,7 +83,6 @@ int Difftest::diff_step(){
   if(idx_commit_num==0){ //NOTE:检测是否有效提交,无效提交返回NPC_NOCOMMIT(不检查)
     if(DEADLOCK_TIME>0){
       deadlock_timer++;
-      printf("Deadlock %d\n",deadlock_timer);
       if(deadlock_timer>DEADLOCK_TIME)
       {
         wLog("NPC more than %d clocks were not submitted",DEADLOCK_TIME);
