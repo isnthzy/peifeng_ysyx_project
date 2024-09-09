@@ -80,7 +80,6 @@ int Difftest::diff_step(){
   }//NOTE:最大边界检测
 
   //TODO:死锁检查设计在无提交检查前面
-  printf("%d\n",dut_commit.excp.excp_valid);
   if(idx_commit_num==0&& !dut_commit.excp.excp_valid){ //NOTE:检测是否有效提交,无效提交返回NPC_NOCOMMIT(不检查)
     if(DEADLOCK_TIME>0){
       deadlock_timer++;
@@ -102,8 +101,8 @@ int Difftest::diff_step(){
   first_commit(); //当第一条指令提交时，开始同步
 
   int excp_inst_idx=0;
-  if(idx_commit_num>0&&dut_commit.excp.excp_valid){
-    for(int i = 0;i<idx_commit_num;i++){
+  if(dut_commit.excp.excp_valid){
+    for(int i = 0;i<DIFFTEST_COMMIT_WIDTH;i++){
       if(dut_commit.commit[i].pc==dut_commit.excp.exceptionPC){
         excp_inst_idx=i;
       }
