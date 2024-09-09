@@ -29,7 +29,7 @@ class IdStage extends Module {
   val idValidR=RegInit(false.B)
   val idReadyGo=dontTouch(Wire(Bool()))
   val idStall=dontTouch(Wire(Bool()))
-  id.in.ready:=id.to_ex.ready&& ~idValidR || idReadyGo
+  id.in.ready:= ~idValidR || idReadyGo && id.to_ex.ready
   when(idFlush){
     idValidR:=false.B
   }.elsewhen(id.in.ready){
