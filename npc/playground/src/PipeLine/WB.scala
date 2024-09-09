@@ -31,7 +31,7 @@ class WbStage extends Module {
   wb.fw_id.rf.wen  :=wb.in.bits.rfWen&&realValid
 
   wb.diffInstrCommit.index:=0.U
-  wb.diffInstrCommit.valid:=realValid
+  wb.diffInstrCommit.valid:=wbValid //这里提交方式与chiplab设计的有差异，即使发生了异常也正常提交
   wb.diffInstrCommit.pc   :=wb.in.bits.pc
   wb.diffInstrCommit.instr:=wb.in.bits.inst
   wb.diffInstrCommit.skip :=wb.in.bits.isDeviceSkip

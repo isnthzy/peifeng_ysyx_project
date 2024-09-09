@@ -102,7 +102,7 @@ int Difftest::diff_step(){
 
   int excp_inst_idx=0;
   if(dut_commit.excp.excp_valid){
-    for(int i = 0;i<DIFFTEST_COMMIT_WIDTH;i++){
+    for(int i = 0;i<idx_commit_num;i++){
       if(dut_commit.commit[i].pc==dut_commit.excp.exceptionPC){
         excp_inst_idx=i;
       }
