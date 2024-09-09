@@ -58,6 +58,7 @@ class ExStage extends Module {
   ex.fw_id.rf.wen:=ex.in.bits.rfWen
   ex.fw_id.rf.waddr:=ex.in.bits.rd
   ex.fw_id.rf.wdata:=Alu.io.result
+  ex.fw_id.dataUnReady:=loadEn&&exValidR
 
   val brCondTaken=((ex.in.bits.brType===SDEF(BR_EQ) &&  Alu.io.result(0))
                 || (ex.in.bits.brType===SDEF(BR_NE) && ~Alu.io.result(0))
