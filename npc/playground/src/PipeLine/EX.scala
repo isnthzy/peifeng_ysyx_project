@@ -50,7 +50,7 @@ class ExStage extends Module {
   val isMret=ex.in.bits.csrWrAddr===SDEF(CSR_MRET)
 
   val Alu=Module(new Alu())
-  Alu.io.src1:=ex.in.bits.src1
+  Alu.io.src1:=Mux(ex.in.bits.brType===SDEF(BR_JALR),ex.in.bits.pc,ex.in.bits.src1)
   Alu.io.src2:=ex.in.bits.src2
   Alu.io.op  :=ex.in.bits.aluOp
   val exResult=Alu.io.result
@@ -122,18 +122,18 @@ class ExStage extends Module {
   val storeEn=ex.in.bits.stType=/=SDEF(ST_XXX)
   val loadEn =ex.in.bits.ldType=/=SDEF(LD_XXX)
 //NOTE:
-  ex.s.wen:=storeEn&&exValid
+  ex.s.wen:=storeEn&&exValid && ~exExcpEn
   ex.s.waddr:=memAddr
   ex.s.wstrb:=memWstrb
   ex.s.wdata:=memWdata
-  ex.al.ren:=loadEn&&exValid
+  ex.al.ren:=loadEn&&exValid && ~exExcpEn
   ex.al.raddr:=memAddr
 
   exStall:=(storeEn&& ex.s.wdata_ok 
          || loadEn && ex.al.raddr_ok)&&exValid
 //NOTE:Excp
   val AddrMisaligned=(memSize(1)&&memAddr(0)
-                  || !memSize   &&memAddr.asUInt.orR)
+                  || !memSize   &&memAddr(1,0).asUInt.orR)
   val exExcpType=Wire(new ExExcpTypeBundle())
   exExcpType.num:=ex.in.bits.excpType
   exExcpType.lam:=AddrMisaligned&&loadEn&&exValid

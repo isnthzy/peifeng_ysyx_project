@@ -43,8 +43,8 @@ void putIringbuf(){
   while(!isIRingBufferEmpty(&iring_buffer)){
     char pop_iringbufdata[100];
     dequeueIRingBuffer(&iring_buffer,pop_iringbufdata);
-    if(iring_buffer.num==0) wLog("[itrace]-->%s",pop_iringbufdata);
-    else wLog("[itrace]   %s",pop_iringbufdata);
+    if(iring_buffer.num==0) printf_green("[itrace]-->%s\n",pop_iringbufdata);
+    else printf("[itrace]   %s\n",pop_iringbufdata);
 
   }
 }
@@ -72,6 +72,11 @@ void init_traces(){
   #endif
 }
 
+void put_traces(){
+  IFDEF(CONFIG_ITRACE, putIringbuf()); 
+  IFDEF(CONFIG_MTRACE, mputIringbuf()); 
+}
+
 void npc_exev(uint64_t step){ //之所以不用int因为int是有符号的，批处理传入-1就是-1，无法达到效果
   g_print_step = (step<MAX_INST_TO_PRINT);
   switch (npc_state.state) {
@@ -90,8 +95,7 @@ void npc_exev(uint64_t step){ //之所以不用int因为int是有符号的，批
     case NPC_RUNNING: npc_state.state = NPC_STOP; break;
     case NPC_SUCCESS_END: case NPC_ERROR_END: case NPC_ABORT:
       if(npc_state.state==NPC_ABORT||npc_state.state!=NPC_ERROR_END){
-        IFDEF(CONFIG_ITRACE, putIringbuf()); 
-        IFDEF(CONFIG_MTRACE, mputIringbuf()); 
+        put_traces();
       }
       Log("npc: %s at pc = " FMT_WORD,
           (npc_state.state == NPC_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED):

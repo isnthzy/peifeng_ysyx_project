@@ -65,8 +65,8 @@ class IdStage extends Module {
   val Regfile=Module(new RegFile())
   Regfile.io.raddr1:=rs1
   Regfile.io.raddr2:=MuxLookup(Decode.io.csrOp,rs2)(Seq(
-    SDEF(CSR_BREK)  ->10.U,
-    SDEF(CSR_ECAL) ->RISCV32E_ECALLREG
+    SDEF(CSR_BREK)  -> 10.U,
+    SDEF(CSR_ECAL)  -> RISCV32E_ECALLREG,
   ))
   id.diffREG:=Regfile.io.diffREG
 
@@ -144,7 +144,7 @@ class IdStage extends Module {
   val jal_target=id.in.bits.pc+imm
   val jalr_target=Cat((rdata1+imm)(31,1),0.U(1.W))
   val brJumpTarget=((Fill(ADDR_WIDTH,isJal) &jal_target)
-                  | (Fill(ADDR_WIDTH,isJalr)&jal_target))
+                  | (Fill(ADDR_WIDTH,isJalr)&jalr_target))
 
   id.fw_pf.brJump.taken:=brJumpTaken
   id.fw_pf.brJump.target:=brJumpTarget
@@ -156,7 +156,7 @@ class IdStage extends Module {
   val idExcpType=Wire(new IdExcpTypeBundle())
   idExcpType.num:=id.in.bits.excpType
   idExcpType.ine:=Decode.io.illigal
-  idExcpType.bkp:=false.B
+  idExcpType.bkp:=Decode.io.csrOp===SDEF(CSR_BREK)
   idExcpType.ecu:=false.B
   idExcpType.ecs:=false.B
   idExcpType.ecm:=Decode.io.csrOp===SDEF(CSR_ECAL)
