@@ -48,6 +48,8 @@ class ExStage extends Module {
   val csrWen=(ex.in.bits.csrOp===SDEF(CSR_RW)
             ||ex.in.bits.csrOp===SDEF(CSR_RS))
   val isMret=ex.in.bits.csrOp===SDEF(CSR_MRET)
+  val storeEn=ex.in.bits.stType=/=SDEF(ST_XXX)
+  val loadEn =ex.in.bits.ldType=/=SDEF(LD_XXX)
 
   val Alu=Module(new Alu())
   Alu.io.src1:=Mux(ex.in.bits.brType===SDEF(BR_JALR),ex.in.bits.pc,ex.in.bits.src1)
@@ -120,8 +122,6 @@ class ExStage extends Module {
    |Fill(ADDR_WIDTH,memSize(1))&memShCont
    |Fill(ADDR_WIDTH, !memSize )&memStoreSrc
   )
-  val storeEn=ex.in.bits.stType=/=SDEF(ST_XXX)
-  val loadEn =ex.in.bits.ldType=/=SDEF(LD_XXX)
 //NOTE:
   ex.s.wen:=storeEn&&exValid && ~exExcpEn
   ex.s.waddr:=memAddr
