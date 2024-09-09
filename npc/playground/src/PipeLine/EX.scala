@@ -31,7 +31,7 @@ class ExStage extends Module {
   val exValidR=RegInit(false.B)
   val exReadyGo=dontTouch(Wire(Bool()))
   val exStall=dontTouch(Wire(Bool()))
-  ex.in.ready:=ex.to_ls.ready&& ~exValidR || exReadyGo
+  ex.in.ready:= ~exValidR || exReadyGo && ex.to_ls.ready
   when(exFlush){
     exValidR:=false.B
   }.elsewhen(ex.in.ready){
