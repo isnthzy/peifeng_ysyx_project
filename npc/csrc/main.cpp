@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "include/npc_common.h"
 #include "include/npc_verilator.h"
+#include "include/difftest/difftest.h"
 void init_monitor(int, char *[]);
 void sdb_mainloop();
 VerilatedContext* contextp = NULL;
@@ -12,6 +13,7 @@ NPCState npc_state = { .state = NPC_STOP };
 
 void sim_exit(){
   delete top;
+  delete difftest;
   #ifdef TRACE_VCD
   tfp->close();
   #endif

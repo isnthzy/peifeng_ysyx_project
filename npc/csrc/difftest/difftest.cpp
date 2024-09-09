@@ -12,7 +12,7 @@
 
 void Difftest::init_difftest(char *ref_so_file, int port){
   nemu_proxy = new NemuProxy;
-  nemu_proxy->init_nemu_proxy(ref_so_file, port);
+  nemu_proxy -> init_nemu_proxy(ref_so_file, port);
 }
 
 void Difftest::exit_difftest(){

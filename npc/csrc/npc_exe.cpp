@@ -94,6 +94,7 @@ void npc_exev(uint64_t step){ //之所以不用int因为int是有符号的，批
   switch (npc_state.state) {
     case NPC_RUNNING: npc_state.state = NPC_STOP; break;
     case NPC_SUCCESS_END: case NPC_ERROR_END: case NPC_ABORT:
+      difftest->exit_difftest(); //NOTE:退出difftest收回内存
       if(npc_state.state==NPC_ABORT||npc_state.state!=NPC_ERROR_END){
         put_traces();
       }
