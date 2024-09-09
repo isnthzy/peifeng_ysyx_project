@@ -92,6 +92,7 @@ void npc_exev(uint64_t step){ //之所以不用int因为int是有符号的，批
       if(npc_state.state==NPC_ABORT||npc_state.state!=NPC_ERROR_END){
         IFDEF(CONFIG_ITRACE, putIringbuf()); 
         IFDEF(CONFIG_MTRACE, mputIringbuf()); 
+        reg_dut_display();
       }
       Log("npc: %s at pc = " FMT_WORD,
           (npc_state.state == NPC_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED):
