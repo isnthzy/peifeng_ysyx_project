@@ -4,7 +4,7 @@ export PATH := $(PATH):$(abspath ./utils)
 $(shell mkdir -p $(BUILD_DIR))
 IMG?=
 ARGS?= --log=$(BUILD_DIR)/npc-log.txt
-ARGS+= --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so
+# ARGS+= --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 # NXDC_FILES = constr/SimTop.nxdc
 
 VERILATOR = verilator
