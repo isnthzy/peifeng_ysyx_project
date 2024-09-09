@@ -50,7 +50,7 @@ class ExStage extends Module {
   val isMret=ex.in.bits.csrWrAddr===SDEF(CSR_MRET)
 
   val Alu=Module(new Alu())
-  Alu.io.src1:=ex.in.bits.src1
+  Alu.io.src1:=Mux(ex.in.bits.brType===SDEF(BR_JALR),ex.in.bits.pc,ex.in.bits.src1)
   Alu.io.src2:=ex.in.bits.src2
   Alu.io.op  :=ex.in.bits.aluOp
   val exResult=Alu.io.result

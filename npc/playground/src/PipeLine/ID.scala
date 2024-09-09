@@ -144,7 +144,7 @@ class IdStage extends Module {
   val jal_target=id.in.bits.pc+imm
   val jalr_target=Cat((rdata1+imm)(31,1),0.U(1.W))
   val brJumpTarget=((Fill(ADDR_WIDTH,isJal) &jal_target)
-                  | (Fill(ADDR_WIDTH,isJalr)&jal_target))
+                  | (Fill(ADDR_WIDTH,isJalr)&jalr_target))
 
   id.fw_pf.brJump.taken:=brJumpTaken
   id.fw_pf.brJump.target:=brJumpTarget
