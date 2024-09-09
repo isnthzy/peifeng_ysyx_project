@@ -85,6 +85,7 @@ int Difftest::diff_step(){
       deadlock_timer++;
       if(deadlock_timer>DEADLOCK_TIME)
       {
+        printf("Deadlock %d\n",deadlock_timer);
         wLog("NPC more than %d clocks were not submitted",DEADLOCK_TIME);
         return NPC_ABORT;
       }
