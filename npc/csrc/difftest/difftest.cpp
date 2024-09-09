@@ -80,7 +80,7 @@ int Difftest::diff_step(){
   }//NOTE:最大边界检测
 
   //TODO:死锁检查设计在无提交检查前面
-  if(idx_commit_num==0){ //NOTE:检测是否有效提交,无效提交返回NPC_NOCOMMIT(不检查)
+  if(idx_commit_num==0&& ~dut_commit.excp.excp_valid){ //NOTE:检测是否有效提交,无效提交返回NPC_NOCOMMIT(不检查)
     if(DEADLOCK_TIME>0){
       deadlock_timer++;
       if(deadlock_timer>DEADLOCK_TIME)

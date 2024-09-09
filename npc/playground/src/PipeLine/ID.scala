@@ -65,8 +65,8 @@ class IdStage extends Module {
   val Regfile=Module(new RegFile())
   Regfile.io.raddr1:=rs1
   Regfile.io.raddr2:=MuxLookup(Decode.io.csrOp,rs2)(Seq(
-    SDEF(CSR_BREK)  ->10.U,
-    SDEF(CSR_ECAL)  ->RISCV32E_ECALLREG,
+    SDEF(CSR_BREK)  -> 10.U,
+    SDEF(CSR_ECAL)  -> RISCV32E_ECALLREG,
   ))
   id.diffREG:=Regfile.io.diffREG
 
