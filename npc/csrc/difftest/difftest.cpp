@@ -143,9 +143,14 @@ int Difftest::diff_step(){
   }
 
   nemu_proxy->ref_difftest_regcpy(&ref, DIFFTEST_TO_DUT);
-  if(!checkregs()&&difftest_flag){
-    display();
-    return NPC_ABORT;
+  
+  if(difftest_flag){
+    if(!checkregs()){
+      display();
+      return NPC_ABORT;
+    }else{
+      return NPC_RUNNING;
+    }
   }else{
     return NPC_RUNNING;
   }
