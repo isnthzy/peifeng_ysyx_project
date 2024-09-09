@@ -6,7 +6,7 @@
 template<typename... Args>
 void null_function(Args... args) {}
 void NemuProxy::init_nemu_proxy(char *ref_so_file, int port){
-  if(!difftest_flag){ //如果没有打开diff测试，则调用null_function
+  if(!difftest_flag){ //NOTE:如果没有打开diff测试，则NemuProxy调用null_function
     ref_difftest_memcpy = null_function<paddr_t, void*, size_t, bool>;
     ref_difftest_regcpy = null_function<void*, bool>;
     ref_difftest_exec = null_function<uint64_t>;
