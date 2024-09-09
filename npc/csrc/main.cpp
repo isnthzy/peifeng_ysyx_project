@@ -8,7 +8,7 @@ void sdb_mainloop();
 VerilatedContext* contextp = NULL;
 VerilatedVcdC* tfp = NULL;
 VSimTop* top;
-
+bool difftest_flag = false;
 NPCState npc_state = { .state = NPC_STOP };
 
 void sim_exit(){

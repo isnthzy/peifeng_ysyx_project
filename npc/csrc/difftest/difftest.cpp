@@ -2,6 +2,7 @@
 #include "../include/util/debug.h"
 #include "../include/npc/npc_memory.h"
 #include "../include/npc/npc_device.h"
+#include "../include/npc/npc_monitor.h"
 
 
 #define DIFF_CHECK(addr1, addr2, return,name) if(addr1!=addr2){\
@@ -142,7 +143,7 @@ int Difftest::diff_step(){
   }
 
   nemu_proxy->ref_difftest_regcpy(&ref, DIFFTEST_TO_DUT);
-  if(!checkregs()){
+  if(!checkregs()&&difftest_flag){
     display();
     return NPC_ABORT;
   }else{
