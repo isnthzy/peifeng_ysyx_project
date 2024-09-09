@@ -107,6 +107,7 @@ int Difftest::diff_step(){
 
   for(int i=0;i<idx_commit_num;i++){
     nemu_proxy->ref_difftest_exec(1);
+    dut_commit.commit[i].valid=false; //因为结构体不像波形你这周期拉高下周期就回去了，所以手动清0
   }//发射了几条指令就执行几次
 
   if(step_skip_num>0){
