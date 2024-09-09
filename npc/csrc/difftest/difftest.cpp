@@ -48,6 +48,7 @@ int Difftest::diff_step(){
   //TODO:define返回值，用来判断diff运行的状况
   idx_commit_num=0;
   step_skip_num=0;
+  deadlock_timer=0;
   while(idx_commit_num<DIFFTEST_COMMIT_WIDTH&&dut_commit.commit[idx_commit_num].valid){
     IFDEF(CONFIG_DEVICE, device_update(););
     if(dut_commit.commit[idx_commit_num].skip){
@@ -80,6 +81,14 @@ int Difftest::diff_step(){
 
   //TODO:死锁检查设计在无提交检查前面
   if(idx_commit_num==0){ //NOTE:检测是否有效提交,无效提交返回NPC_NOCOMMIT(不检查)
+    if(DEADLOCK_TIME){
+      deadlock_timer++;
+      if(deadlock_timer>DEADLOCK_TIME)
+      {
+        wLog("NPC more than %d clocks were not submitted",DEADLOCK_TIME);
+        return NPC_ABORT;
+      }
+    }
     return NPC_NOCOMMIT;
   }
 
@@ -117,6 +126,7 @@ int Difftest::diff_step(){
 
   if(dut_commit.excp.excp_valid){
     nemu_proxy->ref_difftest_raise_intr(dut_commit.excp.exception);
+    dut_commit.excp.excp_valid=false;
   }
 
   nemu_proxy->ref_difftest_regcpy(&ref, DIFFTEST_TO_DUT);
