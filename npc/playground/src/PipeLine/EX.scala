@@ -119,14 +119,14 @@ class ExStage extends Module {
    |Fill(ADDR_WIDTH,memSize(1))&memShCont
    |Fill(ADDR_WIDTH, !memSize )&memStoreSrc
   )
-  val storeEn=ex.in.bits.stType=/=SDEF(ST_XXX)&& ~exExcpEn
-  val loadEn =ex.in.bits.ldType=/=SDEF(LD_XXX)&& ~exExcpEn
+  val storeEn=ex.in.bits.stType=/=SDEF(ST_XXX)
+  val loadEn =ex.in.bits.ldType=/=SDEF(LD_XXX)
 //NOTE:
-  ex.s.wen:=storeEn&&exValid
+  ex.s.wen:=storeEn&&exValid && ~exExcpEn
   ex.s.waddr:=memAddr
   ex.s.wstrb:=memWstrb
   ex.s.wdata:=memWdata
-  ex.al.ren:=loadEn&&exValid
+  ex.al.ren:=loadEn&&exValid && ~exExcpEn
   ex.al.raddr:=memAddr
 
   exStall:=(storeEn&& ex.s.wdata_ok 
