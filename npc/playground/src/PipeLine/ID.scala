@@ -87,7 +87,7 @@ class IdStage extends Module {
       rdata1Ready:=true.B
       rdata1:=0.U
     }.elsewhen(Regfile.io.raddr1===id.from_ex.rf.waddr&&id.from_ex.rf.wen){
-      rdata1Ready:=true.B
+      rdata1Ready:= ~id.from_ex.dataUnReady
       rdata1:=id.from_ex.rf.wdata
     }.elsewhen(Regfile.io.raddr1===id.from_ls.rf.waddr&&id.from_ls.rf.wen){
       rdata1Ready:= ~id.from_ls.dataUnReady
@@ -110,7 +110,7 @@ class IdStage extends Module {
       rdata2Ready:=true.B
       rdata2:=0.U
     }.elsewhen(Regfile.io.raddr2===id.from_ex.rf.waddr&&id.from_ex.rf.wen){
-      rdata2Ready:=true.B
+      rdata2Ready:= ~id.from_ex.dataUnReady
       rdata2:=id.from_ex.rf.wdata
     }.elsewhen(Regfile.io.raddr2===id.from_ls.rf.waddr&&id.from_ls.rf.wen){
       rdata2Ready:= ~id.from_ls.dataUnReady
