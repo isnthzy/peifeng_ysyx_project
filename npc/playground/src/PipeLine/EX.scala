@@ -47,7 +47,7 @@ class ExStage extends Module {
   ))
   val csrWen=(ex.in.bits.csrOp===SDEF(CSR_RW)
             ||ex.in.bits.csrOp===SDEF(CSR_RS))
-  val isMret=ex.in.bits.csrWrAddr===SDEF(CSR_MRET)
+  val isMret=ex.in.bits.csrOp===SDEF(CSR_MRET)
 
   val Alu=Module(new Alu())
   Alu.io.src1:=Mux(ex.in.bits.brType===SDEF(BR_JALR),ex.in.bits.pc,ex.in.bits.src1)
@@ -129,8 +129,8 @@ class ExStage extends Module {
   ex.al.ren:=loadEn&&exValid && ~exExcpEn
   ex.al.raddr:=memAddr
 
-  exStall:=(storeEn&& ex.s.wdata_ok 
-         || loadEn && ex.al.raddr_ok)&&exValid
+  exStall:=(storeEn&& ~ex.s.wdata_ok 
+         || loadEn && ~ex.al.raddr_ok)&&exValid
 //NOTE:Excp
   val AddrMisaligned=(memSize(1)&&memAddr(0)
                   || !memSize   &&memAddr(1,0).asUInt.orR)
