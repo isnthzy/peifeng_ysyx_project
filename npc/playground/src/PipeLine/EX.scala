@@ -57,7 +57,7 @@ class ExStage extends Module {
   Alu.io.op  :=ex.in.bits.aluOp
   val exResult=Alu.io.result
 
-  ex.fw_id.rf.wen:=ex.in.bits.rfWen
+  ex.fw_id.rf.wen:=ex.in.bits.rfWen&&exValidR
   ex.fw_id.rf.waddr:=ex.in.bits.rd
   ex.fw_id.rf.wdata:=Alu.io.result
   ex.fw_id.dataUnReady:=loadEn&&exValidR

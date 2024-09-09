@@ -63,7 +63,7 @@ class LsStage extends Module {
 
 
   ls.fw_id.dataUnReady:=ls.in.bits.rfWen&& ~lsReadyGo
-  ls.fw_id.rf.wen:=ls.in.bits.rfWen
+  ls.fw_id.rf.wen:=ls.in.bits.rfWen&&lsValidR
   ls.fw_id.rf.waddr:=ls.in.bits.rd
   ls.fw_id.rf.wdata:=ls_result
 
