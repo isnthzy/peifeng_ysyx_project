@@ -74,6 +74,7 @@ int Difftest::diff_step(){
 
     total_inst++;
     idx_commit_num++;
+    g_nr_guest_inst=total_inst;
   }
 
   if(total_inst>CONFIG_MAX_EXE_INST){
@@ -143,7 +144,7 @@ int Difftest::diff_step(){
   }
 
   nemu_proxy->ref_difftest_regcpy(&ref, DIFFTEST_TO_DUT);
-  
+
   if(difftest_flag){
     if(!checkregs()){
       display();
