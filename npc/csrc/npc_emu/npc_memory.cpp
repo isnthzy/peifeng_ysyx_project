@@ -65,39 +65,50 @@ void out_of_bound(paddr_t addr) {
 
 extern "C" int pmem_read(int raddr) {
   word_t rdata=paddr_read(raddr,4);
-  printf("raddr:%08x rdata:0x%08x\n",raddr,rdata);
+  printf("raddr:%08x rdata:%08x\n",raddr,rdata);
   return rdata;
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 extern "C" void pmem_write(int waddr, int wdata, char wmask) {
+  // int st_addr = waddr + ((wmask & 0x2) >> 1) + ((wmask & 0x4) >> 2) * 2 + ((wmask & 0x8) >> 3) * 3;
+  // int st_len = (wmask & 0x1) + ((wmask & 0x2) >> 1) + ((wmask & 0x4) >> 2) + ((wmask & 0x8) >> 3);
+  // int st_data = (wdata >> (8 * ((wmask & 0x2) >> 1 + (wmask & 0x4) >> 2 * 2 + (wmask & 0x8) >> 3 * 3))) & ((1 << (st_len * 8)) - 1);
   //用了笨方法枚举，暂时没想到什么合适的办法
   int st_addr=0;
   int st_len=0;
+  int st_data=0;
   switch (wmask)
   {
   //lb
   case 0x1: 
     st_addr=waddr;
+    st_data=wdata&0xff;
     st_len=1; break;
   case 0x2:
     st_addr=waddr+1;
+    st_data=(wdata>>8)&0xff;
     st_len=1; break;
   case 0x4:
     st_addr=waddr+2;
+    st_data=(wdata>>16)&0xff;
     st_len=1; break;
   case 0x8:
     st_addr=waddr+3;
+    st_data=(wdata>>24)&0xff;
     st_len=1; break;
   //lh
   case 0x3:
     st_addr=waddr;
+    st_data=wdata&0xffff;
     st_len=2; break;
   case 0xc:
     st_addr=waddr+2;
+    st_data=(wdata>>16)&0xffff;
     st_len=2; break;
   //lw
   case 0xf:
     st_addr=waddr;
+    st_data=wdata;
     st_len=4; break;
   default:
     panic("load error\n");
