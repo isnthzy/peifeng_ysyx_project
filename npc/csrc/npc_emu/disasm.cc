@@ -84,11 +84,11 @@ void init_disasm(const char *triple) {
    auto Ctx = new llvm::MCContext(AsmInfo, gMRI, nullptr);
 #endif
   gDisassembler = target->createMCDisassembler(*gSTI, *Ctx);
-    printf("isa = %s\n",target->getName());
   gIP = target->createMCInstPrinter(llvm::Triple(gTriple),
       AsmInfo->getAssemblerDialect(), *AsmInfo, *gMII, *gMRI);
   gIP->setPrintImmHex(true);
   gIP->setPrintBranchImmAsAddress(true);
+    printf("isa = %s\n",target->getName());
   if (isa == "riscv32" || isa == "riscv64")
     gIP->applyTargetSpecificCLOption("no-aliases");
 }
