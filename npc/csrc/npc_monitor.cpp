@@ -205,7 +205,6 @@ void init_monitor(int argc, char *argv[]) {
                                "riscv32"),
                                "bad") "-pc-linux-gnu"
   ));//初始化llvm实现itrace
-  printf("Welcome to !\n");
   /* Display welcome message. */
   welcome();
 }
