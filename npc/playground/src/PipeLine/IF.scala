@@ -41,7 +41,7 @@ class IfStage extends Module {
   val fsInstBuff=RegInit(0.U(DATA_WIDTH.W))
   val fsUseInstBuff=RegInit(false.B)
   val fsInst=Mux(fsExcpEn,INST_NOP,
-        Mux(fsUseInstBuff,fsInstBuff,fs.dl.rdata))
+              Mux(fsUseInstBuff&& ~fs.dl.rdata_ok,fsInstBuff,fs.dl.rdata))
   when(fs.to_id.fire){
     fsUseInstBuff:=false.B
     inst_discard:=false.B
