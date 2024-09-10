@@ -88,9 +88,10 @@ void init_disasm(const char *triple) {
       AsmInfo->getAssemblerDialect(), *AsmInfo, *gMII, *gMRI);
   gIP->setPrintImmHex(true);
   gIP->setPrintBranchImmAsAddress(true);
-    printf("isa = %s\n",target->getName());
   if (isa == "riscv32" || isa == "riscv64")
     gIP->applyTargetSpecificCLOption("no-aliases");
+
+  printf("isa = %s\n",target->getName());
 }
 
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte) {
