@@ -73,7 +73,6 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
   //用了笨方法枚举，暂时没想到什么合适的办法
   int st_addr=0;
   int st_len=0;
-  int st_wdata=0;
   switch (wmask)
   {
   //lb
