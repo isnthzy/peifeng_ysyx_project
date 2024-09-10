@@ -162,7 +162,7 @@ class ExStage extends Module {
   ex.to_ls.bits.diffLoad.data:=DontCare
 //NOTE:
   ex.to_ls.bits.isDeviceSkip:=isDeviceSkip
-  ex.to_ls.bits.memBadAddr:=memAddr
+  ex.to_ls.bits.memBadAddr:=memMisalignedAddr
   ex.to_ls.bits.isMret :=isMret
   ex.to_ls.bits.csrWen :=csrWen
   ex.to_ls.bits.csrWrAddr:=ex.in.bits.csrWrAddr
@@ -171,7 +171,7 @@ class ExStage extends Module {
   ex.to_ls.bits.inst:=ex.in.bits.inst
   ex.to_ls.bits.rd:=ex.in.bits.rd
   ex.to_ls.bits.result:=exResult
-  ex.to_ls.bits.addrLow2Bit:=memAddr(1,0)
+  ex.to_ls.bits.addrLow2Bit:=memMisalignedAddr(1,0)
   ex.to_ls.bits.storeEn:=storeEn
   ex.to_ls.bits.loadEn :=loadEn
   ex.to_ls.bits.ldType:=ex.in.bits.ldType
