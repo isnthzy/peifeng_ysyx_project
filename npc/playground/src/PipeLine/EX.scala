@@ -31,7 +31,7 @@ class ExStage extends Module {
   val exValidR=RegInit(false.B)
   val exReadyGo=dontTouch(Wire(Bool()))
   val exStall=dontTouch(Wire(Bool()))
-  ex.in.ready:= ~exValidR || exReadyGo && ex.to_ls.ready
+  ex.in.ready:=ex.to_ls.ready&& ~exValidR || exReadyGo
   when(exFlush){
     exValidR:=false.B
   }.elsewhen(ex.in.ready){
@@ -48,8 +48,6 @@ class ExStage extends Module {
   val csrWen=(ex.in.bits.csrOp===SDEF(CSR_RW)
             ||ex.in.bits.csrOp===SDEF(CSR_RS))
   val isMret=ex.in.bits.csrOp===SDEF(CSR_MRET)
-  val storeEn=ex.in.bits.stType=/=SDEF(ST_XXX)
-  val loadEn =ex.in.bits.ldType=/=SDEF(LD_XXX)
 
   val Alu=Module(new Alu())
   Alu.io.src1:=Mux(ex.in.bits.brType===SDEF(BR_JALR),ex.in.bits.pc,ex.in.bits.src1)
@@ -57,10 +55,9 @@ class ExStage extends Module {
   Alu.io.op  :=ex.in.bits.aluOp
   val exResult=Alu.io.result
 
-  ex.fw_id.rf.wen:=ex.in.bits.rfWen&&exValidR
+  ex.fw_id.rf.wen:=ex.in.bits.rfWen
   ex.fw_id.rf.waddr:=ex.in.bits.rd
   ex.fw_id.rf.wdata:=Alu.io.result
-  ex.fw_id.dataUnReady:=loadEn&&exValidR
 
   val brCondTaken=((ex.in.bits.brType===SDEF(BR_EQ) &&  Alu.io.result(0))
                 || (ex.in.bits.brType===SDEF(BR_NE) && ~Alu.io.result(0))
@@ -122,6 +119,8 @@ class ExStage extends Module {
    |Fill(ADDR_WIDTH,memSize(1))&memShCont
    |Fill(ADDR_WIDTH, !memSize )&memStoreSrc
   )
+  val storeEn=ex.in.bits.stType=/=SDEF(ST_XXX)
+  val loadEn =ex.in.bits.ldType=/=SDEF(LD_XXX)
 //NOTE:
   ex.s.wen:=storeEn&&exValid && ~exExcpEn
   ex.s.waddr:=memAddr

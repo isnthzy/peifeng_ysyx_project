@@ -26,7 +26,6 @@ typedef struct {
   word_t  mtvec;
   word_t  mcause;
   vaddr_t lastpc; //NOTE:不参与与spike的同步，适用于与NPC差异diff(解决nemu的pc快一拍的问题)
-  uint32_t inst;  //NOTE:不参与与spike的同步，适用于与NPC差异diff
 } MUXDEF(CONFIG_RV64, riscv64_CPU_state, riscv32_CPU_state);
 
 

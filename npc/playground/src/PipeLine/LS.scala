@@ -26,7 +26,7 @@ class LsStage extends Module {
   val lsValidR=RegInit(false.B)
   val lsReadyGo=dontTouch(Wire(Bool()))
   val lsStall=dontTouch(Wire(Bool()))
-  ls.in.ready:= ~lsValidR || lsReadyGo && ls.to_wb.ready
+  ls.in.ready:=ls.to_wb.ready&& ~lsValidR || lsReadyGo
   when(ls.in.ready){
     lsValidR:=ls.in.valid
   }
@@ -63,7 +63,7 @@ class LsStage extends Module {
 
 
   ls.fw_id.dataUnReady:=ls.in.bits.rfWen&& ~lsReadyGo
-  ls.fw_id.rf.wen:=ls.in.bits.rfWen&&lsValidR
+  ls.fw_id.rf.wen:=ls.in.bits.rfWen
   ls.fw_id.rf.waddr:=ls.in.bits.rd
   ls.fw_id.rf.wdata:=ls_result
 

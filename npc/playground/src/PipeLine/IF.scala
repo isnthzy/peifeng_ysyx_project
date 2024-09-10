@@ -22,7 +22,7 @@ class IfStage extends Module {
   val fsValid=dontTouch(Wire(Bool()))
   val fsValidR=RegInit(false.B)
   val fsReadyGo=dontTouch(Wire(Bool()))
-  fs.in.ready:= ~fsValidR || fsReadyGo && fs.to_id.ready
+  fs.in.ready:=fs.to_id.ready&& ~fsValidR || fsReadyGo
   when(fsFlush){
     fsValidR:=false.B
   }.elsewhen(fs.in.ready){
