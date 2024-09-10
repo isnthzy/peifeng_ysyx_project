@@ -97,6 +97,7 @@ class Difftest{
     uint64_t total_inst=0;
     uint32_t idx_commit_num=0;
     uint32_t step_skip_num=0;
+    uint32_t deadlock_timer=0; //死锁计数器
 
   public:
     void init_difftest(char *ref_so_file, int port);

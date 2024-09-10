@@ -21,16 +21,17 @@ class LsStage extends Module {
     val to_csr=Output(new Ls2CsrBundle())
     val dl=new AxiBridgeDataLoad()
   })
+  val lsExcpEn=dontTouch(Wire(Bool()))
   val lsValid=dontTouch(Wire(Bool()))
   val lsValidR=RegInit(false.B)
   val lsReadyGo=dontTouch(Wire(Bool()))
   val lsStall=dontTouch(Wire(Bool()))
-  ls.in.ready:=ls.to_wb.ready&& ~lsValidR || lsReadyGo
+  ls.in.ready:= ~lsValidR || lsReadyGo && ls.to_wb.ready
   when(ls.in.ready){
     lsValidR:=ls.in.valid
   }
   lsValid:=lsValidR
-  lsReadyGo:= ~lsStall
+  lsReadyGo:= ~lsStall || lsExcpEn
   ls.to_wb.valid:= lsValid&&lsReadyGo
 
   lsStall:=ls.in.bits.loadEn&& ~ls.dl.rdata_ok && lsValid
@@ -62,7 +63,7 @@ class LsStage extends Module {
 
 
   ls.fw_id.dataUnReady:=ls.in.bits.rfWen&& ~lsReadyGo
-  ls.fw_id.rf.wen:=ls.in.bits.rfWen
+  ls.fw_id.rf.wen:=ls.in.bits.rfWen&&lsValidR
   ls.fw_id.rf.waddr:=ls.in.bits.rd
   ls.fw_id.rf.wdata:=ls_result
 
@@ -107,7 +108,7 @@ class LsStage extends Module {
     excpNum(12) -> Cat(ECODE.LPF,lsValid ,memBadAddr       ),
     excpNum(13) -> Cat(ECODE.SPF,lsValid ,memBadAddr       ),
   )).asTypeOf(new ExcpResultBundle())
-
+  lsExcpEn:=excpNum.asUInt.orR
   ls.to_csr.wen:=ls.in.bits.csrWen
   ls.to_csr.wrAddr:=ls.in.bits.csrWrAddr
   ls.to_csr.wrData:=ls.in.bits.csrWrData

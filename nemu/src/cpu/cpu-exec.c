@@ -65,7 +65,8 @@ static void exec_once(Decode *s, vaddr_t pc) {
   s->snpc = pc;
   cpu.lastpc=s->pc;
   isa_exec_once(s);
-  cpu.pc = s->dnpc;
+  cpu.pc  = s->dnpc;
+  cpu.inst= s->isa.inst.val;
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
   p += snprintf(p, sizeof(s->logbuf),"[%ld] " FMT_WORD ":", g_nr_guest_inst,s->pc);
