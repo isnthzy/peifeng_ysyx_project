@@ -169,7 +169,7 @@ bool Difftest::checkregs(){
     }
   }
   DIFF_CHECK(ref.base.pc     ,dut.base.pc     ,check_result ,"pc");
-  DIFF_CHECK(ref.base.inst   ,dut.base.inst   ,check_result ,"pc");
+  DIFF_CHECK(ref.base.inst   ,dut.base.inst   ,check_result ,"inst");
   DIFF_CHECK(ref.csr.mtvec   ,dut.csr.mtvec   ,check_result ,"mtvec");
   DIFF_CHECK(ref.csr.mepc    ,dut.csr.mepc    ,check_result ,"mepc ");
   DIFF_CHECK(ref.csr.mstatus ,dut.csr.mstatus ,check_result ,"mstatus"); //mret实现不完整

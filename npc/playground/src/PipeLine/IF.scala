@@ -17,6 +17,7 @@ class IfStage extends Module {
     val dl=new AxiBridgeDataLoad()
   })
   val fsFlush=dontTouch(Wire(Bool()))
+  val fsStall=dontTouch(Wire(Bool()))
   val fsExcpEn=dontTouch(Wire(Bool()))
   fsFlush:=fs.from_id.flush||fs.from_ex.flush||fs.from_ls.flush
   val fsValid=dontTouch(Wire(Bool()))
@@ -29,15 +30,21 @@ class IfStage extends Module {
     fsValidR:=fs.in.valid
   }
   fsValid:=fsValidR&& ~fsFlush
-  fsReadyGo:=fs.dl.rdata_ok || fsExcpEn
+  fsReadyGo:= ~fsStall || fsExcpEn
   fs.to_id.valid:= fsValid&&fsReadyGo //fsValid===fsValidR&& ~fsFlush
+  val inst_discard=RegInit(false.B)
+  // when(fsFlush&& ~fs.in.ready&& ~fsReadyGo){
+  //   inst_discard:=true.B
+  // }
+  fsStall:= ~fs.dl.rdata_ok || inst_discard
 
   val fsInstBuff=RegInit(0.U(DATA_WIDTH.W))
   val fsUseInstBuff=RegInit(false.B)
   val fsInst=Mux(fsExcpEn,INST_NOP,
-        Mux(fsUseInstBuff,fsInstBuff,fs.dl.rdata))
+              Mux(fsUseInstBuff&& ~fs.dl.rdata_ok,fsInstBuff,fs.dl.rdata))
   when(fs.to_id.fire){
     fsUseInstBuff:=false.B
+    inst_discard:=false.B
   }.elsewhen(fs.dl.rdata_ok){
     fsInstBuff:=fs.dl.rdata
     fsUseInstBuff:=true.B

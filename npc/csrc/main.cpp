@@ -13,6 +13,7 @@ NPCState npc_state = { .state = NPC_STOP };
 
 void sim_exit(){
   delete top;
+  difftest->exit_difftest(); //NOTE:退出difftest收回内存
   delete difftest;
   #ifdef TRACE_VCD
   tfp->close();
