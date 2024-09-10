@@ -33,9 +33,9 @@ class IfStage extends Module {
   fsReadyGo:= ~fsStall || fsExcpEn
   fs.to_id.valid:= fsValid&&fsReadyGo //fsValid===fsValidR&& ~fsFlush
   val inst_discard=RegInit(false.B)
-  when(fsFlush&& ~fs.in.ready&& ~fsReadyGo){
-    inst_discard:=true.B
-  }
+  // when(fsFlush&& ~fs.in.ready&& ~fsReadyGo){
+  //   inst_discard:=true.B
+  // }
   fsStall:= ~fs.dl.rdata_ok || inst_discard
 
   val fsInstBuff=RegInit(0.U(DATA_WIDTH.W))
