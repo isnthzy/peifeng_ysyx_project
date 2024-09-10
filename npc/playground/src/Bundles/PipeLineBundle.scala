@@ -66,6 +66,7 @@ class Id2ExBusBundle extends Bundle{
 
 class Id4ExBusBundle extends Bundle{
   val flush=Bool()
+  val dataUnReady=Bool()
   val rf=new RegFileForwardBundle()
 }
 
