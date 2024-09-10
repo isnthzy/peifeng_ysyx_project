@@ -73,6 +73,7 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
   //用了笨方法枚举，暂时没想到什么合适的办法
   int st_addr=0;
   int st_len=0;
+  int st_wdata=0;
   switch (wmask)
   {
   //lb
@@ -103,7 +104,7 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
     panic("load error\n");
     break;
   }
-  printf("st_addr:%08x st_len:%08x wdata:%08x\n",st_addr,st_len,wdata);
+  printf("waddr:%08x wdata:%08x wlen:%08x\n",st_addr,wdata,st_len);
   paddr_write(st_addr,st_len,wdata);
   // 总是往地址为`waddr & ~0x3u`的4字节按写掩码`wmask`写入`wdata`
   // `wmask`中每比特表示`wdata`中1个字节的掩码,
