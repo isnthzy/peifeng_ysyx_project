@@ -55,7 +55,8 @@ int Difftest::diff_step(){
     if(dut_commit.commit[idx_commit_num].skip){
       step_skip_num++;
     }
-    
+    npc_state.halt_pc=dut_commit.commit[idx_commit_num].pc;
+
     #ifdef CONFIG_TRACE
     static char logbuf[128];
     static char tmp_dis[64];

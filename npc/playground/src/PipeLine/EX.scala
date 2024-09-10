@@ -76,7 +76,7 @@ class ExStage extends Module {
   ex.fw_id.flush:=brCondTaken
 
 
-  val memAddr=ex.in.bits.src1+ex.in.bits.imm
+  val memMisalignedAddr=ex.in.bits.src1+ex.in.bits.imm
   val memStoreSrc=ex.in.bits.src2
   val memByteSize=(ex.in.bits.ldType===SDEF(LD_LB)||ex.in.bits.ldType===SDEF(LD_LBU)
                  ||ex.in.bits.stType===SDEF(ST_SB))
@@ -84,16 +84,16 @@ class ExStage extends Module {
                  ||ex.in.bits.stType===SDEF(ST_SH))
   val memSize=Cat(memHalfSize,memByteSize)
   val memSbSel=Cat(
-    memAddr(1,0)===3.U,
-    memAddr(1,0)===2.U,
-    memAddr(1,0)===1.U,
-    memAddr(1,0)===0.U
+    memMisalignedAddr(1,0)===3.U,
+    memMisalignedAddr(1,0)===2.U,
+    memMisalignedAddr(1,0)===1.U,
+    memMisalignedAddr(1,0)===0.U
   )
   val memShSel=Cat(
-    memAddr(1,0)===2.U,
-    memAddr(1,0)===2.U,
-    memAddr(1,0)===0.U,
-    memAddr(1,0)===0.U
+    memMisalignedAddr(1,0)===2.U,
+    memMisalignedAddr(1,0)===2.U,
+    memMisalignedAddr(1,0)===0.U,
+    memMisalignedAddr(1,0)===0.U
   )
   val memSbCont=Cat(
     Fill(8,memSbSel(3))&memStoreSrc(7,0),
@@ -122,6 +122,7 @@ class ExStage extends Module {
    |Fill(ADDR_WIDTH,memSize(1))&memShCont
    |Fill(ADDR_WIDTH, !memSize )&memStoreSrc
   )
+  val memAddr=Cat(memMisalignedAddr(31,2),0.U(2.W))
 //NOTE:
   ex.s.wen:=storeEn&&exValid && ~exExcpEn
   ex.s.waddr:=memAddr
@@ -161,7 +162,7 @@ class ExStage extends Module {
   ex.to_ls.bits.diffLoad.data:=DontCare
 //NOTE:
   ex.to_ls.bits.isDeviceSkip:=isDeviceSkip
-  ex.to_ls.bits.memBadAddr:=memAddr
+  ex.to_ls.bits.memBadAddr:=memMisalignedAddr
   ex.to_ls.bits.isMret :=isMret
   ex.to_ls.bits.csrWen :=csrWen
   ex.to_ls.bits.csrWrAddr:=ex.in.bits.csrWrAddr
@@ -170,7 +171,7 @@ class ExStage extends Module {
   ex.to_ls.bits.inst:=ex.in.bits.inst
   ex.to_ls.bits.rd:=ex.in.bits.rd
   ex.to_ls.bits.result:=exResult
-  ex.to_ls.bits.addrLow2Bit:=memAddr(1,0)
+  ex.to_ls.bits.addrLow2Bit:=memMisalignedAddr(1,0)
   ex.to_ls.bits.storeEn:=storeEn
   ex.to_ls.bits.loadEn :=loadEn
   ex.to_ls.bits.ldType:=ex.in.bits.ldType
