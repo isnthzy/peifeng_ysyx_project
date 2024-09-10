@@ -23,7 +23,7 @@ typedef MUXDEF(CONFIG_RV64,uint64_t, uint32_t) data_t;
 #define PMEM_LEFT  ((paddr_t)CONFIG_MBASE)
 #define PMEM_RIGHT ((paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1)
 #define RESET_VECTOR (PMEM_LEFT + CONFIG_PC_RESET_OFFSET)
-#define printf_green(...) \
+#define printf_red(...) \
     do { \
         printf("\033[1;32m"); \
         printf(__VA_ARGS__); \

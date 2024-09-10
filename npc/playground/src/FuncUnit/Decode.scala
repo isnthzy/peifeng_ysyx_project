@@ -152,7 +152,7 @@ object Control {
     LUI   ->  Seq( A_XXX,  B_IMM, IMM_U, ALU_LUI   , BR_XXX, ST_XXX, LD_XXX, WB_ALU, Y, CSR_XXXX, N),
     AUIPC ->  Seq( A_PC,   B_IMM, IMM_U, ALU_ADD   , BR_XXX, ST_XXX, LD_XXX, WB_ALU, Y, CSR_XXXX, N),
     JAL   ->  Seq( A_PC,   B_XXX, IMM_J, ALU_PC4   , BR_JAL, ST_XXX, LD_XXX, WB_ALU, Y, CSR_XXXX, N),
-    JALR  ->  Seq( A_RS1,  B_XXX, IMM_I, ALU_PC4   , BR_JALR,ST_XXX, LD_XXX, WB_ALU, Y, CSR_XXXX, N),    
+    JALR  ->  Seq( A_PC,   B_XXX, IMM_I, ALU_PC4   , BR_JALR,ST_XXX, LD_XXX, WB_ALU, Y, CSR_XXXX, N),    
     BEQ   ->  Seq( A_RS1,  B_RS2, IMM_B, ALU_EQ    , BR_EQ , ST_XXX, LD_XXX, WB_ALU, N, CSR_XXXX, N),
     BNE   ->  Seq( A_RS1,  B_RS2, IMM_B, ALU_EQ    , BR_NE , ST_XXX, LD_XXX, WB_ALU, N, CSR_XXXX, N),
     BLT   ->  Seq( A_RS1,  B_RS2, IMM_B, ALU_SLT   , BR_LT , ST_XXX, LD_XXX, WB_ALU, N, CSR_XXXX, N),

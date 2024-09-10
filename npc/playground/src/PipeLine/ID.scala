@@ -29,7 +29,7 @@ class IdStage extends Module {
   val idValidR=RegInit(false.B)
   val idReadyGo=dontTouch(Wire(Bool()))
   val idStall=dontTouch(Wire(Bool()))
-  id.in.ready:= ~idValidR || idReadyGo && id.to_ex.ready
+  id.in.ready:=id.to_ex.ready&& ~idValidR || idReadyGo
   when(idFlush){
     idValidR:=false.B
   }.elsewhen(id.in.ready){
@@ -65,8 +65,8 @@ class IdStage extends Module {
   val Regfile=Module(new RegFile())
   Regfile.io.raddr1:=rs1
   Regfile.io.raddr2:=MuxLookup(Decode.io.csrOp,rs2)(Seq(
-    SDEF(CSR_BREK)  -> 10.U,
-    SDEF(CSR_ECAL)  -> RISCV32E_ECALLREG,
+    SDEF(CSR_BREK)  ->10.U,
+    SDEF(CSR_ECAL) ->RISCV32E_ECALLREG
   ))
   id.diffREG:=Regfile.io.diffREG
 
@@ -87,7 +87,7 @@ class IdStage extends Module {
       rdata1Ready:=true.B
       rdata1:=0.U
     }.elsewhen(Regfile.io.raddr1===id.from_ex.rf.waddr&&id.from_ex.rf.wen){
-      rdata1Ready:= ~id.from_ex.dataUnReady
+      rdata1Ready:=true.B
       rdata1:=id.from_ex.rf.wdata
     }.elsewhen(Regfile.io.raddr1===id.from_ls.rf.waddr&&id.from_ls.rf.wen){
       rdata1Ready:= ~id.from_ls.dataUnReady
@@ -110,7 +110,7 @@ class IdStage extends Module {
       rdata2Ready:=true.B
       rdata2:=0.U
     }.elsewhen(Regfile.io.raddr2===id.from_ex.rf.waddr&&id.from_ex.rf.wen){
-      rdata2Ready:= ~id.from_ex.dataUnReady
+      rdata2Ready:=true.B
       rdata2:=id.from_ex.rf.wdata
     }.elsewhen(Regfile.io.raddr2===id.from_ls.rf.waddr&&id.from_ls.rf.wen){
       rdata2Ready:= ~id.from_ls.dataUnReady
@@ -144,7 +144,7 @@ class IdStage extends Module {
   val jal_target=id.in.bits.pc+imm
   val jalr_target=Cat((rdata1+imm)(31,1),0.U(1.W))
   val brJumpTarget=((Fill(ADDR_WIDTH,isJal) &jal_target)
-                  | (Fill(ADDR_WIDTH,isJalr)&jalr_target))
+                  | (Fill(ADDR_WIDTH,isJalr)&jal_target))
 
   id.fw_pf.brJump.taken:=brJumpTaken
   id.fw_pf.brJump.target:=brJumpTarget
@@ -156,7 +156,7 @@ class IdStage extends Module {
   val idExcpType=Wire(new IdExcpTypeBundle())
   idExcpType.num:=id.in.bits.excpType
   idExcpType.ine:=Decode.io.illigal
-  idExcpType.bkp:=Decode.io.csrOp===SDEF(CSR_BREK)
+  idExcpType.bkp:=false.B
   idExcpType.ecu:=false.B
   idExcpType.ecs:=false.B
   idExcpType.ecm:=Decode.io.csrOp===SDEF(CSR_ECAL)

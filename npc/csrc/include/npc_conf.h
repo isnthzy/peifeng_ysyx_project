@@ -20,9 +20,6 @@
 #define DIFFTEST_COMMIT_WIDTH 6
 // difftest最多支持提交几个指令
 
-#define DEADLOCK_TIME 1000
-// 死锁检测最大时间，为0时不检测
-
 /*---------------------------------------------------------------------------------*/
 
 #define TRACE_VCD 1

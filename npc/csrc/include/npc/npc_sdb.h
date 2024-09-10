@@ -6,7 +6,6 @@
 void reg_dut_display();
 void npc_exev(uint64_t step);
 void sdb_mainloop();
-void sdb_set_batch_mode();
 void init_regex();
 void init_wp_pool();
 

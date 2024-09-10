@@ -4,7 +4,5 @@
 #include "../util/iringbuf.h"
 
 uint64_t get_time();
-void init_traces();
-void step_and_dump_wave();
 
 #endif

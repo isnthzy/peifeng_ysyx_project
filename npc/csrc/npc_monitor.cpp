@@ -3,15 +3,12 @@
 #include "include/difftest/difftest.h"
 #include "include/npc/npc_memory.h"
 #include "include/npc/npc_monitor.h"
-#include "include/npc/npc_sdb.h"
-#include "include/npc/npc_exe.h"
-#include "include/npc/npc_device.h"
 Difftest* difftest;
 IRingBuffer mtrace_buffer;
 IRingBuffer iring_buffer;
 
 bool ftrace_flag=false;
-
+bool difftest_flag=true;
 
 static const uint32_t defaultImg [] = {
   0x00000413, //00
@@ -33,6 +30,7 @@ static const uint32_t defaultImg [] = {
 }; //defaultImg本质其实是个dummy
 
 //log模块
+extern uint64_t g_nr_guest_inst;
 FILE *log_fp = NULL;
 
 void init_log(const char *log_file) {
@@ -95,7 +93,7 @@ void init_sim(){
 
 #include <getopt.h>
 
-
+void sdb_set_batch_mode();
 
 static char *log_file = NULL;
 static char *diff_so_file = NULL;
@@ -191,10 +189,14 @@ void init_monitor(int argc, char *argv[]) {
   IFDEF(CONFIG_DEVICE, init_device());
 
   /* Initialize differential testing. */
-  //NOTE:未传入difftest参数时，difftest的nemu_proxy为不可用状态
+  //先实现带difftest的功能，在对difftest进行剥离
   difftest = new Difftest();
+
   difftest->init_difftest(diff_so_file, difftest_port);
   difftest->set_img_size(img_size);
+  if(difftest_flag){
+
+  }
 
   /* Initialize the simple debugger. */
   init_sdb();

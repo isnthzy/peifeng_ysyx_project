@@ -49,7 +49,7 @@ static int cmd_x(char *args) {
   bool flag=true;
   // word_t addr = expr(EXPR,&flag);
   if(flag==false){
-    printf_green("There is an error in the expression, please retype it\n");
+    printf_red("There is an error in the expression, please retype it\n");
     return 0;
   }
 
