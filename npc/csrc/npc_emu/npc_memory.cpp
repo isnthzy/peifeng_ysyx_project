@@ -65,7 +65,7 @@ void out_of_bound(paddr_t addr) {
 
 extern "C" int pmem_read(int raddr) {
   word_t rdata=paddr_read(raddr,4);
-  printf("raddr:%08x rdata:%08x\n",raddr,rdata);
+  // printf("raddr:%08x rdata:%08x\n",raddr,rdata);
   return rdata;
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
@@ -114,7 +114,7 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
     panic("load error\n");
     break;
   }
-  printf("waddr:%08x wdata:%08x wlen:%08x\n",st_addr,st_data,st_len);
+  // printf("waddr:%08x wdata:%08x wlen:%08x\n",st_addr,st_data,st_len);
   paddr_write(st_addr,st_len,st_data);
   // 总是往地址为`waddr & ~0x3u`的4字节按写掩码`wmask`写入`wdata`
   // `wmask`中每比特表示`wdata`中1个字节的掩码,

@@ -134,6 +134,29 @@ int Difftest::diff_step(){
     dut_commit.commit[i].valid=false; //因为结构体不像波形你这周期拉高下周期就回去了，所以手动清0
   }//发射了几条指令就执行几次
 
+  #ifdef CONFIG_MEMDIFF
+  for(int i=0;i<idx_commit_num;i++){
+    if(dut_commit.load[i].valid){
+      printf("ld_paddr = %x , len = %x\n",dut_commit.load[i].paddr,dut_commit.load[i].len);
+      if(!nemu_proxy->ref_check_load(dut_commit.load[i].paddr,dut_commit.load[i].len)){
+        wLog("dut paddr = " FMT_PADDR " , data = " FMT_WORD , 
+              dut_commit.load[i].paddr, dut_commit.load[i].data);
+        return NPC_ABORT;
+      }
+      dut_commit.load[i].valid=false;
+    }//NOTE:我好像知道load了为什么不追踪data了，是因为外设！！！,追踪addr和访问类型即可
+    if(dut_commit.store[i].valid){
+      printf("st_paddr = %x , len = %x\n",dut_commit.store[i].paddr,dut_commit.store[i].len);
+      if(!nemu_proxy->ref_check_store(dut_commit.store[i].paddr,dut_commit.store[i].data,dut_commit.store[i].len)){
+        wLog("dut paddr = " FMT_PADDR " , data = " FMT_WORD , 
+         dut_commit.store[i].paddr, dut_commit.store[i].data);
+         return NPC_ABORT;
+      }
+      dut_commit.store[i].valid=false;
+    }
+  }
+  #endif
+
   if(step_skip_num>0){
     nemu_proxy->ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
     return NPC_RUNNING;

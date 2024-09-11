@@ -51,6 +51,7 @@ typedef struct {
   paddr_t  paddr;
   vaddr_t  vaddr;
   data_t   data;
+  uint8_t  len;
 } store_event_t;
 
 typedef struct {
@@ -58,6 +59,7 @@ typedef struct {
   paddr_t paddr;
   vaddr_t vaddr;
   data_t  data;
+  uint8_t len;
 } load_event_t;
 
 typedef struct {

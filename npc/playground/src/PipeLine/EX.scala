@@ -151,15 +151,21 @@ class ExStage extends Module {
 //
   ex.to_ls.bits.diffStore.valid:=storeEn
   ex.to_ls.bits.diffStore.index:=0.U
-  ex.to_ls.bits.diffStore.paddr:=memAddr
-  ex.to_ls.bits.diffStore.vaddr:=memAddr
-  ex.to_ls.bits.diffStore.data:=memWdata
+  ex.to_ls.bits.diffStore.paddr:=memMisalignedAddr
+  ex.to_ls.bits.diffStore.vaddr:=memMisalignedAddr
+  ex.to_ls.bits.diffStore.data:=ex.in.bits.src2 //为对齐矫正的data
+  ex.to_ls.bits.diffStore.len :=Cat(0.U(5.W),ex.in.bits.stType===SDEF(ST_SW),
+                                             ex.in.bits.stType===SDEF(ST_SH),
+                                             ex.in.bits.stType===SDEF(ST_SB))
   
   ex.to_ls.bits.diffLoad.valid:=loadEn
   ex.to_ls.bits.diffLoad.index:=0.U
   ex.to_ls.bits.diffLoad.paddr:=memAddr
   ex.to_ls.bits.diffLoad.vaddr:=memAddr
-  ex.to_ls.bits.diffLoad.data:=DontCare
+  ex.to_ls.bits.diffLoad.data :=DontCare
+  ex.to_ls.bits.diffLoad.len  :=Cat(0.U(5.W),ex.in.bits.ldType===SDEF(LD_LW),
+                                             ex.in.bits.ldType===SDEF(LD_LH)||ex.in.bits.ldType===SDEF(LD_LHU),
+                                             ex.in.bits.ldType===SDEF(LD_LB)||ex.in.bits.ldType===SDEF(LD_LBU))
 //NOTE:
   ex.to_ls.bits.isDeviceSkip:=isDeviceSkip
   ex.to_ls.bits.memBadAddr:=memMisalignedAddr

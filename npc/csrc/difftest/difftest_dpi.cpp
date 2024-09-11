@@ -40,6 +40,7 @@ INTERFACE_STORE_EVENT {
     packet->paddr = (paddr_t)paddr;
     packet->vaddr = (vaddr_t)vaddr;
     packet->data  = (data_t)data;
+    packet->len   = len;
   }
 }
 
@@ -51,6 +52,7 @@ INTERFACE_LOAD_EVENT {
     packet->paddr = (paddr_t)paddr;
     packet->vaddr = (vaddr_t)vaddr;
     packet->data  = (data_t)data;
+    packet->len   = len;
   }
 }
 

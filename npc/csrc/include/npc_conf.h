@@ -18,6 +18,7 @@
 
 #define CONFIG_DIFFTEST 1
 #define DIFFTEST_COMMIT_WIDTH 6
+#define CONFIG_MEMDIFF 1
 // difftest最多支持提交几个指令
 
 #define DEADLOCK_TIME 1000
