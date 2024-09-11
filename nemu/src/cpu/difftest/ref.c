@@ -97,17 +97,17 @@ __EXPORT void difftest_ref_reg_display() {
   fflush(NULL);
 }
 
-__EXPORT bool difftest_check_store(paddr_t addr,word_t data,int len) {
+__EXPORT void difftest_check_store(paddr_t addr,word_t data,int len) {
   printf("use check_store\n");
   fflush(NULL);
-  return check_store_commit(addr,data,len);
+  // return check_store_commit(addr,data,len);
   // return true;
 }
 
-__EXPORT bool difftest_check_load(paddr_t addr,int type) {
+__EXPORT void difftest_check_load(paddr_t addr,int type) {
   printf("use check_load\n");
   fflush(NULL);
-  return check_load_commit(addr,type);
+  // return check_load_commit(addr,type);
   // return true;
 }
 

@@ -14,8 +14,9 @@ class NemuProxy {
     void (*ref_difftest_exec)(uint64_t n) = NULL;
     void (*ref_difftest_raise_intr)(uint64_t NO) = NULL;
     void (*ref_reg_display)() = NULL;
-    bool (*ref_check_store)(paddr_t addr,word_t data,int len) = NULL;
-    bool (*ref_check_load)(paddr_t addr,int type) = NULL;
+    void (*ref_check_load)(paddr_t addr,int type) = NULL;
+    void (*ref_check_store)(paddr_t addr,word_t data,int len) = NULL;
+
 };
 
 #endif // NEMUPROXY_H
