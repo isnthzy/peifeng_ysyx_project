@@ -2,7 +2,8 @@
 
 - [x] 重写npc单发射处理器，为csr，cache等做考虑，小驼峰命名法
 - [x] 重构difftest为类Chiplab，香山？
-- [ ] 对difftest加入内存追踪
+- [x] 内存difftest完成！
+- [x] mtrace!
 - [x] 尝试学习scala语法，在npc上应用(学习了，但是用不了一点)
 - [ ] 加入Icache的支持
 - [x] npc csrc review&重构

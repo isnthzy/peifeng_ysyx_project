@@ -11,6 +11,8 @@ void pmem_write(paddr_t addr, int len, word_t data);
 uint8_t* guest_to_host(paddr_t paddr);
 paddr_t host_to_guest(uint8_t *haddr);
 
+void mtrace_store(int pc,int addr,int data,int len);
+void mtrace_load(int pc,int addr,int data,int len);
 void init_mem();
 
 extern IRingBuffer mtrace_buffer;
