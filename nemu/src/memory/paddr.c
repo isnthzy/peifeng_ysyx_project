@@ -132,6 +132,7 @@ static store_commit_t* store_commit_queue_pop(){
   if(!st_commit->valid){
     return NULL;
   }
+  st_commit->valid=false;
   st_head=(st_head+1)%STORE_COMMIT_QUEUE_SIZE;
   return st_commit;
 }
@@ -175,6 +176,7 @@ static load_commit_t* load_commit_queue_pop(){
   if(!ld_commit->valid){
     return NULL;
   }
+  ld_commit->valid=false;
   ld_head=(ld_head+1)%LOAD_COMMIT_QUEUE_SIZE;
   return ld_commit;
 }
