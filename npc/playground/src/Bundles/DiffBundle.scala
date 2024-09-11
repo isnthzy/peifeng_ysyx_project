@@ -32,6 +32,7 @@ class DiffStoreBundle extends Bundle{
   val paddr=UInt(ADDR_WIDTH.W) //给未对齐的地址
   val vaddr=UInt(ADDR_WIDTH.W) //给未对齐的地址
   val data =UInt(DATA_WIDTH.W)
+  val len  =UInt(8.W)
 }
 
 class DiffLoadBundle extends Bundle{
@@ -40,6 +41,7 @@ class DiffLoadBundle extends Bundle{
   val paddr=UInt(ADDR_WIDTH.W) //给未对齐的地址
   val vaddr=UInt(ADDR_WIDTH.W) //给未对齐的地址
   val data =UInt(DATA_WIDTH.W)
+  val len  =UInt(8.W)
 }
 
 class DiffCsrRegBundle extends Bundle{

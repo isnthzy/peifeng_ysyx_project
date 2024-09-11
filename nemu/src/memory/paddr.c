@@ -100,3 +100,95 @@ void paddr_write(paddr_t addr, int len, word_t data) {
     out_of_bound(addr);
   #endif
 }
+
+#ifdef CONFIG_TARGET_SHARE //NOTE:只有作为.so时才提供此功能
+//store和load队列用来记录load和store，易于进行访存diff
+#define STORE_COMMIT_QUEUE_SIZE 16
+#define LOAD_COMMIT_QUEUE_SIZE 16
+store_commit_t store_commit_queue[STORE_COMMIT_QUEUE_SIZE]; 
+load_commit_t  load_commit_queue[LOAD_COMMIT_QUEUE_SIZE]; 
+//NOTE:绝对不会超过16个store&load,哪有16发访存啊
+int st_head=0, st_tail=0, ld_head=0, ld_tail=0;
+
+void store_commit_queue_push(paddr_t addr,word_t data,int len){
+  static bool overflow=false;
+  if(overflow){
+    return;
+  }
+  store_commit_t st_commit=store_commit_queue[st_tail];
+  if(st_commit.valid){
+    printf("[NEMU] [warning]store commit queue overflow,store commit disabled");
+  }
+  st_commit.valid=true;
+  st_commit.addr=addr;
+  st_commit.data=data;
+  st_commit.len =len;
+  //随便存一下，都是未对齐的
+  st_tail=(st_tail+1)%STORE_COMMIT_QUEUE_SIZE;
+}
+static store_commit_t* store_commit_queue_pop(){
+  store_commit_t* st_commit=store_commit_queue+st_head;
+  if(!st_commit->valid){
+    return NULL;
+  }
+  st_head=(st_head+1)%STORE_COMMIT_QUEUE_SIZE;
+  return st_commit;
+}
+
+bool check_store_commit(paddr_t addr,word_t data,int len){
+  store_commit_t* st_commit=store_commit_queue_pop();
+  if(st_commit==NULL){
+    printf("[NEMU] [warning]store commit queue empty");
+    return false;
+  }
+  if(st_commit->addr!=addr||st_commit->data!=data||st_commit->len!=len){
+     printf("ref different at pc = 0x%08x, paddr = 0x%lx, data = 0x%lx\n", 
+             cpu.lastpc, st_commit->addr, st_commit->data);
+    return false;
+  }else{
+    return true;
+  }
+}
+
+
+//NOTE:load可能有外设操作，因此不data进行对比，对比地址和访问类型
+void load_commit_queue_push(paddr_t addr,word_t data,int type){
+  static bool overflow=false;
+  if(overflow){
+    return;
+  }
+  load_commit_t ld_commit=load_commit_queue[ld_tail];
+  if(ld_commit.valid){
+    printf("[NEMU] [warning]load commit queue overflow,load commit disabled");
+  }
+  ld_commit.valid=true;
+  ld_commit.addr=addr;
+  ld_commit.data=data;
+  ld_commit.type=type;
+  //随便存一下，都是未对齐的
+  ld_tail=(ld_tail+1)%LOAD_COMMIT_QUEUE_SIZE;
+}
+static load_commit_t* load_commit_queue_pop(){
+  load_commit_t* ld_commit=load_commit_queue+ld_head;
+  if(!ld_commit->valid){
+    return NULL;
+  }
+  ld_head=(ld_head+1)%LOAD_COMMIT_QUEUE_SIZE;
+  return ld_commit;
+}
+
+bool check_load_commit(paddr_t addr,int type){
+  load_commit_t* ld_commit=load_commit_queue_pop();
+  if(ld_commit==NULL){
+    printf("[NEMU] [warning]store commit queue empty");
+    return false;
+  }
+  if(ld_commit->addr!=addr||ld_commit->type!=type){
+     printf("ref different at pc = 0x%08x, paddr = 0x%lx, data = 0x%lx\n", 
+             cpu.lastpc, ld_commit->addr, ld_commit->data);
+    return false;
+  }else{
+    return true;
+  }
+}
+#endif

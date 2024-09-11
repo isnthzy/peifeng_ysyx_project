@@ -27,11 +27,29 @@ uint8_t* guest_to_host(paddr_t paddr);
 /* convert the host virtual address in NEMU to guest physical address in the guest program */
 paddr_t host_to_guest(uint8_t *haddr);
 
+void store_commit_queue_push(paddr_t addr,word_t data,int len);
+void load_commit_queue_push(paddr_t addr,word_t data,int type);
+bool check_load_commit(paddr_t addr,int type);
+bool check_store_commit(paddr_t addr,word_t data,int len);
 static inline bool in_pmem(paddr_t addr) {
   return addr - CONFIG_MBASE < CONFIG_MSIZE;
 }
 
 word_t paddr_read(paddr_t addr, int len,int model);
 void paddr_write(paddr_t addr, int len, word_t data);
+
+typedef struct{
+  paddr_t addr; 
+  word_t  data;
+  int     len;
+  bool    valid;
+}store_commit_t; //存的都是未对齐的
+
+typedef struct{
+  paddr_t addr; 
+  word_t  data;
+  int     type;
+  bool    valid;
+}load_commit_t;  //存的都是未对齐的
 
 #endif

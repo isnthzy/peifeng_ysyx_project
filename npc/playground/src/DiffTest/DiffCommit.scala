@@ -38,12 +38,14 @@ class DiffCommit extends Module{
   DiffBridge.io.storePaddr:=RegNext(diff.store.paddr,0.U)
   DiffBridge.io.storeVaddr:=RegNext(diff.store.vaddr,0.U)
   DiffBridge.io.storeData:= RegNext(diff.store.data,0.U)
+  DiffBridge.io.storeLen := RegNext(diff.store.len,0.U)
 
   DiffBridge.io.loadIndex:=RegNext(diff.load.index,0.U)
   DiffBridge.io.loadValid:=RegNext(diff.load.valid,0.U)
   DiffBridge.io.loadPaddr:=RegNext(diff.load.paddr,0.U)
   DiffBridge.io.loadVaddr:=RegNext(diff.load.vaddr,0.U)
   DiffBridge.io.loadData :=RegNext(diff.load.data ,0.U)
+  DiffBridge.io.loadLen  :=RegNext(diff.load.len,0.U)
 
   DiffBridge.io.mstatus:=RegNext(diff.csr.mstatus,0.U)
   DiffBridge.io.mepc   :=RegNext(diff.csr.mepc   ,0.U)
@@ -80,12 +82,14 @@ class DiffBridge extends BlackBox with HasBlackBoxPath{
     val storePaddr = Input(UInt(64.W))
     val storeVaddr = Input(UInt(64.W))
     val storeData = Input(UInt(64.W))
+    val storeLen  = Input(UInt(8.W))
 
     val loadIndex = Input(UInt(8.W))
     val loadValid = Input(UInt(8.W))
     val loadPaddr = Input(UInt(64.W))
     val loadVaddr = Input(UInt(64.W))
     val loadData  = Input(UInt(64.W))
+    val loadLen   = Input(UInt(8.W))
 
     val mstatus = Input(UInt(64.W))
     val mtvec = Input(UInt(64.W))

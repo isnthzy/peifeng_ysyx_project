@@ -46,9 +46,10 @@
   DIFFTEST_DPIC_FUNC_DECL(StoreEvent) (  \
     DPIC_ARG_BYTE index,                 \
     DPIC_ARG_BYTE valid,                 \
-    DPIC_ARG_LONG paddr,            \
-    DPIC_ARG_LONG vaddr,            \
-    DPIC_ARG_LONG data              \
+    DPIC_ARG_LONG paddr,                 \
+    DPIC_ARG_LONG vaddr,                 \
+    DPIC_ARG_LONG data ,                 \
+    DPIC_ARG_BYTE len                    \
   )
 
 // v_difftest_LoadEvent
@@ -58,7 +59,8 @@
     DPIC_ARG_BYTE valid,                 \
     DPIC_ARG_LONG paddr,                 \
     DPIC_ARG_LONG vaddr,                 \
-    DPIC_ARG_LONG data                   \
+    DPIC_ARG_LONG data ,                 \
+    DPIC_ARG_BYTE len                    \
   )
 
 // v_difftest_CSRState

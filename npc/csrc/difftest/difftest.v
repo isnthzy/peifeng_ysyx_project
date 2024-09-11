@@ -92,18 +92,20 @@ endmodule
     `DPIC_ARG_BYTE valid,
     `DPIC_ARG_LONG paddr,
     `DPIC_ARG_LONG vaddr,
-    `DPIC_ARG_LONG data
-);
+    `DPIC_ARG_LONG data ,
+    `DPIC_ARG_BYTE len     
+);//提交的addr(未对齐处理),data(未对齐处理),len b1 h2 w4
 `DIFFTEST_MOD_DECL(StoreEvent)(
     input        clock,
     input [ 7:0] index,
     input [ 7:0] valid,
     input [63:0] paddr,
     input [63:0] vaddr,
-    input [63:0] data
+    input [63:0] data ,
+    input [ 7:0] len
 );
     `DIFFTEST_MOD_DPIC_CALL_BEGIN(StoreEvent) (
-        index, valid, paddr, vaddr, data
+        index, valid, paddr, vaddr, data, len
         )
     `DIFFTEST_MOD_DPIC_CALL_END(StoreEvent)
 endmodule
@@ -115,17 +117,19 @@ endmodule
     `DPIC_ARG_LONG paddr,
     `DPIC_ARG_LONG vaddr,
     `DPIC_ARG_LONG data ,
-);
+    `DPIC_ARG_BYTE len
+);//提交的addr(未对齐处理),data(未对齐处理),len b1 h2 w4
 `DIFFTEST_MOD_DECL(LoadEvent)(
     input        clock,
     input [ 7:0] index,
     input [ 7:0] valid,
     input [63:0] paddr,
     input [63:0] vaddr,
-    input [63:0] data
+    input [63:0] data ,
+    input [ 7:0] len
 );
     `DIFFTEST_MOD_DPIC_CALL_BEGIN(LoadEvent) (
-         index, valid, paddr, vaddr, data
+         index, valid, paddr, vaddr, data, len
         ) `DIFFTEST_MOD_DPIC_CALL_END(LoadEvent)
 endmodule
 

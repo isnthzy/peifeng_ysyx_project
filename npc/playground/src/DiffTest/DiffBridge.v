@@ -23,12 +23,14 @@ module DiffBridge(
     input [63:0] storePaddr,
     input [63:0] storeVaddr,
     input [63:0] storeData,
+    input [ 7:0] storelen,
 
     input [ 7:0] loadIndex,
     input [ 7:0] loadValid,
     input [63:0] loadPaddr,
     input [63:0] loadVaddr,
     input [63:0] loadData,
+    input [ 7:0] loadLen,
 
     input [63:0] mstatus,
     input [63:0] mtvec,
@@ -90,7 +92,8 @@ DifftestStoreEvent DifftestStoreEvent(
     .valid              (storeValid     ),
     .paddr              (storePaddr     ),
     .vaddr              (storeVaddr     ),
-    .data               (storeData      )
+    .data               (storeData      ),
+    .len                (storeLen       )
 );
 
 DifftestLoadEvent DifftestLoadEvent(
@@ -99,7 +102,8 @@ DifftestLoadEvent DifftestLoadEvent(
     .valid              (loadValid      ),
     .paddr              (loadPaddr      ),
     .vaddr              (loadVaddr      ),
-    .data               (loadData       )
+    .data               (loadData       ),
+    .len                (loadLen       )
 );
 
 
