@@ -145,7 +145,7 @@ class ExStage extends Module {
   ex.to_ls.bits.excpType:=exExcpType
 //
   val DeviceSkip=Module(new DeviceSkip())
-  DeviceSkip.io.isLoadStore:=(loadEn||storeEn)&&exValidR
+  DeviceSkip.io.isLoadStore:=(loadEn)&&exValidR
   DeviceSkip.io.addr:=memAddr
   val isDeviceSkip=DeviceSkip.io.skip
 //

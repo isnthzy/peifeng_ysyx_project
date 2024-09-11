@@ -40,6 +40,7 @@ NOTE:diffstep的执行顺序
 异常判断，如果是退出指令，则退出，其他异常（待实现）
 NEMU根据这次提交的指令数量，决定执行几次
 发现当前提交的指令是跳过指令，传输diff同步，覆盖掉NEMU提交结果
+进行访存对比
 拉取NEMU的寄存器结果
 对比寄存器，进行diff同步
 */
@@ -134,28 +135,32 @@ int Difftest::diff_step(){
     dut_commit.commit[i].valid=false; //因为结构体不像波形你这周期拉高下周期就回去了，所以手动清0
   }//发射了几条指令就执行几次
 
-  #ifdef CONFIG_MEMDIFF
+
   for(int i=0;i<idx_commit_num;i++){
     if(dut_commit.load[i].valid){
-      printf("ld_paddr = %x , len = %x\n",dut_commit.load[i].paddr,dut_commit.load[i].len);
+      mtrace_load(dut.base.pc, dut_commit.load[i].paddr, dut_commit.load[i].data, dut_commit.load[i].len);
+      #ifdef CONFIG_MEMDIFF
       if(!nemu_proxy->ref_check_load(dut_commit.load[i].paddr,dut_commit.load[i].len)){
         wLog("dut paddr = " FMT_PADDR " , data = " FMT_WORD , 
               dut_commit.load[i].paddr, dut_commit.load[i].data);
         return NPC_ABORT;
       }
+      #endif
       dut_commit.load[i].valid=false;
     }//NOTE:我好像知道load了为什么不追踪data了，是因为外设！！！,追踪addr和访问类型即可
     if(dut_commit.store[i].valid){
-      printf("st_paddr = %x , len = %x\n",dut_commit.store[i].paddr,dut_commit.store[i].len);
+      mtrace_store(dut.base.pc, dut_commit.store[i].paddr, dut_commit.store[i].data, dut_commit.store[i].len);
+      #ifdef CONFIG_MEMDIFF
       if(!nemu_proxy->ref_check_store(dut_commit.store[i].paddr,dut_commit.store[i].data,dut_commit.store[i].len)){
         wLog("dut paddr = " FMT_PADDR " , data = " FMT_WORD , 
          dut_commit.store[i].paddr, dut_commit.store[i].data);
          return NPC_ABORT;
       }
+      #endif
       dut_commit.store[i].valid=false;
     }
   }
-  #endif
+
 
   if(step_skip_num>0){
     nemu_proxy->ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
@@ -185,8 +190,13 @@ int Difftest::diff_step(){
 
 bool Difftest::checkregs(){
   bool check_result=true;
+  static bool format_newline=false;
   for(int i=0;i<MUXDEF(CONFIG_RVE, 16, 32);i++){
     if(ref.regs.gpr[i]!=dut.regs.gpr[i]){
+      if(!format_newline){
+        printf("\n");
+        format_newline=true;  
+      }
       wLog("The reg:%s(rf_%d) is different\nref:0x%08x dut:0x%08x",
         regs[i],i,ref.regs.gpr[i],dut.regs.gpr[i]);
       check_result=false;
