@@ -115,16 +115,15 @@ void store_commit_queue_push(paddr_t addr,word_t data,int len){
   if(overflow){
     return;
   }
-  store_commit_t st_commit=store_commit_queue[st_tail];
-  if(st_commit.valid){
+  store_commit_t* st_commit=store_commit_queue+st_tail;
+  if(st_commit->valid){
     printf("[NEMU] [warning]store commit queue overflow,store commit disabled\n");
   }
-  st_commit.valid=true;
-  st_commit.addr=addr;
-  st_commit.data=data;
-  st_commit.len =len;
-  st_commit.atpc=cpu.lastpc;
-  printf("vaddr %x pc %x\n",store_commit_queue[st_tail].addr,store_commit_queue[st_tail].atpc);
+  st_commit->valid=true;
+  st_commit->addr=addr;
+  st_commit->data=data;
+  st_commit->len =len;
+  st_commit->atpc=cpu.lastpc;
   //随便存一下，都是未对齐的
   st_tail=(st_tail+1)%STORE_COMMIT_QUEUE_SIZE;
 }
@@ -159,15 +158,15 @@ void load_commit_queue_push(paddr_t addr,word_t data,int type){
   if(overflow){
     return;
   }
-  load_commit_t ld_commit=load_commit_queue[ld_tail];
-  if(ld_commit.valid){
+  load_commit_t* ld_commit=load_commit_queue+ld_tail;
+  if(ld_commit->valid){
     printf("[NEMU] [warning]load commit queue overflow,load commit disabled\n");
   }
-  ld_commit.valid=true;
-  ld_commit.addr=addr;
-  ld_commit.data=data;
-  ld_commit.type=type;
-  ld_commit.atpc=cpu.lastpc;
+  ld_commit->valid=true;
+  ld_commit->addr=addr;
+  ld_commit->data=data;
+  ld_commit->type=type;
+  ld_commit->atpc=cpu.lastpc;
   //随便存一下，都是未对齐的
   ld_tail=(ld_tail+1)%LOAD_COMMIT_QUEUE_SIZE;
 }
