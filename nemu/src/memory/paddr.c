@@ -143,8 +143,8 @@ bool check_store_commit(paddr_t addr,word_t data,int len){
     return false;
   }
   if(st_commit->addr!=addr||st_commit->data!=data||st_commit->len!=len){
-     printf("ref different at pc = 0x%08x, paddr = "FMT_PADDR", data = "FMT_WORD",\n", 
-             st_commit->atpc, st_commit->addr, st_commit->data);
+     printf("ref paddr = "FMT_PADDR", data = "FMT_WORD" different at pc = 0x%08x\n", 
+            st_commit->addr, st_commit->data, st_commit->atpc);
     return false;
   }else{
     return true;
@@ -186,8 +186,8 @@ bool check_load_commit(paddr_t addr,int type){
     return false;
   }
   if(ld_commit->addr!=addr||ld_commit->type!=type){
-     printf("ref different at pc = 0x%08x, paddr = "FMT_PADDR", data = "FMT_WORD"\n", 
-             ld_commit->atpc, ld_commit->addr, ld_commit->data);
+     printf("ref paddr = "FMT_PADDR", data = "FMT_WORD" different at pc = 0x%08x\n", 
+            ld_commit->addr, ld_commit->data, ld_commit->atpc);
     return false;
   }else{
     return true;
