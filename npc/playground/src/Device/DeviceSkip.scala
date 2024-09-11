@@ -12,7 +12,7 @@ class DeviceSkip extends Module with DeviceAddr{
     val skip = Output(Bool())
   })
   val readSkip  = Wire(Bool()) 
-  val writeSkip = Wire(Bool()) 
+  // val writeSkip = Wire(Bool()) 
   io.skip := readSkip  && io.isLoadStore
 
   readSkip:=(
