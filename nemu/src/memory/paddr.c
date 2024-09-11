@@ -111,21 +111,21 @@ load_commit_t  load_commit_queue[LOAD_COMMIT_QUEUE_SIZE];
 int st_head=0, st_tail=0, ld_head=0, ld_tail=0;
 
 void store_commit_queue_push(paddr_t addr,word_t data,int len){
-  static bool overflow=false;
-  if(overflow){
-    return;
-  }
-  store_commit_t st_commit=store_commit_queue[st_tail];
-  if(st_commit.valid){
-    printf("[NEMU] [warning]store commit queue overflow,store commit disabled");
-  }
-  st_commit.valid=true;
-  st_commit.addr=addr;
-  st_commit.data=data;
-  st_commit.len =len;
-  st_commit.atpc=cpu.lastpc;
-  //随便存一下，都是未对齐的
-  st_tail=(st_tail+1)%STORE_COMMIT_QUEUE_SIZE;
+  // static bool overflow=false;
+  // if(overflow){
+  //   return;
+  // }
+  // store_commit_t st_commit=store_commit_queue[st_tail];
+  // if(st_commit.valid){
+  //   printf("[NEMU] [warning]store commit queue overflow,store commit disabled");
+  // }
+  // st_commit.valid=true;
+  // st_commit.addr=addr;
+  // st_commit.data=data;
+  // st_commit.len =len;
+  // st_commit.atpc=cpu.lastpc;
+  // //随便存一下，都是未对齐的
+  // st_tail=(st_tail+1)%STORE_COMMIT_QUEUE_SIZE;
 }
 static store_commit_t* store_commit_queue_pop(){
   store_commit_t* st_commit=store_commit_queue+st_head;
@@ -154,21 +154,21 @@ bool check_store_commit(paddr_t addr,word_t data,int len){
 
 //NOTE:load可能有外设操作，因此不data进行对比，对比地址和访问类型
 void load_commit_queue_push(paddr_t addr,word_t data,int type){
-  static bool overflow=false;
-  if(overflow){
-    return;
-  }
-  load_commit_t ld_commit=load_commit_queue[ld_tail];
-  if(ld_commit.valid){
-    printf("[NEMU] [warning]load commit queue overflow,load commit disabled");
-  }
-  ld_commit.valid=true;
-  ld_commit.addr=addr;
-  ld_commit.data=data;
-  ld_commit.type=type;
-  ld_commit.atpc=cpu.lastpc;
-  //随便存一下，都是未对齐的
-  ld_tail=(ld_tail+1)%LOAD_COMMIT_QUEUE_SIZE;
+  // static bool overflow=false;
+  // if(overflow){
+  //   return;
+  // }
+  // load_commit_t ld_commit=load_commit_queue[ld_tail];
+  // if(ld_commit.valid){
+  //   printf("[NEMU] [warning]load commit queue overflow,load commit disabled");
+  // }
+  // ld_commit.valid=true;
+  // ld_commit.addr=addr;
+  // ld_commit.data=data;
+  // ld_commit.type=type;
+  // ld_commit.atpc=cpu.lastpc;
+  // //随便存一下，都是未对齐的
+  // ld_tail=(ld_tail+1)%LOAD_COMMIT_QUEUE_SIZE;
 }
 static load_commit_t* load_commit_queue_pop(){
   load_commit_t* ld_commit=load_commit_queue+ld_head;
