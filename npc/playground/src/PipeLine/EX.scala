@@ -102,10 +102,8 @@ class ExStage extends Module {
     Fill(8,memSbSel(0))&memStoreSrc(7,0)
   )
   val memShCont=Cat(
-    Fill(8,memShSel(3))&memStoreSrc(7,0),
-    Fill(8,memShSel(2))&memStoreSrc(7,0),
-    Fill(8,memShSel(1))&memStoreSrc(7,0),
-    Fill(8,memShSel(0))&memStoreSrc(7,0)
+    Fill(16,memShSel(3))&memStoreSrc(15,0),
+    Fill(16,memShSel(0))&memStoreSrc(15,0)
   )
   val memDataSize=(
     Fill(3,memSize(0))&0.U(3.W)
