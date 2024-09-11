@@ -40,6 +40,7 @@ NOTE:diffstep的执行顺序
 异常判断，如果是退出指令，则退出，其他异常（待实现）
 NEMU根据这次提交的指令数量，决定执行几次
 发现当前提交的指令是跳过指令，传输diff同步，覆盖掉NEMU提交结果
+进行访存对比
 拉取NEMU的寄存器结果
 对比寄存器，进行diff同步
 */
@@ -134,6 +135,11 @@ int Difftest::diff_step(){
     dut_commit.commit[i].valid=false; //因为结构体不像波形你这周期拉高下周期就回去了，所以手动清0
   }//发射了几条指令就执行几次
 
+  if(step_skip_num>0){
+    nemu_proxy->ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
+    return NPC_RUNNING;
+  }//NOTE:遇到跳过指令，等NEMU执行完后对NEMU的寄存器结果同步，然后返回NPC_RUNNING
+
   #ifdef CONFIG_MEMDIFF
   for(int i=0;i<idx_commit_num;i++){
     if(dut_commit.load[i].valid){
@@ -154,11 +160,6 @@ int Difftest::diff_step(){
     }
   }
   #endif
-
-  if(step_skip_num>0){
-    nemu_proxy->ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
-    return NPC_RUNNING;
-  }//NOTE:遇到跳过指令，等NEMU执行完后对NEMU的寄存器结果同步，然后返回NPC_RUNNING
 
   if(dut_commit.excp.excp_valid){
     nemu_proxy->ref_difftest_raise_intr(dut_commit.excp.exception);
