@@ -31,6 +31,9 @@
 #endif
 extern IRingBuffer etrace_buffer;
 extern bool ftrace_flag;
+void store_commit_queue_push(paddr_t addr,word_t data,int len);
+void load_commit_queue_push(paddr_t addr,word_t data,int type);
+
 enum {
   TYPE_I, TYPE_U, TYPE_S,
   TYPE_B, TYPE_R, TYPE_J, 

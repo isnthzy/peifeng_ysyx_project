@@ -126,7 +126,8 @@
         "npc_conf.h": "c",
         "debug.h": "c",
         "utils.h": "c",
-        "mmio.h": "c"
+        "mmio.h": "c",
+        "ifetch.h": "c"
     },
     "C_Cpp.intelliSenseEngine": "default",
     "digital-ide.dont-show-again.propose.issue": true,

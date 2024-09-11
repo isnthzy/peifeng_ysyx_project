@@ -98,11 +98,11 @@ __EXPORT void difftest_ref_reg_display() {
 }
 
 __EXPORT bool difftest_check_store(paddr_t addr,word_t data,int len) {
-  check_store_commit(addr,data,len);
+  return check_store_commit(addr,data,len);
 }
 
 __EXPORT bool difftest_check_load(paddr_t addr,int type) {
-  check_load_commit(addr,type);
+  return check_load_commit(addr,type);
 }
 
 __EXPORT void difftest_init(int port) {

@@ -42,6 +42,7 @@ typedef struct{
   paddr_t addr; 
   word_t  data;
   int     len;
+  vaddr_t atpc;
   bool    valid;
 }store_commit_t; //存的都是未对齐的
 
@@ -49,6 +50,7 @@ typedef struct{
   paddr_t addr; 
   word_t  data;
   int     type;
+  vaddr_t atpc;
   bool    valid;
 }load_commit_t;  //存的都是未对齐的
 

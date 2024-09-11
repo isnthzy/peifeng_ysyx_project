@@ -123,6 +123,7 @@ void store_commit_queue_push(paddr_t addr,word_t data,int len){
   st_commit.addr=addr;
   st_commit.data=data;
   st_commit.len =len;
+  st_commit.atpc=cpu.lastpc;
   //随便存一下，都是未对齐的
   st_tail=(st_tail+1)%STORE_COMMIT_QUEUE_SIZE;
 }
@@ -142,8 +143,8 @@ bool check_store_commit(paddr_t addr,word_t data,int len){
     return false;
   }
   if(st_commit->addr!=addr||st_commit->data!=data||st_commit->len!=len){
-     printf("ref different at pc = 0x%08x, paddr = 0x%lx, data = 0x%lx\n", 
-             cpu.lastpc, st_commit->addr, st_commit->data);
+     printf("ref different at pc = 0x%08x, paddr = "FMT_PADDR", data = "FMT_WORD",\n", 
+             st_commit->atpc, st_commit->addr, st_commit->data);
     return false;
   }else{
     return true;
@@ -165,6 +166,7 @@ void load_commit_queue_push(paddr_t addr,word_t data,int type){
   ld_commit.addr=addr;
   ld_commit.data=data;
   ld_commit.type=type;
+  ld_commit.atpc=cpu.lastpc;
   //随便存一下，都是未对齐的
   ld_tail=(ld_tail+1)%LOAD_COMMIT_QUEUE_SIZE;
 }
@@ -184,8 +186,8 @@ bool check_load_commit(paddr_t addr,int type){
     return false;
   }
   if(ld_commit->addr!=addr||ld_commit->type!=type){
-     printf("ref different at pc = 0x%08x, paddr = 0x%lx, data = 0x%lx\n", 
-             cpu.lastpc, ld_commit->addr, ld_commit->data);
+     printf("ref different at pc = 0x%08x, paddr = "FMT_PADDR", data = "FMT_WORD"\n", 
+             ld_commit->atpc, ld_commit->addr, ld_commit->data);
     return false;
   }else{
     return true;
