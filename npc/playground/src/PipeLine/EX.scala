@@ -160,8 +160,8 @@ class ExStage extends Module {
   
   ex.to_ls.bits.diffLoad.valid:=loadEn
   ex.to_ls.bits.diffLoad.index:=0.U
-  ex.to_ls.bits.diffLoad.paddr:=memAddr
-  ex.to_ls.bits.diffLoad.vaddr:=memAddr
+  ex.to_ls.bits.diffLoad.paddr:=memMisalignedAddr
+  ex.to_ls.bits.diffLoad.vaddr:=memMisalignedAddr
   ex.to_ls.bits.diffLoad.data :=DontCare
   ex.to_ls.bits.diffLoad.len  :=Cat(0.U(5.W),ex.in.bits.ldType===SDEF(LD_LW),
                                              ex.in.bits.ldType===SDEF(LD_LH)||ex.in.bits.ldType===SDEF(LD_LHU),
