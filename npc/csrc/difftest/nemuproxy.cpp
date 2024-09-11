@@ -11,6 +11,7 @@ bool bool_null_function(Args... args) {
 }
 void NemuProxy::init_nemu_proxy(char *ref_so_file, int port){
   if(!difftest_flag){ //NOTE:如果没有打开diff测试，则NemuProxy调用null_function
+    printf("\033[0m\033[1;31m img=NULL -> use init_img \033[0m\n");
     ref_difftest_memcpy = null_function<paddr_t, void*, size_t, bool>;
     ref_difftest_regcpy = null_function<void*, bool>;
     ref_difftest_exec = null_function<uint64_t>;
@@ -45,6 +46,8 @@ void NemuProxy::init_nemu_proxy(char *ref_so_file, int port){
 
   ref_check_store = (bool (*)(paddr_t,word_t,int))dlsym(handle, "difftest_check_store");
   assert(ref_check_store);
+
+  //NOTE:再添加动态链接函数时，一定不要忘记在if(!difftest_flag){块中添加对应的null_function
 
   void (*ref_difftest_init)(int) = (void (*)(int))dlsym(handle, "difftest_init");
   assert(ref_difftest_init);
