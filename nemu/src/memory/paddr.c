@@ -117,6 +117,7 @@ void store_commit_queue_push(paddr_t addr,word_t data,int len){
   }
   store_commit_t* st_commit=store_commit_queue+st_tail;
   if(st_commit->valid){
+    overflow=true;
     printf("[NEMU] [warning]store commit queue overflow,store commit disabled\n");
   }
   st_commit->valid=true;
@@ -132,6 +133,7 @@ static store_commit_t* store_commit_queue_pop(){
   if(!st_commit->valid){
     return NULL;
   }
+  st_commit->valid=false;
   st_head=(st_head+1)%STORE_COMMIT_QUEUE_SIZE;
   return st_commit;
 }
@@ -160,6 +162,7 @@ void load_commit_queue_push(paddr_t addr,word_t data,int type){
   }
   load_commit_t* ld_commit=load_commit_queue+ld_tail;
   if(ld_commit->valid){
+    overflow=true;
     printf("[NEMU] [warning]load commit queue overflow,load commit disabled\n");
   }
   ld_commit->valid=true;
@@ -175,6 +178,7 @@ static load_commit_t* load_commit_queue_pop(){
   if(!ld_commit->valid){
     return NULL;
   }
+  ld_commit->valid=false;
   ld_head=(ld_head+1)%LOAD_COMMIT_QUEUE_SIZE;
   return ld_commit;
 }
