@@ -190,8 +190,13 @@ int Difftest::diff_step(){
 
 bool Difftest::checkregs(){
   bool check_result=true;
+  static bool format_newline=false;
   for(int i=0;i<MUXDEF(CONFIG_RVE, 16, 32);i++){
     if(ref.regs.gpr[i]!=dut.regs.gpr[i]){
+      if(!format_newline){
+        printf("\n");
+        format_newline=true;  
+      }
       wLog("The reg:%s(rf_%d) is different\nref:0x%08x dut:0x%08x",
         regs[i],i,ref.regs.gpr[i],dut.regs.gpr[i]);
       check_result=false;
