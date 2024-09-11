@@ -23,7 +23,7 @@ module DiffBridge(
     input [63:0] storePaddr,
     input [63:0] storeVaddr,
     input [63:0] storeData,
-    input [ 7:0] storelen,
+    input [ 7:0] storeLen,
 
     input [ 7:0] loadIndex,
     input [ 7:0] loadValid,
