@@ -131,7 +131,7 @@ void mtrace_store(int pc,int addr,int data,int len){
 void mtrace_load (int pc,int addr,int data,int len){
   #ifdef CONFIG_MTRACE //警惕切换riscv64会造成的段错误
   char mtrace_logbuf[120];
-  sprintf(mtrace_logbuf,"[load] pc:0x%08x addr:0x%x rdata:0x%08x len:%d",pc,addr,data,len);
+  sprintf(mtrace_logbuf,"[load ]pc:0x%08x addr:0x%x rdata:0x%08x len:%d",pc,addr,data,len);
   enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
   #endif
 }
