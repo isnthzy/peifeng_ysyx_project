@@ -35,6 +35,7 @@ void NemuProxy::init_nemu_proxy(char *ref_so_file, int port){
   ref_reg_display = (void (*)(void))dlsym(handle, "difftest_ref_reg_display");
 
   ref_check_load  = (bool (*)(paddr_t,int))dlsym(handle, "difftest_check_load");
+  printf("ref_check_load:%p\n",ref_check_load);
   assert(ref_check_load);
 
   ref_check_store = (bool (*)(paddr_t,word_t,int))dlsym(handle, "difftest_check_store");
