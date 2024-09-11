@@ -124,6 +124,7 @@ void store_commit_queue_push(paddr_t addr,word_t data,int len){
   st_commit.data=data;
   st_commit.len =len;
   st_commit.atpc=cpu.lastpc;
+  printf("vaddr %x pc %x",addr,cpu.lastpc);
   //随便存一下，都是未对齐的
   st_tail=(st_tail+1)%STORE_COMMIT_QUEUE_SIZE;
 }
