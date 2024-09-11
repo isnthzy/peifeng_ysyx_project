@@ -117,7 +117,7 @@ void store_commit_queue_push(paddr_t addr,word_t data,int len){
   }
   store_commit_t st_commit=store_commit_queue[st_tail];
   if(st_commit.valid){
-    printf("[NEMU] [warning]store commit queue overflow,store commit disabled");
+    printf("[NEMU] [warning]store commit queue overflow,store commit disabled\n");
   }
   st_commit.valid=true;
   st_commit.addr=addr;
@@ -139,7 +139,7 @@ static store_commit_t* store_commit_queue_pop(){
 bool check_store_commit(paddr_t addr,word_t data,int len){
   store_commit_t* st_commit=store_commit_queue_pop();
   if(st_commit==NULL){
-    printf("[NEMU] [warning]store commit queue empty");
+    printf("[NEMU] [warning]store commit queue empty\n");
     return false;
   }
   if(st_commit->addr!=addr||st_commit->data!=data||st_commit->len!=len){
@@ -160,7 +160,7 @@ void load_commit_queue_push(paddr_t addr,word_t data,int type){
   }
   load_commit_t ld_commit=load_commit_queue[ld_tail];
   if(ld_commit.valid){
-    printf("[NEMU] [warning]load commit queue overflow,load commit disabled");
+    printf("[NEMU] [warning]load commit queue overflow,load commit disabled\n");
   }
   ld_commit.valid=true;
   ld_commit.addr=addr;
@@ -182,7 +182,7 @@ static load_commit_t* load_commit_queue_pop(){
 bool check_load_commit(paddr_t addr,int type){
   load_commit_t* ld_commit=load_commit_queue_pop();
   if(ld_commit==NULL){
-    printf("[NEMU] [warning]store commit queue empty");
+    printf("[NEMU] [warning]store commit queue empty\n");
     return false;
   }
   if(ld_commit->addr!=addr||ld_commit->type!=type){
