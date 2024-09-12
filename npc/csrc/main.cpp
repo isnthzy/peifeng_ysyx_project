@@ -6,10 +6,10 @@
 void init_monitor(int, char *[]);
 void sdb_mainloop();
 VerilatedContext* contextp = NULL;
-#ifdef TRACE_VCD
-VerilatedVcdC* tfp = NULL;
-#else
+#ifdef TRACE_FST
 VerilatedFstC* tfp = NULL;
+#else
+VerilatedVcdC* tfp = NULL;
 #endif
 VSimTop* top;
 bool difftest_flag = false;

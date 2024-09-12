@@ -10,10 +10,10 @@
 
 extern VerilatedContext* contextp;
 extern VSimTop* top;
-#ifdef TRACE_VCD
-extern VerilatedVcdC* tfp;
-#else
+#ifdef TRACE_FST
 extern VerilatedFstC* tfp;
+#else
+extern VerilatedVcdC* tfp;
 #endif
 
 #endif
