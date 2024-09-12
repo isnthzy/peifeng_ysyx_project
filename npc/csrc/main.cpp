@@ -6,7 +6,11 @@
 void init_monitor(int, char *[]);
 void sdb_mainloop();
 VerilatedContext* contextp = NULL;
+#ifdef TRACE_VCD
 VerilatedVcdC* tfp = NULL;
+#else
+VerilatedFstC* tfp = NULL;
+#endif
 VSimTop* top;
 bool difftest_flag = false;
 NPCState npc_state = { .state = NPC_STOP };
@@ -15,7 +19,7 @@ void sim_exit(){
   delete top;
   difftest->exit_difftest(); //NOTE:退出difftest收回内存
   delete difftest;
-  #ifdef TRACE_VCD
+  #ifdef CONFIG_GEN_DUMP
   tfp->close();
   #endif
 }
