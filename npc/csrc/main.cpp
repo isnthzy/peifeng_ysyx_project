@@ -21,6 +21,7 @@ void sim_exit(){
   delete difftest;
   #ifdef CONFIG_GEN_DUMP
   tfp->close();
+  printf_green("The Dump file has been saved\n");
   #endif
 }
 int is_exit_status_bad() {
