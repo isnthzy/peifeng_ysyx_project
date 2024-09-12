@@ -81,11 +81,18 @@ void reset(int n){
 void init_sim(){
   contextp = new VerilatedContext;
   top = new VSimTop;
-#ifdef TRACE_VCD
+#ifdef CONFIG_GEN_DUMP
+  #ifdef TRACE_FST
+  tfp = new VerilatedFstC;
+  contextp->traceEverOn(true);
+  top->trace(tfp, 0);
+  tfp->open("dump.fst"); 
+  #else
   tfp = new VerilatedVcdC;
   contextp->traceEverOn(true);
   top->trace(tfp, 0);
   tfp->open("dump.vcd"); 
+  #endif
 #endif
   //使用make sim生成的dump.vcd在npc/
   //SimTop+*.bin生成的dump.vcd在npc/build

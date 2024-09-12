@@ -20,7 +20,7 @@ uint64_t g_nr_guest_inst; //可以复用作为指令计数器，记录指令总�
 void step_and_dump_wave(){
   top->eval();
   contextp->timeInc(1); //时间+1
-#ifdef TRACE_VCD
+#ifdef CONFIG_GEN_DUMP
   tfp->dump(contextp->time()); //使用时间
 #endif 
 }
