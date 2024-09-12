@@ -29,6 +29,12 @@ typedef MUXDEF(CONFIG_RV64,uint64_t, uint32_t) data_t;
         printf(__VA_ARGS__); \
         printf("\033[0m"); \
     } while (0)
+#define printf_red(...) \
+    do { \
+        printf("\033[1;31m"); \
+        printf(__VA_ARGS__); \
+        printf("\033[0m"); \
+    } while (0)
 
 word_t expr(char *e, bool *success);
 // typedef struct {

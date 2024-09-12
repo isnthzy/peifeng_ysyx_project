@@ -4,7 +4,7 @@ export PATH := $(PATH):$(abspath ./utils)
 $(shell mkdir -p $(BUILD_DIR))
 IMG?=
 ARGS?= --log=$(BUILD_DIR)/npc-log.txt
-# ARGS+= --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so
+ARGS+= --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 # NXDC_FILES = constr/SimTop.nxdc
 
 VERILATOR = verilator
@@ -86,7 +86,7 @@ count:
 	@echo $(cnt_cp)-cpp-lines in npc/vsrc	
 	@echo $(cnt_v)-sverilog-lines in npc/vsrc	  
 	@echo $(cnt_s)--chisel--lines in npc/playground
-.PHONY: test verilog help compile bsp reformat checkformat clean count gdb sim
+.PHONY: test verilog help compile bsp reformat checkformat clean count gdb sim gtk com
 
 sim:com
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!

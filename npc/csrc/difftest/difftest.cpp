@@ -79,8 +79,12 @@ int Difftest::diff_step(){
     g_nr_guest_inst=total_inst;
   }
 
-  if(total_inst>CONFIG_MAX_EXE_INST){
-    panic("Too many instructions(Suspected to be in a traploop)");
+  if(total_inst>CONFIG_MAX_EXE_INST&&CONFIG_MAX_EXE_INST!=0){
+    static bool is_printed=false;
+    if(!is_printed){
+      printf_red("\nToo many instructions(Suspected to be in a traploop)\n");
+      is_printed=true;
+    }
   }//NOTE:最大边界检测
 
   //TODO:死锁检查设计在无提交检查前面

@@ -8,10 +8,10 @@
 /*---------------------------------------------------------------------------------*/
 
 
-#define CONFIG_TRACE 1
-#define CONFIG_ITRACE 1
+// #define CONFIG_TRACE 1
+// #define CONFIG_ITRACE 1
+// #define CONFIG_MTRACE 1
 // #define CONFIG_FTRACE 1
-#define CONFIG_MTRACE 1
 
 #define NPCLOG_NUM 1000000 //trace最多记录多少个log
 //TRACE开关
@@ -25,7 +25,8 @@
 // 死锁检测最大时间，为0时不检测
 
 /*---------------------------------------------------------------------------------*/
-#define CONFIG_GEN_DUMP 1
+
+// #define CONFIG_WAVEFORM 1
 #define TRACE_FST 1
 // #define TRACE_VCD 1
 /* 波形生成开关 */

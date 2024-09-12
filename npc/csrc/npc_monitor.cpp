@@ -81,7 +81,7 @@ void reset(int n){
 void init_sim(){
   contextp = new VerilatedContext;
   top = new VSimTop;
-#ifdef CONFIG_GEN_DUMP
+#ifdef CONFIG_WAVEFORM
   #ifdef TRACE_FST
   tfp = new VerilatedFstC;
   contextp->traceEverOn(true);
