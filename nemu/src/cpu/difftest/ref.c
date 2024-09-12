@@ -98,11 +98,19 @@ __EXPORT void difftest_ref_reg_display() {
 }
 
 __EXPORT bool difftest_check_store(paddr_t addr,word_t data,int len) {
+  #ifdef CONFIG_TARGET_SHARE
   return check_store_commit(addr,data,len);
+  #else
+  return false;
+  #endif
 }
 
 __EXPORT bool difftest_check_load(paddr_t addr,int type) {
+  #ifdef CONFIG_TARGET_SHARE
   return check_load_commit(addr,type);
+  #else
+  return false;
+  #endif
 }
 
 __EXPORT void difftest_init(int port) {

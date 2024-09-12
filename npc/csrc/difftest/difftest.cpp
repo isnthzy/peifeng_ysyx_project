@@ -82,7 +82,7 @@ int Difftest::diff_step(){
   if(total_inst>CONFIG_MAX_EXE_INST&&CONFIG_MAX_EXE_INST!=0){
     static bool is_printed=false;
     if(!is_printed){
-      printf_red("Too many instructions(Suspected to be in a traploop)");
+      printf_red("\nToo many instructions(Suspected to be in a traploop)\n");
       is_printed=true;
     }
   }//NOTE:最大边界检测
