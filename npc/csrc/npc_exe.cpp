@@ -26,7 +26,7 @@ void step_and_dump_wave(){
 }
 
 void npc_quit(){
-  // reg_dut_display();
+  reg_dut_display();
   npc_state.state=NPC_QUIT;
 }
 
