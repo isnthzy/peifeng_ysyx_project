@@ -9,7 +9,8 @@ ARGS?= --log=$(BUILD_DIR)/npc-log.txt
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc 
-VERILATOR_CFLAGS += --trace --timing
+# VERILATOR_CFLAGS += --trace 
+VERILATOR_CFLAGS += --trace-fst
 # VERILATOR_CFLAGS += --prof-cfuncs 
 # VERILATOR_CFLAGS += -O3 --x-assign fast --x-initial fast --noassert 
 #优化加速
@@ -31,7 +32,7 @@ LDFLAGS += -lreadline  -lSDL2
 #gdb调试段错误相关代码
 
 ##分隔符 llvm用于反汇编itrace
-CXXFLAGS += $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config --cxxflags)) -fPIE
+CXXFLAGS += $(filter-out -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS, $(shell llvm-config --cxxflags)) -fPIE
 LDFLAGS += $(shell llvm-config --libs)
 ##分隔符 llvm用于反汇编itrace
 

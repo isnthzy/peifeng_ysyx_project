@@ -88,7 +88,7 @@ void init_sim(){
   top->trace(tfp, 0);
   tfp->open("dump.vcd"); 
   #else
-  tfp = new VerilatedVFstC;
+  tfp = new VerilatedFstC;
   contextp->traceEverOn(true);
   top->trace(tfp, 0);
   tfp->open("dump.fst"); 
