@@ -19,7 +19,7 @@ void sim_exit(){
   delete top;
   difftest->exit_difftest(); //NOTE:退出difftest收回内存
   delete difftest;
-  #ifdef CONFIG_GEN_DUMP
+  #ifdef CONFIG_WAVEFORM
   tfp->close();
   printf_green("The Dump file has been saved at npc/dump.{fst,vcd}\n");
   #endif
