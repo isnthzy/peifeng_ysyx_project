@@ -26,7 +26,7 @@
 
 /*---------------------------------------------------------------------------------*/
 #define CONFIG_GEN_DUMP 1
-// #define TRACE_VCD 1
+#define TRACE_VCD 1
 // #define TRACE_FST 1
 /* 波形生成开关 */
 
