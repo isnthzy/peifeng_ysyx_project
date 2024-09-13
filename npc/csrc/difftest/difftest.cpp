@@ -70,19 +70,16 @@ bool Difftest::load_commit_diff(int idx){
 int Difftest::excp_process(int excp_idx, int excp_code){
   if(excp_code==0x3){
     if(dut_commit.commit[excp_idx].wdata==0x0){
-      npc_state.halt_pc = dut_commit.commit[excp_idx].pc;
       return NPC_SUCCESS_END;
     }else{
-      npc_state.halt_pc = dut_commit.commit[excp_idx].pc;
       return NPC_ERROR_END;
     } //NOTE:测试结束退出
   }else if(excp_code==11){
-    wLog("TODO: excp_code = 0x11 ");
-    npc_state.halt_pc = dut_commit.commit[excp_idx].pc;
-    return NPC_ABORT;
+    // wLog("TODO: excp_code = 0x11 ");
+    nemu_proxy->ref_difftest_raise_intr(excp_code);
+    return NPC_RUNNING;
   }else{
     wLog("excp_code = %d",excp_code);
-    npc_state.halt_pc = dut_commit.commit[excp_idx].pc;
     return NPC_ABORT;
   }
 }
@@ -157,21 +154,24 @@ int Difftest::diff_step(){
 
   first_commit(); //当第一条指令提交时，开始同步
 
-  int excp_inst_idx=0;
-  if(dut_commit.excp.excp_valid){
-    for(int i = 0;i<idx_commit_num;i++){
-      if(dut_commit.commit[i].pc==dut_commit.excp.exceptionPC){
-        excp_inst_idx=i;
-      }
-    }
-    return excp_process(excp_inst_idx,dut_commit.excp.exception); //NOTE:异常处理
-  }  
-
   for(int i=0;i<idx_commit_num;i++){
     nemu_proxy->ref_difftest_exec(1);
     dut_commit.commit[i].valid=false; //因为结构体不像波形你这周期拉高下周期就回去了，所以手动清0
   }//发射了几条指令就执行几次
 
+  if(dut_commit.excp.excp_valid){
+    int excp_inst_idx=0;
+    for(int i = 0;i<idx_commit_num;i++){
+      if(dut_commit.commit[i].pc==dut_commit.excp.exceptionPC){
+        excp_inst_idx=i;
+      }
+    }
+    npc_state.halt_pc = dut_commit.commit[excp_inst_idx].pc;
+    int excp_state=excp_process(excp_inst_idx,dut_commit.excp.exception); //NOTE:异常处理
+    if(excp_state!=NPC_RUNNING){
+      return excp_state;
+    }
+  }  
 
   for(int i=0;i<commit_load_num;i++){
     dut_commit.store[i].valid=false;
