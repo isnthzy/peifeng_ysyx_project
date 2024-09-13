@@ -30,6 +30,41 @@ void Difftest::first_commit(){
   }
 }
 
+void Difftest::trace_inst_commit(vaddr_t pc,uint32_t inst){
+  #ifdef CONFIG_TRACE
+  static char logbuf[128];
+  static char tmp_dis[64];
+  disassemble(tmp_dis, sizeof(tmp_dis),pc, (uint8_t*)&inst,4);
+  sprintf(logbuf,"[%ld]\t0x%08x: %08x\t%s",total_inst,pc,inst,tmp_dis);
+  #ifdef CONFIG_ITRACE
+  log_write("%s\n",logbuf);
+  enqueueIRingBuffer(&iring_buffer,logbuf); //入队环形缓冲区
+  #endif
+  wp_trace(logbuf);
+  if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s\n",logbuf)); }
+  #endif
+}
+
+int Difftest::excp_process(int excp_idx, int excp_code){
+  if(excp_code==0x3){
+    if(dut_commit.commit[excp_idx].wdata==0x0){
+      npc_state.halt_pc = dut_commit.commit[excp_idx].pc;
+      return NPC_SUCCESS_END;
+    }else{
+      npc_state.halt_pc = dut_commit.commit[excp_idx].pc;
+      return NPC_ERROR_END;
+    } //NOTE:测试结束退出
+  }else if(excp_code==11){
+    wLog("TODO: excp_code = 0x11 ");
+    npc_state.halt_pc = dut_commit.commit[excp_idx].pc;
+    return NPC_ABORT;
+  }else{
+    wLog("excp_code = %d",excp_code);
+    npc_state.halt_pc = dut_commit.commit[excp_idx].pc;
+    return NPC_ABORT;
+  }
+}
+
 /*
 NOTE:diffstep的执行顺序
 首先算出这次提交的数量和需要跳过的提交数量，提交的时候顺便把这次提交的指令记录到itrace中
@@ -48,8 +83,10 @@ NEMU根据这次提交的指令数量，决定执行几次
 
 int Difftest::diff_step(){
   //TODO:define返回值，用来判断diff运行的状况
-  idx_commit_num=0;
   step_skip_num=0;
+  idx_commit_num=0;
+  commit_store_num=0;
+  commit_load_num =0;
   while(idx_commit_num<DIFFTEST_COMMIT_WIDTH&&dut_commit.commit[idx_commit_num].valid){
     deadlock_timer=0;
     IFDEF(CONFIG_DEVICE, device_update(););
@@ -58,22 +95,12 @@ int Difftest::diff_step(){
     }
     npc_state.halt_pc=dut_commit.commit[idx_commit_num].pc;
 
-    #ifdef CONFIG_TRACE
-    static char logbuf[128];
-    static char tmp_dis[64];
     uint32_t tmp_inst=dut_commit.commit[idx_commit_num].inst;
     vaddr_t  tmp_pc  =dut_commit.commit[idx_commit_num].pc;
+    trace_inst_commit(tmp_pc,tmp_inst);
 
-    disassemble(tmp_dis, sizeof(tmp_dis),tmp_pc, (uint8_t*)&tmp_inst,4);
-    sprintf(logbuf,"[%ld]\t0x%08x: %08x\t%s",total_inst,tmp_pc,tmp_inst,tmp_dis);
-    #ifdef CONFIG_ITRACE
-    log_write("%s\n",logbuf);
-    enqueueIRingBuffer(&iring_buffer,logbuf); //入队环形缓冲区
-    #endif
-    wp_trace(logbuf);
-    if (g_print_step) { IFDEF(CONFIG_ITRACE,printf("%s\n",logbuf)); }
-    #endif
-
+    if(dut_commit.store[idx_commit_num].valid) commit_store_num++;
+    if(dut_commit.load[idx_commit_num].valid)  commit_load_num++;
     total_inst++;
     idx_commit_num++;
     g_nr_guest_inst=total_inst;
@@ -115,23 +142,7 @@ int Difftest::diff_step(){
         excp_inst_idx=i;
       }
     }
-    if(dut_commit.excp.exception==0x3){
-      if(dut_commit.commit[excp_inst_idx].wdata==0x0){
-        npc_state.halt_pc = dut_commit.commit[excp_inst_idx].pc;
-        return NPC_SUCCESS_END;
-      }else{
-        npc_state.halt_pc = dut_commit.commit[excp_inst_idx].pc;
-        return NPC_ERROR_END;
-      }
-    }else if(dut_commit.excp.exception==0x11){
-      wLog("TODO: excp_code = 0x11 ");
-      npc_state.halt_pc = dut_commit.commit[excp_inst_idx].pc;
-      return NPC_ABORT;
-    }else{
-      wLog("excp_code = %d",dut_commit.excp.exception);
-      npc_state.halt_pc = dut_commit.commit[excp_inst_idx].pc;
-      return NPC_ABORT;
-    }
+    return excp_process(excp_inst_idx,dut_commit.excp.exception); //NOTE:异常处理
   }  
 
   for(int i=0;i<idx_commit_num;i++){
@@ -140,29 +151,29 @@ int Difftest::diff_step(){
   }//发射了几条指令就执行几次
 
 
-  for(int i=0;i<idx_commit_num;i++){
-    if(dut_commit.load[i].valid){
-      mtrace_load(dut.base.pc, dut_commit.load[i].paddr, dut_commit.load[i].data, dut_commit.load[i].len);
-      #ifdef CONFIG_MEMDIFF
-      if(!nemu_proxy->ref_check_load(dut_commit.load[i].paddr,dut_commit.load[i].len)){
-        wLog("dut paddr = " FMT_PADDR " , data = " FMT_WORD , 
-              dut_commit.load[i].paddr, dut_commit.load[i].data);
-        return NPC_ABORT;
-      }
-      #endif
-      dut_commit.load[i].valid=false;
-    }//NOTE:我好像知道load了为什么不追踪data了，是因为外设！！！,追踪addr和访问类型即可
-    if(dut_commit.store[i].valid){
-      mtrace_store(dut.base.pc, dut_commit.store[i].paddr, dut_commit.store[i].data, dut_commit.store[i].len);
-      #ifdef CONFIG_MEMDIFF
-      if(!nemu_proxy->ref_check_store(dut_commit.store[i].paddr,dut_commit.store[i].data,dut_commit.store[i].len)){
-        wLog("dut paddr = " FMT_PADDR " , data = " FMT_WORD , 
-         dut_commit.store[i].paddr, dut_commit.store[i].data);
-         return NPC_ABORT;
-      }
-      #endif
-      dut_commit.store[i].valid=false;
+  for(int i=0;i<commit_load_num;i++){
+    mtrace_load(dut.base.pc, dut_commit.load[i].paddr, dut_commit.load[i].data, dut_commit.load[i].len);
+    dut_commit.store[i].valid=false;
+    #ifdef CONFIG_MEMDIFF
+    if(!nemu_proxy->ref_check_load(dut_commit.load[i].paddr,dut_commit.load[i].len)){
+      wLog("dut paddr = " FMT_PADDR " , data = " FMT_WORD , 
+            dut_commit.load[i].paddr, dut_commit.load[i].data);
+      return NPC_ABORT;
     }
+    #endif
+    dut_commit.load[i].valid=false;
+    //NOTE:我好像知道load了为什么不追踪data了，是因为外设！！！,追踪addr和访问类型即可
+  }
+  for(int i=0;i<commit_store_num;i++){
+    mtrace_store(dut.base.pc, dut_commit.store[i].paddr, dut_commit.store[i].data, dut_commit.store[i].len);
+    dut_commit.store[i].valid=false;
+    #ifdef CONFIG_MEMDIFF
+    if(!nemu_proxy->ref_check_store(dut_commit.store[i].paddr,dut_commit.store[i].data,dut_commit.store[i].len)){
+      wLog("dut paddr = " FMT_PADDR " , data = " FMT_WORD , 
+        dut_commit.store[i].paddr, dut_commit.store[i].data);
+        return NPC_ABORT;
+    }
+    #endif
   }
 
 

@@ -98,16 +98,22 @@ class Difftest{
 
     uint64_t total_inst=0;
     uint32_t idx_commit_num=0;
+    uint32_t commit_load_num=0; //提交的load指令数量
+    uint32_t commit_store_num=0; //提交的store指令数量
     uint32_t step_skip_num=0;
     uint32_t deadlock_timer=0; //死锁计数器
+
+    void trace_inst_commit(vaddr_t pc,uint32_t inst);
+    int  excp_process(int excp_idx, int excp_code);
+    void first_commit();
+
+    bool checkregs();
 
   public:
     void init_difftest(char *ref_so_file, int port);
     void exit_difftest();
-    void first_commit();
     int  diff_step();
     void display();
-    bool checkregs();
 
     void set_img_size(long size){ 
       img_size=size; 
