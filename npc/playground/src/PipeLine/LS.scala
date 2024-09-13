@@ -108,19 +108,19 @@ class LsStage extends Module {
     excpNum(12) -> Cat(ECODE.LPF,lsValid ,memBadAddr       ),
     excpNum(13) -> Cat(ECODE.SPF,lsValid ,memBadAddr       ),
   )).asTypeOf(new ExcpResultBundle())
-  lsExcpEn:=excpNum.asUInt.orR
-  ls.to_csr.wen:=ls.in.bits.csrWen
+  lsExcpEn:=excpNum.asUInt.orR&&lsValid
+  ls.to_csr.wen:=ls.in.bits.csrWen&&lsValid
   ls.to_csr.wrAddr:=ls.in.bits.csrWrAddr
   ls.to_csr.wrData:=ls.in.bits.csrWrData
-  ls.to_csr.excpFlush :=excpNum.asUInt.orR
-  ls.to_csr.mretFlush :=ls.in.bits.isMret
+  ls.to_csr.excpFlush :=excpNum.asUInt.orR&&lsValid
+  ls.to_csr.mretFlush :=ls.in.bits.isMret&&lsValid
   ls.to_csr.excpResult:=excpResult
 
-  val refetchFlush=ls.in.bits.csrWen
+  val refetchFlush=ls.in.bits.csrWen&&lsValid
   val toPipelineFlush=Wire(new PipelineFlushsBundle())
   toPipelineFlush.refetch:=refetchFlush
-  toPipelineFlush.excp   :=excpNum.asUInt.orR
-  toPipelineFlush.xret   :=ls.in.bits.isMret
+  toPipelineFlush.excp   :=excpNum.asUInt.orR&&lsValid
+  toPipelineFlush.xret   :=ls.in.bits.isMret&&lsValid
   ls.fw_pf.flush:=toPipelineFlush
   ls.fw_pf.refetchPC:=ls.in.bits.pc+4.U
   ls.fw_if.flush:=toPipelineFlush.asUInt.orR
