@@ -176,14 +176,14 @@ int Difftest::diff_step(){
   for(int i=0;i<commit_load_num;i++){
     dut_commit.store[i].valid=false;
     mtrace_load(dut.base.pc, dut_commit.load[i].paddr, dut_commit.load[i].data, dut_commit.load[i].len);
-    if(!store_commit_diff(i)) return NPC_ABORT;
+    if(!load_commit_diff(i)) return NPC_ABORT;
 
     //NOTE:我好像知道load了为什么不追踪data了，是因为外设！！！,追踪addr和访问类型即可
   }
   for(int i=0;i<commit_store_num;i++){
     dut_commit.store[i].valid=false;
     mtrace_store(dut.base.pc, dut_commit.store[i].paddr, dut_commit.store[i].data, dut_commit.store[i].len);
-    if(!load_commit_diff(i)) return NPC_ABORT;
+    if(!store_commit_diff(i)) return NPC_ABORT;
 
   }
 
