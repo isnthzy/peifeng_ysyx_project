@@ -45,6 +45,28 @@ void Difftest::trace_inst_commit(vaddr_t pc,uint32_t inst){
   #endif
 }
 
+bool Difftest::store_commit_diff(int idx){
+  #ifdef CONFIG_MEMDIFF
+  if(!nemu_proxy->ref_check_store(dut_commit.store[idx].paddr,dut_commit.store[idx].data,dut_commit.store[idx].len)){
+    wLog("dut paddr = " FMT_PADDR " , data = " FMT_WORD , 
+      dut_commit.store[idx].paddr, dut_commit.store[idx].data);
+      return false;
+  }
+  #endif
+  return true;
+}
+
+bool Difftest::load_commit_diff(int idx){
+  #ifdef CONFIG_MEMDIFF
+  if(!nemu_proxy->ref_check_load(dut_commit.load[idx].paddr,dut_commit.load[idx].len)){
+    wLog("dut paddr = " FMT_PADDR " , data = " FMT_WORD , 
+          dut_commit.load[idx].paddr, dut_commit.load[idx].data);
+    return false;
+  }
+  #endif
+  return true;
+}
+
 int Difftest::excp_process(int excp_idx, int excp_code){
   if(excp_code==0x3){
     if(dut_commit.commit[excp_idx].wdata==0x0){
@@ -152,28 +174,17 @@ int Difftest::diff_step(){
 
 
   for(int i=0;i<commit_load_num;i++){
-    mtrace_load(dut.base.pc, dut_commit.load[i].paddr, dut_commit.load[i].data, dut_commit.load[i].len);
     dut_commit.store[i].valid=false;
-    #ifdef CONFIG_MEMDIFF
-    if(!nemu_proxy->ref_check_load(dut_commit.load[i].paddr,dut_commit.load[i].len)){
-      wLog("dut paddr = " FMT_PADDR " , data = " FMT_WORD , 
-            dut_commit.load[i].paddr, dut_commit.load[i].data);
-      return NPC_ABORT;
-    }
-    #endif
-    dut_commit.load[i].valid=false;
+    mtrace_load(dut.base.pc, dut_commit.load[i].paddr, dut_commit.load[i].data, dut_commit.load[i].len);
+    if(!store_commit_diff(i)) return NPC_ABORT;
+
     //NOTE:我好像知道load了为什么不追踪data了，是因为外设！！！,追踪addr和访问类型即可
   }
   for(int i=0;i<commit_store_num;i++){
-    mtrace_store(dut.base.pc, dut_commit.store[i].paddr, dut_commit.store[i].data, dut_commit.store[i].len);
     dut_commit.store[i].valid=false;
-    #ifdef CONFIG_MEMDIFF
-    if(!nemu_proxy->ref_check_store(dut_commit.store[i].paddr,dut_commit.store[i].data,dut_commit.store[i].len)){
-      wLog("dut paddr = " FMT_PADDR " , data = " FMT_WORD , 
-        dut_commit.store[i].paddr, dut_commit.store[i].data);
-        return NPC_ABORT;
-    }
-    #endif
+    mtrace_store(dut.base.pc, dut_commit.store[i].paddr, dut_commit.store[i].data, dut_commit.store[i].len);
+    if(!load_commit_diff(i)) return NPC_ABORT;
+
   }
 
 

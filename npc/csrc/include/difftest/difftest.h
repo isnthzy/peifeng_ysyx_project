@@ -106,8 +106,9 @@ class Difftest{
     void trace_inst_commit(vaddr_t pc,uint32_t inst);
     int  excp_process(int excp_idx, int excp_code);
     void first_commit();
-
     bool checkregs();
+    bool store_commit_diff(int idx);
+    bool load_commit_diff(int idx);
 
   public:
     void init_difftest(char *ref_so_file, int port);
