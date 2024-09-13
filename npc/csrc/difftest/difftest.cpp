@@ -77,7 +77,7 @@ int Difftest::excp_process(int excp_idx, int excp_code){
   }else if(excp_code==11){
     // wLog("TODO: excp_code = 0x11 ");
     nemu_proxy->ref_difftest_raise_intr(excp_code);
-    return NPC_ABORT;
+    return NPC_RUNNING;
   }else{
     wLog("excp_code = %d",excp_code);
     return NPC_ABORT;
