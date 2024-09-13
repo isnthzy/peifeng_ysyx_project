@@ -42,7 +42,7 @@ $(info #ARGS=$(ARGS))
 
 #gtkwave自动保存信号和打开信号
 gtk:
-	gtkwave dump.vcd allview.gtkw
+	gtkwave dump.fst allview.gtkw
 
 com: $(VSRCS) $(CSRCS)
 	@rm -rf ./build/SimTop
