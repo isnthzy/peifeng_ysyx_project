@@ -88,11 +88,11 @@ int Difftest::excp_process(int excp_idx, int excp_code){
 NOTE:diffstep的执行顺序
 首先算出这次提交的数量和需要跳过的提交数量，提交的时候顺便把这次提交的指令记录到itrace中
 以提交数量为根据，计算出提交的最后一个pc（例如提交了两条指令，那么base.pc的结果就为第二条指令的pc）
-//死锁检查
+死锁检查
 判断是不是无提交指令，无提交指令则直接返回让NPC继续执行
 判断是否是第一次提交，如果是第一次提交，同步NPC初始化内容等各项事务
-异常判断，如果是退出指令，则退出，其他异常（待实现）
 NEMU根据这次提交的指令数量，决定执行几次
+异常判断，如果是退出指令，则退出，其他异常则调用NEMU
 发现当前提交的指令是跳过指令，传输diff同步，覆盖掉NEMU提交结果
 进行访存对比
 拉取NEMU的寄存器结果
@@ -168,6 +168,7 @@ int Difftest::diff_step(){
     }
     npc_state.halt_pc = dut_commit.commit[excp_inst_idx].pc;
     int excp_state=excp_process(excp_inst_idx,dut_commit.excp.exception); //NOTE:异常处理
+    dut_commit.excp.excp_valid=false;
     if(excp_state!=NPC_RUNNING){
       return excp_state;
     }
@@ -192,11 +193,6 @@ int Difftest::diff_step(){
     nemu_proxy->ref_difftest_regcpy(&dut, DIFFTEST_TO_REF);
     return NPC_RUNNING;
   }//NOTE:遇到跳过指令，等NEMU执行完后对NEMU的寄存器结果同步，然后返回NPC_RUNNING
-
-  if(dut_commit.excp.excp_valid){
-    nemu_proxy->ref_difftest_raise_intr(dut_commit.excp.exception);
-    dut_commit.excp.excp_valid=false;
-  }
 
   nemu_proxy->ref_difftest_regcpy(&ref, DIFFTEST_TO_DUT);
 
