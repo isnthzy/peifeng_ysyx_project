@@ -43,7 +43,8 @@ class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
     io.x(i).r.ready :=readRespHit&&io.a.r.ready&&readStateResp
   }
   io.a.ar.ready:=Xread.ar.ready
-  io.a.r.bits<>XreadResp.r.bits
+  io.a.r.bits  <>XreadResp.r.bits
+  io.a.r.valid :=XreadResp.r.valid
 
   switch(ReadRequstState){
     is(state_idle){      
