@@ -37,4 +37,9 @@ class SimTimer extends Module with DeviceConfig{
       }
     }
   }
+
+  io.aw.ready:=false.B
+  io.w.ready:=false.B
+  io.b.valid:=false.B
+  io.b.bits:=0.U.asTypeOf(io.b.bits)
 }
