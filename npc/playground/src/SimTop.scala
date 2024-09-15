@@ -69,7 +69,7 @@ class SimTop extends Module with DeviceConfig{
   Axi4LiteBridge.io.w <>AxiXbarA2X.io.a.w
   Axi4LiteBridge.io.b <>AxiXbarA2X.io.a.b
 
-  AxiXbarA2X.io.x(0)<>SimUart.io.axi
+  AxiXbarA2X.io.x(0)<>Axi4LiteSram.io
   AxiXbarA2X.io.x(1)<>Axi4LiteSram.io
   // AxiXbarA2X.io.x(2)<>SimTimer.io
 //
