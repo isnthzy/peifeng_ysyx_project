@@ -3,7 +3,7 @@ import chisel3._
 
 object Configs {
   // val START_ADDR = "h7ffffffc".U(32.W)  //开始地址，设计成80000000-4=7ffffffc是为了初始化reset
-  def START_ADDR = "h80000000".U(ADDR_WIDTH .W)
+  def START_ADDR = "h80000000".U(ADDR_WIDTH.W)
   def ADDR_WIDTH = 32 // 地址位宽
   def ADDR_BYTE_WIDTH = ADDR_WIDTH / 8    // 地址位宽按字节算
   def DATA_WIDTH = 32 // 数据位宽
@@ -15,11 +15,16 @@ object Configs {
   def INST_NOP = "h00000013".U(32.W)
 }
 
-trait DeviceAddr{
+trait DeviceConfig{
   //NOTE:警告，请确保设备地址与协同仿真框架一致，避免skip信号提交错误
+
   def DEVICE_BASE = "ha0000000".U(32.W)
   def SERIAL_PORT = DEVICE_BASE + "h00003f8".U(32.W)
+  def SERIAL_SIZE = 0.U
+
   def RTC_ADDR    = DEVICE_BASE + "h0000048".U(32.W)
+  def RTC_SIZE    = 8.U
+
   def KBD_ADDR    = DEVICE_BASE + "h0000060".U(32.W)
   def VGACTL_ADDR = DEVICE_BASE + "h0000100".U(32.W)
   def SYNC_ADDR   = VGACTL_ADDR +  4.U(32.W)

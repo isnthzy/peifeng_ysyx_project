@@ -5,7 +5,7 @@ import chisel3.util._
 import CoreConfig.Configs.ADDR_WIDTH
 import CoreConfig._
 
-class DeviceSkip extends Module with DeviceAddr{
+class DeviceSkip extends Module with DeviceConfig{
   val io = IO(new Bundle {
     val isLoadStore = Input(Bool())
     val addr = Input(UInt(ADDR_WIDTH.W))
