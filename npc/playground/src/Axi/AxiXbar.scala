@@ -82,7 +82,7 @@ class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
     io.x(i).w       <>io.a.w
     io.x(i).b.ready :=writeRespHit&&io.a.b.ready&&writeStateResp
   }
-  io.a.aw.ready:=Xread.aw.ready
+  io.a.aw.ready:=Xwrite.aw.ready
 
 
   switch(WriteRequstState){
@@ -95,7 +95,7 @@ class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
     is(state_wait_fire){
       when(XwriteResp.b.fire){
         WriteRequstState:=state_idle
-        XreadRespIdx:=0.U
+        XwriteRespIdx:=0.U
       }
     }
   }
