@@ -39,12 +39,12 @@ class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
     var readAddrHit=i.U===XreadHitIdx
     var readRespHit=i.U===XreadRespIdx
     io.x(i).ar.valid:=readAddrHit&&io.a.ar.valid&&readStateIdle
-    io.x(i).ar.bits <>io.a.ar.bits
+    io.x(i).ar.bits :=io.a.ar.bits
     io.x(i).r.ready :=readRespHit&&io.a.r.ready&&readStateResp
   }
   io.a.ar.ready:=Xread.ar.ready
-  io.a.r.bits  <>XreadResp.r.bits
   io.a.r.valid :=XreadResp.r.valid
+  io.a.r.bits  :=XreadResp.r.bits
 
   switch(ReadRequstState){
     is(state_idle){      
@@ -86,6 +86,7 @@ class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
   io.a.aw.ready:=Xwrite.aw.ready
   io.a.w.ready :=XwriteResp.w.ready
   io.a.b.valid :=XwriteResp.b.valid
+  io.a.b.bits  :=XwriteResp.b.bits
 
   switch(WriteRequstState){
     is(state_idle){      
