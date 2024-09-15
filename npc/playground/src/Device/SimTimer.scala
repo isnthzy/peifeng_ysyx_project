@@ -9,7 +9,7 @@ class SimTimer extends Module with DeviceConfig{
   val io=IO(new Axi4LiteSlave())
 
   val timer=RegInit(0.U(64.W))
-  timer:=timer+1.U;
+  timer:=timer+1.U
 
   val state_idle :: state_resp :: Nil = Enum(2)
   val timerState=RegInit(state_idle)

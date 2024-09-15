@@ -9,7 +9,7 @@ class SimUart extends Module {
 
   val state_idle :: state_write :: state_bresp :: Nil = Enum(3)
   val uartState=RegInit(state_idle)
-  val addrWrire=RegInit(0.U(ADDR_WIDTH.W))
+  val addrWrite=RegInit(0.U(ADDR_WIDTH.W))
   io.aw.ready:=true.B
   
   io.w.ready:=false.B
@@ -21,14 +21,14 @@ class SimUart extends Module {
       io.w.ready:=false.B
       when(io.aw.fire){
         uartState:=state_write
-        addrWrire:=io.w.bits.data
+        addrWrite:=io.w.bits.data
       } 
     }
     is(state_write){
       io.w.ready:=true.B
       when(io.w.fire){
         uartState:=state_bresp
-        printf("%c",addrWrire)
+        printf("%c",addrWrite)
       }
     }
     is(state_bresp){
