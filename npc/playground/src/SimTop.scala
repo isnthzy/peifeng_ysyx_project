@@ -58,9 +58,9 @@ class SimTop extends Module with DeviceConfig{
 
   val AxiXbarA2X = Module(new AxiXbarA2X(
     List(
-      (START_ADDR , 0x8000000  , false),
-      (SERIAL_PORT, SERIAL_SIZE, false),
-      (RTC_ADDR   , RTC_SIZE   , false),
+      (START_ADDR , "h8000000".U , false),
+      (SERIAL_PORT, SERIAL_SIZE  , false),
+      (RTC_ADDR   , RTC_SIZE     , false),
     )
   ))
   Axi4LiteBridge.io.ar<>AxiXbarA2X.io.a.ar
