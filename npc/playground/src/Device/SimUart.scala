@@ -20,7 +20,7 @@ class SimUart extends Module {
       } 
     }
     is(state_write){
-      io.w.valid:=true.B
+      io.w.ready:=true.B
       when(io.w.fire){
         uartState:=state_bresp
         printf("%c",addrWrire)
