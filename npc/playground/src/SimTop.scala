@@ -9,7 +9,7 @@ import FuncUnit.CsrFile
 import IP.Axi4LiteSram
 import CoreConfig.GenCtrl
 import DiffTest.dpic._
-import Device.{SimUart,SimTimer}
+// import Device.{SimUart,SimTimer}
 
 class SimTop extends Module with DeviceConfig{
   val io = IO(new Bundle {
