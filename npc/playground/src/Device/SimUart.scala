@@ -14,6 +14,8 @@ class SimUart extends Module {
   
   io.w.ready:=false.B
   io.b.valid:=false.B
+
+  io.b.bits:=0.U.asTypeOf(io.b.bits)
   switch(uartState){
     is(state_idle){
       io.w.ready:=false.B
@@ -40,5 +42,4 @@ class SimUart extends Module {
   io.ar.ready:=false.B
   io.r.valid:=false.B
   io.r.bits:=0.U.asTypeOf(io.r.bits)
-
 }
