@@ -11,9 +11,12 @@ class SimUart extends Module {
   val uartState=RegInit(state_idle)
   val addrWrire=RegInit(0.U(ADDR_WIDTH.W))
   io.aw.ready:=true.B
-
+  
+  io.w.ready:=false.B
+  io.b.valid:=false.B
   switch(uartState){
     is(state_idle){
+      io.w.ready:=false.B
       when(io.aw.fire){
         uartState:=state_write
         addrWrire:=io.w.bits.data
@@ -33,4 +36,9 @@ class SimUart extends Module {
       }
     }
   }
+
+  io.ar.ready:=false.B
+  io.r.valid:=false.B
+  io.r.bits:=0.U.asTypeOf(io.r.bits)
+
 }
