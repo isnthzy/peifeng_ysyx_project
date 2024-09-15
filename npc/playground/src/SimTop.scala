@@ -26,7 +26,7 @@ class SimTop extends Module with DeviceConfig{
   val WriteBack = Module(new WbStage())
   val CsrFile   = Module(new CsrFile())
   
-  val Axi4LiteSram = Module(new Axi4LiteSram())
+
   val Axi4LiteBridge=Module(new Axi4Bridge())
   val AxiArbiter=Module(new AxiArbiter())
 //AxiBridge
@@ -53,6 +53,8 @@ class SimTop extends Module with DeviceConfig{
 //AxiArbiter
 
 //AxiXBar
+  val Axi4LiteSram = Module(new Axi4LiteSram())
+  val Axi4LiteSram1 = Module(new Axi4LiteSram())
   val SimUart = Module(new SimUart())
   // val SimTimer = Module(new SimTimer())
 
@@ -70,7 +72,7 @@ class SimTop extends Module with DeviceConfig{
   Axi4LiteBridge.io.b <>AxiXbarA2X.io.a.b
 
   AxiXbarA2X.io.x(0)<>Axi4LiteSram.io
-  AxiXbarA2X.io.x(1)<>Axi4LiteSram.io
+  AxiXbarA2X.io.x(1)<>Axi4LiteSram1.io
   // AxiXbarA2X.io.x(2)<>SimTimer.io
 //
 
