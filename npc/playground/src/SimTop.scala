@@ -53,8 +53,8 @@ class SimTop extends Module with DeviceConfig{
 //AxiArbiter
 
 //AxiXBar
-  val SimUart = Module(new SimUart())
-  val SimTimer = Module(new SimTimer())
+  // val SimUart = Module(new SimUart())
+  // val SimTimer = Module(new SimTimer())
 
   val AxiXbarA2X = Module(new AxiXbarA2X(
     List(
