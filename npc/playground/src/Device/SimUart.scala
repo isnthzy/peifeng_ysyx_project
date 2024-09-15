@@ -18,7 +18,7 @@ class SimUart extends Module {
 
   io.b.bits:=0.U.asTypeOf(io.b.bits)
 
-  val putchar=Mux(useWriteBuff,writeBuff,io.w.bits.data)
+  val putchar=Mux(useWriteBuff,writeBuff,io.w.bits.data)(7,0)
   switch(uartState){
     is(state_idle){
       io.w.ready:=true.B
