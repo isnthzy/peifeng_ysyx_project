@@ -9,7 +9,7 @@ import FuncUnit.CsrFile
 import IP.Axi4LiteSram
 import CoreConfig.GenCtrl
 import DiffTest.dpic._
-import Device.{SimUart}
+import Device.{SimUart,SimTimer}
 
 class SimTop extends Module with DeviceConfig{
   val io = IO(new Bundle {
@@ -71,7 +71,7 @@ class SimTop extends Module with DeviceConfig{
 
   AxiXbarA2X.io.x(0)<>Axi4LiteSram.io
   AxiXbarA2X.io.x(1)<>SimUart.io
-  // AxiXbarA2X.io.x(2)<>SimTimer.io
+  AxiXbarA2X.io.x(2)<>SimTimer.io
 //
 
 // PreIF begin
