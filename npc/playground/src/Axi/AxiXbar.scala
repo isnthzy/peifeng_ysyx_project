@@ -39,8 +39,8 @@ class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
     var readAddrHit=i.U===XreadHitIdx
     var readRespHit=i.U===XreadRespIdx
     io.x(i).ar.valid:=readAddrHit&&io.a.ar.valid&&readStateIdle
-    io.x(i).ar.bits<>io.a.ar.bits
-    io.x(i).r.ready:=readAddrHit&&io.a.r.ready&&readStateResp
+    io.x(i).ar.bits <>io.a.ar.bits
+    io.x(i).r.valid :=readAddrHit&&io.a.r.valid&&readStateResp
   }
   io.a.ar.ready:=Xread.ar.ready
   io.a.r.bits<>XreadResp.r.bits
@@ -72,10 +72,17 @@ class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
   val XwriteRespIdx=RegInit(0.U(addressSpace.length.W))
   val XwriteResp   =io.x(XwriteRespIdx)
   val writeStateIdle=WriteRequstState===state_idle
+  val writeStateResp=WriteRequstState===state_wait_fire
+  for(i<-0 until addressSpace.length){
+    var writeAddrHit=i.U===XwriteHitIdx
+    var writeRespHit=i.U===XwriteRespIdx
+    io.x(i).aw.valid:=writeAddrHit&&io.a.aw.valid&&writeStateIdle
+    io.x(i).aw.bits <>io.a.aw.bits
+    io.x(i).w.valid :=writeAddrHit&&io.a.aw.valid&&writeStateResp
+  }
+  io.a.aw.ready:=Xread.aw.ready
+  io.a.w.bits  <>XreadResp.w.bits
 
-  Xwrite.aw.bits<>io.a.aw.bits
-  Xwrite.aw.valid:=io.a.aw.valid&&writeStateIdle
-  io.a.aw.ready:=Xwrite.aw.ready
   switch(WriteRequstState){
     is(state_idle){      
       when(Xwrite.aw.fire){
