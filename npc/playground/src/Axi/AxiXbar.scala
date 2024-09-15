@@ -31,7 +31,7 @@ class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
   val XreadHitIdx=OHToUInt(XreadSelVec)
   val Xread=io.x(XreadHitIdx)
   val arValidReg=RegInit(false.B)
-  val XreadRespIdx=RegInit(0.U(addressSpace.length.W))
+  val XreadRespIdx=RegInit(0.U(log2Ceil(addressSpace.length).W))
   val XreadResp   =io.x(XreadRespIdx)
   val readStateIdle=ReadRequstState===state_idle
   val readStateResp=ReadRequstState===state_wait_fire
