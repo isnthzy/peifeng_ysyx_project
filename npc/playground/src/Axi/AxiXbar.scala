@@ -40,7 +40,7 @@ class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
     var readRespHit=i.U===XreadRespIdx
     io.x(i).ar.valid:=readAddrHit&&io.a.ar.valid&&readStateIdle
     io.x(i).ar.bits <>io.a.ar.bits
-    io.x(i).r.valid :=readAddrHit&&io.a.r.valid&&readStateResp
+    io.x(i).r.valid :=readRespHit&&io.a.r.valid&&readStateResp
   }
   io.a.ar.ready:=Xread.ar.ready
   io.a.r.bits<>XreadResp.r.bits
