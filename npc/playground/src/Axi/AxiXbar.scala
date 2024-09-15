@@ -33,10 +33,13 @@ class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
   val arValidReg=RegInit(false.B)
   val XreadRespIdx=RegInit(0.U(addressSpace.length.W))
   val XreadResp   =io.x(XreadRespIdx)
+  val readStateIdle=ReadRequstState===state_idle
 
+  Xread.ar.bits<>io.a.ar.bits
+  Xread.ar.valid:=io.a.ar.valid&&readStateIdle
+  io.a.ar.ready:=Xread.ar.ready
   switch(ReadRequstState){
-    is(state_idle){
-      Xread.ar<>io.a.ar
+    is(state_idle){      
       when(Xread.ar.fire){
         ReadRequstState:=state_wait_fire
         XreadRespIdx:=XreadHitIdx
@@ -62,10 +65,13 @@ class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
   val Xwrite=io.x(XwriteHitIdx)
   val XwriteRespIdx=RegInit(0.U(addressSpace.length.W))
   val XwriteResp   =io.x(XwriteRespIdx)
+  val writeStateIdle=WriteRequstState===state_idle
 
+  Xwrite.aw.bits<>io.a.aw.bits
+  Xwrite.aw.valid:=io.a.aw.valid&&writeStateIdle
+  io.a.aw.ready:=Xwrite.aw.ready
   switch(WriteRequstState){
-    is(state_idle){
-      Xwrite.aw<>io.a.aw
+    is(state_idle){      
       when(Xwrite.aw.fire){
         WriteRequstState:=state_wait_fire
         XwriteRespIdx:=XwriteHitIdx
