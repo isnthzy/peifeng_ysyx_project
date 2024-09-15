@@ -58,9 +58,9 @@ class SimTop extends Module with DeviceConfig{
 
   val AxiXbarA2X = Module(new AxiXbarA2X(
     List(
-      (0x80000000 , 0x8000000    , false),
-      (0xa00003f8 , 0x0          , false),
-      (0xa0000048 , 0x0          , false),
+      (0x80000000L , 0x8000000L    , false),
+      (0xa00003f8L , 0x0L          , false),
+      (0xa0000048L , 0x0L          , false),
     )
   ))
   Axi4LiteBridge.io.ar<>AxiXbarA2X.io.a.ar
