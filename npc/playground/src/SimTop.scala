@@ -9,7 +9,7 @@ import FuncUnit.CsrFile
 import IP.Axi4LiteSram
 import CoreConfig.GenCtrl
 import DiffTest.dpic._
-// import Device.{SimUart,SimTimer}
+import Device.{SimUart,SimTimer}
 
 class SimTop extends Module with DeviceConfig{
   val io = IO(new Bundle {
@@ -53,13 +53,13 @@ class SimTop extends Module with DeviceConfig{
 //AxiArbiter
 
 //AxiXBar
-  // val SimUart = Module(new SimUart())
+  val SimUart = Module(new SimUart())
   // val SimTimer = Module(new SimTimer())
 
   val AxiXbarA2X = Module(new AxiXbarA2X(
     List(
       (0x80000000L , 0x8000000L    , false),
-      // (0xa00003f8L , 0x0L          , false),
+      (0xa00003f8L , 0x0L          , false),
       // (0xa0000048L , 0x0L          , false),
     )
   ))
@@ -70,7 +70,7 @@ class SimTop extends Module with DeviceConfig{
   Axi4LiteBridge.io.b <>AxiXbarA2X.io.a.b
 
   AxiXbarA2X.io.x(0)<>Axi4LiteSram.io
-  // AxiXbarA2X.io.x(1)<>SimUart.io
+  AxiXbarA2X.io.x(1)<>SimUart.io
   // AxiXbarA2X.io.x(2)<>SimTimer.io
 //
 
