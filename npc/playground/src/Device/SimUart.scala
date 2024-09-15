@@ -28,7 +28,7 @@ class SimUart extends Module {
       io.w.ready:=true.B
       when(io.w.fire){
         uartState:=state_bresp
-        printf("%c",addrWrite)
+        printf("%c",addrWrite(7,0))
       }
     }
     is(state_bresp){
