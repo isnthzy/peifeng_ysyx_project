@@ -8,7 +8,7 @@
                 "${workspaceFolder}/**",
                 "/usr/local/share/verilator/include/**",
                 "/usr/lib/gcc/x86_64-linux-gnu/11/include/**",
-                "/usr/include/llvm-11/llvm/**",
+                "/usr/include/llvm-15/llvm/**",
                 "/usr/include/c++/11/**",
                 "/usr/local/share/verilator/include/vltstd/**",
                 "/usr/include/**",

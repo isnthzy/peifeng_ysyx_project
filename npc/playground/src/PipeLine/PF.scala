@@ -28,7 +28,7 @@ class PfStage extends Module {
   pf.to_if.valid:=pfReadyGo
   fetchReq:= ~reset.asBool&& ~pfFlush && pf.to_if.ready && ~pfExcpEn
 
-  val regPC  = RegInit(START_ADDR)
+  val regPC  = RegInit(START_ADDR.U(ADDR_WIDTH.W))
   val snpc   = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
   val dnpc   = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
   val nextpc = dontTouch(Wire(UInt(ADDR_WIDTH.W)))

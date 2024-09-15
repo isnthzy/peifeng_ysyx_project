@@ -58,7 +58,7 @@ class CsrFile extends Module{
   val mstatusWrData=io.to_csr.wrData.asTypeOf(new CsrStatusBundle())
   when(io.to_csr.mretFlush){
     // mstatus.mie:=mstatus.mpie
-    // mstatus.mpie:=1.U
+    // mstatus.mpie:=1.U //方便期间，暂时与nemu同步
   }.elsewhen(io.to_csr.wen&&io.to_csr.wrAddr===CSR.MSTATUS){
     mstatus:=mstatusWrData
   }

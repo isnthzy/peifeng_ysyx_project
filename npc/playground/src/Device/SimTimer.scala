@@ -1,0 +1,33 @@
+package Device
+import chisel3._
+import chisel3.util._
+import Axi.Axi4LiteSlave
+import CoreConfig.Configs._
+import CoreConfig.DeviceConfig
+
+class SimTimer extends Module with DeviceConfig{
+  val io=IO(new Axi4LiteSlave())
+
+  val state_idle :: state_resp :: Nil = Enum(2)
+  val timerState=RegInit(state_idle)
+  val addrResp=RegInit(0.U(ADDR_WIDTH.W))
+  io.ar.ready:=true.B
+  
+  val timer=RegInit(0.U(64.W))
+  timer:=timer+1.U;
+
+  switch(timerState){
+    is(state_idle){
+      when(io.ar.fire){
+        timerState:=state_resp
+        addrResp:=io.ar.bits.addr
+      }
+    }
+    is(state_resp){
+      when(io.r.fire){
+        
+        timerState:=state_idle
+      }
+    }
+  }
+}

@@ -1,15 +1,17 @@
 import chisel3._
 import chisel3.util._
 import CoreConfig.Configs._
+import CoreConfig.DeviceConfig
 import PipeLine.{PfStage,IfStage,IdStage,ExStage,LsStage,WbStage}
-import Axi.{Axi4Bridge,AxiArbiter}
+import Axi.{Axi4Bridge,AxiArbiter,AxiXbarA2X}
 import DiffTest.DiffCommit
 import FuncUnit.CsrFile
 import IP.Axi4LiteSram
 import CoreConfig.GenCtrl
 import DiffTest.dpic._
+import Device.{SimUart,SimTimer}
 
-class SimTop extends Module {
+class SimTop extends Module with DeviceConfig{
   val io = IO(new Bundle {
     // val debug_pc   =Output(UInt(ADDR_WIDTH.W))
     // val debug_waddr=Output(UInt(5.W))
@@ -49,6 +51,28 @@ class SimTop extends Module {
   Axi4LiteBridge.io.s <>AxiArbiter.io.out.s
   Axi4LiteBridge.io.dl<>AxiArbiter.io.out.dl
 //AxiArbiter
+
+//AxiXBar
+  val SimUart = Module(new SimUart())
+  val SimTimer = Module(new SimTimer())
+
+  val AxiXbarA2X = Module(new AxiXbarA2X(
+    List(
+      (START_ADDR , 0x8000000  , false),
+      (SERIAL_PORT, SERIAL_SIZE, false),
+      (RTC_ADDR   , RTC_SIZE   , false),
+    )
+  ))
+  Axi4LiteBridge.io.ar<>AxiXbarA2X.io.a.ar
+  Axi4LiteBridge.io.r <>AxiXbarA2X.io.a.r
+  Axi4LiteBridge.io.aw<>AxiXbarA2X.io.a.aw
+  Axi4LiteBridge.io.w <>AxiXbarA2X.io.a.w
+  Axi4LiteBridge.io.b <>AxiXbarA2X.io.a.b
+
+  AxiXbarA2X.io.x(0)<>Axi4LiteSram.io
+  AxiXbarA2X.io.x(1)<>SimUart.io
+  AxiXbarA2X.io.x(2)<>SimTimer.io
+//
 
 // PreIF begin
   PreFetch.pf.from_id:=InstDecode.id.fw_pf
