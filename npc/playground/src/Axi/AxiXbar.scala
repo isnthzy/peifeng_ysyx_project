@@ -70,7 +70,7 @@ class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
   )
   val XwriteHitIdx=OHToUInt(XwriteSelVec)
   val Xwrite=io.x(XwriteHitIdx)
-  val XwriteRespIdx=RegInit(0.U(addressSpace.length.W))
+  val XwriteRespIdx=RegInit(0.U(log2Ceil(addressSpace.length).W))
   val XwriteResp   =io.x(XwriteRespIdx)
   val writeStateIdle=WriteRequstState===state_idle
   val writeStateResp=WriteRequstState===state_wait_fire
