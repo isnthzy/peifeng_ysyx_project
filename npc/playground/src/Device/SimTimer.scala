@@ -8,13 +8,16 @@ import CoreConfig.DeviceConfig
 class SimTimer extends Module with DeviceConfig{
   val io=IO(new Axi4LiteSlave())
 
+  val timer=RegInit(0.U(64.W))
+  timer:=timer+1.U;
+
   val state_idle :: state_resp :: Nil = Enum(2)
   val timerState=RegInit(state_idle)
   val addrResp=RegInit(0.U(ADDR_WIDTH.W))
   io.ar.ready:=true.B
+  io.r.valid :=false.B
   
-  val timer=RegInit(0.U(64.W))
-  timer:=timer+1.U;
+  io.r.bits:=0.U.asTypeOf(io.r.bits)
 
   switch(timerState){
     is(state_idle){
