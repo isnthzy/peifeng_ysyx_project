@@ -35,8 +35,11 @@ class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
   val XreadResp   =io.x(XreadRespIdx)
   val readStateIdle=ReadRequstState===state_idle
 
-  Xread.ar.bits<>io.a.ar.bits
-  Xread.ar.valid:=io.a.ar.valid&&readStateIdle
+  for(i<-0 until addressSpace.length){
+    var addrHit=i.U===XreadHitIdx
+    io.x(i).ar.valid:=addrHit&&io.a.ar.valid&&readStateIdle
+    io.x(i).ar.bits<>io.a.ar.bits
+  }
   io.a.ar.ready:=Xread.ar.ready
   switch(ReadRequstState){
     is(state_idle){      
