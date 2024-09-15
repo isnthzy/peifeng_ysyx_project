@@ -83,7 +83,7 @@ class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
     io.x(i).w.bits  <>io.a.w.bits
   }
   io.a.aw.ready:=Xread.aw.ready
-  io.a.w.bits  <>XreadResp.w.bits
+
 
   switch(WriteRequstState){
     is(state_idle){      
