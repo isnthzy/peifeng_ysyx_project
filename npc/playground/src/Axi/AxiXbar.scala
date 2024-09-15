@@ -78,8 +78,9 @@ class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
     var writeAddrHit=i.U===XwriteHitIdx
     var writeRespHit=i.U===XwriteRespIdx
     io.x(i).aw.valid:=writeAddrHit&&io.a.aw.valid&&writeStateIdle
-    io.x(i).aw.bits <>io.a.aw.bits
-    io.x(i).w       <>io.a.w
+    io.x(i).aw.bits :=io.a.aw.bits
+    io.x(i).w.ready :=writeRespHit&&io.a.w.ready&&writeStateResp
+    io.x(i).w.bits  :=io.a.w.bits
     io.x(i).b.ready :=writeRespHit&&io.a.b.ready&&writeStateResp
   }
   io.a.aw.ready:=Xwrite.aw.ready
