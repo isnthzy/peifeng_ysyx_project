@@ -34,13 +34,17 @@ class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
   val XreadRespIdx=RegInit(0.U(addressSpace.length.W))
   val XreadResp   =io.x(XreadRespIdx)
   val readStateIdle=ReadRequstState===state_idle
-
+  val readStateResp=ReadRequstState===state_wait_fire
   for(i<-0 until addressSpace.length){
-    var addrHit=i.U===XreadHitIdx
-    io.x(i).ar.valid:=addrHit&&io.a.ar.valid&&readStateIdle
+    var readAddrHit=i.U===XreadHitIdx
+    var readRespHit=i.U===XreadRespIdx
+    io.x(i).ar.valid:=readAddrHit&&io.a.ar.valid&&readStateIdle
     io.x(i).ar.bits<>io.a.ar.bits
+    io.x(i).r.ready:=readAddrHit&&io.a.r.ready&&readStateResp
   }
   io.a.ar.ready:=Xread.ar.ready
+  io.a.r.bits<>XreadResp.r.bits
+
   switch(ReadRequstState){
     is(state_idle){      
       when(Xread.ar.fire){
@@ -55,7 +59,6 @@ class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
       }
     }
   }
-  io.a.r<>XreadResp.r
 
 
   val waddr=io.a.aw.bits.addr
