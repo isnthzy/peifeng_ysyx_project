@@ -9,7 +9,7 @@ class SimUart extends Module {
     val axi=new Axi4LiteSlave()
   })
 
-  val state_idle :: state_write :: state_bresp :: Nil = Enum(2)
+  val state_idle :: state_write :: state_bresp :: Nil = Enum(3)
   val uartState=RegInit(state_idle)
   val addrWrire=RegInit(0.U(ADDR_WIDTH.W))
   io.axi.aw.ready:=true.B
