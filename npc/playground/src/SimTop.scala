@@ -12,11 +12,11 @@ import DiffTest.dpic._
 import Device.{SimUart,SimTimer}
 
 class SimTop extends Module with DeviceConfig{
+  override val desiredName = "ysyx_23060115"
   val io = IO(new Bundle {
-    // val debug_pc   =Output(UInt(ADDR_WIDTH.W))
-    // val debug_waddr=Output(UInt(5.W))
-    // val debug_wdata=Output(UInt(DATA_WIDTH.W))
-    // val debug_wen  =Output(Bool())
+    val interrupt=Input(Bool())
+    val master=new AxiTopBundle()
+    val slave=Flipped(new AxiTopBundle())
   })
   val PreFetch  = Module(new PfStage())
   val InstFetch = Module(new IfStage())
@@ -25,18 +25,58 @@ class SimTop extends Module with DeviceConfig{
   val LoadStore = Module(new LsStage())
   val WriteBack = Module(new WbStage())
   val CsrFile   = Module(new CsrFile())
-  
-  val Axi4LiteBridge=Module(new Axi4Bridge())
+
+//
+  val Axi4Bridge=Module(new Axi4Bridge())
   val AxiArbiter=Module(new AxiArbiter())
-// //AxiBridge
-//   Axi4LiteBridge.io.ar<>Axi4LiteSram.io.ar
-//   Axi4LiteBridge.io.r <>Axi4LiteSram.io.r
-//   Axi4LiteBridge.io.aw<>Axi4LiteSram.io.aw
-//   Axi4LiteBridge.io.w <>Axi4LiteSram.io.w
-//   Axi4LiteBridge.io.b <>Axi4LiteSram.io.b
+//
+  Axi4Bridge.io.aw.ready:=io.master.awready
+  io.master.awvalid:=Axi4Bridge.io.aw.valid
+  io.master.awaddr :=Axi4Bridge.io.aw.bits.addr
+  io.master.awid   :=Axi4Bridge.io.aw.bits.id
+  io.master.awlen  :=Axi4Bridge.io.aw.bits.len
+  io.master.awsize :=Axi4Bridge.io.aw.bits.size
+  io.master.awburst:=Axi4Bridge.io.aw.bits.burst
 
-//AxiBridge
+  Axi4Bridge.io.w.ready:=io.master.wready
+  io.master.wvalid:=Axi4Bridge.io.w.valid
+  io.master.wdata :=Axi4Bridge.io.w.bits.data
+  io.master.wstrb :=Axi4Bridge.io.w.bits.strb
+  io.master.wlast :=Axi4Bridge.io.w.bits.last
 
+  io.master.bready:=Axi4Bridge.io.b.ready
+  Axi4Bridge.io.b.valid:=io.master.bvalid
+  Axi4Bridge.io.b.bits.resp:=io.master.bresp
+  Axi4Bridge.io.b.bits.id  :=io.master.bid
+
+  Axi4Bridge.io.ar.ready:=io.master.arready
+  io.master.arvalid:=Axi4Bridge.io.ar.valid
+  io.master.araddr :=Axi4Bridge.io.ar.bits.addr
+  io.master.arid   :=Axi4Bridge.io.ar.bits.id
+  io.master.arlen  :=Axi4Bridge.io.ar.bits.len
+  io.master.arsize :=Axi4Bridge.io.ar.bits.size
+  io.master.arburst:=Axi4Bridge.io.ar.bits.burst
+
+  io.master.rready:=Axi4Bridge.io.r.ready
+  Axi4Bridge.io.r.valid:=io.master.rvalid
+  Axi4Bridge.io.r.bits.data:=io.master.rdata
+  Axi4Bridge.io.r.bits.resp:=io.master.rresp
+  Axi4Bridge.io.r.bits.id  :=io.master.rid
+  Axi4Bridge.io.r.bits.last:=io.master.rlast
+//Axi4Bridge
+
+
+  io.slave.awready:=0.U
+  io.slave.wready :=0.U
+  io.slave.bvalid :=0.U
+  io.slave.bid    :=0.U
+  io.slave.bresp  :=0.U
+  io.slave.arready:=0.U
+  io.slave.rvalid :=0.U
+  io.slave.rid    :=0.U
+  io.slave.rdata  :=0.U
+  io.slave.rresp  :=0.U
+  io.slave.rlast  :=0.U
 //AxiArbiter
   AxiArbiter.io.fs.al<>PreFetch.pf.al
   AxiArbiter.io.fs.s <>PreFetch.pf.s
@@ -46,32 +86,32 @@ class SimTop extends Module with DeviceConfig{
   AxiArbiter.io.ls.s <>Execute.ex.s
   AxiArbiter.io.ls.dl<>LoadStore.ls.dl
 
-  Axi4LiteBridge.io.al<>AxiArbiter.io.out.al
-  Axi4LiteBridge.io.s <>AxiArbiter.io.out.s
-  Axi4LiteBridge.io.dl<>AxiArbiter.io.out.dl
+  Axi4Bridge.io.al<>AxiArbiter.io.out.al
+  Axi4Bridge.io.s <>AxiArbiter.io.out.s
+  Axi4Bridge.io.dl<>AxiArbiter.io.out.dl
 //AxiArbiter
 
-//AxiXBar
-  val Axi4LiteSram = Module(new Axi4LiteSram())
-  val SimUart  = Module(new SimUart())
-  val SimTimer = Module(new SimTimer())
+// //AxiXBar
+//   val Axi4LiteSram = Module(new Axi4LiteSram())
+//   val SimUart  = Module(new SimUart())
+//   val SimTimer = Module(new SimTimer())
 
-  val AxiXbarA2X = Module(new AxiXbarA2X(
-    List(
-      (0x80000000L , 0x8000000L    , false),
-      (0xa00003f8L , 0x0L          , false),
-      (0xa0000048L , 0x0L          , false),
-    )
-  ))
-  Axi4LiteBridge.io.ar<>AxiXbarA2X.io.a.ar
-  Axi4LiteBridge.io.r <>AxiXbarA2X.io.a.r
-  Axi4LiteBridge.io.aw<>AxiXbarA2X.io.a.aw
-  Axi4LiteBridge.io.w <>AxiXbarA2X.io.a.w
-  Axi4LiteBridge.io.b <>AxiXbarA2X.io.a.b
+//   val AxiXbarA2X = Module(new AxiXbarA2X(
+//     List(
+//       (0x80000000L , 0x8000000L    , false),
+//       (0xa00003f8L , 0x0L          , false),
+//       (0xa0000048L , 0x0L          , false),
+//     )
+//   ))
+//   Axi4Bridge.io.ar<>AxiXbarA2X.io.a.ar
+//   Axi4Bridge.io.r <>AxiXbarA2X.io.a.r
+//   Axi4Bridge.io.aw<>AxiXbarA2X.io.a.aw
+//   Axi4Bridge.io.w <>AxiXbarA2X.io.a.w
+//   Axi4Bridge.io.b <>AxiXbarA2X.io.a.b
 
-  AxiXbarA2X.io.x(0)<>Axi4LiteSram.io
-  AxiXbarA2X.io.x(1)<>SimUart.io
-  AxiXbarA2X.io.x(2)<>SimTimer.io
+//   AxiXbarA2X.io.x(0)<>Axi4LiteSram.io
+//   AxiXbarA2X.io.x(1)<>SimUart.io
+//   AxiXbarA2X.io.x(2)<>SimTimer.io
 //
 
 // PreIF begin
@@ -112,11 +152,7 @@ class SimTop extends Module with DeviceConfig{
     DiffCommit.diff.reg  :=InstDecode.id.diffREG
 
   }
-  
-  // io.debug_pc   :=WriteBack.wb.diffInstrCommit.pc 
-  // io.debug_waddr:=WriteBack.wb.diffInstrCommit.wdest
-  // io.debug_wdata:=WriteBack.wb.diffInstrCommit.wdata
-  // io.debug_wen  :=WriteBack.wb.diffInstrCommit.wen
+
 }
 
 object StageConnect {
@@ -128,4 +164,40 @@ object StageConnect {
       in.bits <> RegEnable(out.bits, out.fire) 
     }
   }
+}
+
+class AxiTopBundle extends Bundle {
+  val awready=Input(Bool())
+  val awvalid=Output(Bool())
+  val awaddr =Output(UInt(ADDR_WIDTH.W))
+  val awid   =Output(UInt(4.W))
+  val awlen  =Output(UInt(8.W))
+  val awsize =Output(UInt(3.W))
+  val awburst=Output(UInt(2.W))
+
+  val wready =Input(Bool())
+  val wvalid =Output(Bool())
+  val wdata  =Output(UInt(DATA_WIDTH.W))
+  val wstrb  =Output(UInt((DATA_WIDTH/8).W))
+  val wlast  =Output(Bool())
+
+  val bready =Output(Bool())
+  val bvalid =Input(Bool())
+  val bresp  =Input(UInt(2.W))
+  val bid    =Input(UInt(4.W))
+
+  val arready=Input(Bool())
+  val arvalid=Output(Bool())
+  val araddr =Output(UInt(ADDR_WIDTH.W))
+  val arid   =Output(UInt(4.W))
+  val arlen  =Output(UInt(8.W))
+  val arsize =Output(UInt(3.W))
+  val arburst=Output(UInt(2.W))
+  
+  val rready =Output(Bool())
+  val rvalid =Input(Bool())
+  val rresp  =Input(UInt(2.W))
+  val rdata  =Input(UInt(DATA_WIDTH.W))
+  val rlast  =Input(Bool())
+  val rid    =Input(UInt(4.W))
 }

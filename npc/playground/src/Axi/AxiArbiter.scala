@@ -22,6 +22,7 @@ class AxiArbiter extends Module {
 
   val fs_ren_reg=RegInit(false.B)
   val fs_raddr_reg=RegInit(0.U(32.W))
+  val fs_rsize_reg=RegInit(2.U(3.W))
 
   val fs_raddr_ok=WireDefault(false.B)
   val fs_rdata_ok=WireDefault(false.B)
@@ -31,23 +32,28 @@ class AxiArbiter extends Module {
   val ls_rdata=WireDefault(0.U)
   val out_ren_reg=RegInit(false.B)
   val out_raddr_reg=RegInit(0.U(ADDR_WIDTH.W))
+  val out_rsize_reg=RegInit(2.U(3.W))
   
   when(ArbiterState===arb_idle){ //000
     when(io.fs.al.ren&&io.ls.al.ren){
       ArbiterState:=arb_wait_ls_arready
       out_ren_reg:=io.ls.al.ren
       out_raddr_reg:=io.ls.al.raddr
+      out_raddr_reg:=io.ls.al.rsize
 
       fs_ren_reg:=io.fs.al.ren
       fs_raddr_reg:=io.fs.al.raddr
+      fs_rsize_reg:=io.fs.al.rsize
     }.elsewhen(io.fs.al.ren){
       ArbiterState:=arb_wait_fs_arready
       out_ren_reg:=io.fs.al.ren
       out_raddr_reg:=io.fs.al.raddr
+      out_rsize_reg:=io.fs.al.rsize
     }.elsewhen(io.ls.al.ren){
       ArbiterState:=arb_wait_ls_arready
       out_ren_reg:=io.ls.al.ren
       out_raddr_reg:=io.ls.al.raddr
+      out_rsize_reg:=io.ls.al.rsize
     }
   }.elsewhen(ArbiterState===arb_wait_fs_arready){ //001
     when(io.out.al.raddr_ok){
@@ -80,7 +86,7 @@ class AxiArbiter extends Module {
         ArbiterState:=arb_wait_fs_arready
         out_ren_reg:=fs_ren_reg
         out_raddr_reg:=fs_raddr_reg
-
+        out_rsize_reg:=fs_rsize_reg
         fs_ren_reg:=false.B
         fs_raddr_reg:=0.U
       }.otherwise{
@@ -99,6 +105,7 @@ class AxiArbiter extends Module {
   io.ls.dl.rdata:=ls_rdata
   io.out.al.ren:=out_ren_reg
   io.out.al.raddr:=out_raddr_reg
+  io.out.al.rsize:=out_rsize_reg
   io.out.s<>io.ls.s
 }
 

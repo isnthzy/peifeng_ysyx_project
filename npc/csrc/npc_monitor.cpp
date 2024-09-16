@@ -80,7 +80,7 @@ void reset(int n){
 
 void init_sim(){
   contextp = new VerilatedContext;
-  top = new VSimTop;
+  top = new TOP_MODULE_NAME;
 #ifdef CONFIG_WAVEFORM
   #ifdef TRACE_FST
   tfp = new VerilatedFstC;

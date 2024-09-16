@@ -6,12 +6,12 @@ import CoreConfig.Configs._
 
 class Axi4Bridge extends Module {
   val io=IO(new Bundle {
-    val ar=Decoupled(new AxiAddressBundle())
-    val r=Flipped(Decoupled(new AxiReadDataBundle()))
+    val ar=Decoupled(new Axi4AddressBundle())
+    val r=Flipped(Decoupled(new Axi4ReadDataBundle()))
 
-    val aw=Decoupled(new AxiAddressBundle())
-    val w=Decoupled(new AxiWriteDataBundle())
-    val b=Flipped(Decoupled(new AxiWriteResponseBundle()))
+    val aw=Decoupled(new Axi4AddressBundle())
+    val w=Decoupled(new Axi4WriteDataBundle())
+    val b=Flipped(Decoupled(new Axi4WriteResponseBundle()))
 
     val al=Flipped(new AxiBridgeAddrLoad)
     val dl=Flipped(new AxiBridgeDataLoad)
@@ -28,19 +28,32 @@ class Axi4Bridge extends Module {
 
   val WaitReadIdle=dontTouch(Wire(Bool()))
   val RrespFire=dontTouch(Wire(Bool()))
-  val ram_rdata=dontTouch(WireDefault(0.U(DATA_WIDTH.W)))
 //---------------------AXI4Lite AR R Channel---------------------
-  val ar_idle :: ar_wait_ready :: ar_wait_rresp ::Nil = Enum(3)
+  val ar_idle :: ar_wait_ready  ::Nil = Enum(2)
   val arvalidReg=RegInit(false.B)
   val araddrReg=RegInit(0.U(ADDR_WIDTH.W))
-  val rreadyReg=RegInit(false.B)
-
   val ReadRequstState=RegInit(ar_idle)
+
+  WaitReadIdle:=(ReadRequstState=/=ar_idle)
+  RrespFire:=io.r.fire
+  io.ar.valid:=arvalidReg
+  io.ar.bits.addr:=araddrReg
+  io.ar.bits.id  :=0.U
+  io.ar.bits.len :=0.U
+  io.ar.bits.burst:=1.U
+  io.ar.bits.size:=io.al.rsize
+  io.r.ready:=true.B
+
+  io.al.raddr_ok:= io.ar.fire
+  io.dl.rdata_ok:= RrespFire
+  io.dl.rdata:= io.r.bits.data
+
+
   when(ReadRequstState===ar_idle){
     when(io.al.ren){
       when(~LoadStoreFire){ //仲裁:当取指(load)和store同时发生时,阻塞取指(load),先让store通过
         when(WaitWriteIdle){
-          when(BrespFire){
+          when(BrespFire){   //为了防止写后读发生冲突，等待写回复
             ReadRequstState:=ar_wait_ready
             araddrReg:=io.al.raddr
             arvalidReg:=true.B    
@@ -55,29 +68,11 @@ class Axi4Bridge extends Module {
     }
   }.elsewhen(ReadRequstState===ar_wait_ready){
     when(io.ar.fire){
-      ReadRequstState:=ar_wait_rresp
-      arvalidReg:=false.B
-      rreadyReg:=true.B 
-    }
-  }.elsewhen(ReadRequstState===ar_wait_rresp){
-    when(io.r.fire){
       ReadRequstState:=ar_idle
-      rreadyReg:=false.B
-
-      ram_rdata:=io.r.bits.data
-      //不用reg减少一周期
+      arvalidReg:=false.B
     }
   }
-  WaitReadIdle:=(ReadRequstState=/=ar_idle)
-  RrespFire:=io.r.fire
-  io.ar.valid:=arvalidReg
-  io.ar.bits.addr:=araddrReg
-  io.ar.bits.prot:=0.U
-  io.r.ready:=rreadyReg
 
-  io.al.raddr_ok:= io.ar.fire
-  io.dl.rdata_ok:= WaitReadIdle&&RrespFire
-  io.dl.rdata:= ram_rdata
   /*
     如果状态位为
     1.等待read事务空闲，此时读相应，已读出来数据
@@ -95,6 +90,23 @@ class Axi4Bridge extends Module {
   val wdataReg=RegInit(0.U(DATA_WIDTH.W))
   val wstrbReg=RegInit(0.U(4.W))
   val breadyReg=RegInit(false.B)
+
+  WaitWriteIdle:=(WriteRequstState=/=wr_idle)
+  BrespFire:=io.b.fire
+  io.aw.valid:=awvalidReg
+  io.aw.bits.addr:=awaddrReg
+  io.aw.bits.id  :=0.U
+  io.aw.bits.len :=0.U
+  io.aw.bits.size:=io.s.wsize
+  io.aw.bits.burst:=1.U
+  io.w.valid:=wvalidReg
+  io.w.bits.data:=wdataReg
+  io.w.bits.strb:=wstrbReg
+  io.w.bits.last:=wvalidReg
+  io.b.ready:=breadyReg
+
+  io.s.waddr_ok:= io.aw.fire&&io.w.fire
+  io.s.wdata_ok:= WaitWriteIdle&&BrespFire
 
   when(WriteRequstState===wr_idle){
     //当ls级为lw等待rready时,ex级为sw，此时r,aw,w都在等ready，在此处进行一个小仲裁，先让lw握手，
@@ -133,17 +145,6 @@ class Axi4Bridge extends Module {
       breadyReg:=false.B
     }
   }
-  WaitWriteIdle:=(WriteRequstState=/=wr_idle)
-  BrespFire:=io.b.fire
-  io.aw.bits.prot:=0.U
-  io.aw.valid:=awvalidReg
-  io.aw.bits.addr:=awaddrReg
-  io.w.valid:=wvalidReg
-  io.w.bits.data:=wdataReg
-  io.w.bits.strb:=wstrbReg
-  io.b.ready:=breadyReg
 
-  io.s.waddr_ok:= io.aw.fire&&io.w.fire
-  io.s.wdata_ok:= WaitWriteIdle&&BrespFire
 //---------------------------AXI4 Lite---------------------------
 }

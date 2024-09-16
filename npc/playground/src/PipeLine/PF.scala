@@ -58,10 +58,12 @@ class PfStage extends Module {
 
   pf.al.ren  :=fetchReq
   pf.al.raddr:=regPC
+  pf.al.rsize:=2.U
   pf.s.wen:=DontCare
   pf.s.waddr:=DontCare
   pf.s.wstrb:=DontCare
   pf.s.wdata:=DontCare
+  pf.s.wsize:=2.U
 //NOTE:excp
   val pfExcpType=Wire(new PfExcpTypeBundle())
   pfExcpType.iam:=(regPC(0)|regPC(1))

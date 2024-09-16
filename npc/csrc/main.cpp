@@ -11,7 +11,7 @@ VerilatedFstC* tfp = NULL;
 #else
 VerilatedVcdC* tfp = NULL;
 #endif
-VSimTop* top;
+TOP_MODULE_NAME* top;
 bool difftest_flag = false;
 NPCState npc_state = { .state = NPC_STOP };
 
@@ -32,6 +32,7 @@ int is_exit_status_bad() {
 }
 
 int main(int argc, char *argv[]) {
+  Verilated::commandArgs(argc, argv);
   init_monitor(argc, argv);
 
   sdb_mainloop();
