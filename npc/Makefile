@@ -8,7 +8,7 @@ ARGS+= --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 # NXDC_FILES = constr/SimTop.nxdc
 
 VERILATOR = verilator
-VERILATOR_CFLAGS += -MMD --build -cc 
+VERILATOR_CFLAGS += -MMD --build -cc  --timescale "1ns/1ns" --no-timing
 # VERILATOR_CFLAGS += --trace 
 VERILATOR_CFLAGS += --trace-fst
 # VERILATOR_CFLAGS += --prof-cfuncs 
