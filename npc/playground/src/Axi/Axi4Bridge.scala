@@ -97,7 +97,7 @@ class Axi4Bridge extends Module {
   io.aw.bits.addr:=awaddrReg
   io.aw.bits.id  :=0.U
   io.aw.bits.len :=0.U
-  io.aw.bits.size:=io.aw.bits.size
+  io.aw.bits.size:=io.s.wsize
   io.aw.bits.burst:=1.U
   io.w.valid:=wvalidReg
   io.w.bits.data:=wdataReg
