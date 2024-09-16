@@ -11,7 +11,7 @@ VerilatedFstC* tfp = NULL;
 #else
 VerilatedVcdC* tfp = NULL;
 #endif
-VSimTop* top;
+TOP_MODULE_NAME* top;
 bool difftest_flag = false;
 NPCState npc_state = { .state = NPC_STOP };
 

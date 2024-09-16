@@ -1,8 +1,7 @@
 #ifndef __NPCVERILATOR_H__
 #define __NPCVERILATOR_H__
-// #include "VSimTop___024root.h"
-// #include <VSimTop.h>
-// #include "VSimTop__Dpi.h"
+#define TOP_MODULE_NAME V##ysyxSoCFull
+#include <VysyxSoCFull.h>
 #include <verilated.h>
 #include <verilated_vcd_c.h>
 #include <verilated_fst_c.h>
@@ -10,7 +9,7 @@
 
 
 extern VerilatedContext* contextp;
-extern VSimTop* top;
+extern TOP_MODULE_NAME* top;
 #ifdef TRACE_FST
 extern VerilatedFstC* tfp;
 #else
