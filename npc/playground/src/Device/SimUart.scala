@@ -7,7 +7,7 @@ import CoreConfig.Configs._
 class SimUart extends Module {
   val io=IO(new Axi4LiteSlave())
 
-  val state_idle ::  state_bresp :: Nil = Enum(2)
+  val state_idle :: state_write :: state_bresp :: Nil = Enum(3)
   val uartState=RegInit(state_idle)
   val writeBuff=RegInit(0.U(ADDR_WIDTH.W))
   val useWriteBuff=RegInit(false.B)
@@ -22,10 +22,22 @@ class SimUart extends Module {
   switch(uartState){
     is(state_idle){
       io.w.ready:=true.B
-      when(io.aw.fire&& !io.w.fire){
-        useWriteBuff:=true.B
+      when(io.aw.fire){
+        when(io.w.fire){
+          uartState:=state_bresp
+          printf("%c",putchar)
+          useWriteBuff:=false.B
+        }.otherwise{
+          uartState:=state_write
+          useWriteBuff:=true.B
+          writeBuff:=io.w.bits.data
+
+        }
       } 
-      when(io.w.fire&&io.aw.fire){
+    }
+    is(state_write){
+      io.w.ready:=true.B
+      when(io.w.fire){
         uartState:=state_bresp
         printf("%c",putchar)
         useWriteBuff:=false.B
