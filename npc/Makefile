@@ -20,18 +20,19 @@ ifeq ($(wildcard $(YSYXSOC_HOME)),)
 endif
 
 
-INC_PATH ?= $(YSYXSOC_HOME)/perip/uart16550/rtl $(YSYXSOC_HOME)/perip/spi/rtl
+INC_PATH ?= 
+INC_VERILOG_PATH?=$(YSYXSOC_HOME)/perip/uart16550/rtl $(YSYXSOC_HOME)/perip/spi/rtl
 OBJ_DIR = $(BUILD_DIR)/obj_dirtop
 BIN = $(BUILD_DIR)/$(TOPNAME)
 
-
+VERILATOR_CFLAGS += $(addprefix -I, $(INC_VERILOG_PATH))
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.sv" -or -name "*.v")
 VSRCS += ./csrc/difftest/difftest.v
 VSRCS += $(shell find $(abspath $(YSYXSOC_HOME)/perip) -name "*.v")
 VSRCS += $(YSYXSOC_HOME)/build/ysyxSoCFull.v
 
 CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cpp" -or -name "*.cc")
-INCFLAGS = $(addprefix -v, $(INC_PATH))
+INCFLAGS = $(addprefix -I, $(INC_PATH))
 CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\"" 
 CXXFLAGS += -Wall -Werror 
 LDFLAGS += -lreadline  -lSDL2
@@ -55,7 +56,7 @@ gtk:
 
 com: $(VSRCS) $(CSRCS)
 	@rm -rf ./build/SimTop
-	@$(VERILATOR) $(VERILATOR_CFLAGS) \
+	$(VERILATOR) $(VERILATOR_CFLAGS) \
 		--top-module $(TOPNAME) $^ \
 		$(addprefix -CFLAGS , $(CXXFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN)) 

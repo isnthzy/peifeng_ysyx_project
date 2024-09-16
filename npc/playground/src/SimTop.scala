@@ -11,7 +11,7 @@ import CoreConfig.GenCtrl
 import DiffTest.dpic._
 import Device.{SimUart,SimTimer}
 
-class SimTop extends Module with DeviceConfig{
+class ysyx_23060115 extends Module with DeviceConfig{
   val io = IO(new Bundle {
     val interrupt=Input(Bool())
     val master=new AxiTopBundle()
