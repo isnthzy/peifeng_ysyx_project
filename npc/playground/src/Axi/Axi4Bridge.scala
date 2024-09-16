@@ -28,19 +28,19 @@ class Axi4Bridge extends Module {
 
   val WaitReadIdle=dontTouch(Wire(Bool()))
   val RrespFire=dontTouch(Wire(Bool()))
-  val ram_rdata=dontTouch(WireDefault(0.U(DATA_WIDTH.W)))
 //---------------------AXI4Lite AR R Channel---------------------
   val ar_idle :: ar_wait_ready  ::Nil = Enum(2)
   val arvalidReg=RegInit(false.B)
   val araddrReg=RegInit(0.U(ADDR_WIDTH.W))
   val ReadRequstState=RegInit(ar_idle)
-  
+
   WaitReadIdle:=(ReadRequstState=/=ar_idle)
   RrespFire:=io.r.fire
   io.ar.valid:=arvalidReg
   io.ar.bits.addr:=araddrReg
   io.ar.bits.id  :=0.U
   io.ar.bits.len :=0.U
+  io.ar.bits.burst:=1.U
   io.ar.bits.size:=io.ar.bits.size
   io.r.ready:=true.B
 
@@ -98,6 +98,7 @@ class Axi4Bridge extends Module {
   io.aw.bits.id  :=0.U
   io.aw.bits.len :=0.U
   io.aw.bits.size:=io.aw.bits.size
+  io.aw.bits.burst:=1.U
   io.w.valid:=wvalidReg
   io.w.bits.data:=wdataReg
   io.w.bits.strb:=wstrbReg

@@ -126,8 +126,10 @@ class ExStage extends Module {
   ex.s.waddr:=memAddr
   ex.s.wstrb:=memWstrb
   ex.s.wdata:=memWdata
+  ex.s.wsize:=memDataSize
   ex.al.ren:=loadEn&&exValid && ~exExcpEn
   ex.al.raddr:=memAddr
+  ex.al.rsize:=memDataSize
 
   exStall:=(storeEn&& ~ex.s.wdata_ok 
          || loadEn && ~ex.al.raddr_ok)&&exValid
