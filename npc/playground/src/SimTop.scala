@@ -32,6 +32,7 @@ class ysyx_23060115 extends Module with DeviceConfig{
   Axi4Bridge.io.aw.ready:=io.master.awready
   io.master.awvalid:=Axi4Bridge.io.aw.valid
   io.master.awaddr :=Axi4Bridge.io.aw.bits.addr
+  io.master.awid   :=Axi4Bridge.io.aw.bits.id
   io.master.awlen  :=Axi4Bridge.io.aw.bits.len
   io.master.awsize :=Axi4Bridge.io.aw.bits.size
   io.master.awburst:=Axi4Bridge.io.aw.bits.burst
@@ -168,6 +169,7 @@ class AxiTopBundle extends Bundle {
   val awready=Input(Bool())
   val awvalid=Output(Bool())
   val awaddr =Output(UInt(ADDR_WIDTH.W))
+  val awid   =Output(UInt(4.W))
   val awlen  =Output(UInt(8.W))
   val awsize =Output(UInt(3.W))
   val awburst=Output(UInt(2.W))
