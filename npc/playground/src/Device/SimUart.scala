@@ -22,7 +22,7 @@ class SimUart extends Module {
   switch(uartState){
     is(state_idle){
       io.w.ready:=true.B
-      when(io.aw.fire&& !io.w.fire){
+      when(io.aw.fire){
         when(io.w.fire){
           uartState:=state_bresp
           printf("%c",putchar)
