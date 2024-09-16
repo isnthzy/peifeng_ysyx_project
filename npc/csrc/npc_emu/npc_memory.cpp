@@ -121,6 +121,12 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
 }
 
+extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
+extern "C" void mrom_read(int32_t addr, int32_t *data) { assert(0); }
+
+//----------------------------dpi-c----------------------------
+
+
 void mtrace_store(int pc,int addr,int data,int len){
   #ifdef CONFIG_MTRACE
   char mtrace_logbuf[120];
@@ -135,7 +141,6 @@ void mtrace_load (int pc,int addr,int data,int len){
   enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
   #endif
 }
-//----------------------------dpi-c----------------------------
 static uint64_t read_cnt=0;
 word_t paddr_read(paddr_t addr, int len) {
 

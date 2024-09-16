@@ -1,11 +1,10 @@
 BUILD_DIR = ./build
-TOPNAME=SimTop
+TOPNAME=ysyxSoCFull
 export PATH := $(PATH):$(abspath ./utils)
 $(shell mkdir -p $(BUILD_DIR))
 IMG?=
 ARGS?= --log=$(BUILD_DIR)/npc-log.txt
 ARGS+= --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so
-# NXDC_FILES = constr/SimTop.nxdc
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  --timescale "1ns/1ns" --no-timing
@@ -14,15 +13,25 @@ VERILATOR_CFLAGS += --trace-fst
 # VERILATOR_CFLAGS += --prof-cfuncs 
 # VERILATOR_CFLAGS += -O3 --x-assign fast --x-initial fast --noassert 
 #优化加速
-				
-INC_PATH ?=
+
+YSYXSOC_HOME?=/home/wangxin/ysyx-workbench/ysyxSoC
+ifeq ($(wildcard $(YSYXSOC_HOME)),)
+  $(error YSYXSOC_HOME=$(YSYXSOC_HOME) is not a YSYXSOC repo)
+endif
+
+
+INC_PATH ?= $(YSYXSOC_HOME)/perip/uart16550/rtl $(YSYXSOC_HOME)/perip/spi/rtl
 OBJ_DIR = $(BUILD_DIR)/obj_dirtop
 BIN = $(BUILD_DIR)/$(TOPNAME)
 
+
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.sv" -or -name "*.v")
 VSRCS += ./csrc/difftest/difftest.v
+VSRCS += $(shell find $(abspath $(YSYXSOC_HOME)/perip) -name "*.v")
+VSRCS += $(YSYXSOC_HOME)/build/ysyxSoCFull.v
+
 CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cpp" -or -name "*.cc")
-INCFLAGS = $(addprefix -I, $(INC_PATH))
+INCFLAGS = $(addprefix -v, $(INC_PATH))
 CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\"" 
 CXXFLAGS += -Wall -Werror 
 LDFLAGS += -lreadline  -lSDL2
