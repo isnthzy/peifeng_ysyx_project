@@ -1,7 +1,7 @@
 import circt.stage._
 
 object TopMain extends App {
-  def top = new SimTop()
+  def top = new ysyx_23060115()
   val ChiselStageOptions=Seq(
     chisel3.stage.ChiselGeneratorAnnotation(() => top),
     CIRCTTargetAnnotation(CIRCTTarget.SystemVerilog)
