@@ -122,7 +122,10 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
 }
 
 extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
-extern "C" void mrom_read(int32_t addr, int32_t *data) { assert(0); }
+extern "C" void mrom_read(int32_t addr, int32_t *data) { 
+  // word_t data=paddr_read(addr,4);
+  data=(int32_t *)0x00100073;
+}
 
 //----------------------------dpi-c----------------------------
 
