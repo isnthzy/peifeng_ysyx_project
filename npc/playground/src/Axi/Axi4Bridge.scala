@@ -41,7 +41,7 @@ class Axi4Bridge extends Module {
   io.ar.bits.id  :=0.U
   io.ar.bits.len :=0.U
   io.ar.bits.burst:=1.U
-  io.ar.bits.size:=io.ar.bits.size
+  io.ar.bits.size:=io.al.rsize
   io.r.ready:=true.B
 
   io.al.raddr_ok:= io.ar.fire
