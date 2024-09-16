@@ -50,6 +50,7 @@ class SimTop extends Module with DeviceConfig{
   Axi4Bridge.io.ar.ready:=io.master.arready
   io.master.arvalid:=Axi4Bridge.io.ar.valid
   io.master.araddr :=Axi4Bridge.io.ar.bits.addr
+  io.master.arid   :=Axi4Bridge.io.ar.bits.id
   io.master.arlen  :=Axi4Bridge.io.ar.bits.len
   io.master.arsize :=Axi4Bridge.io.ar.bits.size
   io.master.arburst:=Axi4Bridge.io.ar.bits.burst
