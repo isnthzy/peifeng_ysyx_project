@@ -33,7 +33,8 @@ class Axi4Bridge extends Module {
   val ar_idle :: ar_wait_ready  ::Nil = Enum(2)
   val arvalidReg=RegInit(false.B)
   val araddrReg=RegInit(0.U(ADDR_WIDTH.W))
-
+  val ReadRequstState=RegInit(ar_idle)
+  
   WaitReadIdle:=(ReadRequstState=/=ar_idle)
   RrespFire:=io.r.fire
   io.ar.valid:=arvalidReg
@@ -47,7 +48,7 @@ class Axi4Bridge extends Module {
   io.dl.rdata_ok:= RrespFire
   io.dl.rdata:= io.r.bits.data
 
-  val ReadRequstState=RegInit(ar_idle)
+
   when(ReadRequstState===ar_idle){
     when(io.al.ren){
       when(~LoadStoreFire){ //仲裁:当取指(load)和store同时发生时,阻塞取指(load),先让store通过
