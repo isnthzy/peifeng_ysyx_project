@@ -137,7 +137,7 @@ class ExStage extends Module {
   ex.al.ren :=loadEn&&exValid && ~exExcpEn
   ex.al.raddr:=memAddr
   ex.al.rsize:=memDataSize
-  store_skip:=memAddr=/="hfffffffc".U
+  store_skip:=memAddr==="hfffffffc".U
   exStall:=(storeEn&& ~ex.s.wdata_ok 
          || loadEn && ~ex.al.raddr_ok)&&exValid
 //NOTE:Excp
