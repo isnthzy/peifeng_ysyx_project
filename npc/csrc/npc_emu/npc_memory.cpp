@@ -121,7 +121,7 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
 }
 
-extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
+extern "C" int flash_read(int32_t addr) { assert(0); }
 extern "C" int32_t mrom_read(int32_t addr) { 
   return paddr_read(addr,4);
 }
