@@ -72,11 +72,10 @@ void reset(int n){
   while (n-->0){
     top->clock=1;
     step_and_dump_wave();
+    if(n==0) top->reset=0;
     top->clock=0;
     step_and_dump_wave();
   }
-  top->reset=0;
-  step_and_dump_wave();
 }
 
 void init_sim(){
