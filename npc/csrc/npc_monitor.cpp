@@ -72,10 +72,10 @@ void reset(int n){
   while (n-->0){
     top->clock=1;
     step_and_dump_wave();
+    if(n==0) top->reset=0;
     top->clock=0;
     step_and_dump_wave();
   }
-  top->reset=0;
 }
 
 void init_sim(){
@@ -185,7 +185,7 @@ void init_monitor(int argc, char *argv[]) {
   init_traces();
   //初始化traces
 
-  reset(2);
+  reset(42);
   //初始化reset
 
   // pipe_init();
