@@ -2,7 +2,7 @@ BUILD_DIR = ./build
 TOPNAME=ysyxSoCFull
 export PATH := $(PATH):$(abspath ./utils)
 $(shell mkdir -p $(BUILD_DIR))
-IMG?=
+IMG?=/home/wangxin/soc_tests/char-test.bin
 ARGS?= --log=$(BUILD_DIR)/npc-log.txt
 # ARGS+= --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 
