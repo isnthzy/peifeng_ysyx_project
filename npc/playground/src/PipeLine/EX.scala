@@ -50,10 +50,12 @@ class ExStage extends Module {
     CSR_RW ->  ex.in.bits.src1,
     CSR_RS -> (ex.in.bits.src1 | ex.in.bits.src2),
   ))
+  val store_skip=Wire(Bool())
+
   val csrWen=(ex.in.bits.csrOp===SDEF(CSR_RW)
             ||ex.in.bits.csrOp===SDEF(CSR_RS))
   val isMret=ex.in.bits.csrOp===SDEF(CSR_MRET)
-  val storeEn=ex.in.bits.stType=/=SDEF(ST_XXX)
+  val storeEn=ex.in.bits.stType=/=SDEF(ST_XXX)&& ~store_skip
   val loadEn =ex.in.bits.ldType=/=SDEF(LD_XXX)
 
   val Alu=Module(new Alu())
@@ -135,7 +137,7 @@ class ExStage extends Module {
   ex.al.ren :=loadEn&&exValid && ~exExcpEn
   ex.al.raddr:=memAddr
   ex.al.rsize:=memDataSize
-
+  store_skip:=memAddr=\="hfffffffc".U
   exStall:=(storeEn&& ~ex.s.wdata_ok 
          || loadEn && ~ex.al.raddr_ok)&&exValid
 //NOTE:Excp
