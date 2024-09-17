@@ -76,6 +76,7 @@ void reset(int n){
     step_and_dump_wave();
   }
   top->reset=0;
+  step_and_dump_wave();
 }
 
 void init_sim(){
