@@ -15,7 +15,7 @@ typedef MUXDEF(CONFIG_RV64,uint64_t, uint32_t) vaddr_t;
 typedef MUXDEF(CONFIG_RV64,uint64_t, uint32_t) paddr_t;
 typedef MUXDEF(CONFIG_RV64,uint64_t, uint32_t) data_t;
 #define CONFIG_MSIZE 0x8000000
-#define START_ADDR   0x80000000
+#define START_ADDR   0x20000000
 #define CONFIG_MBASE 0x80000000
 #define PG_ALIGN __attribute__((aligned(4096)))
 #define FMT_WORD MUXDEF(CONFIG_RV64, "0x%016" PRIx64, "0x%08" PRIx32)
