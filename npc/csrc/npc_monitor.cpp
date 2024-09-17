@@ -185,7 +185,7 @@ void init_monitor(int argc, char *argv[]) {
   init_traces();
   //初始化traces
 
-  reset(2);
+  reset(42);
   //初始化reset
 
   // pipe_init();
