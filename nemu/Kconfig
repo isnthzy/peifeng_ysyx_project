@@ -243,3 +243,9 @@ config RT_CHECK
   default y
 
 endmenu
+
+menu "Soc device"
+config SOC_DEVICE
+  bool "Enable soc device to ref diff(like mrom or sram)"
+  default n
+endmenu
