@@ -39,7 +39,7 @@ class AxiArbiter extends Module {
       ArbiterState:=arb_wait_ls_arready
       out_ren_reg:=io.ls.al.ren
       out_raddr_reg:=io.ls.al.raddr
-      out_raddr_reg:=io.ls.al.rsize
+      out_rsize_reg:=io.ls.al.rsize
 
       fs_ren_reg:=io.fs.al.ren
       fs_raddr_reg:=io.fs.al.raddr
