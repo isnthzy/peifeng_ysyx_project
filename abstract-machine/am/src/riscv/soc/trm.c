@@ -12,8 +12,8 @@ int main(const char *args);
 extern char _pmem_start;
 #define PMEM_SIZE (4 * 1024)
 #define PMEM_END  ((uintptr_t)&_pmem_start + PMEM_SIZE)
-#define HEAP_SIZE (4 * 1024 * 4 * 1024)
-Area heap = RANGE(&_heap_start, _heap_start+HEAP_SIZE);
+#define SRAM_SIZE (4 * 1024 * 4 * 1024)
+Area heap = RANGE(&_heap_start, &_heap_start - 0x8000 + SRAM_SIZE );
 #ifndef MAINARGS
 #define MAINARGS ""
 #endif
@@ -26,7 +26,7 @@ void putch(char ch) {
 }
 
 void halt(int code) {
-  nemu_trap(code);
+  soc_trap(code);
   // should not reach here
   while (1);
 }

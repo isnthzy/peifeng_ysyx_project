@@ -24,11 +24,12 @@ SECTIONS {
     *(.sbss*)
     *(.scommon)
   }
-  . = 0x0f00_0000;
-  _stack_top = ALIGN(0x1000);
-  . = _stack_top + 0x8000;
-  _stack_pointer = .;
   end = .;
+  . = 0x0f000000;
+  _stack_top = ALIGN(0x1000); /*栈顶，为sram开始的位置*/
+  . = _stack_top + 0x8000;
+  _stack_pointer = .;         /*栈底，为sram结束的位置*/
+  
   _end = .;
   _heap_start = ALIGN(0x1000);
   /* _stack_top = ALIGN(0x1000);
