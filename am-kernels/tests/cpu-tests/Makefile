@@ -29,6 +29,8 @@ run: all
 
 gdb: all
 
+image: all
+
 clean:
 	rm -rf Makefile.* build/
 
