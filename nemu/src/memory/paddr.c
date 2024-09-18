@@ -25,17 +25,65 @@ static uint8_t *pmem = NULL;
 #else // CONFIG_PMEM_GARRAY
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 #endif
+#ifdef CONFIG_SOC_DEVICE
+static uint8_t soc_mrom[CONFIG_SOC_MROM_SIZE] PG_ALIGN = {};
+static uint8_t soc_sram[CONFIG_SOC_SRAM_SIZE] PG_ALIGN = {};
+uint8_t* guest_to_mrom_host(paddr_t paddr) { return soc_mrom + paddr - CONFIG_SOC_MROM_BASE; }
+#endif
 
 uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 static word_t pmem_read(paddr_t addr, int len) {
+#ifdef CONFIG_SOC_DEVICE
+  word_t ret = 0;
+  switch (in_soc_device(addr))
+  {
+  case SOC_DEVICE_ERROR:
+    panic("pmem_read is not support write");
+    break;
+  case SOC_DEVICE_MROM:
+    uint8_t* addr_mrom=soc_mrom + addr - CONFIG_SOC_MROM_BASE;
+    ret = host_read(addr_mrom, len);
+    break;
+  case SOC_DEVICE_SRAM:
+    uint8_t* addr_sram=soc_sram + addr - CONFIG_SOC_SRAM_BASE;
+    ret = host_read(addr_sram, len);
+    break;
+  default:
+    panic("pmem_read is not support write");
+    break;
+  }
+  return ret;
+//直接进行一个X转发
+#else
   word_t ret = host_read(guest_to_host(addr), len);
   return ret;
+#endif
 }
 
 static void pmem_write(paddr_t addr, int len, word_t data) {
+#ifdef CONFIG_SOC_DEVICE
+  switch (in_soc_device(addr))
+  {
+  case SOC_DEVICE_ERROR:
+    panic("pmem_write is not support write");
+    break;
+  case SOC_DEVICE_MROM:
+    panic("Mrom is not support write");
+    break;
+  case SOC_DEVICE_SRAM:
+    uint8_t* addr_sram=soc_sram + addr - CONFIG_SOC_SRAM_BASE;
+    host_write(addr_sram, len, data);
+    break;
+  default:
+    panic("pmem_write is not support write");
+    break;
+  }
+//直接进行一个X转发
+#else
   host_write(guest_to_host(addr), len, data);
+#endif
 }
 
 extern void iputIringbuf();
@@ -66,6 +114,12 @@ void init_mem() {
 #endif
   IFDEF(CONFIG_MEM_RANDOM, memset(pmem, rand(), CONFIG_MSIZE));
   Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]", PMEM_LEFT, PMEM_RIGHT);
+#ifdef CONFIG_SOC_DEVICE
+  // IFDEF(CONFIG_MEM_RANDOM, memset(mrom, rand(), CONFIG_SOC_MROM_SIZE));
+  // IFDEF(CONFIG_MEM_RANDOM, memset(sram, rand(), CONFIG_SOC_SRAM_SIZE));
+  Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]", MROM_LEFT, MROM_RIGHT);
+  Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]", SRAM_LEFT, SRAM_RIGHT);
+#endif
 }
 
 word_t paddr_read(paddr_t addr, int len,int model) {
