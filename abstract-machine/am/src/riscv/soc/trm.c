@@ -7,13 +7,14 @@
 
 
 extern char _heap_start;
+extern char _heap_end;
 int main(const char *args);
 
 extern char _pmem_start;
 #define PMEM_SIZE (4 * 1024)
 #define PMEM_END  ((uintptr_t)&_pmem_start + PMEM_SIZE)
 #define SRAM_SIZE (4 * 1024 * 4 * 1024)
-Area heap = RANGE(&_heap_start, &_heap_start - 0x8000 + SRAM_SIZE );
+Area heap = RANGE(&_heap_start, &_heap_end);
 #ifndef MAINARGS
 #define MAINARGS ""
 #endif
