@@ -17,21 +17,17 @@
 #define __MEMORY_PADDR_H__
 
 #include <common.h>
+
+#define PMEM_LEFT  ((paddr_t)CONFIG_MBASE)
+#define PMEM_RIGHT ((paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1)
+#define RESET_VECTOR (PMEM_LEFT + CONFIG_PC_RESET_OFFSET)
+
 #ifdef CONFIG_SOC_DEVICE
 #define MROM_LEFT  ((paddr_t)CONFIG_SOC_MROM_BASE)
 #define MROM_RIGHT ((paddr_t)CONFIG_SOC_MROM_BASE + CONFIG_SOC_MROM_SIZE - 1)
 #define SRAM_LEFT  ((paddr_t)CONFIG_SOC_SRAM_BASE)
 #define SRAM_RIGHT ((paddr_t)CONFIG_SOC_SRAM_BASE + CONFIG_SOC_SRAM_SIZE - 1)
 #endif
-
-#define PMEM_LEFT  ((paddr_t)CONFIG_MBASE)
-#define PMEM_RIGHT ((paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1)
-#ifdef CONFIG_SOC_DEVICE
-#define RESET_VECTOR MROM_LEFT
-#else
-#define RESET_VECTOR (PMEM_LEFT + CONFIG_PC_RESET_OFFSET)
-#endif
-
 
 /* convert the guest physical address in the guest program to host virtual address in NEMU */
 uint8_t* guest_to_host(paddr_t paddr);
