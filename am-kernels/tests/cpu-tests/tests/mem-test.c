@@ -15,7 +15,7 @@ int main() {
     int addr = SRAM_BASE + i;
     *(volatile short int *)(SRAM_BASE + i) =  addr & 0xffff;
   }
-  for(int i=31;i>=16;i-=2){
+  for(int i=32;i>=16;i-=2){
     int addr = SRAM_BASE + i;
     check((addr & 0xffff) == *((short int *)(SRAM_BASE + i)));
   }
@@ -24,7 +24,7 @@ int main() {
     int addr = SRAM_BASE + i;
     *(volatile int *)(SRAM_BASE + i) =  addr & 0xffffffff;
   }
-  for(int i=47;i>=32;i-=4){
+  for(int i=48;i>=32;i-=4){
     int addr = SRAM_BASE + i;
 
     check((addr & 0xffffffff) == *((int *)(SRAM_BASE + i)));
