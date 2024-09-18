@@ -11,7 +11,7 @@ int main() {
     check((addr & 0xff) == *((char *)(SRAM_BASE + i)));
   }
 
-  for(int i=16;i<32;i+=2){
+  for(int i=16;i<=32;i+=2){
     int addr = SRAM_BASE + i;
     *(volatile short int *)(SRAM_BASE + i) =  addr & 0xffff;
   }
