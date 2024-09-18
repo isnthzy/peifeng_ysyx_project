@@ -25,6 +25,7 @@ SECTIONS {
     *(.scommon)
   }
   end = .;
+  . = 0x0f000000;
   _end = .;
   _heap_start = ALIGN(0x1000);
   _heap_end   = . + 0x1000;
