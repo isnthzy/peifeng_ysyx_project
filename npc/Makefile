@@ -3,8 +3,8 @@ TOPNAME=ysyxSoCFull
 export PATH := $(PATH):$(abspath ./utils)
 $(shell mkdir -p $(BUILD_DIR))
 IMG?=/home/wangxin/soc_tests/char-test.bin
-ARGS?= --log=$(BUILD_DIR)/npc-log.txt
-# ARGS+= --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so
+ARGS?=
+# ARGS+= --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so  --log=$(BUILD_DIR)/npc-log.txt
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  --timescale "1ns/1ns" --no-timing

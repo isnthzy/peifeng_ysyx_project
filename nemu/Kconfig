@@ -243,3 +243,37 @@ config RT_CHECK
   default y
 
 endmenu
+
+menu "Soc devices"
+
+
+
+config SOC_DEVICE
+  depends on TARGET_SHARE
+  bool "Enable Soc device support"
+  default n
+if !SOC_DEVICE
+  comment "should open target share"
+endif
+
+if SOC_DEVICE
+
+config SOC_MROM_BASE
+  hex "Soc device MROM base addr"
+  default 0x20000000
+
+config SOC_SRAM_BASE
+  hex "Soc device SRAM base addr"
+  default 0x0f000000
+
+config SOC_MROM_SIZE
+  hex "Soc device MROM size"
+  default 0x1000
+
+config SOC_SRAM_SIZE
+  hex "Soc device SRAM size"
+  default 0x1000000
+
+endif # SOC_DEVICE
+
+endmenu
