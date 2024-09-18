@@ -7,7 +7,7 @@ int main() {
     *(volatile char *)(SRAM_BASE + i) =  addr&0xff;
   }
   for(int i=15;i>=0;i--){
-    int addr = SRAM_BASE + i;
+    int addr = SRAM_BASE - i;
 
     check((addr & 0xff) == *((char *)(SRAM_BASE + i)));
   }
