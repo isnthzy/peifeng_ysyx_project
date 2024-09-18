@@ -140,6 +140,7 @@ int Difftest::diff_step(){
       if(deadlock_timer>DEADLOCK_TIME)
       {
         wLog("NPC more than %d clocks were not submitted",DEADLOCK_TIME);
+        display();
         npc_state.halt_pc=dut.base.pc;
         return NPC_ABORT;
       }
