@@ -1,10 +1,14 @@
 #include <am.h>
 #include <klib-macros.h>
 #include <riscv/riscv.h>
+#include <string.h>
 #define soc_trap(code) asm volatile("mv a0, %0; ebreak" : :"r"(code))
 #define UART_BASE 0x10000000L
 #define UART_TX   0x0
 
+extern char _data_start [];
+extern char _data_size  [];
+extern char _data_load_start [];
 
 extern char _heap_start;
 extern char _heap_end;
@@ -33,6 +37,7 @@ void halt(int code) {
 }
 
 void _trm_init(){
+  if (_data_start != _data_load_start) memcpy(_data_start, _data_load_start, (size_t) _data_size);
   int ret = main(mainargs);
   halt(ret);
 }
