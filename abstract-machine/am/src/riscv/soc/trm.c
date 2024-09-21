@@ -39,6 +39,7 @@ void init_uart(){
 void putch(char ch) {
   while(true){
     volatile char* fifo_state = ((volatile char *)(UART_BASE + UART_LSR));
+    
     if(((*fifo_state) & 0x10)==0x10) break;
   }
   *(volatile char *)(UART_BASE + UART_TX) = ch;
