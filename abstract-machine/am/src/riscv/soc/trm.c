@@ -5,6 +5,9 @@
 #define soc_trap(code) asm volatile("mv a0, %0; ebreak" : :"r"(code))
 #define UART_BASE 0x10000000L
 #define UART_TX   0x0
+#define UART_LSB  0x0
+#define UART_MSB  0x1
+#define UART_LCR  0x3
 
 extern char _data_start [];
 extern char _data_size  [];
@@ -26,10 +29,10 @@ static const char mainargs[] = MAINARGS;
 
 void init_uart(){
   char lcr = *((volatile char *)(UART_BASE + 0x3));
-  *(volatile char *)(UART_BASE + 0x3) = lcr | 0x80;
-  *(volatile char *)(UART_BASE + 0x0) = 0xff;
-  *(volatile char *)(UART_BASE + 0x1) = 0xff;
-  *(volatile char *)(UART_BASE + 0x3) = lcr & 0x7F;
+  *(volatile char *)(UART_BASE + UART_LCR) = lcr | 0x80;
+  *(volatile char *)(UART_BASE + UART_MSB) = 0x80;
+  *(volatile char *)(UART_BASE + UART_LSB) = 0x80;
+  *(volatile char *)(UART_BASE + UART_LCR) = lcr & 0x7F;
 }
 
 void putch(char ch) {
