@@ -31,6 +31,9 @@ trait DeviceConfig{
   def FB_ADDR     = DEVICE_BASE + "h1000000".U(32.W)
 
   def SCREEN_SIZE = 400*300
+
+  def UART_BASE = "h10000000".U(32.W)
+  def UART_SIZE = "h1000".U
 }
 
 object ISAConfig{

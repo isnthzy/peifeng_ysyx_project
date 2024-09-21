@@ -16,10 +16,13 @@ class DeviceSkip extends Module with DeviceConfig{
   io.skip := readSkip  && io.isLoadStore
 
   readSkip:=(
-    (io.addr===RTC_ADDR || io.addr === RTC_ADDR+4.U)
-  || io.addr===KBD_ADDR || io.addr === VGACTL_ADDR
-  ||(io.addr >=FB_ADDR  && io.addr  <= FB_ADDR+(SCREEN_SIZE*4).U)
+    (io.addr >= UART_BASE && io.addr <= UART_BASE+UART_SIZE)
   )
+  // readSkip:=(
+  //   (io.addr===RTC_ADDR || io.addr === RTC_ADDR+4.U)
+  // || io.addr===KBD_ADDR || io.addr === VGACTL_ADDR
+  // ||(io.addr >=FB_ADDR  && io.addr  <= FB_ADDR+(SCREEN_SIZE*4).U)
+  // )
 
   // writeSkip:=(
   //    io.addr===SERIAL_PORT || io.addr===SYNC_ADDR

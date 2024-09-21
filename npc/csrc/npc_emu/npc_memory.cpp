@@ -64,50 +64,42 @@ void out_of_bound(paddr_t addr) {
 //----------------------------dpi-c----------------------------
 
 extern "C" int pmem_read(int raddr) {
-  word_t rdata=paddr_read(raddr,4);
-  // printf("raddr:%08x rdata:%08x\n",raddr,rdata);
-  return rdata;
+  int ld_addr = raddr & ~0x3u;
+  word_t ld_rdata=paddr_read(ld_addr,4);
+  return ld_rdata;
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 extern "C" void pmem_write(int waddr, int wdata, char wmask) {
-  // int st_addr = waddr + ((wmask & 0x2) >> 1) + ((wmask & 0x4) >> 2) * 2 + ((wmask & 0x8) >> 3) * 3;
   // int st_len = (wmask & 0x1) + ((wmask & 0x2) >> 1) + ((wmask & 0x4) >> 2) + ((wmask & 0x8) >> 3);
   // int st_data = (wdata >> (8 * ((wmask & 0x2) >> 1 + (wmask & 0x4) >> 2 * 2 + (wmask & 0x8) >> 3 * 3))) & ((1 << (st_len * 8)) - 1);
   //用了笨方法枚举，暂时没想到什么合适的办法
-  int st_addr=0;
+  int st_addr=waddr& ~0x3u; //不需要进行对齐
   int st_len=0;
   int st_data=0;
   switch (wmask)
   {
   //lb
   case 0x1: 
-    st_addr=waddr;
     st_data=wdata&0xff;
     st_len=1; break;
   case 0x2:
-    st_addr=waddr+1;
     st_data=(wdata>>8)&0xff;
     st_len=1; break;
   case 0x4:
-    st_addr=waddr+2;
     st_data=(wdata>>16)&0xff;
     st_len=1; break;
   case 0x8:
-    st_addr=waddr+3;
     st_data=(wdata>>24)&0xff;
     st_len=1; break;
   //lh
   case 0x3:
-    st_addr=waddr;
     st_data=wdata&0xffff;
     st_len=2; break;
   case 0xc:
-    st_addr=waddr+2;
     st_data=(wdata>>16)&0xffff;
     st_len=2; break;
   //lw
   case 0xf:
-    st_addr=waddr;
     st_data=wdata;
     st_len=4; break;
   default:
@@ -123,7 +115,10 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
 
 extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
 extern "C" int32_t mrom_read(int32_t addr) { 
-  return paddr_read(addr,4);
+  int ld_addr = addr & ~0x3u;
+  word_t ld_rdata=paddr_read(ld_addr,4);
+  return ld_rdata;
+  // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 
 //----------------------------dpi-c----------------------------
@@ -132,14 +127,14 @@ extern "C" int32_t mrom_read(int32_t addr) {
 void mtrace_store(int pc,int addr,int data,int len){
   #ifdef CONFIG_MTRACE
   char mtrace_logbuf[120];
-  sprintf(mtrace_logbuf,"[store]pc:0x%08x addr:0x%x wdata:0x%08x len:%d",pc,addr,data,len);
+  sprintf(mtrace_logbuf,"[store]pc:0x%08x addr:0x%08x wdata:0x%08x len:%d",pc,addr,data,len);
   enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
   #endif
 }
 void mtrace_load (int pc,int addr,int data,int len){
   #ifdef CONFIG_MTRACE //警惕切换riscv64会造成的段错误
   char mtrace_logbuf[120];
-  sprintf(mtrace_logbuf,"[load ]pc:0x%08x addr:0x%x rdata:0x%08x len:%d",pc,addr,data,len);
+  sprintf(mtrace_logbuf,"[load ]pc:0x%08x addr:0x%08x rdata:0x%08x len:%d",pc,addr,data,len);
   enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
   #endif
 }

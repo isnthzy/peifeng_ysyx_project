@@ -130,6 +130,7 @@ int Difftest::diff_step(){
     if(!is_printed){
       printf_red("\nToo many instructions(Suspected to be in a traploop)\n");
       is_printed=true;
+      return NPC_ABORT;
     }
   }//NOTE:最大边界检测
 

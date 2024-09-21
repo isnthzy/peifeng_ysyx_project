@@ -130,12 +130,12 @@ class ExStage extends Module {
   val memAddr=Cat(memMisalignedAddr(31,2),0.U(2.W))
 //NOTE:
   ex.s.wen:=storeEn&&exValid && ~exExcpEn
-  ex.s.waddr:=memAddr
+  ex.s.waddr:=memMisalignedAddr
   ex.s.wstrb:=memWstrb
   ex.s.wdata:=memWdata
   ex.s.wsize:=memDataSize
   ex.al.ren :=loadEn&&exValid && ~exExcpEn
-  ex.al.raddr:=memAddr
+  ex.al.raddr:=memMisalignedAddr
   ex.al.rsize:=memDataSize
   store_skip:=memAddr==="hfffffffc".U
   exStall:=(storeEn&& ~ex.s.wdata_ok 
