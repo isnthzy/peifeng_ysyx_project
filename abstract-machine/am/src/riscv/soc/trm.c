@@ -24,7 +24,13 @@ Area heap = RANGE(&_heap_start, &_heap_end);
 #endif
 static const char mainargs[] = MAINARGS;
 
-
+void init_uart(){
+  char lcr = *((volatile char *)(UART_BASE + 0x3));
+  *(volatile char *)(UART_BASE + 0x3) = lcr | 0x80;
+  *(volatile char *)(UART_BASE + 0x0) = 0x10;
+  *(volatile char *)(UART_BASE + 0x1) = 0x10;
+  *(volatile char *)(UART_BASE + 0x3) = lcr & 0x7F;
+}
 
 void putch(char ch) {
   *(volatile char *)(UART_BASE + UART_TX) = ch;
@@ -38,6 +44,7 @@ void halt(int code) {
 
 void _trm_init(){
   if (_data_start != _data_load_start) memcpy(_data_start, _data_load_start, (size_t) _data_size);
+  init_uart();
   int ret = main(mainargs);
   halt(ret);
 }
