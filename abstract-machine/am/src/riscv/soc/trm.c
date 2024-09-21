@@ -8,6 +8,7 @@
 #define UART_LSB  0x0
 #define UART_MSB  0x1
 #define UART_LCR  0x3
+#define UART_LSR  0x5
 
 extern char _data_start [];
 extern char _data_size  [];
@@ -36,6 +37,7 @@ void init_uart(){
 }
 
 void putch(char ch) {
+  while(((*(volatile char *)(UART_BASE + UART_LSR))&0x10)!=0x10);
   *(volatile char *)(UART_BASE + UART_TX) = ch;
 }
 
