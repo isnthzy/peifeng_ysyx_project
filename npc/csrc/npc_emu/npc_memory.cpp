@@ -73,7 +73,7 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
   // int st_len = (wmask & 0x1) + ((wmask & 0x2) >> 1) + ((wmask & 0x4) >> 2) + ((wmask & 0x8) >> 3);
   // int st_data = (wdata >> (8 * ((wmask & 0x2) >> 1 + (wmask & 0x4) >> 2 * 2 + (wmask & 0x8) >> 3 * 3))) & ((1 << (st_len * 8)) - 1);
   //用了笨方法枚举，暂时没想到什么合适的办法
-  int st_addr=waddr; //不需要进行对齐
+  int st_addr=waddr& ~0x3u; //不需要进行对齐
   int st_len=0;
   int st_data=0;
   switch (wmask)
