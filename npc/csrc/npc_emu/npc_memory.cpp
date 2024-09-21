@@ -64,10 +64,10 @@ void out_of_bound(paddr_t addr) {
 //----------------------------dpi-c----------------------------
 
 extern "C" int pmem_read(int raddr) {
-  int raddr = raddr & ~0x3u;
-  word_t rdata=paddr_read(raddr,4);
+  int ld_addr = raddr & ~0x3u;
+  word_t ld_rdata=paddr_read(ld_addr,4);
   // printf("raddr:%08x rdata:%08x\n",raddr,rdata);
-  return rdata;
+  return ld_rdata;
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 extern "C" void pmem_write(int waddr, int wdata, char wmask) {
