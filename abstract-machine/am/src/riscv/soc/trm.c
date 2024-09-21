@@ -27,7 +27,7 @@ static const char mainargs[] = MAINARGS;
 void init_uart(){
   char lcr = *((volatile char *)(UART_BASE + 0x3));
   *(volatile char *)(UART_BASE + 0x3) = lcr | 0x80;
-  *(volatile char *)(UART_BASE + 0x0) = 0x60;
+  *(volatile char *)(UART_BASE + 0x0) = 0x70;
   *(volatile char *)(UART_BASE + 0x1) = 0x70;
   *(volatile char *)(UART_BASE + 0x3) = lcr & 0x7F;
 }
