@@ -66,7 +66,6 @@ void out_of_bound(paddr_t addr) {
 extern "C" int pmem_read(int raddr) {
   int ld_addr = raddr & ~0x3u;
   word_t ld_rdata=paddr_read(ld_addr,4);
-  printf("raddr:%08x rdata:%08x\n",ld_addr,ld_rdata);
   return ld_rdata;
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
@@ -116,7 +115,10 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
 
 extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
 extern "C" int32_t mrom_read(int32_t addr) { 
-  return paddr_read(addr,4);
+  int ld_addr = addr & ~0x3u;
+  word_t ld_rdata=paddr_read(ld_addr,4);
+  return ld_rdata;
+  // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 
 //----------------------------dpi-c----------------------------
