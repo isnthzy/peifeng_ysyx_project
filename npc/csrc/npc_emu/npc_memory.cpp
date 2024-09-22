@@ -160,6 +160,7 @@ extern "C" void flash_read(int32_t addr, int32_t *data) {
 }
 extern "C" int32_t mrom_read(int32_t addr) { 
   int ld_addr = addr & ~0x3u;
+  printf("read_addr: %x\n",ld_addr);
   word_t ld_rdata=paddr_read(ld_addr,4);
   return ld_rdata;
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
@@ -184,9 +185,7 @@ void mtrace_load (int pc,int addr,int data,int len){
 }
 static uint64_t read_cnt=0;
 word_t paddr_read(paddr_t addr, int len) {
-
   word_t pmem_rdata;
-  printf("read_addr: %x \n",addr);
   if (likely(in_pmem(addr))){
     pmem_rdata=pmem_read(addr,4);
     return pmem_rdata;
