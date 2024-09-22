@@ -40,7 +40,7 @@ uint8_t* guest_to_host(paddr_t paddr) {
   switch (in_soc_device(paddr))
   {
   case SOC_DEVICE_ERROR:
-    panic("pmem_read is not support write");
+    panic("guest_to_host addr:%x is not support write",paddr);
     break;
   case SOC_DEVICE_MROM:
     ret=soc_mrom + paddr  - CONFIG_SOC_MROM_BASE;
