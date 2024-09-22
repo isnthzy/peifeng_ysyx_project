@@ -186,6 +186,7 @@ static uint64_t read_cnt=0;
 word_t paddr_read(paddr_t addr, int len) {
 
   word_t pmem_rdata;
+  printf("read_addr: %x \n",addr);
   if (likely(in_pmem(addr))){
     pmem_rdata=pmem_read(addr,4);
     return pmem_rdata;
