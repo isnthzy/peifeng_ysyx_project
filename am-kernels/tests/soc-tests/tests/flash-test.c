@@ -3,6 +3,7 @@
 
 int main(){
   for(int i=0;i<10;i++){
-    putch(*(volatile char *)(FLASH_BASE + i));
+    volatile char* ch= (volatile char *)(FLASH_BASE + i);
+    putch((*ch));
   }
 }
