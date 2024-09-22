@@ -156,7 +156,6 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
 extern "C" void flash_read(int32_t addr, int32_t *data) {
   int ld_addr = (addr + CONFIG_SOC_FLASH_BASE) & ~0x3u;
   //NOTE:flash的地址没有高位，需要手动补上base，再交给x转发分配
-  printf("read_addr: %x\n",ld_addr);
   *data=paddr_read(ld_addr,4);
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
