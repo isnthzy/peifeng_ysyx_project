@@ -16,9 +16,20 @@ static inline int in_soc_device(paddr_t addr) {
   if(addr - CONFIG_SOC_FLASH_BASE < CONFIG_SOC_FLASH_SIZE) in_device_num=SOC_DEVICE_FLASH;
   return in_device_num;
 }
+
+void init_flash_ram(){
+  const uint8_t falsh_defaultImg [] = {
+    'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
+    'q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5',
+  }; 
+  memcpy(guest_to_host(CONFIG_SOC_FLASH_BASE), falsh_defaultImg, sizeof(falsh_defaultImg));
+}
+
 void init_mem() {
   IFDEF(CONFIG_MEM_RANDOM, memset(pmem, rand(), CONFIG_MSIZE));
   Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]", PMEM_LEFT, PMEM_RIGHT);
+
+  init_flash_ram();
 }
 
 static inline uint32_t host_read(void *addr, int len) {
@@ -102,7 +113,7 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
   // int st_len = (wmask & 0x1) + ((wmask & 0x2) >> 1) + ((wmask & 0x4) >> 2) + ((wmask & 0x8) >> 3);
   // int st_data = (wdata >> (8 * ((wmask & 0x2) >> 1 + (wmask & 0x4) >> 2 * 2 + (wmask & 0x8) >> 3 * 3))) & ((1 << (st_len * 8)) - 1);
   //用了笨方法枚举，暂时没想到什么合适的办法
-  int st_addr=waddr& ~0x3u; //不需要进行对齐
+  int st_addr=waddr; //不需要进行对齐
   int st_len=0;
   int st_data=0;
   switch (wmask)
@@ -142,7 +153,12 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
 }
 
-extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
+extern "C" void flash_read(int32_t addr, int32_t *data) {
+  int ld_addr = (addr + CONFIG_SOC_FLASH_BASE) & ~0x3u;
+  //NOTE:flash的地址没有高位，需要手动补上base，再交给x转发分配
+  *data=paddr_read(ld_addr,4);
+  // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
+}
 extern "C" int32_t mrom_read(int32_t addr) { 
   int ld_addr = addr & ~0x3u;
   word_t ld_rdata=paddr_read(ld_addr,4);
@@ -169,11 +185,11 @@ void mtrace_load (int pc,int addr,int data,int len){
 }
 static uint64_t read_cnt=0;
 word_t paddr_read(paddr_t addr, int len) {
-
   word_t pmem_rdata;
-  if (likely(in_pmem(addr))) pmem_rdata=pmem_read(addr,4);
-
-  if (likely(in_pmem(addr))) return pmem_rdata;
+  if (likely(in_pmem(addr))){
+    pmem_rdata=pmem_read(addr,4);
+    return pmem_rdata;
+  }
   if(addr>=0xa0000000){
     return device_read(addr,len);
   }
