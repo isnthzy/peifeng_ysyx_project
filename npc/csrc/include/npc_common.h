@@ -14,15 +14,12 @@ typedef uint32_t word_t;
 typedef MUXDEF(CONFIG_RV64,uint64_t, uint32_t) vaddr_t;
 typedef MUXDEF(CONFIG_RV64,uint64_t, uint32_t) paddr_t;
 typedef MUXDEF(CONFIG_RV64,uint64_t, uint32_t) data_t;
-#define CONFIG_MSIZE 0x8000000
-#define START_ADDR   0x20000000
-#define CONFIG_MBASE START_ADDR
 #define PG_ALIGN __attribute__((aligned(4096)))
 #define FMT_WORD MUXDEF(CONFIG_RV64, "0x%016" PRIx64, "0x%08" PRIx32)
 #define FMT_PADDR MUXDEF(CONFIG_RV64, "0x%016" PRIx64, "0x%08" PRIx32)
 #define PMEM_LEFT  ((paddr_t)CONFIG_MBASE)
 #define PMEM_RIGHT ((paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1)
-#define RESET_VECTOR (PMEM_LEFT + CONFIG_PC_RESET_OFFSET)
+
 #define printf_green(...) \
     do { \
         printf("\033[1;32m"); \
