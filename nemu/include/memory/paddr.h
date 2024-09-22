@@ -41,7 +41,6 @@ bool check_store_commit(paddr_t addr,word_t data,int len);
 
 #ifdef CONFIG_SOC_DEVICE
 enum {SOC_DEVICE_ERROR, SOC_DEVICE_MROM, SOC_DEVICE_SRAM};
-uint8_t* guest_to_mrom_host(paddr_t paddr);
 static inline int in_soc_device(paddr_t addr) {
   int in_device_num=0;
   if(addr - CONFIG_SOC_MROM_BASE < CONFIG_SOC_MROM_SIZE) in_device_num=SOC_DEVICE_MROM;

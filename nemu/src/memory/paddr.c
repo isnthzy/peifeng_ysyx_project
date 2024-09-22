@@ -20,35 +20,33 @@
 #include "../cpu/iringbuf.h"
 extern IRingBuffer iring_buffer;
 extern IRingBuffer mtrace_buffer;
+
 #if   defined(CONFIG_PMEM_MALLOC)
 static uint8_t *pmem = NULL;
 #else // CONFIG_PMEM_GARRAY
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 #endif
+
 #ifdef CONFIG_SOC_DEVICE
 static uint8_t soc_mrom[CONFIG_SOC_MROM_SIZE] PG_ALIGN = {};
 static uint8_t soc_sram[CONFIG_SOC_SRAM_SIZE] PG_ALIGN = {};
-uint8_t* guest_to_mrom_host(paddr_t paddr) { return soc_mrom + paddr - CONFIG_SOC_MROM_BASE; }
+// static uint8_t soc_flash[CONFIG_SOC_MFLASH_SIZE] PG_ALIGN = {};
+
 #endif
 
-uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
-paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
-
-static word_t pmem_read(paddr_t addr, int len) {
+uint8_t* guest_to_host(paddr_t paddr) {
 #ifdef CONFIG_SOC_DEVICE
-  word_t ret = 0;
-  switch (in_soc_device(addr))
+  uint8_t *ret=NULL;
+  switch (in_soc_device(paddr))
   {
   case SOC_DEVICE_ERROR:
     panic("pmem_read is not support write");
     break;
   case SOC_DEVICE_MROM:
-    uint8_t* addr_mrom=soc_mrom + addr - CONFIG_SOC_MROM_BASE;
-    ret = host_read(addr_mrom, len);
+    ret=soc_mrom + paddr - CONFIG_SOC_MROM_BASE;
     break;
   case SOC_DEVICE_SRAM:
-    uint8_t* addr_sram=soc_sram + addr - CONFIG_SOC_SRAM_BASE;
-    ret = host_read(addr_sram, len);
+    ret=soc_sram + paddr - CONFIG_SOC_SRAM_BASE;
     break;
   default:
     panic("pmem_read is not support write");
@@ -57,33 +55,20 @@ static word_t pmem_read(paddr_t addr, int len) {
   return ret;
 //直接进行一个X转发
 #else
+  return pmem + paddr - CONFIG_MBASE; 
+#endif
+}
+paddr_t host_to_guest(uint8_t *haddr) {
+  return haddr - pmem + CONFIG_MBASE; 
+}
+
+static word_t pmem_read(paddr_t addr, int len) {
   word_t ret = host_read(guest_to_host(addr), len);
   return ret;
-#endif
 }
 
 static void pmem_write(paddr_t addr, int len, word_t data) {
-#ifdef CONFIG_SOC_DEVICE
-  switch (in_soc_device(addr))
-  {
-  case SOC_DEVICE_ERROR:
-    panic("pmem_write is not support write");
-    break;
-  case SOC_DEVICE_MROM:
-    panic("Mrom is not support write");
-    break;
-  case SOC_DEVICE_SRAM:
-    uint8_t* addr_sram=soc_sram + addr - CONFIG_SOC_SRAM_BASE;
-    host_write(addr_sram, len, data);
-    break;
-  default:
-    panic("pmem_write is not support write");
-    break;
-  }
-//直接进行一个X转发
-#else
   host_write(guest_to_host(addr), len, data);
-#endif
 }
 
 extern void iputIringbuf();

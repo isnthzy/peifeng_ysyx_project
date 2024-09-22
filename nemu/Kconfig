@@ -258,20 +258,32 @@ endif
 
 if SOC_DEVICE
 
+config SOC_RESET_PC
+  hex "Soc share reset pc"
+  default 0x20000000
+
 config SOC_MROM_BASE
   hex "Soc device MROM base addr"
   default 0x20000000
-
-config SOC_SRAM_BASE
-  hex "Soc device SRAM base addr"
-  default 0x0f000000
 
 config SOC_MROM_SIZE
   hex "Soc device MROM size"
   default 0x1000
 
+config SOC_SRAM_BASE
+  hex "Soc device SRAM base addr"
+  default 0x0f000000
+
 config SOC_SRAM_SIZE
   hex "Soc device SRAM size"
+  default 0x2000
+
+config SOC_FLASH_BASE
+  hex "Soc device flash base addr"
+  default 0x30000000
+
+config SOC_FLASH_SIZE
+  hex "Soc device flash size"
   default 0x1000000
 
 endif # SOC_DEVICE

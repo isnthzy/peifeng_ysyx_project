@@ -60,3 +60,13 @@
 #define CONFIG_MAX_EXE_INST 0
 //指令执行最大次数，拦截可能发生的死循环
 /*---------------------------------------------------------------------------------*/
+#define START_ADDR   0x20000000
+
+#define CONFIG_MBASE 0x80000000
+#define CONFIG_MSIZE 0x8000000
+
+#define CONFIG_SOC_MROM_BASE 	0x20000000
+#define CONFIG_SOC_MROM_SIZE 	0x1000
+
+#define CONFIG_SOC_FLASH_BASE 0x30000000
+#define CONFIG_SOC_FLASH_SIZE 0x1000000

@@ -6,9 +6,16 @@
 // extern CPU_state cpu;
 // extern CPU_info cpu_info;
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN={};
-// static uint8_t pmem[CONFIG_MSIZE];
+static uint8_t mrom[CONFIG_MSIZE] PG_ALIGN={};
+static uint8_t flash_ram[CONFIG_SOC_FLASH_SIZE] PG_ALIGN = {};
 
-
+static inline int in_soc_device(paddr_t addr) {
+  int in_device_num=0;
+  if(addr - CONFIG_MBASE < CONFIG_MSIZE) in_device_num=SOC_PMEM;
+  if(addr - CONFIG_SOC_MROM_BASE  < CONFIG_SOC_MROM_SIZE) in_device_num=SOC_DEVICE_MROM;
+  if(addr - CONFIG_SOC_FLASH_BASE < CONFIG_SOC_FLASH_SIZE) in_device_num=SOC_DEVICE_FLASH;
+  return in_device_num;
+}
 void init_mem() {
   IFDEF(CONFIG_MEM_RANDOM, memset(pmem, rand(), CONFIG_MSIZE));
   Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]", PMEM_LEFT, PMEM_RIGHT);
@@ -32,11 +39,30 @@ static inline void host_write(void *addr, int len, uint32_t data) {
 }
 
 static inline bool in_pmem(paddr_t addr) {
-  return addr - CONFIG_MBASE < CONFIG_MSIZE;
+  if(in_soc_device(addr)) return true;
+  else return false;
 }
 
-uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
-paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
+uint8_t* guest_to_host(paddr_t paddr) {
+  uint8_t *ret;
+  switch (in_soc_device(paddr)){
+    case SOC_DEVICE_ERROR:
+      panic("SOC_DEVICE_ERROR");
+      break;
+    case SOC_PMEM:
+      ret = pmem + paddr - CONFIG_MBASE;
+    case SOC_DEVICE_MROM:
+      ret = pmem + paddr - CONFIG_SOC_MROM_BASE;
+    case SOC_DEVICE_FLASH:
+      ret = flash_ram + paddr - CONFIG_SOC_FLASH_BASE;
+    default:
+      panic("unknown device");
+  }
+  return ret; 
+}
+// paddr_t host_to_guest(uint8_t *haddr) { 
+//   return haddr - pmem + CONFIG_MBASE; 
+// }
 
 word_t pmem_read(paddr_t addr, int len) {
   word_t ret = host_read(guest_to_host(addr), len);
