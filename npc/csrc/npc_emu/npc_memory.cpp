@@ -102,7 +102,7 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
   // int st_len = (wmask & 0x1) + ((wmask & 0x2) >> 1) + ((wmask & 0x4) >> 2) + ((wmask & 0x8) >> 3);
   // int st_data = (wdata >> (8 * ((wmask & 0x2) >> 1 + (wmask & 0x4) >> 2 * 2 + (wmask & 0x8) >> 3 * 3))) & ((1 << (st_len * 8)) - 1);
   //用了笨方法枚举，暂时没想到什么合适的办法
-  int st_addr=waddr& ~0x3u; //不需要进行对齐
+  // int st_addr=waddr& ~0x3u; //不需要进行对齐
   int st_len=0;
   int st_data=0;
   switch (wmask)
@@ -136,13 +136,17 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
     break;
   }
   // printf("waddr:%08x wdata:%08x wlen:%08x\n",st_addr,st_data,st_len);
-  paddr_write(st_addr,st_len,st_data);
+  paddr_write(waddr,st_len,st_data);
   // 总是往地址为`waddr & ~0x3u`的4字节按写掩码`wmask`写入`wdata`
   // `wmask`中每比特表示`wdata`中1个字节的掩码,
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
 }
 
-extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
+extern "C" void flash_read(int32_t addr, int32_t *data) {
+  int ld_addr = addr & ~0x3u;
+  *data=paddr_read(ld_addr,4);
+  // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
+}
 extern "C" int32_t mrom_read(int32_t addr) { 
   int ld_addr = addr & ~0x3u;
   word_t ld_rdata=paddr_read(ld_addr,4);
@@ -171,9 +175,10 @@ static uint64_t read_cnt=0;
 word_t paddr_read(paddr_t addr, int len) {
 
   word_t pmem_rdata;
-  if (likely(in_pmem(addr))) pmem_rdata=pmem_read(addr,4);
-
-  if (likely(in_pmem(addr))) return pmem_rdata;
+  if (likely(in_pmem(addr))){
+    pmem_rdata=pmem_read(addr,4);
+    return pmem_rdata;
+  }
   if(addr>=0xa0000000){
     return device_read(addr,len);
   }
