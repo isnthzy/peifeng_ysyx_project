@@ -8,8 +8,6 @@
 #include "include/npc/npc_exe.h"
 #define MAX_INST_TO_PRINT 10
 
-// CPU_state cpu = { .pc=RESET_VECTOR , .mstatus=0x1800};//解锁新用法
-// CPU_info cpu_info={};
 extern bool ftrace_flag;
 extern bool difftest_flag;
 bool g_print_step = false;

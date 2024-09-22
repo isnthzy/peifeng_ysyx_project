@@ -30,7 +30,7 @@ static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 #ifdef CONFIG_SOC_DEVICE
 static uint8_t soc_mrom[CONFIG_SOC_MROM_SIZE] PG_ALIGN = {};
 static uint8_t soc_sram[CONFIG_SOC_SRAM_SIZE] PG_ALIGN = {};
-// static uint8_t soc_flash[CONFIG_SOC_MFLASH_SIZE] PG_ALIGN = {};
+static uint8_t soc_flash[CONFIG_SOC_FLASH_SIZE] PG_ALIGN = {};
 
 #endif
 
@@ -43,10 +43,13 @@ uint8_t* guest_to_host(paddr_t paddr) {
     panic("pmem_read is not support write");
     break;
   case SOC_DEVICE_MROM:
-    ret=soc_mrom + paddr - CONFIG_SOC_MROM_BASE;
+    ret=soc_mrom + paddr  - CONFIG_SOC_MROM_BASE;
     break;
   case SOC_DEVICE_SRAM:
-    ret=soc_sram + paddr - CONFIG_SOC_SRAM_BASE;
+    ret=soc_sram + paddr  - CONFIG_SOC_SRAM_BASE;
+    break;
+  case SOC_DEVICE_FLASH:
+    ret=soc_flash + paddr - CONFIG_SOC_FLASH_BASE;
     break;
   default:
     panic("pmem_read is not support write");
@@ -60,7 +63,7 @@ uint8_t* guest_to_host(paddr_t paddr) {
 }
 paddr_t host_to_guest(uint8_t *haddr) {
   return haddr - pmem + CONFIG_MBASE; 
-}
+} //没用到先不做处理
 
 static word_t pmem_read(paddr_t addr, int len) {
   word_t ret = host_read(guest_to_host(addr), len);
