@@ -47,7 +47,7 @@ uint8_t* guest_to_host(paddr_t paddr) {
   uint8_t *ret;
   switch (in_soc_device(paddr)){
     case SOC_DEVICE_ERROR:
-      panic("SOC_DEVICE_ERROR");
+      panic("SOC_DEVICE_ERROR: %d", paddr);
       break;
     case SOC_PMEM:
       ret = pmem + paddr - CONFIG_MBASE;
