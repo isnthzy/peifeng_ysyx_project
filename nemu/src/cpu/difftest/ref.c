@@ -21,7 +21,7 @@ extern char *regs[];
 __EXPORT void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
   if(direction == DIFFTEST_TO_REF){ //DIFFTEST_TO_REF,target is ref
   #ifdef CONFIG_SOC_DEVICE
-    memcpy(guest_to_host(addr), buf, CONFIG_SOC_MROM_SIZE);
+    memcpy(guest_to_host(addr), buf, n);
   #else
     memcpy(guest_to_host(addr), buf, n);
   #endif
