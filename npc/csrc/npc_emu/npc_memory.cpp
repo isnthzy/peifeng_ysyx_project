@@ -155,12 +155,12 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
 
 extern "C" void flash_read(int32_t addr, int32_t *data) {
   int ld_addr = addr & ~0x3u;
+  printf("read_addr: %x\n",ld_addr);
   *data=paddr_read(ld_addr,4);
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 extern "C" int32_t mrom_read(int32_t addr) { 
   int ld_addr = addr & ~0x3u;
-  printf("read_addr: %x\n",ld_addr);
   word_t ld_rdata=paddr_read(ld_addr,4);
   return ld_rdata;
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
