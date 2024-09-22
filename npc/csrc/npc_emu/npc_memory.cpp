@@ -51,10 +51,13 @@ uint8_t* guest_to_host(paddr_t paddr) {
       break;
     case SOC_PMEM:
       ret = pmem + paddr - CONFIG_MBASE;
+      break;
     case SOC_DEVICE_MROM:
       ret = pmem + paddr - CONFIG_SOC_MROM_BASE;
+      break;
     case SOC_DEVICE_FLASH:
       ret = flash_ram + paddr - CONFIG_SOC_FLASH_BASE;
+      break;
     default:
       panic("unknown device");
   }
