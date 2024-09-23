@@ -18,10 +18,10 @@ int main(){
   while(true){
     volatile short int* spi_state = ((volatile short int *)(SPI_BASE + SPI_CTRL));
     if(((*spi_state) & 0x100) == 0x100){ //轮询寄存器是否结束，结束了拉高ss
-      *(volatile char *)(SPI_BASE + SPI_SS) &= ~0b10000000;
       break;
     }
   }
+  *(volatile char *)(SPI_BASE + SPI_SS) &= ~0b10000000;
   volatile char * ch_rev = (volatile char *)(SPI_BASE + SPI_TX0);
   check((*ch_rev)==0x28);
 }
