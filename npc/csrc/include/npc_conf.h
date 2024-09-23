@@ -57,7 +57,7 @@
 
 #define CONFIG_PC_RESET_OFFSET 0x0
 //pc重置偏移
-#define CONFIG_MAX_EXE_INST 0
+#define CONFIG_MAX_EXE_INST 3000
 //指令执行最大次数，拦截可能发生的死循环
 /*---------------------------------------------------------------------------------*/
 #define START_ADDR   0x20000000
