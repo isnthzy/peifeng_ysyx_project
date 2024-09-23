@@ -17,7 +17,10 @@ int main(){
 // NOTE:不需要下降沿触发所以不对tx rx处理，ass有点看不懂主要是
   while(true){
     volatile short int* spi_state = ((volatile short int *)(SPI_BASE + SPI_CTRL));
-    if(((*spi_state) & 0x100) == 0x100) break;
+    if(((*spi_state) & 0x100) == 0x100){
+      *(volatile char *)(SPI_BASE + SPI_SS) &= ~0b10000000;
+      break;
+    }
   }
   volatile char * ch_rev = (volatile char *)(SPI_BASE + SPI_TX0);
   check((*ch_rev)==0x28);
