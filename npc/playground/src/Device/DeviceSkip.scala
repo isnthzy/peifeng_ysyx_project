@@ -12,11 +12,12 @@ class DeviceSkip extends Module with DeviceConfig{
     val skip = Output(Bool())
   })
   val readSkip  = Wire(Bool()) 
-  // val writeSkip = Wire(Bool()) 
-  io.skip := readSkip  && io.isLoadStore
+  val writeSkip = Wire(Bool()) 
+  io.skip := (readSkip || writeSkip) && io.isLoadStore
 
   readSkip:=(
-    (io.addr >= UART_BASE && io.addr <= UART_BASE+UART_SIZE)
+    (io.addr >= UART_BASE && io.addr < UART_BASE+UART_SIZE)
+  ||(io.addr >= SPI_BASE  && io.addr < SPI_BASE +SPI_SIZE)
   )
   // readSkip:=(
   //   (io.addr===RTC_ADDR || io.addr === RTC_ADDR+4.U)
@@ -24,8 +25,7 @@ class DeviceSkip extends Module with DeviceConfig{
   // ||(io.addr >=FB_ADDR  && io.addr  <= FB_ADDR+(SCREEN_SIZE*4).U)
   // )
 
-  // writeSkip:=(
-  //    io.addr===SERIAL_PORT || io.addr===SYNC_ADDR
-  // ||(io.addr >=FB_ADDR     && io.addr  <= FB_ADDR+(SCREEN_SIZE*4).U)
-  // )
+  writeSkip:=(
+    (io.addr >= SPI_BASE  && io.addr < SPI_BASE +SPI_SIZE)
+  )
 }
