@@ -21,6 +21,10 @@ uint32_t flash_read(uint32_t addr){
     }
   }
   uint32_t data = *(volatile int *)(SPI_BASE + SPI_RX);
+  data = ((data >> 24)
+         |(data >> 8 & 0x00ff00)
+         |(data << 8 & 0xff0000)
+         |(data << 24));
   return data;
 }
 
