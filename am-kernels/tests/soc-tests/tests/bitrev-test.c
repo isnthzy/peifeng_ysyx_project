@@ -8,7 +8,7 @@
 int main(){
   char ch = 0x14;
   *(volatile char *)(SPI_BASE + SPI_TX0) = ch;
-  *(volatile short int *)(SPI_BASE + SPI_DIVIDER) = 0xaf9f;
+  *(volatile short int *)(SPI_BASE + SPI_DIVIDER) = 0x009f;
   *(volatile char *)(SPI_BASE + SPI_SS) = 0b10000000;
   *(volatile short int *)(SPI_BASE + SPI_CTRL) = 0b100000100;
 // Bit #  31:14    13  12  11  10     9      8   7  6:0
