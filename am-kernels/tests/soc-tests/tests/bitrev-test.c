@@ -10,7 +10,7 @@ int main(){
   *(volatile char *)(SPI_BASE + SPI_TX0) = ch;
   *(volatile short int *)(SPI_BASE + SPI_DIVIDER) = 0x009f;
   *(volatile char *)(SPI_BASE + SPI_SS) = 0b10000000;
-  *(volatile short int *)(SPI_BASE + SPI_CTRL) = 0b100000101;
+  *(volatile short int *)(SPI_BASE + SPI_CTRL) = 0b100001000;
 // Bit #  31:14    13  12  11  10     9      8   7  6:0
 // Access R        R/W R/W R/W R/W    R/W    R/W R  R/W
 // Name   Reserved ASS IE  LSB Tx_NEG Rx_NEG GO_BSY Reserved CHAR_LEN
