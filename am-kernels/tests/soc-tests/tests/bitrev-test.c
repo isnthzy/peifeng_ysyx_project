@@ -23,6 +23,6 @@ int main(){
       break;
     }
   }
-  volatile char * ch_rev = (volatile char *)(SPI_BASE + SPI_TX0 + 0x1);
+  volatile char * ch_rev = (volatile char *)(SPI_BASE + SPI_TX0);
   check((*ch_rev)==0x28);
 }
