@@ -17,19 +17,19 @@ static inline int in_soc_device(paddr_t addr) {
   return in_device_num;
 }
 
-void init_flash_ram(){
-  const uint8_t falsh_defaultImg [] = {
-    'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
-    'q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5',
-  }; 
-  memcpy(guest_to_host(CONFIG_SOC_FLASH_BASE), falsh_defaultImg, sizeof(falsh_defaultImg));
-}
+// void init_flash_ram(){
+//   const uint8_t falsh_defaultImg [] = {
+//     'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
+//     'q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5',
+//   }; 
+//   memcpy(guest_to_host(CONFIG_SOC_FLASH_BASE), falsh_defaultImg, sizeof(falsh_defaultImg));
+// }
 
 void init_mem() {
   IFDEF(CONFIG_MEM_RANDOM, memset(pmem, rand(), CONFIG_MSIZE));
   Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]", PMEM_LEFT, PMEM_RIGHT);
 
-  init_flash_ram();
+  // init_flash_ram();
 }
 
 static inline uint32_t host_read(void *addr, int len) {
