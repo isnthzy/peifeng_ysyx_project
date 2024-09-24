@@ -51,9 +51,43 @@ void halt(int code) {
   while (1);
 }
 
+void put_csr(){
+  // 使用内联汇编读取CSR寄存器，并将每一位存储到内存中
+  __asm__ volatile (
+      "csrr a0, mvendorid  // 读取CSR寄存器的值到a0\n"
+      "andi a1, a0, 0x1     // 提取最低位\n"
+      "sb a1, %0            // 存储最低位到mem0\n"
+      "slli a0, a0, 1       // 将a0左移1位\n"
+      "andi a1, a0, 0x1     // 提取次低位\n"
+      "sb a1, %0            // 存储次低位到mem1\n"
+      "slli a0, a0, 1       // 将a0左移1位\n"
+      "andi a1, a0, 0x1     // 提取第三位\n"
+      "sb a1, %0            // 存储第三位到mem2\n"
+      "slli a0, a0, 1       // 将a0左移1位\n"
+      "andi a1, a0, 0x1     // 提取最高位\n"
+      "sb a1, %0            // 存储最高位到mem3\n"
+      "csrr a0, marchid     // 读取CSR寄存器的值到a0\n"
+      "andi a1, a0, 0x1     // 提取最低位\n"
+      "sb a1, %0            // 存储最低位到mem0\n"
+      "slli a0, a0, 1       // 将a0左移1位\n"
+      "andi a1, a0, 0x1     // 提取次低位\n"
+      "sb a1, %0            // 存储次低位到mem1\n"
+      "slli a0, a0, 1       // 将a0左移1位\n"
+      "andi a1, a0, 0x1     // 提取第三位\n"
+      "sb a1, %0            // 存储第三位到mem2\n"
+      "slli a0, a0, 1       // 将a0左移1位\n"
+      "andi a1, a0, 0x1     // 提取最高位\n"
+      "sb a1, %0            // 存储最高位到mem3\n"
+      : // 无输出操作数
+      : "r"((UART_BASE + UART_TX)) // 输入操作数，提供内存地址
+      : "a0", "a1", "memory" // 被修改的寄存器列表和影响到的内存
+  );
+}
+
 void _trm_init(){
-  if (_data_start != _data_load_start) memcpy(_data_start, _data_load_start, (size_t) _data_size);
   init_uart();
+  if (_data_start != _data_load_start) memcpy(_data_start, _data_load_start, (size_t) _data_size);
+  
   int ret = main(mainargs);
   halt(ret);
 }
