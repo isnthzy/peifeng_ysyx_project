@@ -9,10 +9,10 @@
 
 uint32_t flash_read(uint32_t addr){
   uint32_t data = *(volatile int *)(addr); //地址解引用获得data
-  data = ((data >> 24)
-         |(data >> 8 & 0x00ff00)
-         |(data << 8 & 0xff0000)
-         |(data << 24));
+  // data = ((data >> 24)
+  //        |(data >> 8 & 0x00ff00)
+  //        |(data << 8 & 0xff0000)
+  //        |(data << 24));
   return data;
 }
 
