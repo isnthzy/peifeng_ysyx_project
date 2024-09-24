@@ -1,5 +1,5 @@
 #include "trap.h"
-#define FLASH_BASE 0x03000000L
+#define FLASH_BASE 0x30000000L
 #define SPI_BASE 0x10001000L
 #define SPI_RX  0x0
 #define SPI_TX  0x0
