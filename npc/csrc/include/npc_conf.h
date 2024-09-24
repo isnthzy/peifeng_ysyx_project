@@ -4,11 +4,11 @@
 
 //isa选择,请注意，当nemu没有开启E扩展而npc开启时，会因为寄存器大小不同导致与nemu的difftest初始化通信拷贝异常而无法正确启动(初始化)
 //因此仅仅是使用ARCH=riscv32e这个行为是无效的 使用前请确保nemu和npc的E扩展都开启！
-
+//注意：如果需要关闭某个功能，请将#define CONFIG_XXX 1 注释掉而不是改为0,改为0不起作用
 /*---------------------------------------------------------------------------------*/
 
 
-#define CONFIG_TRACE 1
+// #define CONFIG_TRACE 1
 #define CONFIG_ITRACE 1
 #define CONFIG_MTRACE 1
 // #define CONFIG_FTRACE 1
@@ -26,7 +26,7 @@
 
 /*---------------------------------------------------------------------------------*/
 
-// #define CONFIG_WAVEFORM 1
+#define CONFIG_WAVEFORM 1
 #define TRACE_FST 1
 // #define TRACE_VCD 1
 /* 波形生成开关 */
