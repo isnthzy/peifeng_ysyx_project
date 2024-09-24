@@ -55,6 +55,8 @@ enum {
 #define MEPC    0x341
 #define MCAUSE  0x342
 #define MTVAL   0x343
+#define MVENDORID 0xf11
+#define MARCHID 0xf12
 
 #ifdef CONFIG_ETRACE
 static char* get_csrname(word_t csr_addr){
@@ -89,6 +91,12 @@ static word_t tran_csr(word_t csr_addr,word_t data,bool is_write){
       tmp_csr=0xb;
       if(is_write) cpu.mcause=0xb;
       break; //因为nemu始终为m模式
+    case MARCHID:
+      tmp_csr=0x15fde93;
+      break;
+    case MVENDORID:
+      tmp_csr=0x79737978;
+      break;
     default:
       wLog("unknow CSR reg: 0x%x",csr_addr);
       panic("访问了未知的CSR寄存器");
