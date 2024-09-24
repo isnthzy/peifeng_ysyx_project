@@ -25,8 +25,8 @@ void Difftest::first_commit(){
   static bool is_first_commit = true;
   if(dut_commit.commit[0].valid&&is_first_commit){
     nemu_proxy->ref_difftest_memcpy(START_ADDR, guest_to_host(START_ADDR), img_size, DIFFTEST_TO_REF);
-    nemu_proxy->ref_difftest_memcpy(CONFIG_SOC_FLASH_BASE,guest_to_host(CONFIG_SOC_FLASH_BASE), 
-                                        CONFIG_SOC_FLASH_SIZE, DIFFTEST_TO_REF);
+    // nemu_proxy->ref_difftest_memcpy(CONFIG_SOC_FLASH_BASE,guest_to_host(CONFIG_SOC_FLASH_BASE), 
+    //                                     CONFIG_SOC_FLASH_SIZE, DIFFTEST_TO_REF);
     nemu_proxy->ref_difftest_regcpy(&dut, DIFFTEST_TO_REF); //同步整个结构体
     is_first_commit=false;
   }
