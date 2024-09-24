@@ -58,12 +58,16 @@ void put_csr(){
   asm("csrr %0, mvendorid" : "=r"(mvendorid) : );
   asm("csrr %0, marchid" : "=r"(marchid) : );
   char *mvendorid_char=(char *)&mvendorid;
-  for(int i=0;i<4;i++){
+  for(int i=3;i>=0;i--){
     putch(mvendorid_char[i]);
   }
-  char *marchid_char=(char *)&marchid;
-  for(int i=0;i<4;i++){
-    putch(marchid_char[i]);
+  int digits[11]; // 用printf太笨拙了，所以写了个easy解析器
+  for(int i=0;i<11;i++){
+    digits[i]=marchid%10;
+    marchid/=10;
+  }
+  for(int i=0;i<=10;i++){
+    putch(digits[i]+'0');
   }
 }
 
