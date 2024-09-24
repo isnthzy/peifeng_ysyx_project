@@ -61,12 +61,12 @@ void put_csr(){
   for(int i=3;i>=0;i--){
     putch(mvendorid_char[i]);
   }
-  int digits[11]; // 用printf太笨拙了，所以写了个easy解析器
-  for(int i=0;i<11;i++){
+  char digits[8]; // 用printf太笨拙了，所以写了个easy解析器
+  for(int i=0;i<8;i++){
     digits[i]=marchid%10;
     marchid/=10;
   }
-  for(int i=0;i<=10;i++){
+  for(int i=7;i>0;i--){
     putch(digits[i]+'0');
   }
 }
