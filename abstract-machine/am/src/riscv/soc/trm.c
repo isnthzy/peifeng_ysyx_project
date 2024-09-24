@@ -51,9 +51,30 @@ void halt(int code) {
   while (1);
 }
 
+void put_csr(){
+  // 使用内联汇编读取CSR寄存器，并将每一位存储到内存中
+  uint32_t mvendorid;
+  uint32_t marchid;
+  asm("csrr %0, mvendorid" : "=r"(mvendorid) : );
+  asm("csrr %0, marchid" : "=r"(marchid) : );
+  char *mvendorid_char=(char *)&mvendorid;
+  for(int i=3;i>=0;i--){
+    putch(mvendorid_char[i]);
+  }
+  char digits[8]; // 用printf太笨拙了,而且极慢，所以写了个easy解析器
+  for(int i=0;i<8;i++){
+    digits[i]=marchid%10;
+    marchid/=10;
+  }
+  for(int i=7;i>=0;i--){
+    putch(digits[i]+'0');
+  }
+}
+
 void _trm_init(){
-  if (_data_start != _data_load_start) memcpy(_data_start, _data_load_start, (size_t) _data_size);
   init_uart();
+  if (_data_start != _data_load_start) memcpy(_data_start, _data_load_start, (size_t) _data_size);
+  put_csr();
   int ret = main(mainargs);
   halt(ret);
 }

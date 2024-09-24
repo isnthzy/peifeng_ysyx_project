@@ -14,6 +14,8 @@ object CSR {
   val MEPC=0x341.U(12.W)
   val MCAUSE=0x342.U(12.W)
   val MTVAL=0x343.U(12.W)
+  val MVENDORID=0xF11.U(12.W)
+  val MARCHID=0xF12.U(12.W)
 }
 
 class CsrFile extends Module{
@@ -44,11 +46,15 @@ class CsrFile extends Module{
   val mtvec  =RegInit(0.U.asTypeOf(new CsrXtvecBundle()))
   val mepc   =RegInit(0.U(DATA_WIDTH.W))
   val mcause =RegInit(0.U.asTypeOf(new CsrCauseBundle()))
+  val mvendorid=RegInit("h79737978".U(DATA_WIDTH.W))
+  val marchid=RegInit("h15FDE93".U(DATA_WIDTH.W))
 
   io.from_csr.rdData:=Mux1hMap(io.from_csr.rdAddr,Map(
     CSR.MSTATUS->mstatus.asUInt,
     CSR.MEPC   ->mepc,
     CSR.MCAUSE ->mcause.asUInt,
+    CSR.MARCHID->marchid,
+    CSR.MVENDORID->mvendorid,
   ))
 
   io.csrEntries.mtvec  :=mtvec.asUInt
