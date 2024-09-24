@@ -170,18 +170,22 @@ extern "C" int32_t mrom_read(int32_t addr) {
 
 
 void mtrace_store(int pc,int addr,int data,int len){
-  #ifdef CONFIG_MTRACE
+#ifdef CONFIG_TRACE
+#ifdef CONFIG_MTRACE
   char mtrace_logbuf[120];
   sprintf(mtrace_logbuf,"[store]pc:0x%08x addr:0x%08x wdata:0x%08x len:%d",pc,addr,data,len);
   enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
-  #endif
+#endif
+#endif
 }
 void mtrace_load (int pc,int addr,int data,int len){
-  #ifdef CONFIG_MTRACE //警惕切换riscv64会造成的段错误
+#ifdef CONFIG_TRACE
+#ifdef CONFIG_MTRACE //警惕切换riscv64会造成的段错误
   char mtrace_logbuf[120];
   sprintf(mtrace_logbuf,"[load ]pc:0x%08x addr:0x%08x rdata:0x%08x len:%d",pc,addr,data,len);
   enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
-  #endif
+#endif
+#endif
 }
 static uint64_t read_cnt=0;
 word_t paddr_read(paddr_t addr, int len) {
