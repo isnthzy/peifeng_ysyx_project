@@ -3,7 +3,7 @@ import chisel3._
 
 object Configs {
   // val START_ADDR = "h7ffffffc".U(32.W)  //开始地址，设计成80000000-4=7ffffffc是为了初始化reset
-  def START_ADDR = "h20000000".U(ADDR_WIDTH.W)
+  def START_ADDR = "h30000000".U(ADDR_WIDTH.W)
   def ADDR_WIDTH = 32 // 地址位宽
   def ADDR_BYTE_WIDTH = ADDR_WIDTH / 8    // 地址位宽按字节算
   def DATA_WIDTH = 32 // 数据位宽

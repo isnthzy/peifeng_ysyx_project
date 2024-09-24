@@ -60,7 +60,7 @@
 #define CONFIG_MAX_EXE_INST 0
 //指令执行最大次数，拦截可能发生的死循环,0为关闭
 /*---------------------------------------------------------------------------------*/
-#define START_ADDR   0x20000000
+#define START_ADDR   0x30000000
 
 #define CONFIG_MBASE 0x80000000
 #define CONFIG_MSIZE 0x8000000
