@@ -47,7 +47,7 @@ SECTIONS {
   . = _stack_top + 0x1000;  /*栈顶，为堆区结束的位置*/
   _stack_pointer = .;   /*栈底，为VMA结束的位置*/
   /* end = .;
-  . = 0x0f000000;
+  . = ORIGIN(VMA);
   _stack_top = ALIGN(0x1000); 
   . = _stack_top + 0x8000;
   _stack_pointer = .;         
