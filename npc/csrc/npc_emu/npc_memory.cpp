@@ -74,7 +74,7 @@ uint8_t* guest_to_host(paddr_t paddr) {
     case SOC_DEVICE_PSRAM:
       ret = psram + paddr - CONFIG_SOC_PSRAM_BASE;
     default:
-      panic("unknown device");
+      panic("unknown device %08x", paddr);
   }
   return ret; 
 }
