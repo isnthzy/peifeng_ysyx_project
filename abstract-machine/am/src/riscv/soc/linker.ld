@@ -4,10 +4,11 @@ MEMORY {
   mrom (rx) : ORIGIN = 0x20000000, LENGTH = 4K
   flash(rx) : ORIGIN = 0x30000000, LENGTH = 16M
   sram (wx) : ORIGIN = 0x0f000000, LENGTH = 8K
+  psram(wx) : ORIGIN = 0x80000000, LENGTH = 16M
 }
 
 REGION_ALIAS("LMA", flash);
-REGION_ALIAS("VMA", sram );
+REGION_ALIAS("VMA", psram);
 
 SECTIONS {
   /* _pmem_start and _entry_offset are defined in LDFLAGS */

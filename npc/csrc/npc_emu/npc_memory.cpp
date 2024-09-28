@@ -179,7 +179,7 @@ extern "C" void psram_write(int32_t addr, int32_t data, int32_t wmask) {
   mem_write_wapper(waddr,data,wmask);
 }
 
-extern "C" int32_t psram_read(int32_t addr,int *data) {
+extern "C" void psram_read(int32_t addr,int *data) {
   int ld_addr = (addr + CONFIG_SOC_PSRAM_BASE) & ~0x3u;
   //NOTE:flash的地址没有高位，需要手动补上base，再交给x转发分配
   *data=paddr_read(ld_addr,4);
