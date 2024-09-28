@@ -29,7 +29,7 @@ static inline int in_soc_device(paddr_t addr) {
 
 void init_mem() {
   IFDEF(CONFIG_MEM_RANDOM, memset(pmem, rand(), CONFIG_MSIZE));
-  Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]", PMEM_LEFT, PMEM_RIGHT);
+  // Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]", PMEM_LEFT, PMEM_RIGHT);
 
   // init_flash_ram();
 }
@@ -74,7 +74,7 @@ uint8_t* guest_to_host(paddr_t paddr) {
     case SOC_DEVICE_PSRAM:
       ret = psram + paddr - CONFIG_SOC_PSRAM_BASE;
     default:
-      panic("unknown device %08x", paddr);
+      panic("unknown device 0x%08x", paddr);
   }
   return ret; 
 }
