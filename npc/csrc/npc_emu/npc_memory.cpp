@@ -16,7 +16,6 @@ static inline int in_soc_device(paddr_t addr) {
   if(addr - CONFIG_SOC_MROM_BASE  < CONFIG_SOC_MROM_SIZE) in_device_num=SOC_DEVICE_MROM;
   if(addr - CONFIG_SOC_FLASH_BASE < CONFIG_SOC_FLASH_SIZE) in_device_num=SOC_DEVICE_FLASH;
   if(addr - CONFIG_SOC_PSRAM_BASE < CONFIG_SOC_PSRAM_SIZE) in_device_num=SOC_DEVICE_PSRAM;
-  printf("addr:%x, in_device_num:%d,bool:%d\n",addr,in_device_num,(addr - CONFIG_SOC_PSRAM_BASE < CONFIG_SOC_PSRAM_SIZE));
   return in_device_num;
 }
 
@@ -74,6 +73,7 @@ uint8_t* guest_to_host(paddr_t paddr) {
       break;
     case SOC_DEVICE_PSRAM:
       ret = psram + paddr - CONFIG_SOC_PSRAM_BASE;
+      break;
     default:
       panic("unknown device 0x%08x", paddr);
   }
