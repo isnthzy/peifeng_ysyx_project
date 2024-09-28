@@ -8,12 +8,14 @@
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN={};
 static uint8_t mrom[CONFIG_MSIZE] PG_ALIGN={};
 static uint8_t flash_ram[CONFIG_SOC_FLASH_SIZE] PG_ALIGN = {};
+static uint8_t psram[CONFIG_SOC_PSRAM_SIZE] PG_ALIGN = {};
 
 static inline int in_soc_device(paddr_t addr) {
   int in_device_num=0;
   if(addr - CONFIG_MBASE < CONFIG_MSIZE) in_device_num=SOC_PMEM;
   if(addr - CONFIG_SOC_MROM_BASE  < CONFIG_SOC_MROM_SIZE) in_device_num=SOC_DEVICE_MROM;
   if(addr - CONFIG_SOC_FLASH_BASE < CONFIG_SOC_FLASH_SIZE) in_device_num=SOC_DEVICE_FLASH;
+  if(addr - CONFIG_SOC_PSRAM_BASE < CONFIG_SOC_PSRAM_SIZE) in_device_num=SOC_DEVICE_PSRAM;
   return in_device_num;
 }
 
@@ -69,6 +71,8 @@ uint8_t* guest_to_host(paddr_t paddr) {
     case SOC_DEVICE_FLASH:
       ret = flash_ram + paddr - CONFIG_SOC_FLASH_BASE;
       break;
+    case SOC_DEVICE_PSRAM:
+      ret = psram + paddr - CONFIG_SOC_PSRAM_BASE;
     default:
       panic("unknown device");
   }
@@ -101,15 +105,8 @@ void out_of_bound(paddr_t addr) {
   panic("(npc)address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "]",
       addr, PMEM_LEFT, PMEM_RIGHT);
 }
-//----------------------------dpi-c----------------------------
 
-extern "C" int pmem_read(int raddr) {
-  int ld_addr = raddr & ~0x3u;
-  word_t ld_rdata=paddr_read(ld_addr,4);
-  return ld_rdata;
-  // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
-}
-extern "C" void pmem_write(int waddr, int wdata, char wmask) {
+void mem_write_wapper(int waddr, int wdata, char wmask){
   // int st_len = (wmask & 0x1) + ((wmask & 0x2) >> 1) + ((wmask & 0x4) >> 2) + ((wmask & 0x8) >> 3);
   // int st_data = (wdata >> (8 * ((wmask & 0x2) >> 1 + (wmask & 0x4) >> 2 * 2 + (wmask & 0x8) >> 3 * 3))) & ((1 << (st_len * 8)) - 1);
   //用了笨方法枚举，暂时没想到什么合适的办法
@@ -152,6 +149,17 @@ extern "C" void pmem_write(int waddr, int wdata, char wmask) {
   // `wmask`中每比特表示`wdata`中1个字节的掩码,
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
 }
+//----------------------------dpi-c----------------------------
+
+extern "C" int pmem_read(int raddr) {
+  int ld_addr = raddr & ~0x3u;
+  word_t ld_rdata=paddr_read(ld_addr,4);
+  return ld_rdata;
+  // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
+}
+extern "C" void pmem_write(int waddr, int wdata, char wmask) {
+  mem_write_wapper(waddr,wdata,wmask);
+}
 
 extern "C" void flash_read(int32_t addr, int32_t *data) {
   int ld_addr = (addr + CONFIG_SOC_FLASH_BASE) & ~0x3u;
@@ -166,6 +174,17 @@ extern "C" int32_t mrom_read(int32_t addr) {
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 
+extern "C" void psram_write(int32_t addr, int32_t data, int32_t wmask) {
+  int waddr = (addr + CONFIG_SOC_PSRAM_BASE);
+  mem_write_wapper(waddr,data,wmask);
+}
+
+extern "C" int32_t psram_read(int32_t addr,int *data) {
+  int ld_addr = (addr + CONFIG_SOC_PSRAM_BASE) & ~0x3u;
+  //NOTE:flash的地址没有高位，需要手动补上base，再交给x转发分配
+  *data=paddr_read(ld_addr,4);
+  // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
+}
 //----------------------------dpi-c----------------------------
 
 
