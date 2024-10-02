@@ -26,7 +26,7 @@
 
 /*---------------------------------------------------------------------------------*/
 
-#define CONFIG_WAVEFORM 1
+// #define CONFIG_WAVEFORM 1
 #define TRACE_FST 1
 // #define TRACE_VCD 1
 /* 波形生成开关 */
@@ -46,7 +46,7 @@
 
 /*---------------------------------------------------------------------------------*/
 
-#define MTRACE_LOGBUF_SIZE 80
+#define MTRACE_LOGBUF_SIZE 10
 #define ITRACE_LOGBUF_SIZE 10
 #define DTRACE_LOGBUF_SIZE 10
 #define ETRACE_LOGBUF_SIZE 10
