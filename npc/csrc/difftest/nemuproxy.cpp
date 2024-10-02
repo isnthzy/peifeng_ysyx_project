@@ -23,7 +23,7 @@ void NemuProxy::init_nemu_proxy(char *ref_so_file, int port){
   }
 
   assert(ref_so_file != NULL);
-  printf("Using %s for difftest\n", ref_so_file);
+  printf_green("Using %s for difftest\n", ref_so_file);
   handle = dlopen(ref_so_file, RTLD_LAZY);
   assert(handle);
 

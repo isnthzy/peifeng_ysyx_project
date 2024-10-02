@@ -31,6 +31,10 @@
 #define MROM_RIGHT ((paddr_t)CONFIG_SOC_MROM_BASE + CONFIG_SOC_MROM_SIZE - 1)
 #define SRAM_LEFT  ((paddr_t)CONFIG_SOC_SRAM_BASE)
 #define SRAM_RIGHT ((paddr_t)CONFIG_SOC_SRAM_BASE + CONFIG_SOC_SRAM_SIZE - 1)
+#define FLASH_LEFT  ((paddr_t)CONFIG_SOC_FLASH_BASE)
+#define FLASH_RIGHT ((paddr_t)CONFIG_SOC_FLASH_BASE + CONFIG_SOC_FLASH_SIZE - 1)
+#define PSRAM_LEFT  ((paddr_t)CONFIG_SOC_PSRAM_BASE)
+#define PSRAM_RIGHT ((paddr_t)CONFIG_SOC_PSRAM_BASE + CONFIG_SOC_PSRAM_SIZE - 1)
 #endif
 
 /* convert the guest physical address in the guest program to host virtual address in NEMU */
@@ -44,12 +48,13 @@ bool check_load_commit(paddr_t addr,int type);
 bool check_store_commit(paddr_t addr,word_t data,int len);
 
 #ifdef CONFIG_SOC_DEVICE
-enum {SOC_DEVICE_ERROR, SOC_DEVICE_MROM, SOC_DEVICE_SRAM, SOC_DEVICE_FLASH};
+enum {SOC_DEVICE_ERROR, SOC_DEVICE_MROM, SOC_DEVICE_SRAM, SOC_DEVICE_FLASH, SOC_DEVICE_PSRAM};
 static inline int in_soc_device(paddr_t addr) {
   int in_device_num=0;
   if(addr - CONFIG_SOC_MROM_BASE < CONFIG_SOC_MROM_SIZE)   in_device_num=SOC_DEVICE_MROM;
   if(addr - CONFIG_SOC_SRAM_BASE < CONFIG_SOC_SRAM_SIZE)   in_device_num=SOC_DEVICE_SRAM;
   if(addr - CONFIG_SOC_FLASH_BASE < CONFIG_SOC_FLASH_SIZE) in_device_num=SOC_DEVICE_FLASH;
+  if(addr - CONFIG_SOC_PSRAM_BASE < CONFIG_SOC_PSRAM_SIZE) in_device_num=SOC_DEVICE_PSRAM;
   return in_device_num;
 }
 #endif

@@ -31,6 +31,7 @@ static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 static uint8_t soc_mrom[CONFIG_SOC_MROM_SIZE] PG_ALIGN = {};
 static uint8_t soc_sram[CONFIG_SOC_SRAM_SIZE] PG_ALIGN = {};
 static uint8_t soc_flash[CONFIG_SOC_FLASH_SIZE] PG_ALIGN = {};
+static uint8_t soc_psram[CONFIG_SOC_PSRAM_SIZE] PG_ALIGN = {};
 
 #endif
 
@@ -50,6 +51,9 @@ uint8_t* guest_to_host(paddr_t paddr) {
     break;
   case SOC_DEVICE_FLASH:
     ret=soc_flash + paddr - CONFIG_SOC_FLASH_BASE;
+    break;
+  case SOC_DEVICE_PSRAM:
+    ret=soc_psram + paddr - CONFIG_SOC_PSRAM_BASE;
     break;
   default:
     panic("pmem_read is not support write");
@@ -106,7 +110,9 @@ void init_mem() {
   // IFDEF(CONFIG_MEM_RANDOM, memset(mrom, rand(), CONFIG_SOC_MROM_SIZE));
   // IFDEF(CONFIG_MEM_RANDOM, memset(sram, rand(), CONFIG_SOC_SRAM_SIZE));
   Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]", MROM_LEFT, MROM_RIGHT);
-  Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]", SRAM_LEFT, SRAM_RIGHT);
+  Log("sram     memory area [" FMT_PADDR ", " FMT_PADDR "]", SRAM_LEFT, SRAM_RIGHT);
+  Log("flash    memory area [" FMT_PADDR ", " FMT_PADDR "]", FLASH_LEFT, FLASH_RIGHT);
+  Log("psram    memory area [" FMT_PADDR ", " FMT_PADDR "]", PSRAM_LEFT, PSRAM_RIGHT);
 #endif
 }
 

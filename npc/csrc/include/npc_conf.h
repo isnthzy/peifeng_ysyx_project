@@ -8,7 +8,7 @@
 /*---------------------------------------------------------------------------------*/
 
 
-// #define CONFIG_TRACE 1
+#define CONFIG_TRACE 1
 #define CONFIG_ITRACE 1
 #define CONFIG_MTRACE 1
 // #define CONFIG_FTRACE 1
@@ -70,3 +70,6 @@
 
 #define CONFIG_SOC_FLASH_BASE 0x30000000
 #define CONFIG_SOC_FLASH_SIZE 0x1000000
+
+#define CONFIG_SOC_PSRAM_BASE 0x80000000
+#define CONFIG_SOC_PSRAM_SIZE 0x1000000
