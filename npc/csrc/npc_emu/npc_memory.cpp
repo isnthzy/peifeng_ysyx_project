@@ -175,9 +175,9 @@ extern "C" int32_t mrom_read(int32_t addr) {
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 
-extern "C" void psram_write(int32_t addr, int32_t data, int32_t wmask) {
+extern "C" void psram_write(int32_t addr, int32_t data, char wlen) {
   int waddr = (addr + CONFIG_SOC_PSRAM_BASE);
-  mem_write_wapper(waddr,data,wmask);
+  paddr_write(waddr,wlen,data);
 }
 
 extern "C" void psram_read(int32_t addr,int *data) {
