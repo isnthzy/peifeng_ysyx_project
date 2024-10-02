@@ -185,7 +185,7 @@ extern "C" void psram_read(int32_t addr,int *data) {
   int ld_addr = (addr + CONFIG_SOC_PSRAM_BASE) & ~0x3u;
   //NOTE:flash的地址没有高位，需要手动补上base，再交给x转发分配
   *data=paddr_read(ld_addr,4);
-  printf("psram_read:addr:%08x\n,data:%08x\n",ld_addr,paddr_read(ld_addr,4));
+  printf("psram_read:addr:%08x,data:%08x\n",ld_addr,paddr_read(ld_addr,4));
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 //----------------------------dpi-c----------------------------
