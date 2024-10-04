@@ -1,10 +1,13 @@
 ENTRY(_start)
-PHDRS { text PT_LOAD; data PT_LOAD; }
+PHDRS {
+  text PT_LOAD FLAGS(r);  /* 只读执行段 */
+  data PT_LOAD FLAGS(rw); /* 可读写段 */
+}
 MEMORY {
   mrom (rx) : ORIGIN = 0x20000000, LENGTH = 4K
   flash(rx) : ORIGIN = 0x30000000, LENGTH = 16M
   sram (wx) : ORIGIN = 0x0f000000, LENGTH = 8K
-  psram(wx) : ORIGIN = 0x80000000, LENGTH = 16M
+  psram(rwx) : ORIGIN = 0x80000000, LENGTH = 16M
 }
 
 REGION_ALIAS("LMA", flash);
@@ -12,37 +15,38 @@ REGION_ALIAS("VMA", psram);
 
 SECTIONS {
   . = ORIGIN(LMA);
-  .text : {
+  .start : {
     *(entry)
-    *(.text*)
   } > LMA AT> LMA : text
+
+  .text : {
+    *(.text*)
+  } > VMA AT> LMA : data
   etext = .;
   _etext = .;
   .rodata : {
     *(.rodata*)
     *(.srodata*)
-  } > LMA
-  rodata_end = .;
-  .data : AT(rodata_end){
-    _data_start = .;
+  } > VMA AT> LMA : data
+  .data : {
     *(.data*)
     *(.sdata*)
-  } > VMA : data
-  _data_load_start = LOADADDR(.data);
-  _data_size = SIZEOF(.data);
+  } > VMA AT> LMA : data
+  _bootloader_virtual_start = ADDR(.text);
+  _bootloader_load_start = LOADADDR(.text);
+  _bootloader_size = SIZEOF(.data) + SIZEOF(.rodata) + SIZEOF(.text);
   edata = .;
   _data = .;
   .bss : {
-	  _bss_start = .;
     *(.bss*)
     *(.sbss*)
     *(.scommon)
-  } > VMA : data /*这里有坑，定义了多个MEMORY后如果为指定存储区域会分配给sram而不是psram*/
+  } > VMA AT> VMA : data /*这里有坑，定义了多个MEMORY后如果为指定存储区域会分配给sram而不是psram*/
   end = .;
   _end = .;
-  _heap_start = _data_start + _data_size;
-  _heap_end   = ORIGIN(VMA) + 0x1000;
-  _stack_top = ALIGN(0x1000);
-  . = _stack_top + 0x1000;  /*栈顶，为堆区结束的位置*/
+  _heap_start = _bootloader_virtual_start + _bootloader_size;
+  _heap_end   = ORIGIN(VMA) + LENGTH(VMA);
+  _stack_top = ORIGIN(sram); /*栈顶，为堆区结束的位置*/
+  . = ORIGIN(sram) + LENGTH(sram);  
   _stack_pointer = .;   /*栈底，为VMA结束的位置*/
 }
