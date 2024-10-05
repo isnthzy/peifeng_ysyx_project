@@ -123,7 +123,6 @@ static long load_img() {
   printf("The image is %s, size = %ld\n", img_file, size);
   fseek(fp, 0, SEEK_SET);
   int ret = fread(guest_to_host(START_ADDR), size, 1, fp);
-  printf("size:0x%08lx",size);
   assert(ret == 1);
   fclose(fp);
   return size;

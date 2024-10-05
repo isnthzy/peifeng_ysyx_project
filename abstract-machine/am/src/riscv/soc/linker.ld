@@ -1,7 +1,10 @@
 ENTRY(_start)
 PHDRS {
-  text PT_LOAD FLAGS(r);  /* 只读执行段 */
-  data PT_LOAD FLAGS(rw); /* 可读写段 */
+  start PT_LOAD;
+  text  PT_LOAD;  
+  rodata PT_LOAD;
+  data  PT_LOAD; 
+  bss   PT_LOAD;
 }
 MEMORY {
   mrom (rx) : ORIGIN = 0x20000000, LENGTH = 4K
@@ -17,31 +20,31 @@ SECTIONS {
   . = ORIGIN(LMA);
   .start : {
     *(entry)
-  } > LMA AT> LMA : text
+  } > LMA AT> LMA : start
 
   .text : {
     *(.text*)
-  } > VMA AT> LMA : data
+  } > VMA AT> LMA : text
   etext = .;
   _etext = .;
   .rodata : {
     *(.rodata*)
     *(.srodata*)
-  } > VMA AT> LMA : data
+  } > VMA AT> LMA : rodata
   .data : {
     *(.data*)
     *(.sdata*)
   } > VMA AT> LMA : data
-  _bootloader_virtual_start = ADDR(.text);
-  _bootloader_load_start = LOADADDR(.text);
-  _bootloader_size = SIZEOF(.data) + SIZEOF(.rodata) + SIZEOF(.text);
   edata = .;
   _data = .;
   .bss : {
     *(.bss*)
     *(.sbss*)
     *(.scommon)
-  } > VMA AT> VMA : data /*这里有坑，定义了多个MEMORY后如果为指定存储区域会分配给sram而不是psram*/
+  } > VMA AT> VMA : bss  /*这里有坑，定义了多个MEMORY后如果为指定存储区域会分配给sram而不是psram*/
+  _bootloader_virtual_start = ADDR(.text);
+  _bootloader_load_start = LOADADDR(.text);
+  _bootloader_size = SIZEOF(.data) + SIZEOF(.rodata) + SIZEOF(.text);
   end = .;
   _end = .;
   _heap_start = _bootloader_virtual_start + _bootloader_size;
