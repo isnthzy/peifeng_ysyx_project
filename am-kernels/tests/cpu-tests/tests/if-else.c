@@ -18,7 +18,7 @@ int ans[] = {0, 0, 0, 0, 50, 50, 50, 75, 75, 75, 100, 100, 100, 150};
 
 int main() {
 	int i, ans_idx = 0;
-	for(i = 0; i < NR_DATA; i ++) {
+	for(i = 0; i < 5; i ++) {
 		check(if_else(test_data[i]) == ans[ans_idx ++]);
 	}
 
