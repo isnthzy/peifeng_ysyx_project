@@ -22,22 +22,22 @@ SECTIONS {
     *(entry)
   } > LMA AT> LMA : start
 
-  .text :  ALIGN(4){
+  .text :  ALIGN(10){
     *(.text*)
   } > VMA AT> LMA : text
   etext = .;
   _etext = .;
-  .rodata :  ALIGN(4){
+  .rodata :  ALIGN(10){
     *(.rodata*)
     *(.srodata*)
   } > VMA AT> LMA : rodata
-  .data :  ALIGN(4){
+  .data :  ALIGN(10){
     *(.data*)
     *(.sdata*)
   } > VMA AT> LMA : data
   edata = .;
   _data = .;
-  .bss :  ALIGN(4){
+  .bss :  ALIGN(10){
     *(.bss*)
     *(.sbss*)
     *(.scommon)
