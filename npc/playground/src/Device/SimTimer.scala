@@ -1,12 +1,12 @@
 package Device
 import chisel3._
 import chisel3.util._
-import Axi.Axi4LiteSlave
+import Axi.Axi4Slave
 import CoreConfig.Configs._
 import CoreConfig.DeviceConfig
 
 class SimTimer extends Module with DeviceConfig{
-  val io=IO(new Axi4LiteSlave())
+  val io=IO(new Axi4Slave())
 
   val timer=RegInit(0.U(64.W))
   timer:=timer+1.U

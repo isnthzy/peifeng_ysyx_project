@@ -9,7 +9,7 @@ import FuncUnit.CsrFile
 import IP.Axi4LiteSram
 import CoreConfig.GenCtrl
 import DiffTest.dpic._
-import Device.{SimUart,SimTimer}
+import Device.{SimTimer}
 
 class SimTop extends Module with DeviceConfig{
   override val desiredName = "ysyx_23060115"
