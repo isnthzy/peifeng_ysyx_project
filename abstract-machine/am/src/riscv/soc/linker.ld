@@ -44,7 +44,7 @@ SECTIONS {
   } > VMA AT> LMA : bss  /*这里有坑，定义了多个MEMORY后如果为指定存储区域会分配给sram而不是psram*/
   _bootloader_virtual_start = ADDR(.text);
   _bootloader_load_start = LOADADDR(.text);
-  _bootloader_size = SIZEOF(.data) + SIZEOF(.rodata) + SIZEOF(.text);
+  _bootloader_size = SIZEOF(.data) + SIZEOF(.rodata) + SIZEOF(.text) + SIZEOF(.bss);
   end = .;
   _end = .;
   _heap_start = _bootloader_virtual_start + _bootloader_size;
