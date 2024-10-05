@@ -17,10 +17,11 @@ int ans[] = {0, 0, 0, 0, 50, 50, 50, 75, 75, 75, 100, 100, 100, 150};
 #define NR_DATA LENGTH(test_data)
 
 int main() {
-	int i, ans_idx = 0;
-	for(i = 0; i < 1; i ++) {
-		check(if_else(test_data[i]) == ans[ans_idx ++]);
-	}
+	// int i, ans_idx = 0;
+	check(if_else(test_data[0]) == ans[0]);
+	// for(i = 0; i < NR_DATA; i ++) {
+	// 	check(if_else(test_data[i]) == ans[ans_idx ++]);
+	// }
 
 	// check(i == NR_DATA);
 
