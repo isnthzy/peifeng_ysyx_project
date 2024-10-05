@@ -22,31 +22,31 @@ SECTIONS {
     *(entry)
   } > LMA AT> LMA : start
 
-  .text : {
+  .text :  ALIGN(4){
     *(.text*)
   } > VMA AT> LMA : text
   etext = .;
   _etext = .;
-  .rodata : {
+  .rodata :  ALIGN(4){
     *(.rodata*)
     *(.srodata*)
   } > VMA AT> LMA : rodata
-  .data : {
+  .data :  ALIGN(4){
     *(.data*)
     *(.sdata*)
   } > VMA AT> LMA : data
   edata = .;
   _data = .;
-  .bss : {
+  .bss :  ALIGN(4){
     *(.bss*)
     *(.sbss*)
     *(.scommon)
   } > VMA AT> LMA : bss  /*这里有坑，定义了多个MEMORY后如果为指定存储区域会分配给sram而不是psram*/
-  _bootloader_virtual_start = ADDR(.text);
-  _bootloader_load_start = LOADADDR(.text);
-  _bootloader_size = SIZEOF(.data) + SIZEOF(.rodata) + SIZEOF(.text) + SIZEOF(.bss);
   end = .;
   _end = .;
+  _bootloader_virtual_start = ADDR(.text);
+  _bootloader_load_start = LOADADDR(.text);
+  _bootloader_size = _end - _bootloader_virtual_start;
   _heap_start = _bootloader_virtual_start + _bootloader_size;
   _heap_end   = ORIGIN(VMA) + LENGTH(VMA);  
   _stack_top = ORIGIN(sram); /*栈顶，为堆区结束的位置*/
