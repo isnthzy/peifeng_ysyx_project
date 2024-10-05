@@ -50,7 +50,7 @@
 #define ITRACE_LOGBUF_SIZE 10
 #define DTRACE_LOGBUF_SIZE 10
 #define ETRACE_LOGBUF_SIZE 10
-#define IRINGBUF_MAX_NUM 128
+#define IRINGBUF_MAX_NUM 512
 //trace最多开多少IRINGBUF_MAX_NUM给多少
 
 /*---------------------------------------------------------------------------------*/
