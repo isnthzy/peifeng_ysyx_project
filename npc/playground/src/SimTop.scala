@@ -30,7 +30,7 @@ class SimTop extends Module with DeviceConfig{
   val Axi4Bridge=Module(new Axi4Bridge())
   val AxiArbiter=Module(new AxiArbiter())
 //
-  var AxiOut=new Axi4Master() //
+  var AxiOut=Wire(new Axi4Master()) //
   io.master<>AxiOut
   AxiOut.aw.ready:=io.master.awready
   io.master.awvalid:=AxiOut.aw.valid
