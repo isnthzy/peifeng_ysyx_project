@@ -25,7 +25,7 @@ class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
   val raddr=io.a.ar.bits.addr
   val XreadSelVec=VecInit(
     addressSpace.map(list=>
-      (raddr>=list._1.U&&raddr<=(list._1+list._2).U)
+      (raddr>=list._1.U&&raddr<(list._1+list._2).U)
     )
   )
   val XreadHitIdx=OHToUInt(XreadSelVec)
@@ -65,7 +65,7 @@ class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
   val waddr=io.a.aw.bits.addr
   val XwriteSelVec=VecInit(
     addressSpace.map(list=>
-      (waddr>=list._1.U&&waddr<=(list._1+list._2).U)
+      (waddr>=list._1.U&&waddr<(list._1+list._2).U)
     )
   )
   val XwriteHitIdx=OHToUInt(XwriteSelVec)

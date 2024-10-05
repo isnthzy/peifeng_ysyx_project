@@ -3,7 +3,7 @@ import chisel3.util._
 import CoreConfig.Configs._
 import CoreConfig.DeviceConfig
 import PipeLine.{PfStage,IfStage,IdStage,ExStage,LsStage,WbStage}
-import Axi.{Axi4Bridge,AxiArbiter,AxiXbarA2X}
+import Axi.{Axi4Bridge,AxiArbiter,AxiXbarA2X,Axi4Master}
 import DiffTest.DiffCommit
 import FuncUnit.CsrFile
 import IP.Axi4LiteSram
@@ -30,39 +30,41 @@ class SimTop extends Module with DeviceConfig{
   val Axi4Bridge=Module(new Axi4Bridge())
   val AxiArbiter=Module(new AxiArbiter())
 //
-  Axi4Bridge.io.aw.ready:=io.master.awready
-  io.master.awvalid:=Axi4Bridge.io.aw.valid
-  io.master.awaddr :=Axi4Bridge.io.aw.bits.addr
-  io.master.awid   :=Axi4Bridge.io.aw.bits.id
-  io.master.awlen  :=Axi4Bridge.io.aw.bits.len
-  io.master.awsize :=Axi4Bridge.io.aw.bits.size
-  io.master.awburst:=Axi4Bridge.io.aw.bits.burst
+  val AxiOut=Wire(new Axi4Master()) //
+  io.master<>AxiOut
+  AxiOut.aw.ready:=io.master.awready
+  io.master.awvalid:=AxiOut.aw.valid
+  io.master.awaddr :=AxiOut.aw.bits.addr
+  io.master.awid   :=AxiOut.aw.bits.id
+  io.master.awlen  :=AxiOut.aw.bits.len
+  io.master.awsize :=AxiOut.aw.bits.size
+  io.master.awburst:=AxiOut.aw.bits.burst
 
-  Axi4Bridge.io.w.ready:=io.master.wready
-  io.master.wvalid:=Axi4Bridge.io.w.valid
-  io.master.wdata :=Axi4Bridge.io.w.bits.data
-  io.master.wstrb :=Axi4Bridge.io.w.bits.strb
-  io.master.wlast :=Axi4Bridge.io.w.bits.last
+  AxiOut.w.ready:=io.master.wready
+  io.master.wvalid:=AxiOut.w.valid
+  io.master.wdata :=AxiOut.w.bits.data
+  io.master.wstrb :=AxiOut.w.bits.strb
+  io.master.wlast :=AxiOut.w.bits.last
 
-  io.master.bready:=Axi4Bridge.io.b.ready
-  Axi4Bridge.io.b.valid:=io.master.bvalid
-  Axi4Bridge.io.b.bits.resp:=io.master.bresp
-  Axi4Bridge.io.b.bits.id  :=io.master.bid
+  io.master.bready:=AxiOut.b.ready
+  AxiOut.b.valid:=io.master.bvalid
+  AxiOut.b.bits.resp:=io.master.bresp
+  AxiOut.b.bits.id  :=io.master.bid
 
-  Axi4Bridge.io.ar.ready:=io.master.arready
-  io.master.arvalid:=Axi4Bridge.io.ar.valid
-  io.master.araddr :=Axi4Bridge.io.ar.bits.addr
-  io.master.arid   :=Axi4Bridge.io.ar.bits.id
-  io.master.arlen  :=Axi4Bridge.io.ar.bits.len
-  io.master.arsize :=Axi4Bridge.io.ar.bits.size
-  io.master.arburst:=Axi4Bridge.io.ar.bits.burst
+  AxiOut.ar.ready:=io.master.arready
+  io.master.arvalid:=AxiOut.ar.valid
+  io.master.araddr :=AxiOut.ar.bits.addr
+  io.master.arid   :=AxiOut.ar.bits.id
+  io.master.arlen  :=AxiOut.ar.bits.len
+  io.master.arsize :=AxiOut.ar.bits.size
+  io.master.arburst:=AxiOut.ar.bits.burst
 
-  io.master.rready:=Axi4Bridge.io.r.ready
-  Axi4Bridge.io.r.valid:=io.master.rvalid
-  Axi4Bridge.io.r.bits.data:=io.master.rdata
-  Axi4Bridge.io.r.bits.resp:=io.master.rresp
-  Axi4Bridge.io.r.bits.id  :=io.master.rid
-  Axi4Bridge.io.r.bits.last:=io.master.rlast
+  io.master.rready:=AxiOut.r.ready
+  AxiOut.r.valid:=io.master.rvalid
+  AxiOut.r.bits.data:=io.master.rdata
+  AxiOut.r.bits.resp:=io.master.rresp
+  AxiOut.r.bits.id  :=io.master.rid
+  AxiOut.r.bits.last:=io.master.rlast
 //Axi4Bridge
 
 
@@ -92,26 +94,22 @@ class SimTop extends Module with DeviceConfig{
 //AxiArbiter
 
 // //AxiXBar
-//   val Axi4LiteSram = Module(new Axi4LiteSram())
-//   val SimUart  = Module(new SimUart())
-//   val SimTimer = Module(new SimTimer())
+  val SimTimer = Module(new SimTimer())
 
-//   val AxiXbarA2X = Module(new AxiXbarA2X(
-//     List(
-//       (0x80000000L , 0x8000000L    , false),
-//       (0xa00003f8L , 0x0L          , false),
-//       (0xa0000048L , 0x0L          , false),
-//     )
-//   ))
-//   Axi4Bridge.io.ar<>AxiXbarA2X.io.a.ar
-//   Axi4Bridge.io.r <>AxiXbarA2X.io.a.r
-//   Axi4Bridge.io.aw<>AxiXbarA2X.io.a.aw
-//   Axi4Bridge.io.w <>AxiXbarA2X.io.a.w
-//   Axi4Bridge.io.b <>AxiXbarA2X.io.a.b
+  val AxiXbarA2X = Module(new AxiXbarA2X(
+    List(
+      (0x02010000L , 0xFDFF0000L   , false),
+      (0x02000000L , 0x10000L      , false),
+    )
+  ))
+  Axi4Bridge.io.ar<>AxiXbarA2X.io.a.ar
+  Axi4Bridge.io.r <>AxiXbarA2X.io.a.r
+  Axi4Bridge.io.aw<>AxiXbarA2X.io.a.aw
+  Axi4Bridge.io.w <>AxiXbarA2X.io.a.w
+  Axi4Bridge.io.b <>AxiXbarA2X.io.a.b
 
-//   AxiXbarA2X.io.x(0)<>Axi4LiteSram.io
-//   AxiXbarA2X.io.x(1)<>SimUart.io
-//   AxiXbarA2X.io.x(2)<>SimTimer.io
+  AxiXbarA2X.io.x(0)<>AxiOut
+  AxiXbarA2X.io.x(1)<>SimTimer.io
 //
 
 // PreIF begin
