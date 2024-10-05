@@ -48,8 +48,8 @@ SECTIONS {
   end = .;
   _end = .;
   _heap_start = _bootloader_virtual_start + _bootloader_size;
-  _heap_end   = ORIGIN(VMA) + LENGTH(VMA) - 0x4;  
+  _heap_end   = ORIGIN(VMA) + LENGTH(VMA);  
   _stack_top = ORIGIN(sram); /*栈顶，为堆区结束的位置*/
-  . = ORIGIN(sram) + LENGTH(sram) - 0x4;  
+  . = ORIGIN(sram) + LENGTH(sram);  
   _stack_pointer = .;   /*栈底，为VMA结束的位置*/
 }
