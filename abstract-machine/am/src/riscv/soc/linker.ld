@@ -42,6 +42,7 @@ SECTIONS {
     *(.sbss*)
     *(.scommon)
   } > VMA AT> LMA : bss  /*这里有坑，定义了多个MEMORY后如果为指定存储区域会分配给sram而不是psram*/
+  . = ALIGN(10);
   end = .;
   _end = .;
   _bootloader_virtual_start = ADDR(.text);
