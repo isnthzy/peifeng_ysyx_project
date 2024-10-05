@@ -3,7 +3,7 @@ import chisel3.util._
 import CoreConfig.Configs._
 import CoreConfig.DeviceConfig
 import PipeLine.{PfStage,IfStage,IdStage,ExStage,LsStage,WbStage}
-import Axi.{Axi4Bridge,AxiArbiter,AxiXbarA2X,Axi4Master}
+import Axi.{Axi4Bridge,AxiArbiter,AxiXbarA2X,Axi4Master,AxiTopBundle,AxiCoreOut}
 import DiffTest.DiffCommit
 import FuncUnit.CsrFile
 import IP.Axi4LiteSram
@@ -29,44 +29,9 @@ class SimTop extends Module with DeviceConfig{
 //
   val Axi4Bridge=Module(new Axi4Bridge())
   val AxiArbiter=Module(new AxiArbiter())
+  val AxiCoreOut=Module(new AxiCoreOut())
 //
-  var AxiOut=Wire(new Axi4Master()) //
-  io.master<>AxiOut
-  AxiOut.aw.ready:=io.master.awready
-  io.master.awvalid:=AxiOut.aw.valid
-  io.master.awaddr :=AxiOut.aw.bits.addr
-  io.master.awid   :=AxiOut.aw.bits.id
-  io.master.awlen  :=AxiOut.aw.bits.len
-  io.master.awsize :=AxiOut.aw.bits.size
-  io.master.awburst:=AxiOut.aw.bits.burst
-
-  AxiOut.w.ready:=io.master.wready
-  io.master.wvalid:=AxiOut.w.valid
-  io.master.wdata :=AxiOut.w.bits.data
-  io.master.wstrb :=AxiOut.w.bits.strb
-  io.master.wlast :=AxiOut.w.bits.last
-
-  io.master.bready:=AxiOut.b.ready
-  AxiOut.b.valid:=io.master.bvalid
-  AxiOut.b.bits.resp:=io.master.bresp
-  AxiOut.b.bits.id  :=io.master.bid
-
-  AxiOut.ar.ready:=io.master.arready
-  io.master.arvalid:=AxiOut.ar.valid
-  io.master.araddr :=AxiOut.ar.bits.addr
-  io.master.arid   :=AxiOut.ar.bits.id
-  io.master.arlen  :=AxiOut.ar.bits.len
-  io.master.arsize :=AxiOut.ar.bits.size
-  io.master.arburst:=AxiOut.ar.bits.burst
-
-  io.master.rready:=AxiOut.r.ready
-  AxiOut.r.valid:=io.master.rvalid
-  AxiOut.r.bits.data:=io.master.rdata
-  AxiOut.r.bits.resp:=io.master.rresp
-  AxiOut.r.bits.id  :=io.master.rid
-  AxiOut.r.bits.last:=io.master.rlast
-//Axi4Bridge
-
+  io.master<>AxiCoreOut.io.out
 
   io.slave.awready:=0.U
   io.slave.wready :=0.U
@@ -108,7 +73,7 @@ class SimTop extends Module with DeviceConfig{
   Axi4Bridge.io.w <>AxiXbarA2X.io.a.w
   Axi4Bridge.io.b <>AxiXbarA2X.io.a.b
 
-  AxiXbarA2X.io.x(0)<>AxiOut
+  AxiXbarA2X.io.x(0)<>AxiCoreOut.io.in
   AxiXbarA2X.io.x(1)<>SimTimer.io
 //
 
@@ -164,38 +129,3 @@ object StageConnect {
   }
 }
 
-class AxiTopBundle extends Bundle {
-  val awready=Input(Bool())
-  val awvalid=Output(Bool())
-  val awaddr =Output(UInt(ADDR_WIDTH.W))
-  val awid   =Output(UInt(4.W))
-  val awlen  =Output(UInt(8.W))
-  val awsize =Output(UInt(3.W))
-  val awburst=Output(UInt(2.W))
-
-  val wready =Input(Bool())
-  val wvalid =Output(Bool())
-  val wdata  =Output(UInt(DATA_WIDTH.W))
-  val wstrb  =Output(UInt((DATA_WIDTH/8).W))
-  val wlast  =Output(Bool())
-
-  val bready =Output(Bool())
-  val bvalid =Input(Bool())
-  val bresp  =Input(UInt(2.W))
-  val bid    =Input(UInt(4.W))
-
-  val arready=Input(Bool())
-  val arvalid=Output(Bool())
-  val araddr =Output(UInt(ADDR_WIDTH.W))
-  val arid   =Output(UInt(4.W))
-  val arlen  =Output(UInt(8.W))
-  val arsize =Output(UInt(3.W))
-  val arburst=Output(UInt(2.W))
-  
-  val rready =Output(Bool())
-  val rvalid =Input(Bool())
-  val rresp  =Input(UInt(2.W))
-  val rdata  =Input(UInt(DATA_WIDTH.W))
-  val rlast  =Input(Bool())
-  val rid    =Input(UInt(4.W))
-}
