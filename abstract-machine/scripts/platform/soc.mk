@@ -4,6 +4,7 @@ AM_SRCS := riscv/soc/start.S \
 
 CFLAGS    += -fdata-sections -ffunction-sections
 LDFLAGS   += -T $(AM_HOME)/am/src/riscv/soc/linker.ld 
+LDFLAGS   += --gc-sections -e _start
 CFLAGS += -DMAINARGS=\"$(mainargs)\"
 
 NPCFLAGS+=-l $(shell dirname $(IMAGE).elf)/npc-log.txt

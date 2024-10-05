@@ -22,6 +22,8 @@ void sim_exit(){
   #ifdef CONFIG_WAVEFORM
   tfp->close();
   printf_green("The Dump file has been saved at npc/dump.{fst,vcd}\n");
+  #else
+  printf_red("No Dump file because waveform is close\n");
   #endif
 }
 int is_exit_status_bad() {
