@@ -6,7 +6,7 @@ import CoreConfig.Configs._
 //为了美观把他挂在xbar下面
 class AxiCoreOut extends Module {
   val io=IO(new Bundle{
-    val in  = new Axi4Master()
+    val in  = Flipped(new Axi4Master())
     val out = new AxiTopBundle()
   })
   io.in.aw.ready:=io.out.awready
