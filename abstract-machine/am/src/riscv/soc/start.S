@@ -19,9 +19,9 @@ _bootloader:
 _copy_loop:
   add a3, a1, a5
   add a4, a0, a5
-  lbu a3, 0(a3)
-  sb a3, 0(a4)
-  addi a5, a5, 1
+  lw a3, 0(a3)
+  sw a3, 0(a4)
+  addi a5, a5, 4
   bltu a5, a2, _copy_loop
   li	a0,0
   ret
