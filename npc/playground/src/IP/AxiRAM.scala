@@ -5,9 +5,9 @@ import chisel3._
 import chisel3.util._
 import CoreConfig.Configs._
 import FuncUnit.Control._
-import Axi.Axi4LiteSlave
+import Axi.Axi4Slave
 class Axi4LiteSram extends Module {
-  val io=IO(new Axi4LiteSlave())
+  val io=IO(new Axi4Slave())
   val dpi_sram=Module(new dpi_sram())
   
   dontTouch(io);
@@ -28,7 +28,7 @@ class Axi4LiteSram extends Module {
   }
   io.r.valid:=readDataValidReg
 
-  io.r.bits.resp:=0.U
+  io.r.bits:=0.U.asTypeOf(io.r.bits)
   io.r.bits.data:=dpi_sram.io.rdata
 
 
@@ -46,7 +46,7 @@ class Axi4LiteSram extends Module {
     writeRespValidReg:=false.B
   }
   io.b.valid:=writeRespValidReg
-  io.b.bits.resp:=0.U
+  io.b.bits:=0.U.asTypeOf(io.b.bits)
 
 
 }

@@ -18,6 +18,7 @@ class DeviceSkip extends Module with DeviceConfig{
   readSkip:=(
     (io.addr >= UART_BASE && io.addr < UART_BASE+UART_SIZE)
   ||(io.addr >= SPI_BASE  && io.addr < SPI_BASE +SPI_SIZE)
+  ||(io.addr >= RTC_ADDR  && io.addr < RTC_ADDR +RTC_SIZE)
   )
   // readSkip:=(
   //   (io.addr===RTC_ADDR || io.addr === RTC_ADDR+4.U)

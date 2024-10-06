@@ -1,12 +1,12 @@
 package Device
 import chisel3._
 import chisel3.util._
-import Axi.Axi4LiteSlave
+import Axi.Axi4Slave
 import CoreConfig.Configs._
 import CoreConfig.DeviceConfig
 
 class SimTimer extends Module with DeviceConfig{
-  val io=IO(new Axi4LiteSlave())
+  val io=IO(new Axi4Slave())
 
   val timer=RegInit(0.U(64.W))
   timer:=timer+1.U
@@ -31,8 +31,10 @@ class SimTimer extends Module with DeviceConfig{
       when(io.r.fire){
         when(addrResp===RTC_ADDR){
           io.r.bits.data:=timer(31,0)
-        }.otherwise{
+        }.elsewhen(addrResp===RTC_ADDR+4.U){
           io.r.bits.data:=timer(63,32)
+        }.otherwise{
+          io.r.bits.data:="hffffffff".U
         }
         timerState:=state_idle
       }

@@ -15,8 +15,8 @@ import CoreConfig.Configs._
 //Xbar的作用是转发，因此Xbar只需要追踪开始和结束状态
 class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
   val io=IO(new Bundle{
-    val a=Flipped(new Axi4LiteMaster())
-    val x=Vec(addressSpace.length, new Axi4LiteMaster())
+    val a=Flipped(new Axi4Master())
+    val x=Vec(addressSpace.length, new Axi4Master())
   })
   val state_idle :: state_wait_fire :: Nil = Enum(2)
   val ReadRequstState=RegInit(state_idle)
@@ -25,7 +25,7 @@ class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
   val raddr=io.a.ar.bits.addr
   val XreadSelVec=VecInit(
     addressSpace.map(list=>
-      (raddr>=list._1.U&&raddr<=(list._1+list._2).U)
+      (raddr>=list._1.U&&raddr<(list._1+list._2).U)
     )
   )
   val XreadHitIdx=OHToUInt(XreadSelVec)
@@ -65,7 +65,7 @@ class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
   val waddr=io.a.aw.bits.addr
   val XwriteSelVec=VecInit(
     addressSpace.map(list=>
-      (waddr>=list._1.U&&waddr<=(list._1+list._2).U)
+      (waddr>=list._1.U&&waddr<(list._1+list._2).U)
     )
   )
   val XwriteHitIdx=OHToUInt(XwriteSelVec)

@@ -18,19 +18,20 @@ object Configs {
 trait DeviceConfig{
   //NOTE:警告，请确保设备地址与协同仿真框架一致，避免skip信号提交错误
 
-  def DEVICE_BASE = "ha0000000".U(32.W)
-  def SERIAL_PORT = DEVICE_BASE + "h00003f8".U(32.W)
-  def SERIAL_SIZE = 0.U
+  // def DEVICE_BASE = "ha0000000".U(32.W)
+  // def SERIAL_PORT = DEVICE_BASE + "h00003f8".U(32.W)
+  // def SERIAL_SIZE = 0.U
 
-  def RTC_ADDR    = DEVICE_BASE + "h0000048".U(32.W)
-  def RTC_SIZE    = 8.U
 
-  def KBD_ADDR    = DEVICE_BASE + "h0000060".U(32.W)
-  def VGACTL_ADDR = DEVICE_BASE + "h0000100".U(32.W)
-  def SYNC_ADDR   = VGACTL_ADDR +  4.U(32.W)
-  def FB_ADDR     = DEVICE_BASE + "h1000000".U(32.W)
+  // def KBD_ADDR    = DEVICE_BASE + "h0000060".U(32.W)
+  // def VGACTL_ADDR = DEVICE_BASE + "h0000100".U(32.W)
+  // def SYNC_ADDR   = VGACTL_ADDR +  4.U(32.W)
+  // def FB_ADDR     = DEVICE_BASE + "h1000000".U(32.W)
 
-  def SCREEN_SIZE = 400*300
+  // def SCREEN_SIZE = 400*300
+
+  def RTC_ADDR  = "h02000000".U(32.W)
+  def RTC_SIZE  = 8.U
 
   def UART_BASE = "h10000000".U(32.W)
   def UART_SIZE = "h1000".U
