@@ -73,7 +73,6 @@ void put_csr(){
 
 void _trm_init(){
   init_uart();
-  putstr(mainargs);
   // if (_data_start != _data_load_start) memcpy(_data_start, _data_load_start, (size_t) _data_size);
   // put_csr();
   int ret = main(mainargs);
