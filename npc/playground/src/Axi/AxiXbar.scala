@@ -28,7 +28,7 @@ class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
       (raddr>=list._1.U&&raddr<(list._1+list._2).U)
     )
   )
-  val XreadHitIdx=OHToUInt(XreadSelVec)
+  val XreadHitIdx=dontTouch(OHToUInt(XreadSelVec))
   val Xread=io.x(XreadHitIdx)
   val arValidReg=RegInit(false.B)
   val XreadRespIdx=RegInit(0.U(log2Ceil(addressSpace.length).W))
