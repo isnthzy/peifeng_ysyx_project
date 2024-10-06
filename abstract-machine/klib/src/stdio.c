@@ -3,7 +3,7 @@
 #include <klib-macros.h>
 #include <stdarg.h>
 
-#define OUR_BUF_SIZE 8192
+#define OUR_BUF_SIZE 1024
 //注意缓冲区的大小
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 

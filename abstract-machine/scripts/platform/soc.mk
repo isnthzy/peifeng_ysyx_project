@@ -1,11 +1,13 @@
 AM_SRCS := riscv/soc/start.S \
-					 riscv/soc/trm.c
+					 riscv/soc/trm.c	 \
+					 riscv/soc/ioe.c   \
+					 riscv/soc/timer.c \
 
 
 CFLAGS    += -fdata-sections -ffunction-sections
 LDFLAGS   += -T $(AM_HOME)/am/src/riscv/soc/linker.ld 
 LDFLAGS   += --gc-sections -e _start
-CFLAGS += -DMAINARGS=\"$(mainargs)\"
+CFLAGS 		+= -DMAINARGS=\"$(mainargs)\"
 
 NPCFLAGS+=-l $(shell dirname $(IMAGE).elf)/npc-log.txt
 NPCFLAGS+=--diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so

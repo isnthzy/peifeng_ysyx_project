@@ -13,12 +13,12 @@ ifeq ($(MAKECMDGOALS),) # 如果MAKECMDGOALS为空，则将其设置为image
   .DEFAULT_GOAL = image
 endif
 #am_makefile 被使用
-$(info "The am_makefile begin"$(NAME)-$(MAKECMDGOALS)-$(ARCH))
+# $(info "The am_makefile begin"$(NAME)-$(MAKECMDGOALS)-$(ARCH))
 ### Override checks when `make clean/clean-all/html`
 ifeq ($(findstring $(MAKECMDGOALS),clean|clean-all|html),)
 
 ### Print build info message
-$(info # Building $(NAME)-$(MAKECMDGOALS) [$(ARCH)])
+# $(info # Building $(NAME)-$(MAKECMDGOALS) [$(ARCH)])
 
 ### Check: environment variable `$AM_HOME` looks sane
 ifeq ($(wildcard $(AM_HOME)/am/include/am.h),)
@@ -164,7 +164,7 @@ clean:
 .PHONY: clean
 
 #am_makefile 被使用
-$(info "The am_makefile end"$(NAME)-$(MAKECMDGOALS)-$(ARCH))
+# $(info "The am_makefile end"$(NAME)-$(MAKECMDGOALS)-$(ARCH))
 
 ### Clean all sub-projects within depth 2 (and ignore errors)
 CLEAN_ALL = $(dir $(shell find . -mindepth 2 -name Makefile))

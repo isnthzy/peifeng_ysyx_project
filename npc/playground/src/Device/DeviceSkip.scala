@@ -20,11 +20,6 @@ class DeviceSkip extends Module with DeviceConfig{
   ||(io.addr >= SPI_BASE  && io.addr < SPI_BASE +SPI_SIZE)
   ||(io.addr >= RTC_ADDR  && io.addr < RTC_ADDR +RTC_SIZE)
   )
-  // readSkip:=(
-  //   (io.addr===RTC_ADDR || io.addr === RTC_ADDR+4.U)
-  // || io.addr===KBD_ADDR || io.addr === VGACTL_ADDR
-  // ||(io.addr >=FB_ADDR  && io.addr  <= FB_ADDR+(SCREEN_SIZE*4).U)
-  // )
 
   writeSkip:=(
     (io.addr >= SPI_BASE  && io.addr < SPI_BASE +SPI_SIZE)
