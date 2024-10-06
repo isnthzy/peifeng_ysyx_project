@@ -1,5 +1,7 @@
 AM_SRCS := riscv/soc/start.S \
-					 riscv/soc/trm.c
+					 riscv/soc/trm.c	 \
+					 riscv/soc/ioe.c   \
+					 riscv/soc/timer.c \
 
 
 CFLAGS    += -fdata-sections -ffunction-sections
