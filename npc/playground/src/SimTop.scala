@@ -63,8 +63,8 @@ class SimTop extends Module with DeviceConfig{
 
   val AxiXbarA2X = Module(new AxiXbarA2X(
     List(
-      (0x02010000L , 0xFDFF0000L   , false),
-      (0x02000000L , 0x10000L      , false),
+      (0x02010000L , 0xFDFF0000L, false), //第一行也为默认转发地址，当后面都未命中，转发到默认地址
+      (0x02000000L , 0x10000L   , false),
     )
   ))
   Axi4Bridge.io.ar<>AxiXbarA2X.io.a.ar
