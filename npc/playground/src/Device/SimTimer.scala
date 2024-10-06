@@ -31,8 +31,10 @@ class SimTimer extends Module with DeviceConfig{
       when(io.r.fire){
         when(addrResp===RTC_ADDR){
           io.r.bits.data:=timer(31,0)
-        }.otherwise{
+        }.elsewhen(addrResp===RTC_ADDR+4.U){
           io.r.bits.data:=timer(63,32)
+        }.otherwise{
+          io.r.bits.data:="hffffffff".U
         }
         timerState:=state_idle
       }
