@@ -1,3 +1,4 @@
+ENTRY(_start)
 PHDRS {
   start PT_LOAD;
   ssbl  PT_LOAD;
@@ -25,7 +26,7 @@ SECTIONS {
   } > LMA AT> LMA : start
 
   .ssbl : ALIGN(10){
-    *(.ssbl*)
+    *(ssbl)
   } > VMA AT> LMA : ssbl
   _ssbl_end = .;
 
