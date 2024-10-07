@@ -1,6 +1,7 @@
 ENTRY(_start)
 PHDRS {
   start PT_LOAD;
+  ssbl  PT_LOAD;
   text  PT_LOAD;  
   rodata PT_LOAD;
   data  PT_LOAD; 
@@ -22,6 +23,11 @@ SECTIONS {
   .start : {
     *(entry)
   } > LMA AT> LMA : start
+
+  .ssbl : ALIGN(10){
+    *(ssbl)
+  } > VMA AT> LMA : ssbl
+  _ssbl_end = .;
 
   .text :  ALIGN(10){
     *(.text*)
@@ -49,6 +55,9 @@ SECTIONS {
   _bootloader_virtual_start = ADDR(.text);
   _bootloader_load_start = LOADADDR(.text);
   _bootloader_size = _end - _bootloader_virtual_start;
+  _ssbl_virtual_start = ADDR(.ssbl);
+  _ssbl_load_start = LOADADDR(.ssbl);
+  _ssbl_size = _ssbl_end - _ssbl_virtual_start;
   _heap_start = _bootloader_virtual_start + _bootloader_size;
   _heap_end   = ORIGIN(VMA) + LENGTH(VMA);  
   _stack_top = ORIGIN(sram); /*栈顶，为堆区结束的位置*/
