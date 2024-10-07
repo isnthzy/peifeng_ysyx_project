@@ -3,7 +3,7 @@
 #include <klib-macros.h>
 #include <stdarg.h>
 
-#define OUR_BUF_SIZE 1024
+#define OUR_BUF_SIZE 1536
 //注意缓冲区的大小
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
@@ -23,8 +23,8 @@ char* gSpaces(int glength,char g_char) { //空格生成器
   if (glength < 0) {
     assert(0); 
   }
-  static char spaces[1024]; // 假设最大长度为 128
-  if(glength>1024) assert(0); 
+  static char spaces[256]; // 假设最大长度为 128
+  if(glength>256) assert(0); 
   for (int i=0;i<glength;i++) {
     spaces[i]=g_char;
   }
