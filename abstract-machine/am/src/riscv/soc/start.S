@@ -14,8 +14,7 @@ _start:
   jal _fsbl
   la t1, _ssbl
   jalr t1
-  la t1, _trm_init
-  jalr t1
+
 
 _fsbl:
   la a0, _ssbl_virtual_start

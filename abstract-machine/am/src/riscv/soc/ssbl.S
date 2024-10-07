@@ -10,6 +10,8 @@ _ssbl:
   la a2, _bootloader_size
   li a5, 0
   j  _ssbl_copy_loop
+  la t1, _trm_init
+  jalr t1
 
 _ssbl_copy_loop:
   add a3, a1, a5
