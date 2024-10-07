@@ -251,7 +251,7 @@ menu "Soc devices"
 config SOC_DEVICE
   depends on TARGET_SHARE
   bool "Enable Soc device support"
-  default n
+  default y
 if !SOC_DEVICE
   comment "should open target share"
 endif

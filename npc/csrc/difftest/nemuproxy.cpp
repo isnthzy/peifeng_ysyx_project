@@ -15,7 +15,7 @@ void NemuProxy::init_nemu_proxy(char *ref_so_file, int port){
     ref_difftest_memcpy = null_function<paddr_t, void*, size_t, bool>;
     ref_difftest_regcpy = null_function<void*, bool>;
     ref_difftest_exec = null_function<uint64_t>;
-    ref_difftest_raise_intr = null_function<uint64_t>;
+    ref_difftest_raise_intr = null_function<uint64_t,paddr_t>;
     ref_reg_display = null_function;
     ref_check_load = bool_null_function<paddr_t,int>;
     ref_check_store = bool_null_function<paddr_t,word_t,int>;
@@ -36,7 +36,7 @@ void NemuProxy::init_nemu_proxy(char *ref_so_file, int port){
   ref_difftest_exec =  (void (*)(uint64_t))dlsym(handle, "difftest_exec");
   assert(ref_difftest_exec);
 
-  ref_difftest_raise_intr = (void (*)(uint64_t))dlsym(handle, "difftest_raise_intr");
+  ref_difftest_raise_intr = (void (*)(uint64_t,paddr_t))dlsym(handle, "difftest_raise_intr");
   assert(ref_difftest_raise_intr);
 
   ref_reg_display = (void (*)(void))dlsym(handle, "difftest_ref_reg_display");
