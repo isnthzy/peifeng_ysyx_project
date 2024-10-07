@@ -260,7 +260,7 @@ if SOC_DEVICE
 
 config SOC_RESET_PC
   hex "Soc share reset pc"
-  default 0x20000000
+  default 0x30000000
 
 config SOC_MROM_BASE
   hex "Soc device MROM base addr"
