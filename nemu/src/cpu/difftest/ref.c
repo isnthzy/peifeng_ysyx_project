@@ -83,8 +83,8 @@ __EXPORT void difftest_exec(uint64_t n) {
   // assert(0);
 }
 
-__EXPORT void difftest_raise_intr(word_t NO) {
-  cpu.pc=isa_raise_intr(NO,cpu.pc);
+__EXPORT void difftest_raise_intr(word_t NO,paddr_t epc) {
+  cpu.pc=isa_raise_intr(NO,epc);
   // assert(0);
 }
 

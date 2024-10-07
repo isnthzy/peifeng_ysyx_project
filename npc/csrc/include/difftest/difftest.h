@@ -104,7 +104,7 @@ class Difftest{
     uint32_t deadlock_timer=0; //死锁计数器
 
     void trace_inst_commit(vaddr_t pc,uint32_t inst);
-    int  excp_process(int excp_idx, int excp_code);
+    int  excp_process(int excp_idx, int excp_code,paddr_t epc);
     void first_commit();
     bool checkregs();
     bool store_commit_diff(int idx);

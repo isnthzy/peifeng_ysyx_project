@@ -69,7 +69,7 @@ bool Difftest::load_commit_diff(int idx){
   return true;
 }
 
-int Difftest::excp_process(int excp_idx, int excp_code){
+int Difftest::excp_process(int excp_idx, int excp_code,paddr_t epc){
   if(excp_code==0x3){
     if(dut_commit.commit[excp_idx].wdata==0x0){
       return NPC_SUCCESS_END;
@@ -78,7 +78,7 @@ int Difftest::excp_process(int excp_idx, int excp_code){
     } //NOTE:测试结束退出
   }else if(excp_code==11){
     // wLog("TODO: excp_code = 0x11 ");
-    nemu_proxy->ref_difftest_raise_intr(excp_code);
+    nemu_proxy->ref_difftest_raise_intr(excp_code,epc);
     return NPC_RUNNING;
   }else{
     wLog("excp_code = %d",excp_code);
@@ -156,9 +156,9 @@ int Difftest::diff_step(){
     dut.base.inst = dut_commit.commit[idx_commit_num-1].inst;
   }
 
-  if(idx_commit_num > 0 && (total_inst % 100000) == 0){
-    printf("npc is running addr: 0x%08x inst: 0x%08x\n",dut.base.pc,dut.base.inst);
-  }
+  // if(idx_commit_num > 0 && (total_inst % 100000) == 0){
+  //   printf("npc is running addr: 0x%08x inst: 0x%08x\n",dut.base.pc,dut.base.inst);
+  // } //NOTE:调试用来检测程序死哪了
   
   first_commit(); //当第一条指令提交时，开始同步
 
@@ -175,7 +175,7 @@ int Difftest::diff_step(){
       }
     }
     npc_state.halt_pc = dut_commit.commit[excp_inst_idx].pc;
-    int excp_state=excp_process(excp_inst_idx,dut_commit.excp.exception); //NOTE:异常处理
+    int excp_state=excp_process(excp_inst_idx,dut_commit.excp.exception,dut_commit.excp.exceptionPC); //NOTE:异常处理
     dut_commit.excp.excp_valid=false;
     if(excp_state!=NPC_RUNNING){
       return excp_state;
