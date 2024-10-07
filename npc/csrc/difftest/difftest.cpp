@@ -156,6 +156,10 @@ int Difftest::diff_step(){
     dut.base.inst = dut_commit.commit[idx_commit_num-1].inst;
   }
 
+  if(idx_commit_num > 0 && (total_inst % 100000) == 0){
+    printf("npc is running addr: 0x%08x inst: 0x%08x\n",dut.base.pc,dut.base.inst);
+  }
+  
   first_commit(); //当第一条指令提交时，开始同步
 
   for(int i=0;i<idx_commit_num;i++){

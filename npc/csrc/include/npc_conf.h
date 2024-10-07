@@ -13,7 +13,7 @@
 #define CONFIG_MTRACE 1
 // #define CONFIG_FTRACE 1
 
-#define NPCLOG_NUM 1000000 //trace最多记录多少个log
+#define NPCLOG_NUM 10000 //trace最多记录多少个log
 //TRACE开关
 
 #define CONFIG_DIFFTEST 1
@@ -50,7 +50,7 @@
 #define ITRACE_LOGBUF_SIZE 10
 #define DTRACE_LOGBUF_SIZE 10
 #define ETRACE_LOGBUF_SIZE 10
-#define IRINGBUF_MAX_NUM 512
+#define IRINGBUF_MAX_NUM 128
 //trace最多开多少IRINGBUF_MAX_NUM给多少
 
 /*---------------------------------------------------------------------------------*/
