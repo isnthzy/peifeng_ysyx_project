@@ -191,6 +191,8 @@ static uint8_t sdram_bank[8][8192][1024] PG_ALIGN={};
 
 extern "C" void sdrambank_read(uint16_t row,uint16_t col,uint16_t *data,
                                uint8_t bank,uint8_t dqm){
+  uint16_t result = sdram_bank[bank][row][(col << 1) + 1] << 8 | sdram_bank[bank][row][col << 1];
+  printf("row 0x%04x col 0x%04x rdata 0x%04x bank 0x%02x\n",row,col,result,bank);
   *data=sdram_bank[bank][row][(col << 1) + 1] << 8 | sdram_bank[bank][row][col << 1];
 }
 
