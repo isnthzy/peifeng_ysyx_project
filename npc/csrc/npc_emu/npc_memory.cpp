@@ -196,8 +196,22 @@ extern "C" void sdrambank_read(int16_t row,int16_t col,int16_t *data,
 
 extern "C" void sdrambank_write(int16_t row,int16_t col,int16_t data,
                                 uint8_t bank,uint8_t dqm){
-  sdram_bank[bank][row][(col << 1) + 1] = (data >> 8) && 0xff;  //high
-  sdram_bank[bank][row][(col << 1)] = data && 0xff; //low
+  switch (dqm)
+  {
+  case 0x0:
+    sdram_bank[bank][row][(col << 1) + 1] = (data >> 8) && 0xff;  //high
+    sdram_bank[bank][row][(col << 1)] = data && 0xff; //low
+    break;
+  case 0x1:
+    sdram_bank[bank][row][(col << 1)] = data && 0xff; //low
+    break;
+  case 0x2:
+    sdram_bank[bank][row][(col << 1) + 1] = (data >> 8) && 0xff;  //high
+    break;
+  default:
+    break;
+  }
+
 }
 //----------------------------dpi-c----------------------------
 
