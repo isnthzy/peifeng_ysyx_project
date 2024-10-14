@@ -196,6 +196,7 @@ extern "C" void sdrambank_read(int16_t row,int16_t col,int16_t *data,
 
 extern "C" void sdrambank_write(int16_t row,int16_t col,int16_t data,
                                 uint8_t bank,uint8_t dqm){
+  printf("row 0x%04x col 0x%04x data 0x%04x bank 0x%02x\n",row,col,data,bank);
   switch (dqm)
   {
   case 0x0:
