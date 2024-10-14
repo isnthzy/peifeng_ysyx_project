@@ -204,6 +204,10 @@ extern "C" void sdrambank_write(uint16_t row,uint16_t col,uint16_t data,
   {
   case 0x0:
     sdram_bank[bank][row][(col << 1) + 1] = (data >> 8) & 0xff;  //high
+    printf("%x \n",(sdram_bank[bank][row][(col << 1) + 1]));
+    sdram_bank[bank][row][(col << 1)] = data & 0xff; //low
+    printf("%x \n",(sdram_bank[bank][row][(col << 1)]));
+
     break;
   case 0x1:
     sdram_bank[bank][row][(col << 1)] = data & 0xff; //low
