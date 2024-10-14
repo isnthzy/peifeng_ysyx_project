@@ -186,6 +186,19 @@ extern "C" void psram_read(int32_t addr,int *data) {
   *data=paddr_read(ld_addr,4);
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
+
+static uint8_t sdram_bank[8][8192][1024] PG_ALIGN={};
+
+extern "C" void sdrambank_read(int16_t row,int16_t col,int16_t *data,
+                               uint8_t bank,uint8_t dqm){
+  *data=sdram_bank[bank][row][(col << 1) + 1] << 8 | sdram_bank[bank][row][col << 1];
+}
+
+extern "C" void sdrambank_write(int16_t row,int16_t col,int16_t data,
+                                uint8_t bank,uint8_t dqm){
+  sdram_bank[bank][row][(col << 1) + 1] = (data >> 8) && 0xff;  //high
+  sdram_bank[bank][row][(col << 1)] = data && 0xff; //low
+}
 //----------------------------dpi-c----------------------------
 
 
