@@ -214,7 +214,8 @@ extern "C" void sdrambank_write(uint16_t row,uint16_t col,uint16_t data,
   default:
     break;
   }
-
+  uint16_t result = sdram_bank[bank][row][(col << 1) + 1] << 8 | sdram_bank[bank][row][col << 1];
+  printf("row 0x%04x col 0x%04x wdata 0x%04x bank 0x%02x\n",row,col,result,bank);
 }
 //----------------------------dpi-c----------------------------
 
