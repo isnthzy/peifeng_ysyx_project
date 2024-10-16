@@ -186,6 +186,37 @@ extern "C" void psram_read(int32_t addr,int *data) {
   *data=paddr_read(ld_addr,4);
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
+
+static uint8_t sdram_bank[16][8192][1024]={};
+
+extern "C" void sdrambank_read(uint16_t row,uint16_t col,uint16_t *data,
+                               uint8_t bank,uint8_t dqm){
+  uint16_t result = sdram_bank[bank][row][(col << 1) + 1] << 8 | sdram_bank[bank][row][col << 1];
+  // printf("row 0x%04x col 0x%04x rdata 0x%04x bank 0x%02x\n",row,col,result,bank);
+  *data=result;
+}
+
+extern "C" void sdrambank_write(uint16_t row,uint16_t col,uint16_t data,
+                                uint8_t bank,uint8_t dqm){
+  // printf("row 0x%04x col 0x%04x data 0x%04x bank 0x%02x dqm 0x%02x\n",row,col,data,bank,dqm);
+  switch (dqm)
+  {
+  case 0x0:
+    sdram_bank[bank][row][(col << 1) + 1] = (data >> 8) & 0xff;  //high
+    sdram_bank[bank][row][(col << 1)] = data & 0xff; //low
+    break;
+  case 0x1:
+    sdram_bank[bank][row][(col << 1) + 1] = (data >> 8) & 0xff;  //high
+    break;
+  case 0x2:
+    sdram_bank[bank][row][(col << 1)] = data & 0xff; //low
+    break;
+  default:
+    break;
+  }
+  // uint16_t result = sdram_bank[bank][row][(col << 1) + 1] << 8 | sdram_bank[bank][row][col << 1];
+  // printf("row 0x%04x col 0x%04x wdata 0x%04x bank 0x%02x\n",row,col,result,bank);
+}
 //----------------------------dpi-c----------------------------
 
 

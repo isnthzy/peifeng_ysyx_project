@@ -16,7 +16,7 @@
 #define NPCLOG_NUM 10000 //trace最多记录多少个log
 //TRACE开关
 
-#define CONFIG_DIFFTEST 1
+#define CONFIG_DIFFTEST 1 //此开关已废弃
 #define DIFFTEST_COMMIT_WIDTH 6
 #define CONFIG_MEMDIFF 1
 // difftest最多支持提交几个指令
@@ -46,7 +46,7 @@
 
 /*---------------------------------------------------------------------------------*/
 
-#define MTRACE_LOGBUF_SIZE 10
+#define MTRACE_LOGBUF_SIZE 100
 #define ITRACE_LOGBUF_SIZE 10
 #define DTRACE_LOGBUF_SIZE 10
 #define ETRACE_LOGBUF_SIZE 10
