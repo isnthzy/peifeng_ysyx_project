@@ -187,7 +187,7 @@ extern "C" void psram_read(int32_t addr,int *data) {
   // 总是读取地址为`raddr & ~0x3u`的4字节返回给`rdata`
 }
 
-static uint8_t sdram_bank[8][8192][1024]={};
+static uint8_t sdram_bank[16][8192][1024]={};
 
 extern "C" void sdrambank_read(uint16_t row,uint16_t col,uint16_t *data,
                                uint8_t bank,uint8_t dqm){
