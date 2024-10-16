@@ -1,5 +1,5 @@
 #include "trap.h"
-#define SRAM_BASE 0x0f000000L
+#define SRAM_BASE 0xa0fffff0L
 
 int main() {
   for(int i=0;i<16;i++){
