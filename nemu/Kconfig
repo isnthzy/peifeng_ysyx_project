@@ -294,6 +294,14 @@ config SOC_PSRAM_SIZE
   hex "Soc device psram size"
   default 0x1000000
 
+config SOC_SDRAM_BASE
+  hex "Soc device sdram base addr"
+  default 0xa0000000
+
+config SOC_SDRAM_SIZE
+  hex "Soc device sdram size"
+  default 0x4000000
+
 endif # SOC_DEVICE
 
 endmenu

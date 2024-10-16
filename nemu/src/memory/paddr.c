@@ -32,7 +32,7 @@ static uint8_t soc_mrom[CONFIG_SOC_MROM_SIZE] PG_ALIGN = {};
 static uint8_t soc_sram[CONFIG_SOC_SRAM_SIZE] PG_ALIGN = {};
 static uint8_t soc_flash[CONFIG_SOC_FLASH_SIZE] PG_ALIGN = {};
 static uint8_t soc_psram[CONFIG_SOC_PSRAM_SIZE] PG_ALIGN = {};
-
+static uint8_t soc_sdram[CONFIG_SOC_SDRAM_SIZE] PG_ALIGN = {};
 #endif
 
 uint8_t* guest_to_host(paddr_t paddr) {
@@ -54,6 +54,9 @@ uint8_t* guest_to_host(paddr_t paddr) {
     break;
   case SOC_DEVICE_PSRAM:
     ret=soc_psram + paddr - CONFIG_SOC_PSRAM_BASE;
+    break;
+  case SOC_DEVICE_SDRAM:
+    ret=soc_sdram + paddr - CONFIG_SOC_SDRAM_BASE;
     break;
   default:
     panic("pmem_read is not support write");
