@@ -14,7 +14,7 @@ MEMORY {
   flash(rx) : ORIGIN = 0x30000000, LENGTH = 16M
   sram (wx) : ORIGIN = 0x0f000000, LENGTH = 8K
   psram(rwx) : ORIGIN = 0x80000000, LENGTH = 16M
-  sdram(rwx) : ORIGIN = 0xa1fff000, LENGTH = 32M
+  sdram(rwx) : ORIGIN = 0xa0000000, LENGTH = 64M
 }
 
 REGION_ALIAS("LMA", flash);
