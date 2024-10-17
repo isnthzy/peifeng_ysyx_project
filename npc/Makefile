@@ -1,7 +1,7 @@
 BUILD_DIR = ./build
 TOPNAME=ysyxSoCFull
 NXDC_FILES = build/top.nxdc
-include $(NVBOARD_HOME)/scripts/nvboard.mk
+# include $(NVBOARD_HOME)/scripts/nvboard.mk
 export PATH := $(PATH):$(abspath ./utils)
 $(shell mkdir -p $(BUILD_DIR))
 IMG?=
