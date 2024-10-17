@@ -50,6 +50,10 @@ void putIringbuf(){
 static void npc_execute(uint64_t n) {
   for (;n > 0; n --) {
     int state = 0;
+#ifdef CONFIG_NVBOARD
+    #include <nvboard.h>
+    nvboard_update();
+#endif
     do{
       top->clock=1;
       step_and_dump_wave(); //NOTE:要放对位置，因为放错位置排查好几个小时

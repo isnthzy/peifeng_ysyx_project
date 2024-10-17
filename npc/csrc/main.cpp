@@ -1,6 +1,5 @@
 #include <stdint.h>
 #include <stdlib.h>
-// #include <nvboard.h>
 #include "include/npc_common.h"
 #include "include/npc_verilator.h"
 #include "include/difftest/difftest.h"
@@ -14,6 +13,7 @@ VerilatedFstC* tfp = NULL;
 VerilatedVcdC* tfp = NULL;
 #endif
 #ifdef CONFIG_NVBOARD
+#include <nvboard.h>
 void nvboard_bind_all_pins(TOP_MODULE_NAME* top);
 #endif
 bool difftest_flag = false;
@@ -34,13 +34,15 @@ int is_exit_status_bad() {
   int good = (npc_state.state == NPC_SUCCESS_END ) ||
     (npc_state.state == NPC_QUIT);
   sim_exit();
+  IFDEF(CONFIG_NVBOARD, nvboard_quit();)
   return !good;
 }
 
 int main(int argc, char *argv[]) {
   Verilated::commandArgs(argc, argv);
 #ifdef CONFIG_NVBOARD
-void nvboard_bind_all_pins(TOP_MODULE_NAME* top);
+  nvboard_bind_all_pins(top);
+  nvboard_init();
 #endif
   init_monitor(argc, argv);
 
