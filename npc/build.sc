@@ -16,11 +16,11 @@ object playground extends ScalaModule with ScalafmtModule { m =>
     "-Xcheckinit"
   )
   override def ivyDeps = Agg(
-    if (useChisel6) ivy"org.chipsalliance::chisel:6.2.0" else
+    if (useChisel6) ivy"org.chipsalliance::chisel:6.5.0" else
     ivy"edu.berkeley.cs::chisel3:3.6.0",
   )
   override def scalacPluginIvyDeps = Agg(
-    if (useChisel6) ivy"org.chipsalliance:::chisel-plugin:6.2.0" else
+    if (useChisel6) ivy"org.chipsalliance:::chisel-plugin:6.5.0" else
     ivy"edu.berkeley.cs:::chisel3-plugin:3.6.0",
   )
   object test extends ScalaTests with Utest {
