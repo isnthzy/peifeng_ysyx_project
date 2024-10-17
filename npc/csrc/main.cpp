@@ -1,17 +1,21 @@
 #include <stdint.h>
 #include <stdlib.h>
+// #include <nvboard.h>
 #include "include/npc_common.h"
 #include "include/npc_verilator.h"
 #include "include/difftest/difftest.h"
 void init_monitor(int, char *[]);
 void sdb_mainloop();
 VerilatedContext* contextp = NULL;
+TOP_MODULE_NAME* top;
 #ifdef TRACE_FST
 VerilatedFstC* tfp = NULL;
 #else
 VerilatedVcdC* tfp = NULL;
 #endif
-TOP_MODULE_NAME* top;
+#ifdef CONFIG_NVBOARD
+void nvboard_bind_all_pins(TOP_MODULE_NAME* top);
+#endif
 bool difftest_flag = false;
 NPCState npc_state = { .state = NPC_STOP };
 
@@ -35,6 +39,9 @@ int is_exit_status_bad() {
 
 int main(int argc, char *argv[]) {
   Verilated::commandArgs(argc, argv);
+#ifdef CONFIG_NVBOARD
+void nvboard_bind_all_pins(TOP_MODULE_NAME* top);
+#endif
   init_monitor(argc, argv);
 
   sdb_mainloop();

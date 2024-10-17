@@ -1,8 +1,10 @@
 BUILD_DIR = ./build
 TOPNAME=ysyxSoCFull
+NXDC_FILES = build/top.nxdc
+include $(NVBOARD_HOME)/scripts/nvboard.mk
 export PATH := $(PATH):$(abspath ./utils)
 $(shell mkdir -p $(BUILD_DIR))
-IMG?=/home/wangxin/soc_tests/char-test.bin
+IMG?=
 ARGS?=
 # ARGS+= --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so  --log=$(BUILD_DIR)/npc-log.txt
 
@@ -33,7 +35,7 @@ VSRCS += $(YSYXSOC_HOME)/build/ysyxSoCFull.v
 
 CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cpp" -or -name "*.cc")
 INCFLAGS = $(addprefix -I, $(INC_PATH))
-CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\"" 
+CXXFLAGS += $(INCFLAGS) -DTOP_MODULE_NAME="\"V$(TOPNAME)\"" 
 CXXFLAGS += -Wall -Werror 
 LDFLAGS += -lreadline  -lSDL2
 

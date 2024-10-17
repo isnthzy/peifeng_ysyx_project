@@ -1,6 +1,6 @@
 #ifndef __NPCVERILATOR_H__
 #define __NPCVERILATOR_H__
-#define TOP_MODULE_NAME V##ysyxSoCFull
+// #define TOP_MODULE_NAME V##ysyxSoCFull
 #include <VysyxSoCFull.h>
 #include <verilated.h>
 #include <verilated_vcd_c.h>
