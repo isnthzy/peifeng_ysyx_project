@@ -35,7 +35,7 @@ VSRCS += $(YSYXSOC_HOME)/build/ysyxSoCFull.v
 
 CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cpp" -or -name "*.cc")
 INCFLAGS = $(addprefix -I, $(INC_PATH))
-CXXFLAGS += $(INCFLAGS) -DTOP_MODULE_NAME="\"V$(TOPNAME)\"" 
+CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\"" 
 CXXFLAGS += -Wall -Werror 
 LDFLAGS += -lreadline  -lSDL2
 
