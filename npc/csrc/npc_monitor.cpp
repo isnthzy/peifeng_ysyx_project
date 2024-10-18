@@ -69,7 +69,6 @@ static void welcome() {
   Log("Build time: %s, %s", __TIME__, __DATE__);
   printf("Welcome to %s-NPC!\n", ANSI_FMT(str(riscv32e), ANSI_FG_YELLOW ANSI_BG_RED));
   printf("For help, type \"help\"\n");
-  nvboard_update();
 }
 
 void init_reset(int n){

@@ -51,7 +51,6 @@ void putIringbuf(){
 }
 
 static void npc_execute(uint64_t n) {
-  nvboard_update();
   for (;n > 0; n --) {
     int state = 0;
 #ifdef CONFIG_NVBOARD
