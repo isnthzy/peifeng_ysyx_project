@@ -194,11 +194,6 @@ void init_monitor(int argc, char *argv[]) {
   init_reset(42);
   //初始化reset
 
-  // nvboard_update();
-  // //初始化完后更新一次nvboard展示界面
-
-  // pipe_init();
-  // //初始化流水线
 
   // /* Open the ${IMAGE}.elf file */
   IFDEF(CONFIG_FTRACE,init_elf(elf_file));
@@ -223,4 +218,7 @@ void init_monitor(int argc, char *argv[]) {
   ));//初始化llvm实现itrace
   /* Display welcome message. */
   welcome();
+
+  nvboard_update();
+  //初始化完后更新一次nvboard展示界面
 }
