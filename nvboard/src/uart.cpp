@@ -53,6 +53,7 @@ void UART::tx_receive() {
   } else if (tx_state == 9) {
     if (tx) { // stop bit
       tx_state = 0;
+      printf("tx_data = %x\n", tx_data);
       term->feed_ch(tx_data);
       need_update_gui = true;
     }
