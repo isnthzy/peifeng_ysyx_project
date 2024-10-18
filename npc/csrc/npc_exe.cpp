@@ -91,6 +91,7 @@ void npc_exev(uint64_t step){ //之所以不用int因为int是有符号的，批
     default: npc_state.state = NPC_RUNNING;
   }
   uint64_t timer_start = get_time();
+  nvboard_update();
   npc_execute(step);
   uint64_t timer_end = get_time();
   g_timer += timer_end - timer_start;
