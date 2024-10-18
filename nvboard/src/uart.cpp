@@ -16,7 +16,7 @@ UART::UART(SDL_Renderer *rend, int cnt, int init_val, int ct, int x, int y, int 
   SDL_Rect *rect_ptr = new SDL_Rect;
   *rect_ptr = (SDL_Rect){x, y, w, h};
   set_rect(rect_ptr, 0);
-
+  printf("divisor: %d\n", divisor);
   uart_divisor_cnt = divisor - 1;
   int len = pin_array[UART_TX].vector_len;
   assert(len == 0 || len == 1); // either unbound or bound to 1 bit signal
