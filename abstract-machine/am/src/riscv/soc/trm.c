@@ -3,6 +3,7 @@
 #include <riscv/riscv.h>
 #include <string.h>
 #define soc_trap(code) asm volatile("mv a0, %0; ebreak" : :"r"(code))
+#define GPIO_BASE 0x10002000L
 #define UART_BASE 0x10000000L
 #define UART_TX   0x0
 #define UART_LSB  0x0
@@ -72,6 +73,7 @@ void put_csr(){
 }
 
 void _trm_init(){
+  *(volatile int *)(GPIO_BASE + 0x8) = 0x23060115; //显示学号
   init_uart();
   // if (_data_start != _data_load_start) memcpy(_data_start, _data_load_start, (size_t) _data_size);
   // put_csr();

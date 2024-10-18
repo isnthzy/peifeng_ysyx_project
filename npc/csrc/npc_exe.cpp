@@ -54,7 +54,7 @@ static void npc_execute(uint64_t n) {
   for (;n > 0; n --) {
     int state = 0;
 #ifdef CONFIG_NVBOARD
-    nvboard_update();
+    
 #endif
     do{
       top->clock=1;
@@ -63,6 +63,8 @@ static void npc_execute(uint64_t n) {
       //NOTE:每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次
       top->clock=0;
       step_and_dump_wave();
+
+      nvboard_update();
     }while(state==NPC_NOCOMMIT);
     npc_state.state=state;
     if (npc_state.state != NPC_RUNNING) return;

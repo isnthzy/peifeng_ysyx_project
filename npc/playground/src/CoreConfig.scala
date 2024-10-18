@@ -38,6 +38,9 @@ trait DeviceConfig{
 
   def SPI_BASE  = "h10001000".U(32.W)
   def SPI_SIZE  = "h1000".U
+
+  def GPIO_SW_BASE = "h10002004".U(32.W)
+  def GPIO_SW_SIZE = 4.U
 }
 
 object ISAConfig{

@@ -6,9 +6,7 @@
 #include "include/npc/npc_sdb.h"
 #include "include/npc/npc_exe.h"
 #include "include/npc/npc_device.h"
-#ifdef CONFIG_NVBOARD
-#include <nvboard.h>
-#endif
+
 Difftest* difftest;
 IRingBuffer mtrace_buffer;
 IRingBuffer iring_buffer;
@@ -84,25 +82,7 @@ void init_reset(int n){
   }
 }
 
-void init_sim(){
-  contextp = new VerilatedContext;
-  top = new TOP_MODULE_NAME;
-#ifdef CONFIG_WAVEFORM
-  #ifdef TRACE_FST
-  tfp = new VerilatedFstC;
-  contextp->traceEverOn(true);
-  top->trace(tfp, 0);
-  tfp->open("dump.fst"); 
-  #else
-  tfp = new VerilatedVcdC;
-  contextp->traceEverOn(true);
-  top->trace(tfp, 0);
-  tfp->open("dump.vcd"); 
-  #endif
-#endif
-  //使用make sim生成的dump.vcd在npc/
-  //SimTop+*.bin生成的dump.vcd在npc/build
-}
+
 
 
 
@@ -184,9 +164,6 @@ void init_monitor(int argc, char *argv[]) {
 
   long img_size=load_img();
   //读入镜像文件
-
-  init_sim();
-  //初始化verilator仿真文件
 
   init_traces();
   //初始化traces
