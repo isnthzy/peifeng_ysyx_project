@@ -8,6 +8,7 @@
 #include "include/npc/npc_device.h"
 #ifdef CONFIG_NVBOARD
 #include <nvboard.h>
+void nvboard_bind_all_pins(TOP_MODULE_NAME* top);
 #endif
 Difftest* difftest;
 IRingBuffer mtrace_buffer;
@@ -187,6 +188,12 @@ void init_monitor(int argc, char *argv[]) {
 
   init_sim();
   //初始化verilator仿真文件
+
+#ifdef CONFIG_NVBOARD
+  nvboard_bind_all_pins(top);
+
+  nvboard_init();
+#endif
 
   init_traces();
   //初始化traces

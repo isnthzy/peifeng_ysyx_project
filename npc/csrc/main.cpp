@@ -14,8 +14,6 @@ VerilatedVcdC* tfp = NULL;
 #endif
 #ifdef CONFIG_NVBOARD
 #include <nvboard.h>
-static TOP_MODULE_NAME bind_all_pins;
-void nvboard_bind_all_pins(TOP_MODULE_NAME* top);
 #endif
 bool difftest_flag = false;
 NPCState npc_state = { .state = NPC_STOP };
@@ -41,10 +39,7 @@ int is_exit_status_bad() {
 
 int main(int argc, char *argv[]) {
   Verilated::commandArgs(argc, argv);
-#ifdef CONFIG_NVBOARD
-  nvboard_bind_all_pins(&bind_all_pins);
-  nvboard_init();
-#endif
+
   init_monitor(argc, argv);
 
   sdb_mainloop();
