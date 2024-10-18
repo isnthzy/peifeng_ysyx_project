@@ -12,8 +12,7 @@ int main(){
   //     putch('\n');
   //   }
   // }
-  // *(volatile int *)(GPIO_BASE + 0x8) = 0x23060115;
-  *(volatile int *)(GPIO_BASE + 0x8) = 0x01234567;
+  *(volatile int *)(GPIO_BASE + 0x8) = 0x23060115;
   for(int i = 0; i < 2; i++){
     for(int j = 0; j < 16; j++){
       int n = 100;
