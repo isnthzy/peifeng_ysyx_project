@@ -9,7 +9,7 @@ ARGS?=
 # ARGS+= --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so  --log=$(BUILD_DIR)/npc-log.txt
 
 VERILATOR = verilator
-VERILATOR_CFLAGS += -MMD --build -cc  --timescale "1ns/1ns" --no-timing -gdb
+VERILATOR_CFLAGS += -MMD --build -cc  --timescale "1ns/1ns" --no-timing
 # VERILATOR_CFLAGS += --trace 
 VERILATOR_CFLAGS += --trace-fst --autoflush
 # VERILATOR_CFLAGS += --prof-cfuncs 
@@ -41,7 +41,7 @@ CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cpp" -or -name "
 CSRCS += $(SRC_AUTO_BIND)
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\"" 
-CXXFLAGS += -Wall -Werror 
+CXXFLAGS += -Wall -Werror   -gdb
 LDFLAGS += -lreadline  -lSDL2 
 
 # CXXFLAGS += -ggdb -DVL_DEBUG=1 -D_GLIBCXX_DEBUG
