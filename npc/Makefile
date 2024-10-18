@@ -21,7 +21,7 @@ ifeq ($(wildcard $(YSYXSOC_HOME)),)
   $(error YSYXSOC_HOME=$(YSYXSOC_HOME) is not a YSYXSOC repo)
 endif
 
-# include $(NVBOARD_HOME)/scripts/nvboard.mk
+include $(NVBOARD_HOME)/scripts/nvboard.mk
 SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
 $(SRC_AUTO_BIND): $(NXDC_FILES)
 	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
@@ -42,7 +42,7 @@ CSRCS += $(SRC_AUTO_BIND)
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\"" 
 CXXFLAGS += -Wall -Werror 
-LDFLAGS += -lreadline  -lSDL2 -lSDL2_image
+LDFLAGS += -lreadline  -lSDL2 
 
 # CXXFLAGS += -ggdb -DVL_DEBUG=1 -D_GLIBCXX_DEBUG
 # LDFLAGS  += -ggdb -fsanitize=address,undefined
@@ -93,6 +93,9 @@ checkformat:
 	mill -i __.checkFormat
 
 clean:
+	-rm -rf $(BUILD_DIR)
+
+clean_all:
 	-rm -rf $(BUILD_DIR)
 	-rm -rf ./vsrc/*
 

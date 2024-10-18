@@ -1,4 +1,5 @@
 
+/*
 #include "../include/npc_common.h"
 #define KEYDOWN_MASK 0x8000
 
@@ -60,3 +61,4 @@ void init_i8042() {
   init_keymap();
 }
 
+*/
