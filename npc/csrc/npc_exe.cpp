@@ -51,11 +51,12 @@ void putIringbuf(){
 }
 
 static void npc_execute(uint64_t n) {
+  nvboard_update();
   for (;n > 0; n --) {
     int state = 0;
-#ifdef CONFIG_NVBOARD
-    nvboard_update();
-#endif
+// #ifdef CONFIG_NVBOARD
+//     nvboard_update();
+// #endif
     do{
       top->clock=1;
       step_and_dump_wave(); //NOTE:要放对位置，因为放错位置排查好几个小时
@@ -89,9 +90,6 @@ void npc_exev(uint64_t step){ //之所以不用int因为int是有符号的，批
       return;
     default: npc_state.state = NPC_RUNNING;
   }
-#ifdef CONFIG_NVBOARD
-    nvboard_update();
-#endif
   uint64_t timer_start = get_time();
   npc_execute(step);
   uint64_t timer_end = get_time();
