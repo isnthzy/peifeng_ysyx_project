@@ -38,6 +38,7 @@ FILE *log_fp = NULL;
 void init_log(const char *log_file) {
   log_fp = stdout;
   if (log_file == NULL){
+    printf_red("need parse --log={npclog}.txt\n");
     panic("Can not open '%s'", log_file);
   }else{
     FILE *fp = fopen(log_file, "w");
