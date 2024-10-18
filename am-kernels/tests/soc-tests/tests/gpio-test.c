@@ -17,7 +17,7 @@ int main(){
   // }
   for(int i = 0; i < 2; i++){
     for(int j = 0; j < 8; j++){
-      int n = 1000;
+      int n = 5;
       while(n--){
         *(volatile char *)(GPIO_BASE + i) = 1 << j;
       }
