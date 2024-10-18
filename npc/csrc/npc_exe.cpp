@@ -6,6 +6,9 @@
 #include "include/npc/npc_reg.h"
 #include "include/npc/npc_device.h"
 #include "include/npc/npc_exe.h"
+#ifdef CONFIG_NVBOARD
+#include <nvboard.h>
+#endif
 #define MAX_INST_TO_PRINT 10
 
 extern bool ftrace_flag;
@@ -51,7 +54,6 @@ static void npc_execute(uint64_t n) {
   for (;n > 0; n --) {
     int state = 0;
 #ifdef CONFIG_NVBOARD
-    #include <nvboard.h>
     nvboard_update();
 #endif
     do{
