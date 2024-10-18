@@ -55,6 +55,7 @@ static void npc_execute(uint64_t n) {
     int state = 0;
 #ifdef CONFIG_NVBOARD
     nvboard_update();
+    printf_red("nvboard_update\n");
 #endif
     do{
       top->clock=1;
