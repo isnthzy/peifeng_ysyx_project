@@ -1,7 +1,7 @@
 #include "trap.h"
 #define GPIO_BASE 0x10002000L
 int main(){
-  int n = 100;
+  int n = 10;
   while (n--)
   {
     for(int i = 0; i < 4; i++){
