@@ -194,8 +194,8 @@ void init_monitor(int argc, char *argv[]) {
   init_reset(42);
   //初始化reset
 
-  nvboard_update();
-  //初始化完后更新一次nvboard展示界面
+  // nvboard_update();
+  // //初始化完后更新一次nvboard展示界面
 
   // pipe_init();
   // //初始化流水线
