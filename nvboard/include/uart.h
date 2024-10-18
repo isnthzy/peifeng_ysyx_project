@@ -9,7 +9,7 @@ class UART : public Component{
 private:
   Term *term;
   int tx_state, rx_state;
-  uint16_t divisor;
+  uint16_t divisor = 0x48;
   uint8_t tx_data, rx_data;
   std::string rx_sending_str;
   bool need_update_gui;
