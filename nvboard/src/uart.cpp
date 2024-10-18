@@ -41,6 +41,7 @@ void UART::tx_receive() {
   uart_divisor_cnt = divisor - 1;
 
   uint8_t tx = *p_tx;
+  printf("tx = %d, tx_state = %d, uart_divisor_cnt = %d\n");
   if (tx_state == 0) { // idle
     if (!tx) { // start bit
       tx_data = 0;
