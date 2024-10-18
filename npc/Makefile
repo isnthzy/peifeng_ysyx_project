@@ -9,7 +9,7 @@ ARGS?=
 # ARGS+= --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so  --log=$(BUILD_DIR)/npc-log.txt
 
 VERILATOR = verilator
-VERILATOR_CFLAGS += -MMD --build -cc  --timescale "1ns/1ns" --no-timing
+VERILATOR_CFLAGS += -MMD --build -cc  --timescale "1ns/1ns" --no-timing -gdb
 # VERILATOR_CFLAGS += --trace 
 VERILATOR_CFLAGS += --trace-fst --autoflush
 # VERILATOR_CFLAGS += --prof-cfuncs 
