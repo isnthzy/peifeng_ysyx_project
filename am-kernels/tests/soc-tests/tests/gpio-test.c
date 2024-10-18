@@ -15,7 +15,7 @@ int main(){
   *(volatile int *)(GPIO_BASE + 0x8) = 0x23060115;
   for(int i = 0; i < 2; i++){
     for(int j = 0; j < 8; j++){
-      int n = 30;
+      int n = 100;
       while(n--){
         *(volatile char *)(GPIO_BASE + i) = 1 << j;
       }
