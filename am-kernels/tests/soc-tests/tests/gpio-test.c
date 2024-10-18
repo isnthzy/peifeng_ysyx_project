@@ -2,7 +2,7 @@
 #define GPIO_BASE 0x10002000L
 int main(){
 
-  int x = 1000000;
+  int x = 100;
   *(volatile char *)(GPIO_BASE ) = 0xff;
   while(x--){
     
