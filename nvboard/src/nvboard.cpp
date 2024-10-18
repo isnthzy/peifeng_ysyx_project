@@ -26,6 +26,7 @@ void nvboard_update() {
 
   extern int16_t uart_divisor_cnt;
   extern bool is_uart_rx_idle;
+  printf("uart_divisor_cnt %d\n",uart_divisor_cnt);
   if (unlikely((-- uart_divisor_cnt) < 0)) {
     uart_tx_receive();
     if (unlikely(!is_uart_rx_idle)) uart_rx_send();
