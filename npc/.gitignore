@@ -15,6 +15,7 @@
 !build.sc
 !README.md
 !utils/
+!*.nxdc
 build/
 vsrc/*
 vsrc/dpic/*

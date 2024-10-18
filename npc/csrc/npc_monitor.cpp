@@ -6,6 +6,9 @@
 #include "include/npc/npc_sdb.h"
 #include "include/npc/npc_exe.h"
 #include "include/npc/npc_device.h"
+#ifdef CONFIG_NVBOARD
+#include <nvboard.h>
+#endif
 Difftest* difftest;
 IRingBuffer mtrace_buffer;
 IRingBuffer iring_buffer;
@@ -37,7 +40,10 @@ FILE *log_fp = NULL;
 
 void init_log(const char *log_file) {
   log_fp = stdout;
-  if (log_file != NULL) {
+  if (log_file == NULL){
+    printf_red("need parse --log={npclog}.txt\n");
+    panic("Can not open '%s'", log_file);
+  }else{
     FILE *fp = fopen(log_file, "w");
     Assert(fp, "Can not open '%s'", log_file);
     log_fp = fp;
@@ -65,7 +71,7 @@ static void welcome() {
   printf("For help, type \"help\"\n");
 }
 
-void reset(int n){
+void init_reset(int n){
   top->reset=1;
   top->clock=0;
   step_and_dump_wave();
@@ -185,11 +191,9 @@ void init_monitor(int argc, char *argv[]) {
   init_traces();
   //初始化traces
 
-  reset(42);
+  init_reset(42);
   //初始化reset
 
-  // pipe_init();
-  // //初始化流水线
 
   // /* Open the ${IMAGE}.elf file */
   IFDEF(CONFIG_FTRACE,init_elf(elf_file));
@@ -214,4 +218,5 @@ void init_monitor(int argc, char *argv[]) {
   ));//初始化llvm实现itrace
   /* Display welcome message. */
   welcome();
+
 }

@@ -21,6 +21,8 @@
 #define CONFIG_MEMDIFF 1
 // difftest最多支持提交几个指令
 
+#define CONFIG_NVBOARD 1 //nvboard开关
+
 #define DEADLOCK_TIME 100000
 // 死锁检测最大时间，为0时不检测
 
@@ -38,7 +40,7 @@
 
 /*---------------------------------------------------------------------------------*/
 
-#define CONFIG_DEVICE 1
+// #define CONFIG_DEVICE 1
 // #define DEVICE_HAS_KEYBOARD 1
 // #define CONFIG_HAS_VGA 1
 // #define CONFIG_VGA_SIZE_400x300 1

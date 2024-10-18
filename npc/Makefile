@@ -1,10 +1,12 @@
 BUILD_DIR = ./build
 TOPNAME=ysyxSoCFull
+NXDC_FILES = constr/ysyxSoCFull.nxdc
+
 export PATH := $(PATH):$(abspath ./utils)
 $(shell mkdir -p $(BUILD_DIR))
-IMG?=/home/wangxin/soc_tests/char-test.bin
-ARGS?=
-# ARGS+= --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so  --log=$(BUILD_DIR)/npc-log.txt
+IMG?=
+ARGS?= --log=$(BUILD_DIR)/npc-log.txt
+# ARGS+= --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so 
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  --timescale "1ns/1ns" --no-timing
@@ -19,6 +21,10 @@ ifeq ($(wildcard $(YSYXSOC_HOME)),)
   $(error YSYXSOC_HOME=$(YSYXSOC_HOME) is not a YSYXSOC repo)
 endif
 
+include $(NVBOARD_HOME)/scripts/nvboard.mk
+SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
+$(SRC_AUTO_BIND): $(NXDC_FILES)
+	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 
 INC_PATH ?= 
 INC_VERILOG_PATH?=$(YSYXSOC_HOME)/perip/uart16550/rtl $(YSYXSOC_HOME)/perip/spi/rtl
@@ -32,10 +38,11 @@ VSRCS += $(shell find $(abspath $(YSYXSOC_HOME)/perip) -name "*.v")
 VSRCS += $(YSYXSOC_HOME)/build/ysyxSoCFull.v
 
 CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cpp" -or -name "*.cc")
+CSRCS += $(SRC_AUTO_BIND)
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\"" 
-CXXFLAGS += -Wall -Werror 
-LDFLAGS += -lreadline  -lSDL2
+CXXFLAGS += -Wall -Werror -g
+LDFLAGS += -lreadline  -lSDL2 
 
 # CXXFLAGS += -ggdb -DVL_DEBUG=1 -D_GLIBCXX_DEBUG
 # LDFLAGS  += -ggdb -fsanitize=address,undefined
@@ -54,7 +61,7 @@ $(info #ARGS=$(ARGS))
 gtk:
 	gtkwave dump.fst allview.gtkw
 
-com: $(VSRCS) $(CSRCS)
+com: $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 	@rm -rf ./build/SimTop
 	@$(VERILATOR) $(VERILATOR_CFLAGS) \
 		--top-module $(TOPNAME) $^ \
@@ -86,6 +93,9 @@ checkformat:
 	mill -i __.checkFormat
 
 clean:
+	-rm -rf $(BUILD_DIR)
+
+clean_all:
 	-rm -rf $(BUILD_DIR)
 	-rm -rf ./vsrc/*
 

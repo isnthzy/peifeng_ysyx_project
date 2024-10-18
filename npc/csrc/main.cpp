@@ -6,12 +6,17 @@
 void init_monitor(int, char *[]);
 void sdb_mainloop();
 VerilatedContext* contextp = NULL;
+TOP_MODULE_NAME* top;
 #ifdef TRACE_FST
 VerilatedFstC* tfp = NULL;
 #else
 VerilatedVcdC* tfp = NULL;
 #endif
-TOP_MODULE_NAME* top;
+#ifdef CONFIG_NVBOARD
+#include <nvboard.h>
+static TOP_MODULE_NAME bind_all_pins;
+void nvboard_bind_all_pins(TOP_MODULE_NAME* top);
+#endif
 bool difftest_flag = false;
 NPCState npc_state = { .state = NPC_STOP };
 
@@ -30,11 +35,16 @@ int is_exit_status_bad() {
   int good = (npc_state.state == NPC_SUCCESS_END ) ||
     (npc_state.state == NPC_QUIT);
   sim_exit();
+  IFDEF(CONFIG_NVBOARD, nvboard_quit();)
   return !good;
 }
 
 int main(int argc, char *argv[]) {
   Verilated::commandArgs(argc, argv);
+#ifdef CONFIG_NVBOARD
+  nvboard_bind_all_pins(&bind_all_pins);
+  nvboard_init();
+#endif
   init_monitor(argc, argv);
 
   sdb_mainloop();
