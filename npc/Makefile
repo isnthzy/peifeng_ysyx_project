@@ -5,8 +5,8 @@ NXDC_FILES = constr/ysyxSoCFull.nxdc
 export PATH := $(PATH):$(abspath ./utils)
 $(shell mkdir -p $(BUILD_DIR))
 IMG?=
-ARGS?=
-# ARGS+= --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so  --log=$(BUILD_DIR)/npc-log.txt
+ARGS?= --log=$(BUILD_DIR)/npc-log.txt
+# ARGS+= --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so 
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  --timescale "1ns/1ns" --no-timing

@@ -37,7 +37,9 @@ FILE *log_fp = NULL;
 
 void init_log(const char *log_file) {
   log_fp = stdout;
-  if (log_file != NULL) {
+  if (log_file == NULL){
+    panic("Can not open '%s'", log_file);
+  }else{
     FILE *fp = fopen(log_file, "w");
     Assert(fp, "Can not open '%s'", log_file);
     log_fp = fp;
