@@ -44,7 +44,6 @@ int main(int argc, char *argv[]) {
 #ifdef CONFIG_NVBOARD
   nvboard_bind_all_pins(&bind_all_pins);
   nvboard_init();
-  nvboard_update();
 #endif
   init_monitor(argc, argv);
 
