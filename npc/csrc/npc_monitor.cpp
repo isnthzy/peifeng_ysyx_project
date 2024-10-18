@@ -218,7 +218,5 @@ void init_monitor(int argc, char *argv[]) {
   ));//初始化llvm实现itrace
   /* Display welcome message. */
   welcome();
-
-  nvboard_update();
-  //初始化完后更新一次nvboard展示界面
+  
 }
