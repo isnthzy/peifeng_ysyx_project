@@ -6,6 +6,9 @@
 #include "include/npc/npc_sdb.h"
 #include "include/npc/npc_exe.h"
 #include "include/npc/npc_device.h"
+#ifdef CONFIG_NVBOARD
+#include <nvboard.h>
+#endif
 Difftest* difftest;
 IRingBuffer mtrace_buffer;
 IRingBuffer iring_buffer;
@@ -68,7 +71,7 @@ static void welcome() {
   printf("For help, type \"help\"\n");
 }
 
-void reset(int n){
+void init_reset(int n){
   top->reset=1;
   top->clock=0;
   step_and_dump_wave();
@@ -188,8 +191,11 @@ void init_monitor(int argc, char *argv[]) {
   init_traces();
   //初始化traces
 
-  reset(42);
+  init_reset(42);
   //初始化reset
+
+  nvboard_update();
+  //初始化完后更新一次nvboard展示界面
 
   // pipe_init();
   // //初始化流水线
