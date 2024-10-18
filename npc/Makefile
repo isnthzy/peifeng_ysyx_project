@@ -12,8 +12,8 @@ VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  --timescale "1ns/1ns" --no-timing
 # VERILATOR_CFLAGS += --trace 
 VERILATOR_CFLAGS += --trace-fst --autoflush
-# VERILATOR_CFLAGS += --prof-cfuncs 
-# VERILATOR_CFLAGS += -O3 --x-assign fast --x-initial fast --noassert 
+VERILATOR_CFLAGS += --prof-cfuncs 
+VERILATOR_CFLAGS += -O3 --x-assign fast --x-initial fast --noassert 
 #优化加速
 
 YSYXSOC_HOME?=/home/wangxin/ysyx-workbench/ysyxSoC
@@ -41,7 +41,7 @@ CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cpp" -or -name "
 CSRCS += $(SRC_AUTO_BIND)
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\"" 
-CXXFLAGS += -Wall -Werror -g
+CXXFLAGS += -Wall -Werror
 LDFLAGS += -lreadline  -lSDL2 
 
 # CXXFLAGS += -ggdb -DVL_DEBUG=1 -D_GLIBCXX_DEBUG
