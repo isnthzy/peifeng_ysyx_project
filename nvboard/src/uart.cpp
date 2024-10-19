@@ -122,6 +122,7 @@ void init_uart(SDL_Renderer *renderer) {
   init_render_local(renderer);
   int x = WINDOW_WIDTH / 2, y = 0, w = WINDOW_WIDTH / 2, h = WINDOW_HEIGHT / 2;
   uart = new UART(renderer, 1, 0, UART_TYPE, x, y, w, h);
+  uart->set_divisor(48);
   uart->add_pin(UART_TX);
   uart->add_pin(UART_RX);
   add_component(uart);
