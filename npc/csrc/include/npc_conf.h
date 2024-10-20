@@ -8,7 +8,7 @@
 /*---------------------------------------------------------------------------------*/
 
 
-#define CONFIG_TRACE 1
+// #define CONFIG_TRACE 1
 #define CONFIG_ITRACE 1
 #define CONFIG_MTRACE 1
 // #define CONFIG_FTRACE 1
@@ -16,7 +16,7 @@
 #define NPCLOG_NUM 10000 //trace最多记录多少个log
 //TRACE开关
 
-#define CONFIG_DIFFTEST 1 //此开关已废弃
+// #define CONFIG_DIFFTEST 1 //此开关已废弃
 #define DIFFTEST_COMMIT_WIDTH 6
 #define CONFIG_MEMDIFF 1
 // difftest最多支持提交几个指令
