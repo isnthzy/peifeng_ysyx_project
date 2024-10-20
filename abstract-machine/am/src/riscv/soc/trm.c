@@ -11,10 +11,6 @@
 #define UART_LCR  0x3
 #define UART_LSR  0x5
 
-// extern char _data_start [];
-// extern char _data_size  [];
-// extern char _data_load_start [];
-
 extern char _heap_start;
 extern char _heap_end;
 int main(const char *args);

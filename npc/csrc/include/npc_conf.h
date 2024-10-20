@@ -28,7 +28,7 @@
 
 /*---------------------------------------------------------------------------------*/
 
-#define CONFIG_WAVEFORM 1
+// #define CONFIG_WAVEFORM 1
 #define TRACE_FST 1
 // #define TRACE_VCD 1
 /* 波形生成开关 */
