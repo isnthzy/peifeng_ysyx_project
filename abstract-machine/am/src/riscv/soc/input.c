@@ -10,7 +10,7 @@ void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
   uint32_t tmp_key=inw(KEYBRD_ADDR);
   bool tmp_keydown=((tmp_key & 0xf000) != 0xf000);
   kbd->keydown = tmp_keydown;
-  kbd->keycode = tmp_key | 0xff;
+  kbd->keycode = tmp_key & 0xff;
 }
 
 void __am_uart_rx(AM_UART_RX_T *recv) {
