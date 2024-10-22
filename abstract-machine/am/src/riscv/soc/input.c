@@ -79,20 +79,21 @@ void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
     case 0x4a: scankey = 65; break; // SLASH
     case 0x59: scankey = 66; break; // RSHIFT
     case 0x14: scankey = 67; break; // LCTRL
-    case 0x11: scankey = 68; break; // LALT
-    case 0x29: scankey = 69; break; // SPACE
-    case 0xe011: scankey = 70; break; // RALT
-    case 0xe014: scankey = 71; break; // RCTRL
-    case 0xe075: scankey = 72; break; // up
-    case 0xe072: scankey = 73; break; // down
-    case 0xe06b: scankey = 74; break; // left
-    case 0xe074: scankey = 75; break; // right
-    case 0xe070: scankey = 76; break; // insert
-    case 0xe071: scankey = 77; break; // delete
-    case 0xe06c: scankey = 78; break; // home
-    case 0xe069: scankey = 79; break; // end
-    case 0xe07d: scankey = 80; break; // pageup
-    case 0xe07a: scankey = 81; break; // pagedown
+                                    // APPLIATION
+    case 0x11: scankey = 69; break; // LALT
+    case 0x29: scankey = 70; break; // SPACE
+    case 0xe011: scankey = 71; break; // RALT
+    case 0xe014: scankey = 72; break; // RCTRL
+    case 0xe075: scankey = 73; break; // up
+    case 0xe072: scankey = 74; break; // down
+    case 0xe06b: scankey = 75; break; // left
+    case 0xe074: scankey = 76; break; // right
+    case 0xe070: scankey = 77; break; // insert
+    case 0xe071: scankey = 78; break; // delete
+    case 0xe06c: scankey = 79; break; // home
+    case 0xe069: scankey = 80; break; // end
+    case 0xe07d: scankey = 81; break; // pageup
+    case 0xe07a: scankey = 82; break; // pagedown
 
     default:  scankey = 0x00; // Default case
   }
