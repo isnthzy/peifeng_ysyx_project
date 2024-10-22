@@ -5,11 +5,11 @@
 #define KEYBRD_ADDR  0x10011000L
 
 void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
-  uint32_t tmp_key=inw(KEYBRD_ADDR);
-  bool tmp_keydown=((tmp_key & 0xf000) != 0xf000);
+  uint32_t tmp_key=inl(KEYBRD_ADDR);
+  bool tmp_keydown=((tmp_key & 0xf00000) != 0xf00000);
   kbd->keydown = tmp_keydown;
-  char scankey = 0x0; 
-  switch (tmp_key & 0x00ff) {
+  short int scankey = 0x0; 
+  switch (tmp_key & 0xffff) {
     case 0x76: scankey = 1; break; // ESCAPE
     case 0x05: scankey = 2; break; // F1
     case 0x06: scankey = 3; break; // F2
