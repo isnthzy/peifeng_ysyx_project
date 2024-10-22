@@ -42,8 +42,8 @@ trait DeviceConfig{
   def GPIO_SW_BASE = "h10002004".U(32.W)
   def GPIO_SW_SIZE = 4.U
 
-  def KBD_ADDR_BASE = "h10011000".U(32.W)
-  def KBD_ADDR_SIZE = 8.U
+  def KBD_BASE = "h10011000".U(32.W)
+  def KBD_SIZE = 8.U
 }
 
 object ISAConfig{

@@ -20,7 +20,7 @@ class DeviceSkip extends Module with DeviceConfig{
   ||(io.addr >= SPI_BASE  && io.addr < SPI_BASE + SPI_SIZE)
   ||(io.addr >= RTC_ADDR  && io.addr < RTC_ADDR + RTC_SIZE)
   ||(io.addr >= GPIO_SW_BASE && io.addr < GPIO_SW_BASE + GPIO_SW_SIZE)
-  ||(io.addr >= KBD_ADDR_SIZE && io.addr < KBD_ADDR_SIZE + KBD_SIZE)
+  ||(io.addr >= KBD_BASE  && io.addr < KBD_BASE + KBD_SIZE)
   )
 
   writeSkip:=(
