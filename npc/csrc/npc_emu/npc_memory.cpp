@@ -217,6 +217,14 @@ extern "C" void sdrambank_write(uint16_t row,uint16_t col,uint16_t data,
   // uint16_t result = sdram_bank[bank][row][(col << 1) + 1] << 8 | sdram_bank[bank][row][col << 1];
   // printf("row 0x%04x col 0x%04x wdata 0x%04x bank 0x%02x\n",row,col,result,bank);
 }
+
+static uint32_t vga_fb_mem[1024 * 512]={};
+extern "C" void vga_fb_read(int raddr,int *rdata){
+  *rdata=vga_fb_mem[raddr];
+}
+extern "C" void vga_fb_write(int waddr,int wdata){
+  vga_fb_mem[waddr]=wdata;
+}
 //----------------------------dpi-c----------------------------
 
 
