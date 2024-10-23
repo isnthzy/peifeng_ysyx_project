@@ -68,6 +68,7 @@ void update() {
 }
 
 void video_test() {
+  printf("Video Test...\n");
   unsigned long last = 0;
   unsigned long fps_last = 0;
   int fps = 0;
