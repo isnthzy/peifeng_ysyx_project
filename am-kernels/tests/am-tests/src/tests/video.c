@@ -28,12 +28,6 @@ void redraw() {
       for (k = 0; k < block_size; k ++) {
         color_buf[k] = canvas[y][x];
       }
-      int n=1000;
-      while (n--)
-      {
-        /* code */
-      }
-      
       io_write(AM_GPU_FBDRAW, x * w, y * h, color_buf, w, h, false);
     }
   }

@@ -47,8 +47,9 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
 	那么这时候我们只需要把需要取出来的数据放进要放的位置就好了
   */
   uint32_t *pixels=ctl->pixels;
-  for(int y=ctl->y;y<ctl->y+ctl->h;y++){
-    for(int x=ctl->x;x<ctl->x+ctl->w;x++){
+  
+  for(int x=ctl->x;x<ctl->x+ctl->w;x++){
+    for(int y=ctl->y;y<ctl->y+ctl->h;y++){
       fb[vga_begin*y+x]=pixels[(y-ctl->y)*ctl->w+(x-ctl->x)];
     }
   }
