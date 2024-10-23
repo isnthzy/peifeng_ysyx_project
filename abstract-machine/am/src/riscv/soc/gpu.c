@@ -20,7 +20,7 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
   // int tmp_config_high=(int)((tmp_gpu_config>>16)&0xFFFF);
   *cfg = (AM_GPU_CONFIG_T) {
     .present = true, .has_accel = false,
-    .width = 480, .height = 640,
+    .width = 640, .height = 480,
     .vmemsz = 0
   };
 }
