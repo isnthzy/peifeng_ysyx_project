@@ -29,7 +29,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   // if (!ctl->sync&&(ctl->h==0||ctl->w==0)) return;
   //如果刷新内容为空，直接返回
 
-  uint32_t *fb =(uint32_t *)(uintptr_t)FB_ADDR;
+  volatile uint32_t *fb =(uint32_t *)(uintptr_t)FB_ADDR;
   uint32_t vga_begin=0;
   //原理就是行优先存储，那么写入也是从行写
   //简单来说是二维数据一维转储的过程
