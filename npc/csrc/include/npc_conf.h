@@ -9,8 +9,8 @@
 
 
 // #define CONFIG_TRACE 1
-#define CONFIG_ITRACE 1
-#define CONFIG_MTRACE 1
+// #define CONFIG_ITRACE 1
+// #define CONFIG_MTRACE 1
 // #define CONFIG_FTRACE 1
 
 #define NPCLOG_NUM 10000 //trace最多记录多少个log
