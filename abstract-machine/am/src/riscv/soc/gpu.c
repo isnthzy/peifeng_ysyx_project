@@ -26,7 +26,7 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
-  // if (!ctl->sync&&(ctl->h==0||ctl->w==0)) return;
+  if (!ctl->sync&&(ctl->h==0||ctl->w==0)) return;
   //如果刷新内容为空，直接返回
 
   volatile uint32_t *fb =(uint32_t *)(uintptr_t)FB_ADDR;
