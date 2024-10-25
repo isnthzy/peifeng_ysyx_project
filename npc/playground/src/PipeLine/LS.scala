@@ -7,6 +7,7 @@ import Bundles._
 import Axi.AxiBridgeDataLoad
 import Util.{Mux1hMap,Mux1hDefMap,Sext,Zext}
 import FuncUnit.Control._
+import CoreConfig.GenCtrl
 
 class LsStage extends Module {
   val ls=IO(new Bundle {
@@ -146,4 +147,20 @@ class LsStage extends Module {
   ls.to_wb.bits.rfWen:=ls.in.bits.rfWen
 
   ls.to_wb.bits.perfMode:=ls.in.bits.perfMode
+  if(GenCtrl.PERF){
+    val LSUDataRespClockCnt=RegInit(0.U(32.W))
+    val LSUInstCnt=RegInit(0.U(32.W))
+    when(ls.in.bits.perfMode){
+      when(ls.in.bits.diffLoad.valid(0)||ls.in.bits.diffStore.valid(0)){
+        LSUDataRespClockCnt:=LSUDataRespClockCnt+1.U
+        when(ls.to_wb.fire){
+          LSUInstCnt:=LSUInstCnt+1.U
+        }
+      }
+      when(excpType.bkp.asBool && ls.to_wb.fire){
+        var CyclePerLSUAddrResp=(LSUInstCnt.asSInt * 100.asSInt) / LSUDataRespClockCnt.asSInt
+        printf("Cycle per lsu(data resp)(%%): %d%%\n",CyclePerLSUAddrResp);
+      }
+    }
+  }
 }
