@@ -82,14 +82,14 @@ class OpenCalculateIPC extends BlackBox with HasBlackBoxInline {
     val valid = Input(Bool())
   })
   setInline("OpenCalculateIPC.v",
-    """import "DPI-C" function void open_npc_calculate_ipc(bit valid);
+    """import "DPI-C" function void open_npc_calculate_ipc();
       |module OpenCalculateIPC(
       |    input              clock,
       |    input              valid
       |);
       |always@(posedge clock) begin
       |  if(valid) begin
-      |    open_npc_calculate_ipc(valid);
+      |    open_npc_calculate_ipc();
       |  end
       |end
       |endmodule
