@@ -51,5 +51,9 @@ object ISAConfig{
 }
 
 object GenCtrl{
-  def VERILATOR_SIM=true
-}
+  def VERILATOR_SIM = true
+  def PERF = true
+} 
+/*
+NOTE:如果需要yosys评估，需要关闭VERILATOR_SIM(difftest)
+     (PERF)性能测试*/

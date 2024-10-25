@@ -20,6 +20,7 @@ endif
 
 LDFLAGS   += --gc-sections -e _start
 CFLAGS 		+= -DMAINARGS=\"$(mainargs)\"
+CFLAGS    += -DCONFIG_YSYXSOC
 
 NPCFLAGS+=-l $(shell dirname $(IMAGE).elf)/npc-log.txt
 NPCFLAGS+=--diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so
