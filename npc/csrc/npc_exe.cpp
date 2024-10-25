@@ -16,6 +16,7 @@ extern bool difftest_flag;
 bool g_print_step = false;
 
 static uint64_t g_timer = 0; // unit: us
+static uint64_t g_clock_cnt = 0;
 uint64_t g_nr_guest_inst; //可以复用作为指令计数器，记录指令总共走了多少步
 
 void step_and_dump_wave(){
@@ -31,9 +32,22 @@ void npc_quit(){
   npc_state.state=NPC_QUIT;
 }
 
+static uint64_t open_npc_calculate_inst_total = 0;
+//NOTE:开启npc计算时的指令数量，计算ipc时减去他
+#ifdef CONFIG_YSYXSOC
+extern "C" void open_npc_calculate_ipc(){
+  g_clock_cnt = 0;
+  open_npc_calculate_inst_total = g_nr_guest_inst;
+  printf("open npc calculate ipc\n");
+}
+#endif
+
 static void statistic() {
   IFNDEF(CONFIG_TARGET_AM, setlocale(LC_NUMERIC, ""));
 #define NUMBERIC_FMT MUXDEF(CONFIG_TARGET_AM, "%", "%'") PRIu64
+  double ipc = (double)(g_nr_guest_inst - open_npc_calculate_inst_total) / g_clock_cnt;
+  printf("%ld %ld\n", (g_nr_guest_inst - open_npc_calculate_inst_total),g_clock_cnt);
+  Log("npc ipc = %.4f", ipc);
   Log("host time spent = " NUMBERIC_FMT " us", g_timer);
   Log("total guest instructions = " NUMBERIC_FMT, g_nr_guest_inst);
   if (g_timer > 0) Log("simulation frequency = " NUMBERIC_FMT " inst/s", g_nr_guest_inst * 1000000 / g_timer);
@@ -54,6 +68,7 @@ static void npc_execute(uint64_t n) {
   for (;n > 0; n --) {
     int state = 0;
     do{
+      g_clock_cnt++; //NOTE:从reset后开始计数,记录clock的总数
       top->clock=1;
       step_and_dump_wave(); //NOTE:要放对位置，因为放错位置排查好几个小时
       state=difftest->diff_step();

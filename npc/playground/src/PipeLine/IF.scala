@@ -4,6 +4,7 @@ import chisel3.util._
 import Axi._
 import Bundles._
 import CoreConfig.Configs._
+import CoreConfig.GenCtrl
 
 class IfStage extends Module {
   val fs=IO(new Bundle {
@@ -61,4 +62,36 @@ class IfStage extends Module {
 
   fs.to_id.bits.pc:=fs.in.bits.pc
   fs.to_id.bits.inst:=fsInst
+
+  if(GenCtrl.PERF){
+    val OpenCalculateIPC=Module(new OpenCalculateIPC())
+    OpenCalculateIPC.io.clock:=clock
+    OpenCalculateIPC.io.valid:=false.B
+    //NOTE:这样做的目的是当我们使用soc时略去bootloader阶段，等到进入程序后通知npc开始计算ipc
+    //使用CSRRS读取学号寄存器作为了判断是否进入程序的条件
+    when((fsInst===BitPat("b11110001001000000010?????1110011"))&&fs.to_id.fire){
+      OpenCalculateIPC.io.valid:=true.B
+    }
+  }
+
+}
+
+class OpenCalculateIPC extends BlackBox with HasBlackBoxInline {
+  val io = IO(new Bundle {
+    val clock = Input(Clock())
+    val valid = Input(Bool())
+  })
+  setInline("OpenCalculateIPC.v",
+    """import "DPI-C" function void open_npc_calculate_ipc();
+      |module OpenCalculateIPC(
+      |    input              clock,
+      |    input              valid
+      |);
+      |always@(posedge clock) begin
+      |  if(valid) begin
+      |    open_npc_calculate_ipc();
+      |  end
+      |end
+      |endmodule
+    """.stripMargin)
 }
