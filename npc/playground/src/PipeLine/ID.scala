@@ -189,6 +189,7 @@ class IdStage extends Module {
     val stCnt=RegInit(0.U(32.W))
     when(id.in.bits.perfMode){
       when(id.to_ex.fire){
+        totalCnt:=totalCnt+1.U
         when(Decode.io.aluOp=/=SDEF(ALU_XXX)){
           aluCnt:=aluCnt+1.U
         }
