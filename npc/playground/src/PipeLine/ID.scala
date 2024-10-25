@@ -203,7 +203,7 @@ class IdStage extends Module {
         }
       }
     }
-    when(Decode.io.csrOp===SDEF(CSR_BREK)){
+    when(idExcpType.bkp.asBool && id.to_ex.fire){
       printf("============= perf =============\n")
       printf("Total inst cnt: %d\n",totalCnt)
       printf("ALU:%d, BR:%d\nLD:%d, ST:%d\n",aluCnt,brCnt,ldCnt,stCnt)
