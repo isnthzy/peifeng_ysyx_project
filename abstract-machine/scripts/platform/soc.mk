@@ -20,7 +20,6 @@ endif
 
 LDFLAGS   += --gc-sections -e _start
 CFLAGS 		+= -DMAINARGS=\"$(mainargs)\"
-CFLAGS    += -DCONFIG_YSYXSOC
 
 NPCFLAGS+=-l $(shell dirname $(IMAGE).elf)/npc-log.txt
 NPCFLAGS+=--diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so
@@ -34,4 +33,4 @@ image: $(IMAGE).elf
 	@$(OBJCOPY) -S --set-section-flags .bss=alloc,contents -O binary $(IMAGE).elf $(IMAGE).bin
 
 run: image
-	$(MAKE) -C $(NPC_HOME) sim ARGS="$(NPCFLAGS)" IMG=$(IMAGE).bin
+	$(MAKE) -C $(NPC_HOME) sim ARGS="$(NPCFLAGS)" IMG=$(IMAGE).bin ARCH=soc

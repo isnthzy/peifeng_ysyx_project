@@ -5,6 +5,7 @@ NXDC_FILES = constr/ysyxSoCFull.nxdc
 export PATH := $(PATH):$(abspath ./utils)
 $(shell mkdir -p $(BUILD_DIR))
 IMG?=
+ARCH?=
 ARGS?= --log=$(BUILD_DIR)/npc-log.txt
 # ARGS+= --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so 
 
@@ -44,6 +45,9 @@ CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 CXXFLAGS += -Wall -Werror
 LDFLAGS += -lreadline  -lSDL2 
 
+ifeq ($(ARCH),soc)
+  CXXFLAGS += -DCONFIG_YSYXSOC
+endif
 # CXXFLAGS += -ggdb -DVL_DEBUG=1 -D_GLIBCXX_DEBUG
 # LDFLAGS  += -ggdb -fsanitize=address,undefined
 #gdb调试段错误相关代码
