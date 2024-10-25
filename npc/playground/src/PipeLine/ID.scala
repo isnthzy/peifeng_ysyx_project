@@ -6,6 +6,7 @@ import Bundles._
 import FuncUnit.Control._
 import FuncUnit.{Decode,ImmGen,RegFile}
 import Util.{Mux1hDefMap,SDEF}
+import CoreConfig.GenCtrl
 
 class IdStage extends Module {
   val id=IO(new Bundle {
@@ -163,7 +164,6 @@ class IdStage extends Module {
   idExcpEn:=idExcpType.asUInt.orR
   id.to_ex.bits.excpEn:=idExcpEn
   id.to_ex.bits.excpType:=idExcpType
-
 //------------------------------------------
   id.to_ex.bits.pc:=id.in.bits.pc
   id.to_ex.bits.inst:=id.in.bits.inst
@@ -179,4 +179,40 @@ class IdStage extends Module {
   id.to_ex.bits.ldType:=Decode.io.ldType
   id.to_ex.bits.wbSel:=Decode.io.wbSel
   id.to_ex.bits.rfWen:=Decode.io.rfWen
+
+  id.to_ex.bits.perfMode:=id.in.bits.perfMode
+  if(GenCtrl.PERF){
+    val totalCnt=RegInit(0.U(32.W))
+    val aluCnt=RegInit(0.U(32.W))
+    val brCnt=RegInit(0.U(32.W))
+    val ldCnt=RegInit(0.U(32.W))
+    val stCnt=RegInit(0.U(32.W))
+    when(id.in.bits.perfMode){
+      when(id.to_ex.fire){
+        totalCnt:=totalCnt+1.U
+        when(Decode.io.aluOp=/=SDEF(ALU_XXX)){
+          aluCnt:=aluCnt+1.U
+        }
+        when(Decode.io.brType=/=SDEF(BR_XXX)){
+          brCnt:=brCnt+1.U
+        }
+        when(Decode.io.ldType=/=SDEF(LD_XXX)){
+          ldCnt:=ldCnt+1.U
+        }
+        when(Decode.io.stType=/=SDEF(ST_XXX)){
+          stCnt:=stCnt+1.U
+        }
+      }
+      when(idExcpType.bkp.asBool && id.to_ex.fire){
+        var aluRealCnt=aluCnt-brCnt-ldCnt-stCnt
+        printf("============= perf =============\n")
+        printf("Total inst cnt: %d\n",totalCnt)
+        printf("ALU:%d, rate=%d%%\n",aluRealCnt,(aluRealCnt.asSInt*100.asSInt)/totalCnt.asSInt)
+        printf("BR :%d, rate=%d%%\n",brCnt,(brCnt.asSInt*100.asSInt)/totalCnt.asSInt)
+        printf("LD :%d, rate=%d%%\n",ldCnt,(ldCnt.asSInt*100.asSInt)/totalCnt.asSInt)
+        printf("ST :%d, rate=%d%%\n",stCnt,(stCnt.asSInt*100.asSInt)/totalCnt.asSInt)
+     }
+    }
+
+  }
 }

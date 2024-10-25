@@ -4,6 +4,7 @@ import chisel3.util._
 import Axi._
 import Bundles._
 import CoreConfig.Configs._
+import CoreConfig.GenCtrl
 
 class PfStage extends Module {
   val pf=IO(new Bundle {
@@ -16,6 +17,9 @@ class PfStage extends Module {
     val csrEntries=Input(new CsrEntriesBundle)
     val al=new AxiBridgeAddrLoad()
     val s =new AxiBridgeStore()
+
+    val perfMode=Input(Bool()) //飞线...
+    val programExit=Input(Bool())
   })
   val pfFlush=dontTouch(Wire(Bool()))
   val pfExcpEn=dontTouch(Wire(Bool()))
@@ -72,4 +76,21 @@ class PfStage extends Module {
   pf.to_if.bits.excpType:=pfExcpType
 
   pf.to_if.bits.pc:=regPC
+
+  if(GenCtrl.PERF){
+    val FetchAddrClockCnt=RegInit(0.U(32.W))
+    val InstCnt=RegInit(0.U(32.W))
+    when(pf.perfMode){
+      when(fetchReq){
+        FetchAddrClockCnt:=FetchAddrClockCnt+1.U
+        when(pf.to_if.fire){
+          InstCnt:=InstCnt+1.U
+        }
+      }
+      when(pf.programExit){
+        var CyclePerFetchAddrResp=(FetchAddrClockCnt.asSInt  * 100.asSInt) / InstCnt.asSInt
+        printf("Cycle per fetch(addr resp)(%%): %d%%\n",CyclePerFetchAddrResp);
+      }
+    }
+  }
 }

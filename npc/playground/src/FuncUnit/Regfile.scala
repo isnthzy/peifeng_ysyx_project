@@ -15,16 +15,16 @@ class RegFile extends Module{
     val wen=Input(Bool())
     val diffREG=Output((Vec(32, UInt(32.W))))
   })
-  val rf=RegInit(VecInit(Seq.fill(32)(0.U(32.W))))
+  val rf=RegInit(VecInit(Seq.fill(16)(0.U(32.W))))
   when(io.wen){ 
     when(io.waddr=/=0.U){
-      rf(io.waddr):=io.wdata 
+      rf(io.waddr(3,0)):=io.wdata 
     }.otherwise{
       rf(0):=0.U
     }
   }
-  io.rdata1:=rf(io.raddr1)
-  io.rdata2:=rf(io.raddr2)
+  io.rdata1:=rf(io.raddr1(3,0))
+  io.rdata2:=rf(io.raddr2(3,0))
 
-  io.diffREG:=rf
+  io.diffREG:=rf.asTypeOf(io.diffREG)
 } 

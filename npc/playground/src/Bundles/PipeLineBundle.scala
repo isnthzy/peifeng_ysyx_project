@@ -39,6 +39,8 @@ class If4LsBusBundle extends Bundle{
 }
 
 class If2IdBusBundle extends Bundle{
+  val perfMode=Bool()
+
   val excpEn=Bool()
   val excpType=new IfExcpTypeBundle()
   val pc=UInt(ADDR_WIDTH.W)
@@ -46,6 +48,8 @@ class If2IdBusBundle extends Bundle{
 }
 
 class Id2ExBusBundle extends Bundle{
+  val perfMode=Bool()
+
   val excpEn=Bool()
   val excpType=new IdExcpTypeBundle()
   val pc=UInt(ADDR_WIDTH.W)
@@ -81,6 +85,8 @@ class Id4WbBusBundle extends Bundle{
 }
 
 class Ex2LsBusBundle extends Bundle{
+  val perfMode=Bool()
+
   val diffLoad =new DiffLoadBundle()
   val diffStore=new DiffStoreBundle()
 
@@ -109,6 +115,8 @@ class Ex4LsBusBundle extends Bundle{
 }
 
 class Ls2WbBusBundle extends Bundle{
+  val perfMode=Bool()
+
   val diffLoad =new DiffLoadBundle()
   val diffStore=new DiffStoreBundle()
   val diffExcp =new DiffExcpBundle()

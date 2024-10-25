@@ -9,6 +9,7 @@ import FuncUnit.{Alu}
 import FuncUnit.Control._
 import Util.{Mux1hDefMap,SDEF}
 import Axi.{AxiBridgeAddrLoad,AxiBridgeStore}
+import CoreConfig.GenCtrl
 
 class ExStage extends Module {
   val ex=IO(new Bundle {
@@ -191,4 +192,22 @@ class ExStage extends Module {
   ex.to_ls.bits.wbSel :=ex.in.bits.wbSel
   ex.to_ls.bits.rfWen :=ex.in.bits.rfWen
 
+  ex.to_ls.bits.perfMode:=ex.in.bits.perfMode
+  if(GenCtrl.PERF){
+    val LSUAddrRespClockCnt=RegInit(0.U(32.W))
+    val LSUInstCnt=RegInit(0.U(32.W))
+    when(ex.in.bits.perfMode){
+      when(storeEn||loadEn){
+        LSUAddrRespClockCnt:=LSUAddrRespClockCnt+1.U
+        when(ex.to_ls.fire){
+          LSUInstCnt:=LSUInstCnt+1.U
+        }
+      }
+      when(exExcpType.num.bkp.asBool && ex.to_ls.fire){
+        printf("lsu total cnt: %d\n",LSUInstCnt);
+        var CyclePerLSUAddrResp=(LSUAddrRespClockCnt.asSInt * 100.asSInt) / LSUInstCnt.asSInt
+        printf("Cycle per lsu(addr resp)(%%): %d%%\n",CyclePerLSUAddrResp);
+      }
+    }
+  }
 }

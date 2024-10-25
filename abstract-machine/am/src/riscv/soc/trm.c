@@ -69,10 +69,10 @@ void put_csr(){
 }
 
 void _trm_init(){
-  *(volatile int *)(GPIO_BASE + 0x8) = 0x23060115; //显示学号
   init_uart();
-  // if (_data_start != _data_load_start) memcpy(_data_start, _data_load_start, (size_t) _data_size);
-  // put_csr();
+  uint32_t marchid;
+  asm("csrr %0, marchid" : "=r"(marchid) : );
+  *(volatile int *)(GPIO_BASE + 0x8) = marchid; //显示学号
   int ret = main(mainargs);
   halt(ret);
 }

@@ -16,6 +16,9 @@ class IfStage extends Module {
     val from_ls=Input(new If4LsBusBundle())
 
     val dl=new AxiBridgeDataLoad()
+
+    val perfMode=Output(Bool()) //飞线到if级...
+    val programExit=Input(Bool())
   })
   val fsFlush=dontTouch(Wire(Bool()))
   val fsStall=dontTouch(Wire(Bool()))
@@ -60,17 +63,36 @@ class IfStage extends Module {
   fs.to_id.bits.excpEn:=fsExcpEn
   fs.to_id.bits.excpType:=fsExcpType
 
+  val perfMode=RegInit(false.B)
   fs.to_id.bits.pc:=fs.in.bits.pc
   fs.to_id.bits.inst:=fsInst
+  fs.to_id.bits.perfMode:=perfMode
 
+  fs.perfMode:=perfMode
   if(GenCtrl.PERF){
     val OpenCalculateIPC=Module(new OpenCalculateIPC())
+    
     OpenCalculateIPC.io.clock:=clock
     OpenCalculateIPC.io.valid:=false.B
     //NOTE:这样做的目的是当我们使用soc时略去bootloader阶段，等到进入程序后通知npc开始计算ipc
     //使用CSRRS读取学号寄存器作为了判断是否进入程序的条件
     when((fsInst===BitPat("b11110001001000000010?????1110011"))&&fs.to_id.fire){
+      perfMode:=true.B
       OpenCalculateIPC.io.valid:=true.B
+    }
+  }
+  if(GenCtrl.PERF){
+    val FetchDataClockCnt=RegInit(0.U(32.W))
+    val InstCnt=RegInit(0.U(32.W))
+    when(perfMode){
+      FetchDataClockCnt:=FetchDataClockCnt+1.U
+      when(fs.to_id.fire){
+        InstCnt:=InstCnt+1.U
+      }
+      when(fs.programExit){
+        var CyclePerFetchDataResp=(FetchDataClockCnt.asSInt  * 100.asSInt) / InstCnt.asSInt
+        printf("Cycle per fetch(data resp)(%%): %d%%\n",CyclePerFetchDataResp);
+      }
     }
   }
 
