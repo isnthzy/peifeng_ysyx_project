@@ -78,8 +78,9 @@ class SimTop extends Module with DeviceConfig{
 //
   //NOTE:为了perf加的丑陋的飞线
   PreFetch.pf.perfMode:=InstFetch.fs.perfMode
-  when(WriteBack.wb.diffExcpCommit.excpValid
-     &&WriteBack.wb.diffExcpCommit.cause===0x3.U){
+  when(LoadStore.ls.to_wb.bits.diffExcp.excpValid
+     &&LoadStore.ls.to_wb.bits.diffExcp.cause===0x3.U
+     &&LoadStore.ls.to_wb.fire){
     PreFetch.pf.programExit:=true.B
     InstFetch.fs.programExit:=true.B
   }.otherwise{
