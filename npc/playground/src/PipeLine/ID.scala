@@ -6,6 +6,7 @@ import Bundles._
 import FuncUnit.Control._
 import FuncUnit.{Decode,ImmGen,RegFile}
 import Util.{Mux1hDefMap,SDEF}
+import CoreConfig.GenCtrl
 
 class IdStage extends Module {
   val id=IO(new Bundle {
@@ -179,4 +180,33 @@ class IdStage extends Module {
   id.to_ex.bits.ldType:=Decode.io.ldType
   id.to_ex.bits.wbSel:=Decode.io.wbSel
   id.to_ex.bits.rfWen:=Decode.io.rfWen
+
+  if(GenCtrl.PERF){
+    val totalCnt=RegInit(0.U(32.W))
+    val aluCnt=RegInit(0.U(32.W))
+    val brCnt=RegInit(0.U(32.W))
+    val ldCnt=RegInit(0.U(32.W))
+    val stCnt=RegInit(0.U(32.W))
+    when(id.in.bits.perfMode){
+      when(id.to_ex.fire){
+        when(Decode.io.aluOp=/=SDEF(ALU_XXX)){
+          aluCnt:=aluCnt+1.U
+        }
+        when(Decode.io.brType=/=SDEF(BR_XXX)){
+          brCnt:=brCnt+1.U
+        }
+        when(Decode.io.ldType=/=SDEF(LD_XXX)){
+          ldCnt:=ldCnt+1.U
+        }
+        when(Decode.io.stType=/=SDEF(ST_XXX)){
+          stCnt:=stCnt+1.U
+        }
+      }
+    }
+    when(Decode.io.csrOp===SDEF(CSR_BREK)){
+      printf("============= perf =============\n")
+      printf("Total inst cnt: %d\n",totalCnt)
+      printf("ALU:%d, BR:%d\nLD:%d, ST:%d\n",aluCnt,brCnt,ldCnt,stCnt)
+    }
+  }
 }
