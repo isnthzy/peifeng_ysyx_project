@@ -69,7 +69,7 @@ class IfStage extends Module {
     OpenCalculateIPC.io.valid:=false.B
     //NOTE:这样做的目的是当我们使用soc时略去bootloader阶段，等到进入程序后通知npc开始计算ipc
     //使用CSRRS读取学号寄存器作为了判断是否进入程序的条件
-    when((fsInst===BitPat("11110001001000000010?????1110011"))&&fs.to_id.fire){
+    when((fsInst===BitPat("b11110001001000000010?????1110011"))&&fs.to_id.fire){
       OpenCalculateIPC.io.valid:=true.B
     }
     

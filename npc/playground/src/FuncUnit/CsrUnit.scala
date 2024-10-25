@@ -47,7 +47,7 @@ class CsrFile extends Module{
   val mepc   =RegInit(0.U(DATA_WIDTH.W))
   val mcause =RegInit(0.U.asTypeOf(new CsrCauseBundle()))
   val mvendorid=RegInit("h79737978".U(DATA_WIDTH.W))
-  val marchid=RegInit("h15FDE93".U(DATA_WIDTH.W))
+  val marchid=RegInit("h23060115".U(DATA_WIDTH.W))
 
   io.from_csr.rdData:=Mux1hMap(io.from_csr.rdAddr,Map(
     CSR.MSTATUS->mstatus.asUInt,
