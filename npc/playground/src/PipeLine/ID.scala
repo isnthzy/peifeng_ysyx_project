@@ -164,7 +164,6 @@ class IdStage extends Module {
   idExcpEn:=idExcpType.asUInt.orR
   id.to_ex.bits.excpEn:=idExcpEn
   id.to_ex.bits.excpType:=idExcpType
-
 //------------------------------------------
   id.to_ex.bits.pc:=id.in.bits.pc
   id.to_ex.bits.inst:=id.in.bits.inst
@@ -181,6 +180,7 @@ class IdStage extends Module {
   id.to_ex.bits.wbSel:=Decode.io.wbSel
   id.to_ex.bits.rfWen:=Decode.io.rfWen
 
+  id.to_ex.bits.perfMode:=id.in.bits.perfMode
   if(GenCtrl.PERF){
     val totalCnt=RegInit(0.U(32.W))
     val aluCnt=RegInit(0.U(32.W))

@@ -191,4 +191,6 @@ class ExStage extends Module {
   ex.to_ls.bits.wbSel :=ex.in.bits.wbSel
   ex.to_ls.bits.rfWen :=ex.in.bits.rfWen
 
+  ex.to_ls.bits.perfMode:=ex.in.bits.perfMode
+
 }

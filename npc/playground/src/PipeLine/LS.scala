@@ -144,4 +144,6 @@ class LsStage extends Module {
   ls.to_wb.bits.rd:=ls.in.bits.rd
   ls.to_wb.bits.result:=ls_result
   ls.to_wb.bits.rfWen:=ls.in.bits.rfWen
+
+  ls.to_wb.bits.perfMode:=ls.in.bits.perfMode
 }
