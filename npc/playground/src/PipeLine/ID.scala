@@ -205,9 +205,10 @@ class IdStage extends Module {
       }
     }
     when(idExcpType.bkp.asBool && id.to_ex.fire){
+      var aluRealCnt=aluCnt-brCnt-ldCnt-stCnt
       printf("============= perf =============\n")
       printf("Total inst cnt: %d\n",totalCnt)
-      printf("ALU:%d, BR:%d\nLD:%d, ST:%d\n",aluCnt,brCnt,ldCnt,stCnt)
+      printf("ALU:%d, BR:%d\nLD:%d, ST:%d\n",aluRealCnt,brCnt,ldCnt,stCnt)
     }
   }
 }
