@@ -187,6 +187,9 @@ void init_monitor(int argc, char *argv[]) {
   /* Initialize the simple debugger. */
   init_sdb();
 
+  double ipc = 763687 / 9533727;
+  printf("npc ipc = %.4f\n", ipc);
+
   IFDEF(CONFIG_TRACE, init_disasm(
     MUXDEF(CONFIG_ISA_riscv,
       MUXDEF(CONFIG_RV64,      "riscv64",
