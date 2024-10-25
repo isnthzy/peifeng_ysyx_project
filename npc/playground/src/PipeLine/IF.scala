@@ -72,7 +72,6 @@ class IfStage extends Module {
     when((fsInst===BitPat("b11110001001000000010?????1110011"))&&fs.to_id.fire){
       OpenCalculateIPC.io.valid:=true.B
     }
-    
   }
 
 }
@@ -84,7 +83,7 @@ class OpenCalculateIPC extends BlackBox with HasBlackBoxInline {
   })
   setInline("OpenCalculateIPC.v",
     """import "DPI-C" function void open_npc_calculate_ipc();
-      |module sdramRAM(
+      |module OpenCalculateIPC(
       |    input              clock,
       |    input              valid
       |);
