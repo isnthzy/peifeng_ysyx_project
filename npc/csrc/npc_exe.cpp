@@ -38,6 +38,7 @@ static uint64_t open_npc_calculate_inst_total = 0;
 extern "C" void open_npc_calculate_ipc(){
   g_clock_cnt = 0;
   open_npc_calculate_inst_total = g_nr_guest_inst;
+  printf("open npc calculate ipc\n");
 }
 #endif
 
