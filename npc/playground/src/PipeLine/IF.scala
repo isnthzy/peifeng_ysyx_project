@@ -16,6 +16,9 @@ class IfStage extends Module {
     val from_ls=Input(new If4LsBusBundle())
 
     val dl=new AxiBridgeDataLoad()
+
+    val perfMode=Output(Bool()) //飞线到if级...
+    val programExit=Input(Bool())
   })
   val fsFlush=dontTouch(Wire(Bool()))
   val fsStall=dontTouch(Wire(Bool()))
@@ -65,6 +68,7 @@ class IfStage extends Module {
   fs.to_id.bits.inst:=fsInst
   fs.to_id.bits.perfMode:=perfMode
 
+  fs.perfMode:=perfMode
   if(GenCtrl.PERF){
     val OpenCalculateIPC=Module(new OpenCalculateIPC())
     
@@ -77,18 +81,20 @@ class IfStage extends Module {
       OpenCalculateIPC.io.valid:=true.B
     }
   }
-  // if(GenCtrl.PERF){
-  //   val clockCnt=RegInit(0.U(32.W))
-  //   when(perfMode){
-  //     clockCnt:=clockCnt+1.U
-  //     when(fs.to_id.fire){
-        
-  //     }
-  //     // when(){
-
-  //     // }
-  //   }
-  // }
+  if(GenCtrl.PERF){
+    val FetchDataClockCnt=RegInit(0.U(32.W))
+    val InstCnt=RegInit(0.U(32.W))
+    when(perfMode){
+      FetchDataClockCnt:=FetchDataClockCnt+1.U
+      when(fs.to_id.fire){
+        InstCnt:=InstCnt+1.U
+      }
+      when(fs.programExit){
+        var CyclePerFetchDataResp=(FetchDataClockCnt.asSInt  * 100.asSInt) / InstCnt.asSInt
+        printf("Cycle per fetch(data resp)(%%): %d%%\n",CyclePerFetchDataResp);
+      }
+    }
+  }
 
 }
 

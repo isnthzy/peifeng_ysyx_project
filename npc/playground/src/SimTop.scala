@@ -76,6 +76,16 @@ class SimTop extends Module with DeviceConfig{
   AxiXbarA2X.io.x(0)<>AxiCoreOut.io.in
   AxiXbarA2X.io.x(1)<>SimTimer.io
 //
+  //NOTE:为了perf加的丑陋的飞线
+  PreFetch.pf.perfMode:=InstFetch.fs.perfMode
+  when(WriteBack.wb.diffExcpCommit.excpValid
+     &&WriteBack.wb.diffExcpCommit.cause===0x3.U){
+    PreFetch.pf.programExit:=true.B
+    InstFetch.fs.programExit:=true.B
+  }.otherwise{
+    PreFetch.pf.programExit:=false.B
+    InstFetch.fs.programExit:=false.B
+  }
 
 // PreIF begin
   PreFetch.pf.from_id:=InstDecode.id.fw_pf
