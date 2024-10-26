@@ -33,11 +33,11 @@ class Alu extends Module {
 
   val alu_srl = dontTouch((io.src1        >> io.src2(4,0)       ).asUInt)
 
-  val alu_slt = dontTouch((io.src1.asSInt < io.src2.asSInt).asUInt)
+  val alu_slt = dontTouch(Cat(0.U(31.W),(io.src1.asSInt < io.src2.asSInt).asUInt))
   
-  val alu_sltu= dontTouch((io.src1.asUInt < io.src2.asUInt).asUInt)
+  val alu_sltu= dontTouch(Cat(0.U(31.W),(io.src1.asUInt < io.src2.asUInt).asUInt))
 
-  val alu_eq  = dontTouch(io.src1===io.src2)
+  val alu_eq  = dontTouch(Cat(0.U(31.W),io.src1===io.src2))
 
   val alu_pc4 = dontTouch(io.src1+4.U)
 
