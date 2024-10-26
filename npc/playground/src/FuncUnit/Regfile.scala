@@ -23,8 +23,8 @@ class RegFile extends Module{
       rf(0):=0.U
     }
   }
-  io.rdata1:=rf(io.raddr1)
-  io.rdata2:=rf(io.raddr2)
+  io.rdata1:=rf(io.raddr1(3,0))
+  io.rdata2:=rf(io.raddr2(3,0))
 
-  io.diffREG:=rf
+  io.diffREG:=rf.asTypeOf(io.diffREG)
 } 
