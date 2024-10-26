@@ -43,6 +43,21 @@ class Alu extends Module {
 
   val alu_lui = Cat(io.src2(31,12),0.U(12.W))
 
+  dontTouch(alu_add)
+  dontTouch(alu_sub)
+  dontTouch(alu_and)
+  dontTouch(alu_or)
+  dontTouch(alu_xor)
+  dontTouch(alu_sll)
+  dontTouch(alu_srl)
+  dontTouch(alu_sra)
+  dontTouch(alu_slt)
+  dontTouch(alu_sltu)
+  dontTouch(alu_eq)
+  dontTouch(alu_pc4)
+  dontTouch(alu_lui)
+
+  
   io.result := Mux1hDefMap(io.op,Map(
     ALU_ADD -> alu_add, 
     ALU_SUB -> alu_sub,
