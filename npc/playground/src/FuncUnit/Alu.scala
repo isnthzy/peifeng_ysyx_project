@@ -17,47 +17,32 @@ class Alu extends Module {
   val sll=Wire(UInt(64.W))
   sll := io.src1 << io.src2(4,0) //左移
 
-  val alu_add= io.src1 + io.src2
+  val alu_add = dontTouch(io.src1 + io.src2)
 
-  val alu_sub= io.src1 - io.src2 
+  val alu_sub = dontTouch(io.src1 - io.src2)
 
-  val alu_and = io.src1 & io.src2
+  val alu_and = dontTouch(io.src1 & io.src2)
 
-  val alu_or  = io.src1 | io.src2
+  val alu_or  = dontTouch(io.src1 | io.src2)
 
-  val alu_xor = io.src1 ^ io.src2
+  val alu_xor = dontTouch(io.src1 ^ io.src2)
 
-  val alu_sll = sll(31,0)
+  val alu_sll = dontTouch(sll(31,0))
 
-  val alu_sra = (io.src1.asSInt >> io.src2(4,0).asUInt).asUInt
+  val alu_sra = dontTouch((io.src1.asSInt >> io.src2(4,0).asUInt).asUInt)
 
-  val alu_srl = (io.src1        >> io.src2(4,0)       ).asUInt
+  val alu_srl = dontTouch((io.src1        >> io.src2(4,0)       ).asUInt)
 
-  val alu_slt = (io.src1.asSInt < io.src2.asSInt).asUInt
+  val alu_slt = dontTouch((io.src1.asSInt < io.src2.asSInt).asUInt)
   
-  val alu_sltu= (io.src1.asUInt < io.src2.asUInt).asUInt
+  val alu_sltu= dontTouch((io.src1.asUInt < io.src2.asUInt).asUInt)
 
-  val alu_eq  = io.src1===io.src2
+  val alu_eq  = dontTouch(io.src1===io.src2)
 
-  val alu_pc4 = io.src1+4.U
+  val alu_pc4 = dontTouch(io.src1+4.U)
 
-  val alu_lui = Cat(io.src2(31,12),0.U(12.W))
+  val alu_lui = dontTouch(Cat(io.src2(31,12),0.U(12.W)))
 
-  dontTouch(alu_add)
-  dontTouch(alu_sub)
-  dontTouch(alu_and)
-  dontTouch(alu_or)
-  dontTouch(alu_xor)
-  dontTouch(alu_sll)
-  dontTouch(alu_srl)
-  dontTouch(alu_sra)
-  dontTouch(alu_slt)
-  dontTouch(alu_sltu)
-  dontTouch(alu_eq)
-  dontTouch(alu_pc4)
-  dontTouch(alu_lui)
-
-  
   io.result := Mux1hDefMap(io.op,Map(
     ALU_ADD -> alu_add, 
     ALU_SUB -> alu_sub,
