@@ -51,9 +51,11 @@ object ISAConfig{
 }
 
 object GenCtrl{
-  def VERILATOR_SIM = true
-  def PERF = true
+  def VERILATOR_SIM = false
+  def PERF = false
+  def YOSYS_MODE = true
 } 
 /*
-NOTE:如果需要yosys评估，需要关闭VERILATOR_SIM(difftest)
-     (PERF)性能测试*/
+NOTE:如果需要yosys评估，需要关闭VERILATOR_SIM(difftest)和(PERF)性能测试
+      开启YOSYS_MODE后，访存会把DPIC操作会更改成对memory的操作
+     */
