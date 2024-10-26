@@ -11,7 +11,7 @@ object TopMain extends App {
         "--lowering-options=disallowLocalVariables,disallowPackedArrays,locationInfoStyle=wrapInAtSquareBracket,noAlwaysComb")*/
   val firtoolOptions=Seq(
     FirtoolOption(
-      "--lowering-options=disallowLocalVariables,disallowPackedArrays,locationInfoStyle=wrapInAtSquareBracket"
+      "--lowering-options=disallowLocalVariables,disallowPackedArrays,disallowPackedStructAssignments,locationInfoStyle=wrapInAtSquareBracket"
     ), //香山firtool参数
     // FirtoolOption("--preserve-aggregate=vec"),
     FirtoolOption("--split-verilog"), //分离生成的verilog文件
