@@ -92,7 +92,7 @@ static word_t tran_csr(word_t csr_addr,word_t data,bool is_write){
       if(is_write) cpu.mcause=0xb;
       break; //因为nemu始终为m模式
     case MARCHID:
-      tmp_csr=0x15fde93;
+      tmp_csr=0x23060115;
       break;
     case MVENDORID:
       tmp_csr=0x79737978;
