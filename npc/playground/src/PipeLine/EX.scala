@@ -194,8 +194,8 @@ class ExStage extends Module {
 
   ex.to_ls.bits.perfMode:=ex.in.bits.perfMode
   if(GenCtrl.PERF){
-    val LSUAddrRespClockCnt=RegInit(0.U(32.W))
-    val LSUInstCnt=RegInit(0.U(32.W))
+    val LSUAddrRespClockCnt=RegInit(0.U(64.W))
+    val LSUInstCnt=RegInit(0.U(64.W))
     when(ex.in.bits.perfMode){
       when(storeEn||loadEn){
         LSUAddrRespClockCnt:=LSUAddrRespClockCnt+1.U
