@@ -78,8 +78,8 @@ class PfStage extends Module {
   pf.to_if.bits.pc:=regPC
 
   if(GenCtrl.PERF){
-    val FetchAddrClockCnt=RegInit(0.U(32.W))
-    val InstCnt=RegInit(0.U(32.W))
+    val FetchAddrClockCnt=RegInit(0.U(64.W))
+    val InstCnt=RegInit(0.U(64.W))
     when(pf.perfMode){
       when(fetchReq){
         FetchAddrClockCnt:=FetchAddrClockCnt+1.U

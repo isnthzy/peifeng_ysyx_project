@@ -148,8 +148,8 @@ class LsStage extends Module {
 
   ls.to_wb.bits.perfMode:=ls.in.bits.perfMode
   if(GenCtrl.PERF){
-    val LSUDataRespClockCnt=RegInit(0.U(32.W))
-    val LSUInstCnt=RegInit(0.U(32.W))
+    val LSUDataRespClockCnt=RegInit(0.U(64.W))
+    val LSUInstCnt=RegInit(0.U(64.W))
     when(ls.in.bits.perfMode){
       when(ls.in.bits.diffLoad.valid(0)||ls.in.bits.diffStore.valid(0)){
         LSUDataRespClockCnt:=LSUDataRespClockCnt+1.U

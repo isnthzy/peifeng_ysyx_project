@@ -82,8 +82,8 @@ class IfStage extends Module {
     }
   }
   if(GenCtrl.PERF){
-    val FetchDataClockCnt=RegInit(0.U(32.W))
-    val InstCnt=RegInit(0.U(32.W))
+    val FetchDataClockCnt=RegInit(0.U(64.W))
+    val InstCnt=RegInit(0.U(64.W))
     when(perfMode){
       FetchDataClockCnt:=FetchDataClockCnt+1.U
       when(fs.to_id.fire){
