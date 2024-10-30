@@ -20,8 +20,9 @@
 #define DIFFTEST_COMMIT_WIDTH 6
 #define CONFIG_MEMDIFF 1
 // difftest最多支持提交几个指令
-
-#define CONFIG_NVBOARD 1 //nvboard开关
+#ifdef CONFIG_YSYXSOC
+  #define CONFIG_NVBOARD 1 //nvboard开关
+#endif
 
 #define DEADLOCK_TIME 100000
 // 死锁检测最大时间，为0时不检测
