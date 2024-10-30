@@ -1,18 +1,26 @@
-package FuncUnit
+package Util
 
 import chisel3._
 import chisel3.util._
-import Control._
+// import Control._
 
 class LSFR extends Module {
   val io=IO(new Bundle {
-    val OutTime=Output(UInt(8.W))
+    val Out=Output(UInt(8.W))
     val Seed=Input(UInt(8.W))
   })
   val randomtime=RegInit(io.Seed)
   val x8=randomtime(0)+randomtime(2)+randomtime(3)+randomtime(4)
   randomtime:=Cat(x8,randomtime(7,1))
-  io.OutTime:=randomtime(3,0)
+  io.Out:=randomtime(3,0)
+}
+
+object RandomNum {
+  def apply[T <: Data](Seed: UInt): UInt = {
+    val LSFR=Module(new LSFR)
+    require(Seed.getWidth <= 8, "Seed length cannot exceed 4")
+    LSFR.io.Out
+  }
 }
 
 object RandomDelay {
@@ -26,7 +34,7 @@ object RandomDelay {
     LSFR.io.Seed:=Seed
     when(delay===0.U) {
       data:=in // 当延迟周期为0时，将输入信号赋值给数据寄存器
-      delay:=LSFR.io.OutTime // 生成1到delayMax之间的随机延迟周期
+      delay:=LSFR.io.Out // 生成1到delayMax之间的随机延迟周期
     }.otherwise {
       data:=0.U
       delay:=delay-1.U // 延迟周期减1
