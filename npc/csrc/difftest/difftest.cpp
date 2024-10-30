@@ -115,7 +115,6 @@ int Difftest::diff_step(){
   commit_load_num =0;
   while(idx_commit_num<DIFFTEST_COMMIT_WIDTH&&dut_commit.commit[idx_commit_num].valid){
     deadlock_timer=0;
-    IFDEF(CONFIG_DEVICE, device_update(););
     if(dut_commit.commit[idx_commit_num].skip){
       step_skip_num++;
     }

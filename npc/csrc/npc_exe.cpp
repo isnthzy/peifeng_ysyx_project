@@ -75,6 +75,9 @@ static void npc_execute(uint64_t n) {
       //NOTE:每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次
       top->clock=0;
       step_and_dump_wave();
+#ifndef CONFIG_YSYXSOC
+      IFDEF(CONFIG_DEVICE, device_update(););
+#endif
 #ifdef CONFIG_NVBOARD
       nvboard_update();
 #endif
