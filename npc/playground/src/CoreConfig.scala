@@ -1,5 +1,6 @@
 package CoreConfig
 import chisel3._
+import chisel3.util.log2Ceil
 
 object Configs {
   // val START_ADDR = "h7ffffffc".U(32.W)  //开始地址，设计成80000000-4=7ffffffc是为了初始化reset
@@ -13,6 +14,18 @@ object Configs {
   def RISCV32_ECALLREG = 17.U
 
   def INST_NOP = "h00000013".U(32.W)
+}
+
+trait CacheConfig{
+  def LINE_WIDTH = 128
+  def LINE_WORD_NUM = (LINE_WIDTH / 32)
+
+  def TAG_WIDTH = 26
+  def INDEX_WIDTH  = 32 - TAG_WIDTH - OFFSET_WIDTH
+  def OFFSET_WIDTH = log2Ceil(LINE_WORD_NUM) + 2
+  
+  def WAY_NUM_I = 2
+  def USE_LRU = false
 }
 
 trait DeviceConfig{
@@ -47,7 +60,7 @@ trait DeviceConfig{
 }
 
 object ISAConfig{
-  def RV32E = false
+  def RV32E = true
 }
 
 object GenCtrl{

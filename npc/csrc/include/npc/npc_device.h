@@ -2,6 +2,7 @@
 #define NPC_DEVICE_H
 #include "../npc_common.h"
 
+bool is_skip_addr(vaddr_t addr);
 void  device_write(paddr_t addr,int len,word_t data);
 word_t device_read(paddr_t addr,int len);
 void init_device();

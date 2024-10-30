@@ -73,3 +73,4 @@ class AxiBridgeStore extends Bundle{ //类sram plus的存储通道
 } //缩写为s接口
 
 /*-----------------------------AxiBridgeBundle-----------------------------*/
+
