@@ -30,23 +30,8 @@ class SimTop extends Module with DeviceConfig{
 //
   val Axi4Bridge=Module(new Axi4Bridge())
   val AxiArbiter=Module(new AxiArbiter())
-  val AxiCoreOut=Module(new AxiCoreOut())
+  
 //
-if(ISAConfig.SOC_MODE){
-  io.master.get<>AxiCoreOut.io.out
-
-  io.slave.get.awready:=0.U
-  io.slave.get.wready :=0.U
-  io.slave.get.bvalid :=0.U
-  io.slave.get.bid    :=0.U
-  io.slave.get.bresp  :=0.U
-  io.slave.get.arready:=0.U
-  io.slave.get.rvalid :=0.U
-  io.slave.get.rid    :=0.U
-  io.slave.get.rdata  :=0.U
-  io.slave.get.rresp  :=0.U
-  io.slave.get.rlast  :=0.U
-}
 //AxiArbiter
   AxiArbiter.io.fs.al<>PreFetch.pf.al
   AxiArbiter.io.fs.s <>PreFetch.pf.s
@@ -60,9 +45,22 @@ if(ISAConfig.SOC_MODE){
   Axi4Bridge.io.s <>AxiArbiter.io.out.s
   Axi4Bridge.io.dl<>AxiArbiter.io.out.dl
 //AxiArbiter
-
-// //AxiXBar
 if(ISAConfig.SOC_MODE){
+  val AxiCoreOut=Module(new AxiCoreOut())
+  io.master.get<>AxiCoreOut.io.out
+
+  io.slave.get.awready:=0.U
+  io.slave.get.wready :=0.U
+  io.slave.get.bvalid :=0.U
+  io.slave.get.bid    :=0.U
+  io.slave.get.bresp  :=0.U
+  io.slave.get.arready:=0.U
+  io.slave.get.rvalid :=0.U
+  io.slave.get.rid    :=0.U
+  io.slave.get.rdata  :=0.U
+  io.slave.get.rresp  :=0.U
+  io.slave.get.rlast  :=0.U
+// //AxiXBar
   val SimTimer = Module(new SimTimer())
 
   val AxiXbarA2X = Module(new AxiXbarA2X(
@@ -86,7 +84,6 @@ if(ISAConfig.SOC_MODE){
   Axi4Bridge.io.aw<>AxiRam.io.aw
   Axi4Bridge.io.w <>AxiRam.io.w
   Axi4Bridge.io.b <>AxiRam.io.b
-
 }
 //
   //NOTE:为了perf加的丑陋的飞线
