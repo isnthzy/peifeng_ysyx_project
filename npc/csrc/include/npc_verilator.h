@@ -9,7 +9,6 @@
 #include <verilated.h>
 #include <verilated_vcd_c.h>
 #include <verilated_fst_c.h>
-#include "svdpi.h"
 
 
 extern VerilatedContext* contextp;
