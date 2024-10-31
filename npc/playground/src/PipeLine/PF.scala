@@ -5,6 +5,7 @@ import Axi._
 import Bundles._
 import CoreConfig.Configs._
 import CoreConfig.GenCtrl
+import CoreConfig.ISAConfig
 
 class PfStage extends Module {
   val pf=IO(new Bundle {
@@ -32,7 +33,7 @@ class PfStage extends Module {
   pf.to_if.valid:=pfReadyGo
   fetchReq:= ~reset.asBool&& ~pfFlush && pf.to_if.ready && ~pfExcpEn
 
-  val regPC  = RegInit(START_ADDR)
+  val regPC  = RegInit(if(ISAConfig.SOC_MODE) SOC_START_ADDR else NPC_START_ADDR)
   val snpc   = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
   val dnpc   = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
   val nextpc = dontTouch(Wire(UInt(ADDR_WIDTH.W)))

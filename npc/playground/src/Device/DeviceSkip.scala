@@ -15,15 +15,21 @@ class DeviceSkip extends Module with DeviceConfig{
   val writeSkip = Wire(Bool()) 
   io.skip := (readSkip || writeSkip) && io.isLoadStore
 
-  readSkip:=(
-    (io.addr >= UART_BASE && io.addr < UART_BASE+ UART_SIZE)
-  ||(io.addr >= SPI_BASE  && io.addr < SPI_BASE + SPI_SIZE)
-  ||(io.addr >= RTC_ADDR  && io.addr < RTC_ADDR + RTC_SIZE)
-  ||(io.addr >= GPIO_SW_BASE && io.addr < GPIO_SW_BASE + GPIO_SW_SIZE)
-  ||(io.addr >= KBD_BASE  && io.addr < KBD_BASE + KBD_SIZE)
-  )
+  if(ISAConfig.SOC_MODE){
+    readSkip:=(
+      (io.addr >= UART_BASE && io.addr < UART_BASE+ UART_SIZE)
+    ||(io.addr >= SPI_BASE  && io.addr < SPI_BASE + SPI_SIZE)
+    ||(io.addr >= RTC_ADDR  && io.addr < RTC_ADDR + RTC_SIZE)
+    ||(io.addr >= GPIO_SW_BASE && io.addr < GPIO_SW_BASE + GPIO_SW_SIZE)
+    ||(io.addr >= KBD_BASE  && io.addr < KBD_BASE + KBD_SIZE)
+    )
 
-  writeSkip:=(
-    (io.addr >= SPI_BASE  && io.addr < SPI_BASE +SPI_SIZE)
-  )
+    writeSkip:=(
+      (io.addr >= SPI_BASE  && io.addr < SPI_BASE +SPI_SIZE)
+    )
+  }else{
+    readSkip:=false.B
+    writeSkip:=false.B
+  }
+
 }

@@ -32,6 +32,10 @@ void Difftest::first_commit(){
   }
 }
 
+void Difftest::skip_devices(vaddr_t addr){
+  if(is_skip_addr(addr)) step_skip_num++;
+}
+
 void Difftest::trace_inst_commit(vaddr_t pc,uint32_t inst){
   #ifdef CONFIG_TRACE
   static char logbuf[128];
@@ -104,13 +108,13 @@ NEMU根据这次提交的指令数量，决定执行几次
 
 int Difftest::diff_step(){
   //TODO:define返回值，用来判断diff运行的状况
+  // skip_commit=false;
   step_skip_num=0;
   idx_commit_num=0;
   commit_store_num=0;
   commit_load_num =0;
   while(idx_commit_num<DIFFTEST_COMMIT_WIDTH&&dut_commit.commit[idx_commit_num].valid){
     deadlock_timer=0;
-    IFDEF(CONFIG_DEVICE, device_update(););
     if(dut_commit.commit[idx_commit_num].skip){
       step_skip_num++;
     }
@@ -183,7 +187,8 @@ int Difftest::diff_step(){
   }  
 
   for(int i=0;i<commit_load_num;i++){
-    dut_commit.store[i].valid=false;
+    dut_commit.load[i].valid=false;
+    skip_devices(dut_commit.load[i].paddr); //NOTE:跳过外设
     mtrace_load(dut.base.pc, dut_commit.load[i].paddr, dut_commit.load[i].data, dut_commit.load[i].len);
     if(!load_commit_diff(i)) return NPC_ABORT;
 

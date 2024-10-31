@@ -10,13 +10,14 @@ import IP.Axi4LiteSram
 import CoreConfig.GenCtrl
 import DiffTest.dpic._
 import Device.{SimTimer}
+import CoreConfig.ISAConfig
 
 class SimTop extends Module with DeviceConfig{
   override val desiredName = "ysyx_23060115"
   val io = IO(new Bundle {
-    val interrupt=Input(Bool())
-    val master=new AxiTopBundle()
-    val slave=Flipped(new AxiTopBundle())
+    val interrupt=if(ISAConfig.SOC_MODE) Some(Input(Bool())) else None
+    val master=if(ISAConfig.SOC_MODE) Some(new AxiTopBundle()) else None
+    val slave=if(ISAConfig.SOC_MODE) Some(Flipped(new AxiTopBundle())) else None
   })
   val PreFetch  = Module(new PfStage())
   val InstFetch = Module(new IfStage())
@@ -29,21 +30,8 @@ class SimTop extends Module with DeviceConfig{
 //
   val Axi4Bridge=Module(new Axi4Bridge())
   val AxiArbiter=Module(new AxiArbiter())
-  val AxiCoreOut=Module(new AxiCoreOut())
+  
 //
-  io.master<>AxiCoreOut.io.out
-
-  io.slave.awready:=0.U
-  io.slave.wready :=0.U
-  io.slave.bvalid :=0.U
-  io.slave.bid    :=0.U
-  io.slave.bresp  :=0.U
-  io.slave.arready:=0.U
-  io.slave.rvalid :=0.U
-  io.slave.rid    :=0.U
-  io.slave.rdata  :=0.U
-  io.slave.rresp  :=0.U
-  io.slave.rlast  :=0.U
 //AxiArbiter
   AxiArbiter.io.fs.al<>PreFetch.pf.al
   AxiArbiter.io.fs.s <>PreFetch.pf.s
@@ -57,7 +45,21 @@ class SimTop extends Module with DeviceConfig{
   Axi4Bridge.io.s <>AxiArbiter.io.out.s
   Axi4Bridge.io.dl<>AxiArbiter.io.out.dl
 //AxiArbiter
+if(ISAConfig.SOC_MODE){
+  val AxiCoreOut=Module(new AxiCoreOut())
+  io.master.get<>AxiCoreOut.io.out
 
+  io.slave.get.awready:=0.U
+  io.slave.get.wready :=0.U
+  io.slave.get.bvalid :=0.U
+  io.slave.get.bid    :=0.U
+  io.slave.get.bresp  :=0.U
+  io.slave.get.arready:=0.U
+  io.slave.get.rvalid :=0.U
+  io.slave.get.rid    :=0.U
+  io.slave.get.rdata  :=0.U
+  io.slave.get.rresp  :=0.U
+  io.slave.get.rlast  :=0.U
 // //AxiXBar
   val SimTimer = Module(new SimTimer())
 
@@ -75,6 +77,14 @@ class SimTop extends Module with DeviceConfig{
 
   AxiXbarA2X.io.x(0)<>AxiCoreOut.io.in
   AxiXbarA2X.io.x(1)<>SimTimer.io
+}else{
+  val AxiRam = Module(new Axi4LiteSram())
+  Axi4Bridge.io.ar<>AxiRam.io.ar
+  Axi4Bridge.io.r <>AxiRam.io.r
+  Axi4Bridge.io.aw<>AxiRam.io.aw
+  Axi4Bridge.io.w <>AxiRam.io.w
+  Axi4Bridge.io.b <>AxiRam.io.b
+}
 //
   //NOTE:为了perf加的丑陋的飞线
 

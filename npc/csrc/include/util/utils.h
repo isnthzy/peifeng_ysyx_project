@@ -15,7 +15,7 @@
 
 #ifndef NPC_UTILS_H
 #define NPC_UTILS_H
-#include "../npc_common.h"
+
 
 // ----------- log -----------
 #define ANSI_FG_BLACK   "\33[1;30m"

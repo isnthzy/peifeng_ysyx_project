@@ -8,27 +8,25 @@
 /*---------------------------------------------------------------------------------*/
 
 
-// #define CONFIG_TRACE 1
-// #define CONFIG_ITRACE 1
+#define CONFIG_TRACE 1
+#define CONFIG_ITRACE 1
 // #define CONFIG_MTRACE 1
 // #define CONFIG_FTRACE 1
 
 #define NPCLOG_NUM 10000 //trace最多记录多少个log
 //TRACE开关
 
-// #define CONFIG_DIFFTEST 1 
+#define CONFIG_DIFFTEST 1 
 #define DIFFTEST_COMMIT_WIDTH 6
 #define CONFIG_MEMDIFF 1
 // difftest最多支持提交几个指令
-
-#define CONFIG_NVBOARD 1 //nvboard开关
 
 #define DEADLOCK_TIME 100000
 // 死锁检测最大时间，为0时不检测
 
 /*---------------------------------------------------------------------------------*/
 
-// #define CONFIG_WAVEFORM 1
+#define CONFIG_WAVEFORM 1
 #define TRACE_FST 1
 // #define TRACE_VCD 1
 /* 波形生成开关 */
@@ -39,12 +37,16 @@
 /*随机化内存开关,可能会导致与ref_difftest无法通过(例如rt-thread)*/
 
 /*---------------------------------------------------------------------------------*/
+#ifdef CONFIG_YSYXSOC
+  #define CONFIG_NVBOARD 1 //nvboard开关
+#else
+  #define CONFIG_DEVICE 1
+  // #define DEVICE_HAS_KEYBOARD 1
+  // #define CONFIG_HAS_VGA 1
+  // #define CONFIG_VGA_SIZE_400x300 1
+  //设备开关,默认串口输出打开
+#endif
 
-// #define CONFIG_DEVICE 1
-// #define DEVICE_HAS_KEYBOARD 1
-// #define CONFIG_HAS_VGA 1
-// #define CONFIG_VGA_SIZE_400x300 1
-//设备开关,默认串口输出打开
 
 /*---------------------------------------------------------------------------------*/
 
@@ -62,7 +64,14 @@
 #define CONFIG_MAX_EXE_INST 0
 //指令执行最大次数，拦截可能发生的死循环,0为关闭
 /*---------------------------------------------------------------------------------*/
-#define START_ADDR   0x30000000
+#define SOC_START_ADDR 0x30000000
+#define NPC_START_ADDR 0x80000000
+#ifdef CONFIG_YSYXSOC
+#define START_ADDR   SOC_START_ADDR
+#else
+#define START_ADDR   NPC_START_ADDR
+#endif
+
 
 #define CONFIG_MBASE 0x80000000
 #define CONFIG_MSIZE 0x8000000

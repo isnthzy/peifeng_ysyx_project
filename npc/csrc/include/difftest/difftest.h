@@ -95,6 +95,7 @@ class Difftest{
     uint32_t idx_commit = 0;
     long img_size=0;
     bool sim_over=false;
+    // bool skip_commit=false;
 
     uint64_t total_inst=0;
     uint32_t idx_commit_num=0;
@@ -106,6 +107,7 @@ class Difftest{
     void trace_inst_commit(vaddr_t pc,uint32_t inst);
     int  excp_process(int excp_idx, int excp_code,paddr_t epc);
     void first_commit();
+    void skip_devices(vaddr_t addr);
     bool checkregs();
     bool store_commit_diff(int idx);
     bool load_commit_diff(int idx);

@@ -34,13 +34,13 @@ void npc_quit(){
 
 static uint64_t open_npc_calculate_inst_total = 0;
 //NOTE:开启npc计算时的指令数量，计算ipc时减去他
-#ifdef CONFIG_YSYXSOC
+// #ifdef CONFIG_YSYXSOC
 extern "C" void open_npc_calculate_ipc(){
   printf_green("OPEN YSYX-SOC CALCULATE IPC\n");
   g_clock_cnt = 0;
   open_npc_calculate_inst_total = g_nr_guest_inst;
 }
-#endif
+// #endif
 
 static void statistic() {
   IFNDEF(CONFIG_TARGET_AM, setlocale(LC_NUMERIC, ""));
@@ -75,6 +75,9 @@ static void npc_execute(uint64_t n) {
       //NOTE:每个npc_execute其实是clk变化两次，上边变化一次，下边也变化一次
       top->clock=0;
       step_and_dump_wave();
+#ifndef CONFIG_YSYXSOC
+      IFDEF(CONFIG_DEVICE, device_update(););
+#endif
 #ifdef CONFIG_NVBOARD
       nvboard_update();
 #endif
