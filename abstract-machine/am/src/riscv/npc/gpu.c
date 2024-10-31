@@ -1,9 +1,6 @@
 #include <am.h>
 #include <riscv/riscv.h>
-#define DEVICE_BASE  0xa0000000
-#define VGACTL_ADDR  (DEVICE_BASE + 0x0000100)
-#define SYNC_ADDR    (VGACTL_ADDR + 4)
-#define FB_ADDR      (DEVICE_BASE + 0x1000000)
+#include "device_addr.h"
 
 void __am_gpu_init() {
   // int i;

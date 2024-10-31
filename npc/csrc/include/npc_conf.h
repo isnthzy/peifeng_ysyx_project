@@ -20,9 +20,6 @@
 #define DIFFTEST_COMMIT_WIDTH 6
 #define CONFIG_MEMDIFF 1
 // difftest最多支持提交几个指令
-#ifdef CONFIG_YSYXSOC
-  #define CONFIG_NVBOARD 1 //nvboard开关
-#endif
 
 #define DEADLOCK_TIME 100000
 // 死锁检测最大时间，为0时不检测
@@ -40,12 +37,16 @@
 /*随机化内存开关,可能会导致与ref_difftest无法通过(例如rt-thread)*/
 
 /*---------------------------------------------------------------------------------*/
+#ifdef CONFIG_YSYXSOC
+  #define CONFIG_NVBOARD 1 //nvboard开关
+#else
+  #define CONFIG_DEVICE 1
+  // #define DEVICE_HAS_KEYBOARD 1
+  // #define CONFIG_HAS_VGA 1
+  // #define CONFIG_VGA_SIZE_400x300 1
+  //设备开关,默认串口输出打开
+#endif
 
-// #define CONFIG_DEVICE 1
-// #define DEVICE_HAS_KEYBOARD 1
-// #define CONFIG_HAS_VGA 1
-// #define CONFIG_VGA_SIZE_400x300 1
-//设备开关,默认串口输出打开
 
 /*---------------------------------------------------------------------------------*/
 

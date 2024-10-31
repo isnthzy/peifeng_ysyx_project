@@ -15,8 +15,8 @@
   #define RTC_SIZE    0x8
   #define KBD_ADDR    0x10011000
   #define KBD_SIZE    0x8
-#else //npc
-  #define DEVICE_BASE 0xa0000000
+#else //npc 把npc的device_base映射到0x03000000-0x0f000000 //以防止覆盖其他设备
+  #define DEVICE_BASE 0x03000000
   #define SERIAL_PORT (DEVICE_BASE + 0x00003f8) //UART
   #define SERIAL_SIZE 0x4
   #define RTC_ADDR    (DEVICE_BASE + 0x0000048)
