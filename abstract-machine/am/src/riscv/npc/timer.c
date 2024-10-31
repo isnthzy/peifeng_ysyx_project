@@ -1,8 +1,7 @@
 #include <am.h>
 #include <riscv/riscv.h>
-#define DEVICE_BASE 0xa0000000
-#define SERIAL_PORT (DEVICE_BASE + 0x00003f8)
-#define RTC_ADDR    (DEVICE_BASE + 0x0000048)
+#include "device_addr.h"
+
 static uint64_t start_us;
 void __am_timer_init() {
   start_us=(uint64_t)inl(RTC_ADDR)+((uint64_t)inl(RTC_ADDR+4)<<32);
