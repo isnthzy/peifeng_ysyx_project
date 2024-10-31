@@ -58,7 +58,7 @@ LDFLAGS += -lreadline  -lSDL2
 
 
 # CXXFLAGS += -ggdb -DVL_DEBUG=1 -D_GLIBCXX_DEBUG
-LDFLAGS  += -ggdb -fsanitize=address,undefined
+# LDFLAGS  += -ggdb -fsanitize=address,undefined
 #gdb调试段错误相关代码
 
 ##分隔符 llvm用于反汇编itrace
