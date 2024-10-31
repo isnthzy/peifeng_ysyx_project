@@ -80,8 +80,13 @@ if(ISAConfig.SOC_MODE){
   AxiXbarA2X.io.x(0)<>AxiCoreOut.io.in
   AxiXbarA2X.io.x(1)<>SimTimer.io
 }else{
-  val AxiRam= Module(new Axi4LiteSram())
-  Axi4Bridge.io<>AxiRam.io
+  val AxiRam = Module(new Axi4LiteSram())
+  Axi4Bridge.io.ar<>AxiRam.io.ar
+  Axi4Bridge.io.r <>AxiRam.io.r
+  Axi4Bridge.io.aw<>AxiRam.io.aw
+  Axi4Bridge.io.w <>AxiRam.io.w
+  Axi4Bridge.io.b <>AxiRam.io.b
+
 }
 //
   //NOTE:为了perf加的丑陋的飞线
