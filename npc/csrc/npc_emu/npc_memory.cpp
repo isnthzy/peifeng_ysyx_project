@@ -6,7 +6,7 @@
 // extern CPU_state cpu;
 // extern CPU_info cpu_info;
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN={};
-static uint8_t mrom[CONFIG_MSIZE] PG_ALIGN={};
+static uint8_t mrom[CONFIG_SOC_MROM_SIZE] PG_ALIGN={};
 static uint8_t flash_ram[CONFIG_SOC_FLASH_SIZE] PG_ALIGN = {};
 static uint8_t psram[CONFIG_SOC_PSRAM_SIZE] PG_ALIGN = {};
 
@@ -66,7 +66,7 @@ uint8_t* guest_to_host(paddr_t paddr) {
       ret = pmem + paddr - CONFIG_MBASE;
       break;
     case SOC_DEVICE_MROM:
-      ret = pmem + paddr - CONFIG_SOC_MROM_BASE;
+      ret = mrom + paddr - CONFIG_SOC_MROM_BASE;
       break;
     case SOC_DEVICE_FLASH:
       ret = flash_ram + paddr - CONFIG_SOC_FLASH_BASE;
@@ -246,26 +246,29 @@ void mtrace_load (int pc,int addr,int data,int len){
 #endif
 #endif
 }
-static uint64_t read_cnt=0;
+
 word_t paddr_read(paddr_t addr, int len) {
   word_t pmem_rdata;
   if (likely(in_pmem(addr))){
     pmem_rdata=pmem_read(addr,4);
     return pmem_rdata;
   }
-  if(addr>=0xa0000000){
+#ifndef CONFIG_YSYXSOC
+  if(addr>=DEVICE_BASE&&addr<DEVICE_BASE+DEVICE_SIZE){
     return device_read(addr,len);
   }
+#endif
   out_of_bound(addr);
   return 0;
 }
-static uint64_t write_cnt=0;
+
 void paddr_write(paddr_t addr, int len, word_t data) {
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
-  if(addr>=0xa0000000){
+#ifndef CONFIG_YSYXSOC
+  if(addr>=DEVICE_BASE&&addr<DEVICE_BASE+DEVICE_SIZE){
     device_write(addr,len,data);
     return;
   }
-  
+#endif
   out_of_bound(addr);
 }
