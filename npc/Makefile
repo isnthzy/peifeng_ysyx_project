@@ -1,6 +1,12 @@
 BUILD_DIR = ./build
-TOPNAME=ysyxSoCFull
-NXDC_FILES = constr/ysyxSoCFull.nxdc
+TOPNAME?=
+NXDC_FILES?=
+ifeq ($(ARCH),soc)
+	TOPNAME=ysyxSoCFull
+	NXDC_FILES=constr/ysyxSoCFull.nxdc
+else
+	TOPNAME=ysyx_23060115
+endif
 
 export PATH := $(PATH):$(abspath ./utils)
 $(shell mkdir -p $(BUILD_DIR))
