@@ -135,5 +135,4 @@
     "digital-ide.dont-show-again.propose.issue": true,
     "digital-ide.welcome.show": false,
     "C_Cpp.default.compilerPath": "/usr/lib/ccache/gcc-11", //  需要添加的
-
 }
