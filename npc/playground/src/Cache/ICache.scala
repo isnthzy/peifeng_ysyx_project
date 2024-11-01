@@ -77,7 +77,7 @@ class ICache extends Module with CacheConfig {
   io.rdata  := readDataLineBuff(requestOffsetBuff(OFFSET_WIDTH - 1,2))
   io.out.rd.valid := cacheState === s_miss
   io.out.rd.bits.stype := "b100".U
-  io.out.rd.bits.addr := Cat(requestTagBuff,requestIdxBuff,requestOffsetBuff)
+  io.out.rd.bits.addr := Cat(requestTagBuff,requestIdxBuff,0.U(OFFSET_WIDTH.W))
   io.out.rret.ready := true.B
   io.out.wret.ready := true.B
 
