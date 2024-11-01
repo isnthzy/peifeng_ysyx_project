@@ -22,7 +22,6 @@ class AxiArbiter(inNum: Int) extends Module {
   val readChosenIdx = RegInit(0.U(log2Ceil(inNum).W))
   (readArb.io.in zip io.in.map(_.rd)).foreach{case (readArb,in) => readArb <> in}
   for(i <- 0 until inNum){
-    io.in(i).rret.bits := io.out.rret.bits
     when(i.U === readArb.io.chosen && readArb.io.out.fire 
       && ArbReadState === arb_read_idle){
         io.in(i).rd.ready := true.B
@@ -62,7 +61,6 @@ class AxiArbiter(inNum: Int) extends Module {
   val writeChosenIdx = RegInit(0.U(log2Ceil(inNum).W))
   (writeArb.io.in zip io.in.map(_.wr)).foreach{case (writeArb,in) => writeArb <> in}
   for(i <- 0 until inNum){
-    io.in(i).wret.bits := io.out.wret.bits
     when(i.U === writeArb.io.chosen && writeArb.io.out.fire 
       && ArbWriteState === arb_write_idle){
         io.in(i).wr.ready := true.B
