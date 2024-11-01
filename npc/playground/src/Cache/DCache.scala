@@ -6,11 +6,11 @@ import Axi.{AxiBridgeAddrLoad,AxiBridgeStore,AxiBridgeDataLoad}
 //NOTE:DCache未实现
 class DCache extends Module{
   val io=IO(new Bundle{
-    val in=new Bundle {
+    val in=Flipped(new Bundle {
       val al=new AxiBridgeAddrLoad()
       val dl=new AxiBridgeDataLoad()
       val s =new AxiBridgeStore()
-    }
+    })
     val out=new AxiCacheIO()
   })
   io.out.rret.ready:=true.B
