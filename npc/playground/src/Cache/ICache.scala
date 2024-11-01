@@ -67,7 +67,7 @@ class ICache extends Module with CacheConfig {
   } //NOTE:设置默认值，后续通过覆写实现读
 
   io.dataRp := cacheState === s_respond
-  io.rdata  := readDataLineBuff(requestOffsetBuff(OFFSET_WIDTH - 1,1))
+  io.rdata  := readDataLineBuff(requestOffsetBuff(OFFSET_WIDTH - 1,2))
   io.out.rd.valid := cacheState === s_miss
   io.out.rd.bits.stype := "b100".U
   io.out.rd.bits.addr := Cat(requestTagBuff,requestIdxBuff,requestOffsetBuff)
