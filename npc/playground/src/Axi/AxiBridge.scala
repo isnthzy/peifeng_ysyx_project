@@ -47,6 +47,7 @@ class Axi4Bridge extends Module with CacheConfig {
   io.in.rret.valid:=io.r.valid
   io.in.rret.bits.data:=io.r.bits.data
   io.in.rret.bits.last:=io.r.bits.last
+  io.in.rret.bits.resp:=io.r.bits.resp
 
   switch(ReadRequstState){
     is(ar_idle){
@@ -124,6 +125,8 @@ class Axi4Bridge extends Module with CacheConfig {
 
   io.in.wr.ready:= io.aw.fire&&io.w.fire
   io.in.wret.valid:= WaitWriteIdle&&BrespFire
+  io.in.wret.bits.resp:=io.b.bits.resp
+  io.in.wret.bits.last:=true.B
 
   switch(WriteRequstState){
     is(wr_idle){
