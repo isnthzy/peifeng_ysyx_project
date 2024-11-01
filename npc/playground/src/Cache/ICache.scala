@@ -49,7 +49,7 @@ class ICache extends Module with CacheConfig {
        Nil) = Enum(5)
   val cacheState = RegInit(s_idle)
   val reqIndex = WireDefault(0.U(log2Ceil(INDEX_WIDTH).W))
-  val cacheReqValid = cacheState === s_idle && io.valid
+  val cacheReqValid = (cacheState === s_idle || cacheState === s_respond) && io.valid
   val randomWay = RandomNum("b10111011".U)(log2Ceil(WAY_NUM_I) - 1,0)
   for(i <- 0 until WAY_NUM_I){
     DataBank(i).clka := clock    
