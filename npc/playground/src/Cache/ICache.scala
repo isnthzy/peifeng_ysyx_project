@@ -91,12 +91,10 @@ class ICache extends Module with CacheConfig {
       }
     }
     is(s_lookup){
-      
       for(i <- 0 until WAY_NUM_I){
         when(readTagv(i).v && readTagv(i).tag === requestTagBuff){
           cacheLookupHit := true.B
           hitWayBuff := i.U
-          cacheState := s_respond
           readDataLineBuff := readData(i).asTypeOf(readDataLineBuff)
         }
       }
