@@ -38,6 +38,22 @@
 
 #define ANSI_FMT(str, fmt) fmt str ANSI_NONE
 
+#define printf_green(...) \
+    do { \
+        printf("\033[1;32m"); \
+        printf(__VA_ARGS__); \
+        printf("\033[0m"); \
+        fflush(NULL); \
+    } while (0)
+#define printf_red(...) \
+    do { \
+        printf("\033[1;31m"); \
+        printf(__VA_ARGS__); \
+        printf("\033[0m"); \
+        fflush(NULL); \
+    } while (0)
+
+
 #define log_write(...)  \
   do { \
     extern FILE* log_fp; \
