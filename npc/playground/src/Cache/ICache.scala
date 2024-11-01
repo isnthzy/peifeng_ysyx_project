@@ -65,7 +65,10 @@ class ICache extends Module with CacheConfig {
     TagvBank(i).dina  := requestTagBuff
     // tagValid(requestIdxBuff)(i) := 
   } //NOTE:设置默认值，后续通过覆写实现读
-
+  
+  val cache_unbusy = cacheState === s_idle || cacheState === s_respond 
+  
+  io.addrRp := cache_unbusy
   io.dataRp := cacheState === s_respond
   io.rdata  := readDataLineBuff(requestOffsetBuff(OFFSET_WIDTH - 1,2))
   io.out.rd.valid := cacheState === s_miss

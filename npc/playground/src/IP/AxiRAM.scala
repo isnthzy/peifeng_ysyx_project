@@ -59,6 +59,7 @@ class Axi4FullSram extends Module {
     io.r.bits.last:=readLenReg===0.U
     io.r.bits.data:=dpi_sram.io.rdata
     io.r.bits.resp:=0.U
+    io.r.bits.id:=0.U
 
     switch(readState){
       is(r_idle){
@@ -94,6 +95,7 @@ class Axi4FullSram extends Module {
     io.w.ready:=true.B
     io.b.valid:=writeState===w_respond
     io.b.bits.resp:=0.U
+    io.b.bits.id:=0.U
     switch(writeState){
       is(w_idle){
         when(io.aw.fire&&io.w.fire){
