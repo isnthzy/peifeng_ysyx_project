@@ -61,6 +61,7 @@ class AxiArbiter(inNum: Int) extends Module {
   val writeChosenIdx = RegInit(0.U(log2Ceil(inNum).W))
   (writeArb.io.in zip io.in.map(_.wr)).foreach{case (writeArb,in) => writeArb <> in}
   val chose = dontTouch(Wire(Bool()))
+  val chossss= dontTouch(0.U === writeArb.io.chosen && writeArb.io.out.fire && ArbWriteState === arb_write_idle)
   for(i <- 0 until inNum){
     when(i.U === writeArb.io.chosen && writeArb.io.out.fire 
       && ArbWriteState === arb_write_idle){
