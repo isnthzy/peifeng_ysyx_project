@@ -21,8 +21,15 @@ class AxiArbiter(inNum: Int) extends Module {
   val readArb = Module(new Arbiter(new AxiCacheReadIO(),inNum))
   val readChosenIdx = RegInit(0.U(log2Ceil(inNum).W))
   (readArb.io.in zip io.in.map(_.rd)).foreach{case (readArb,in) => readArb <> in}
-  io.in.map(_.rret.bits := 0.U.asTypeOf(io.in(0).rret.bits))
-  io.in.map(_.rd.ready := false.B)
+  for(i <- 0 until inNum){
+    io.in(i).rret.bits := io.out.rret.bits
+    when(i.U === readArb.io.chosen && readArb.io.out.fire 
+      && ArbReadState === arb_read_idle){
+        io.in(i).rd.ready := true.B
+      }.otherwise{
+        io.in(i).rd.ready := false.B
+      }
+  }
   readArb.io.out.ready := io.out.rd.ready && ArbReadState === arb_read_idle
   io.out.rd.valid := readArb.io.out.valid && ArbReadState === arb_read_idle
   io.out.rd.bits  := readArb.io.out.bits
