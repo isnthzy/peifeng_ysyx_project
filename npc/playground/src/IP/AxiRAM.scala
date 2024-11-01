@@ -55,7 +55,7 @@ class Axi4FullSram extends Module {
     dpi_sram.io.ren:=io.ar.fire || burstReq
     io.ar.ready:=true.B
     // io.ar.ready:=RandomDelay(true.B,15.U)
-    io.r.valid:=RegNext(burstReq)
+    io.r.valid:=burstReq
     io.r.bits.last:=readLenReg===0.U
     io.r.bits.data:=dpi_sram.io.rdata
     io.r.bits.resp:=0.U
