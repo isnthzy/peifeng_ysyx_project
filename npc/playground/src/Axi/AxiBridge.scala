@@ -43,7 +43,7 @@ class Axi4Bridge extends Module with CacheConfig {
   io.ar.bits.size:=Mux(readCacheLine,"b10".U,io.in.rd.bits.stype)
   io.r.ready:=true.B
 
-  io.in.rd.ready:=io.ar.ready
+  io.in.rd.ready:=ReadRequstState===ar_idle
   io.in.rret.valid:=io.r.valid
   io.in.rret.bits.data:=io.r.bits.data
   io.in.rret.bits.last:=io.r.bits.last
