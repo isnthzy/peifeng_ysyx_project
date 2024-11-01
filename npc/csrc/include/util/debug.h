@@ -17,7 +17,7 @@
 #define __NPCDEBUG_H__
 #include <stdio.h>
 
-void npc_quit();
+
 
 #define Log(format, ...) \
     _Log(ANSI_FMT("[%s:%d %s] " format, ANSI_FG_BLUE) "\n", \
@@ -31,10 +31,12 @@ void npc_quit();
 
 #define Assert(cond, format, ...) \
   do { \
+    extern void sim_exit(); \
     if (!(cond)) { \
       MUXDEF(CONFIG_TARGET_AM, printf(ANSI_FMT(format, ANSI_FG_RED) "\n", ## __VA_ARGS__), \
         (fflush(stdout), fprintf(stderr, ANSI_FMT(format, ANSI_FG_RED) "\n", ##  __VA_ARGS__))); \
       IFNDEF(CONFIG_TARGET_AM, extern FILE* log_fp; fflush(log_fp)); \
+      sim_exit(); \
       assert(cond); \
     } \
   } while (0)

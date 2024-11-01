@@ -1,4 +1,5 @@
 #include "../include/npc_common.h"
+#include "../include/npc/npc_sdb.h"
 #define NR_WP MUXDEF(CONFIG_RVE, 16, 32)
 
 typedef struct watchpoint {
