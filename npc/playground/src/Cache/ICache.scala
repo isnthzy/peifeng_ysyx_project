@@ -68,11 +68,12 @@ class ICache extends Module with CacheConfig {
     }
     
   } //NOTE:设置默认值，后续通过覆写实现读
+  val cacheLookupHit = WireDefault(false.B)
+  val cacheUnBusy = cacheState === s_idle || cacheState === s_respond 
   
-  val cache_unbusy = cacheState === s_idle || cacheState === s_respond 
   
-  io.addrRp := cache_unbusy
-  io.dataRp := cacheState === s_respond
+  io.addrRp := cacheUnBusy
+  io.dataRp := cacheState === s_respond || cacheLookupHit
   io.rdata  := readDataLineBuff(requestOffsetBuff(OFFSET_WIDTH - 1,2))
   io.out.rd.valid := cacheState === s_miss
   io.out.rd.bits.stype := "b100".U
@@ -93,6 +94,7 @@ class ICache extends Module with CacheConfig {
       cacheState := s_miss
       for(i <- 0 until WAY_NUM_I){
         when(readTagv(i).v && readTagv(i).tag === requestTagBuff){
+          cacheLookupHit := true.B
           hitWayBuff := i.U
           cacheState := s_respond
           readDataLineBuff := readData(i).asTypeOf(readDataLineBuff)
