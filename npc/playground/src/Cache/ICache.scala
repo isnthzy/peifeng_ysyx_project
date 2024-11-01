@@ -21,7 +21,7 @@ class ICache extends Module with CacheConfig {
   val DataBank = Array.fill(WAY_NUM_I)(Module(new DataRAM(BANK_SIZE, LINE_WIDTH)).io)
   val TagvBank = Array.fill(WAY_NUM_I)(Module(new TagvRAM(BANK_SIZE, TAG_WIDTH)).io)
   //外部维护一个tagv，根据reset清除
-  val tagValid = RegInit(VecInit(Seq.fill(BANK_SIZE)(0.U(WAY_NUM_I.W))))
+  val tagValid = RegInit(VecInit(Seq.fill(BANK_SIZE)(0.U.asTypeOf(Vec(WAY_NUM_I,Bool())))))
   val readTagv = Wire(Vec(WAY_NUM_I, new Bundle {
     val v = Bool()
     val tag = UInt(TAG_WIDTH.W)
@@ -63,7 +63,10 @@ class ICache extends Module with CacheConfig {
     TagvBank(i).wea  := (cacheState === s_miss) && (randomWay === i.U)
     TagvBank(i).addra := Mux(cacheReqValid,io.index,requestIdxBuff)
     TagvBank(i).dina  := requestTagBuff
-    // tagValid(requestIdxBuff)(i) := 
+    when((cacheState === s_miss) && (randomWay === i.U)){
+      tagValid(requestIdxBuff)(i) := 1.U
+    }
+    
   } //NOTE:设置默认值，后续通过覆写实现读
   
   val cache_unbusy = cacheState === s_idle || cacheState === s_respond 
