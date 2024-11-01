@@ -64,7 +64,7 @@ class Axi4FullSram extends Module {
     switch(readState){
       is(r_idle){
         when(io.ar.fire){
-          readAddrReg:=io.ar.bits.addr
+          readAddrReg:=Cat(io.ar.bits.addr(31,2),0.U(2.W))+4.U
           readLenReg:=io.ar.bits.len
           readState:=r_respond
         }
@@ -75,7 +75,7 @@ class Axi4FullSram extends Module {
             readState:=r_idle
           }.otherwise{
             readLenReg:=readLenReg-1.U
-            readAddrReg:=readAddrReg(31,2)+4.U
+            readAddrReg:=Cat(readAddrReg(31,2),0.U(2.W))+4.U
           }
         }
       }
