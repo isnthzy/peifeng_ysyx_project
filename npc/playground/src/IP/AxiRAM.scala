@@ -50,6 +50,7 @@ class Axi4FullSram extends Module {
     val burstReq=readState===r_respond&&readLenReg>0.U
 
     val dpi_sram=Module(new dpi_sram())
+    dpi_sram.io.clock:=clock
     dpi_sram.io.raddr:=Mux(io.ar.fire,io.ar.bits.addr,readAddrReg)
     dpi_sram.io.ren:=io.ar.fire || burstReq
     io.ar.ready:=true.B
