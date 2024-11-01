@@ -35,12 +35,10 @@ class AxiArbiter(inNum: Int) extends Module {
   io.out.rd.bits  := readArb.io.out.bits
   dontTouch(io.out.rd.ready)
   dontTouch(io.in(0).rd.ready)
-  readArb.io.out.ready := false.B
   switch(ArbReadState){
     is(arb_read_idle){
       when(readArb.io.out.fire){
         readChosenIdx := readArb.io.chosen
-        io.in(readArb.io.chosen).rd.ready := true.B
         ArbReadState := arb_read_resp
       }
     }
