@@ -69,7 +69,7 @@ class ICache extends Module with CacheConfig {
     
   } //NOTE:设置默认值，后续通过覆写实现读
   val cacheLookupHit = WireDefault(false.B)
-  val cacheUnBusy = cacheState === s_idle || cacheState === s_respond 
+  val cacheUnBusy = cacheState === s_idle || cacheState === s_respond || cacheLookupHit
   
   
   io.addrRp := cacheUnBusy
