@@ -38,8 +38,8 @@ class SimTop extends Module with DeviceConfig with CacheConfig{
 //
 //AxiArbiter
   ICache.io.valid :=PreFetch.pf.al.req
-  ICache.io.tag   :=PreFetch.pf.al.addr(31,31-TAG_WIDTH)
-  ICache.io.index :=PreFetch.pf.al.addr(31-TAG_WIDTH-1,OFFSET_WIDTH)
+  ICache.io.tag   :=PreFetch.pf.al.addr(31,31-TAG_WIDTH+1)
+  ICache.io.index :=PreFetch.pf.al.addr(31-TAG_WIDTH,OFFSET_WIDTH)
   ICache.io.offset:=PreFetch.pf.al.addr(OFFSET_WIDTH-1,0)
   PreFetch.pf.al.addrOk :=ICache.io.addrRp
   InstFetch.fs.dl.dataOk:=ICache.io.dataRp
