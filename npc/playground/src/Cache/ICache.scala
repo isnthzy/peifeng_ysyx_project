@@ -89,7 +89,7 @@ class ICache extends Module with CacheConfig {
         when(readTagv(i).v && readTagv(i).tag === io.tag){
           hitWayBuff := i.U
           cacheState := s_respond
-          readDataLineBuff := readData(i)
+          readDataLineBuff := readData(i).asTypeOf(readDataLineBuff)
         }
       }
     }
