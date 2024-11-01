@@ -24,7 +24,7 @@ typedef MUXDEF(CONFIG_RV64,uint64_t, uint32_t) data_t;
     do { \
         printf("\033[1;32m"); \
         printf(__VA_ARGS__); \
-        printf("\033[0m \n"); \
+        printf("\033[0m\n"); \
     } while (0)
 #define printf_red(...) \
     do { \
