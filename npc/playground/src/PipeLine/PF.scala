@@ -4,8 +4,8 @@ import chisel3.util._
 import Axi._
 import Bundles._
 import CoreConfig.Configs._
-import CoreConfig.GenCtrl
-import CoreConfig.ISAConfig
+import CoreConfig.{GenCtrl,ISAConfig}
+import Cache.Core2AxiReadIO
 
 class PfStage extends Module {
   val pf=IO(new Bundle {
@@ -16,8 +16,7 @@ class PfStage extends Module {
     val from_ls=Input(new Pf4LsBusBundle())
 
     val csrEntries=Input(new CsrEntriesBundle)
-    val al=new AxiBridgeAddrLoad()
-    val s =new AxiBridgeStore()
+    val al=new Core2AxiReadIO()
 
     val perfMode=Input(Bool()) //飞线...
     val programExit=Input(Bool())
@@ -29,7 +28,7 @@ class PfStage extends Module {
   val pfReadyGo=dontTouch(Wire(Bool()))
   val fetchReq=dontTouch(Wire(Bool()))
   val discard=RegInit(false.B)
-  pfReadyGo:=(pf.al.raddr_ok&& ~discard && fetchReq)|| pfExcpEn
+  pfReadyGo:=(pf.al.addrOk&& ~discard && fetchReq)|| pfExcpEn
   pf.to_if.valid:=pfReadyGo
   fetchReq:= ~reset.asBool&& ~pfFlush && pf.to_if.ready && ~pfExcpEn
 
@@ -56,19 +55,14 @@ class PfStage extends Module {
     nextpc_buff:=nextpc
   }
 
-  when((pf.al.raddr_ok&&pf.to_if.ready&&pf.to_if.ready)){
+  when((pf.al.addrOk&&pf.to_if.ready&&pf.to_if.ready)){
     regPC:=Mux(discard,nextpc_buff,nextpc)
     discard:=false.B
   }
 
-  pf.al.ren  :=fetchReq
-  pf.al.raddr:=regPC
-  pf.al.rsize:=2.U
-  pf.s.wen:=DontCare
-  pf.s.waddr:=DontCare
-  pf.s.wstrb:=DontCare
-  pf.s.wdata:=DontCare
-  pf.s.wsize:=2.U
+  pf.al.req :=fetchReq
+  pf.al.addr:=regPC
+  pf.al.size:=2.U
 //NOTE:excp
   val pfExcpType=Wire(new PfExcpTypeBundle())
   pfExcpType.iam:=(regPC(0)|regPC(1))

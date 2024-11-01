@@ -5,6 +5,7 @@ import Axi._
 import Bundles._
 import CoreConfig.Configs._
 import CoreConfig.GenCtrl
+import Cache.Core2AxiRespondIO
 
 class IfStage extends Module {
   val fs=IO(new Bundle {
@@ -15,7 +16,7 @@ class IfStage extends Module {
     val from_ex=Input(new If4ExBusBundle())
     val from_ls=Input(new If4LsBusBundle())
 
-    val dl=new AxiBridgeDataLoad()
+    val dl=new Core2AxiRespondIO()
 
     val perfMode=Output(Bool()) //飞线到if级...
     val programExit=Input(Bool())
@@ -40,17 +41,17 @@ class IfStage extends Module {
   // when(fsFlush&& ~fs.in.ready&& ~fsReadyGo){
   //   inst_discard:=true.B
   // }
-  fsStall:= ~fs.dl.rdata_ok || inst_discard
+  fsStall:= ~fs.dl.dataOk || inst_discard
 
   val fsInstBuff=RegInit(0.U(DATA_WIDTH.W))
   val fsUseInstBuff=RegInit(false.B)
   val fsInst=Mux(fsExcpEn,INST_NOP,
-              Mux(fsUseInstBuff&& ~fs.dl.rdata_ok,fsInstBuff,fs.dl.rdata))
+              Mux(fsUseInstBuff&& ~fs.dl.dataOk,fsInstBuff,fs.dl.data))
   when(fs.to_id.fire){
     fsUseInstBuff:=false.B
     inst_discard:=false.B
-  }.elsewhen(fs.dl.rdata_ok){
-    fsInstBuff:=fs.dl.rdata
+  }.elsewhen(fs.dl.dataOk){
+    fsInstBuff:=fs.dl.data
     fsUseInstBuff:=true.B
   }
 

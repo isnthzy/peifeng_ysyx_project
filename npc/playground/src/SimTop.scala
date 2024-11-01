@@ -1,18 +1,21 @@
 import chisel3._
 import chisel3.util._
 import CoreConfig.Configs._
-import CoreConfig.DeviceConfig
+import CoreConfig.{DeviceConfig,CacheConfig}
 import PipeLine.{PfStage,IfStage,IdStage,ExStage,LsStage,WbStage}
-import Axi.{Axi4Bridge,AxiArbiter,AxiXbarA2X,Axi4Master,AxiTopBundle,AxiCoreOut}
+import Cache.{ICache,DCache}
+import Axi.{AxiXbarA2X,Axi4Master,AxiTopBundle,AxiCoreOut}
+import Axi.AxiArbiter
+import Axi.Axi4Bridge
 import DiffTest.DiffCommit
 import FuncUnit.CsrFile
-import IP.Axi4LiteSram
+import IP.Axi4FullSram
 import CoreConfig.GenCtrl
 import DiffTest.dpic._
 import Device.{SimTimer}
 import CoreConfig.ISAConfig
 
-class SimTop extends Module with DeviceConfig{
+class SimTop extends Module with DeviceConfig with CacheConfig{
   override val desiredName = "ysyx_23060115"
   val io = IO(new Bundle {
     val interrupt=if(ISAConfig.SOC_MODE) Some(Input(Bool())) else None
@@ -29,21 +32,28 @@ class SimTop extends Module with DeviceConfig{
 
 //
   val Axi4Bridge=Module(new Axi4Bridge())
-  val AxiArbiter=Module(new AxiArbiter())
-  
+  val AxiArbiter=Module(new AxiArbiter(2))
+  val ICache=Module(new ICache())
+  val DCache=Module(new DCache())
 //
 //AxiArbiter
-  AxiArbiter.io.fs.al<>PreFetch.pf.al
-  AxiArbiter.io.fs.s <>PreFetch.pf.s
-  AxiArbiter.io.fs.dl<>InstFetch.fs.dl
+  ICache.io.valid :=PreFetch.pf.al.req
+  ICache.io.tag   :=RegNext(PreFetch.pf.al.addr(31,31-TAG_WIDTH))
+  ICache.io.index :=PreFetch.pf.al.addr(31-TAG_WIDTH-1,OFFSET_WIDTH)
+  ICache.io.offset:=PreFetch.pf.al.addr(OFFSET_WIDTH-1,0)
+  PreFetch.pf.al.addrOk :=ICache.io.addrRp
+  InstFetch.fs.dl.dataOk:=ICache.io.dataRp
+  InstFetch.fs.dl.data  :=ICache.io.rdata
+  
+  DCache.io.in.al <>Execute.ex.al
+  DCache.io.in.s  <>Execute.ex.s
+  DCache.io.in.dl <>LoadStore.ls.dl
 
-  AxiArbiter.io.ls.al<>Execute.ex.al
-  AxiArbiter.io.ls.s <>Execute.ex.s
-  AxiArbiter.io.ls.dl<>LoadStore.ls.dl
+  AxiArbiter.io.in(1)<>ICache.io.out
+  AxiArbiter.io.in(0)<>DCache.io.out
+  //NOTE：访存优先，
 
-  Axi4Bridge.io.al<>AxiArbiter.io.out.al
-  Axi4Bridge.io.s <>AxiArbiter.io.out.s
-  Axi4Bridge.io.dl<>AxiArbiter.io.out.dl
+  Axi4Bridge.io.in<>AxiArbiter.io.out
 //AxiArbiter
 if(ISAConfig.SOC_MODE){
   val AxiCoreOut=Module(new AxiCoreOut())
@@ -78,7 +88,7 @@ if(ISAConfig.SOC_MODE){
   AxiXbarA2X.io.x(0)<>AxiCoreOut.io.in
   AxiXbarA2X.io.x(1)<>SimTimer.io
 }else{
-  val AxiRam = Module(new Axi4LiteSram())
+  val AxiRam = Module(new Axi4FullSram())
   Axi4Bridge.io.ar<>AxiRam.io.ar
   Axi4Bridge.io.r <>AxiRam.io.r
   Axi4Bridge.io.aw<>AxiRam.io.aw

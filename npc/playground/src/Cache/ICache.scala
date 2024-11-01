@@ -2,7 +2,7 @@ package Cache
 import chisel3._
 import chisel3.util._
 import CoreConfig.CacheConfig
-import Axi.AxiBridge
+// import Axi.AxiBridge
 import Util.RandomNum
 
 class ICache extends Module with CacheConfig {
@@ -132,13 +132,13 @@ class AxiCacheReadIO extends Bundle{
 
 class AxiCacheReadReturnIO extends Bundle{
   val last  = Input(Bool())
-  val port  = Input(UInt(2.W))
+  val resp  = Input(UInt(2.W))
   val data  = Input(UInt(32.W))
 }
 
 class AxiCacheWriteReturnIO extends Bundle{
   val last  = Input(Bool())
-  val port  = Input(UInt(2.W))
+  val resp  = Input(UInt(2.W))
 }
 
 class AxiCacheWriteIO extends Bundle{
@@ -156,4 +156,16 @@ class AxiCacheIO extends Bundle{
   val wr  = DecoupledIO(new AxiCacheWriteIO())
   val rret = Flipped(DecoupledIO(new AxiCacheReadReturnIO()))
   val wret = Flipped(DecoupledIO(new AxiCacheWriteReturnIO()))
+}
+
+class Core2AxiReadIO extends Bundle{
+  val req  = Output(Bool())
+  val addr = Output(UInt(32.W))
+  val size = Output(UInt(3.W))
+  val addrOk = Input(Bool())
+}
+
+class Core2AxiRespondIO extends Bundle{
+  val dataOk= Input(Bool())
+  val data  = Input(UInt(32.W))
 }
