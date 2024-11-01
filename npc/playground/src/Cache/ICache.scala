@@ -91,7 +91,7 @@ class ICache extends Module with CacheConfig {
       }
     }
     is(s_lookup){
-      cacheState := s_miss
+      
       for(i <- 0 until WAY_NUM_I){
         when(readTagv(i).v && readTagv(i).tag === requestTagBuff){
           cacheLookupHit := true.B
@@ -99,6 +99,18 @@ class ICache extends Module with CacheConfig {
           cacheState := s_respond
           readDataLineBuff := readData(i).asTypeOf(readDataLineBuff)
         }
+      }
+      when(cacheLookupHit){
+        when(io.valid){
+          requestTagBuff    := io.tag
+          requestIdxBuff    := io.index
+          requestOffsetBuff := io.offset
+          cacheState := s_lookup
+        }.otherwise{
+          cacheState := s_respond
+        }
+      }.otherwise{
+        cacheState := s_miss
       }
     }
     is(s_miss){
