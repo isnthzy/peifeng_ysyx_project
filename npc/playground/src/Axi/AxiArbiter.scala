@@ -26,6 +26,7 @@ class AxiArbiter(inNum: Int) extends Module {
   readArb.io.out.ready := io.out.rd.ready && ArbReadState === arb_read_idle
   io.out.rd.valid := readArb.io.out.valid && ArbReadState === arb_read_idle
   io.out.rd.bits  := readArb.io.out.bits
+  dontTouch(io.out.rd.ready)
   readArb.io.out.ready := false.B
   switch(ArbReadState){
     is(arb_read_idle){
