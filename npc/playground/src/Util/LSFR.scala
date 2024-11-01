@@ -17,8 +17,9 @@ class LSFR extends Module {
 
 object RandomNum {
   def apply[T <: Data](Seed: UInt): UInt = {
-    val LSFR=Module(new LSFR)
     require(Seed.getWidth <= 8, "Seed length cannot exceed 4")
+    val LSFR=Module(new LSFR)
+    LSFR.io.Seed:=Seed
     LSFR.io.Out
   }
 }
