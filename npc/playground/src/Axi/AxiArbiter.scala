@@ -88,7 +88,7 @@ class AxiArbiter(inNum: Int) extends Module {
   }
   io.out.wret.ready := io.in(writeChosenIdx).wret.ready
   for(i <- 0 until inNum){
-    io.in(i).wret.valid := io.out.wret.valid & (i.U === readChosenIdx)
+    io.in(i).wret.valid := io.out.wret.valid & (i.U === writeChosenIdx)
     io.in(i).wret.bits := (io.out.wret.bits.asUInt 
                         & (i.U === writeChosenIdx)).asTypeOf(io.in(0).wret.bits)
   }
