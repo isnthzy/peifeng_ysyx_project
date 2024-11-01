@@ -121,7 +121,8 @@ class ICache extends Module with CacheConfig {
     }
   }
 
-
+  io.out.wr.bits:=0.U.asTypeOf(io.out.wr.bits)
+  io.out.wr.valid:=false.B
 }
 
 
