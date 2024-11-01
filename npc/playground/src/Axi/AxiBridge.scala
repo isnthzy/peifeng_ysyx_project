@@ -16,7 +16,7 @@ class Axi4Bridge extends Module with CacheConfig {
     val w=Decoupled(new Axi4WriteDataBundle())
     val b=Flipped(Decoupled(new Axi4WriteResponseBundle()))
 
-    val in=new AxiCacheIO()
+    val in=Flipped(new AxiCacheIO())
   })
 
 //---------------------------AXI4 Lite---------------------------
