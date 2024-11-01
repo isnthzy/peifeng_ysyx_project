@@ -68,7 +68,6 @@ class AxiArbiter(inNum: Int) extends Module {
         io.in(i).wr.ready := false.B
       }
   }
-  dontTouch(io.in(0).wr.ready)
   writeArb.io.out.ready := io.out.wr.ready && ArbWriteState === arb_write_idle
   io.out.wr.valid := writeArb.io.out.valid && ArbWriteState === arb_write_idle
   io.out.wr.bits  := writeArb.io.out.bits
@@ -76,7 +75,7 @@ class AxiArbiter(inNum: Int) extends Module {
     is(arb_write_idle){
       when(writeArb.io.out.fire){
         writeChosenIdx := writeArb.io.chosen
-        ArbReadState := arb_write_resp
+        ArbWriteState := arb_write_resp
       }
     }
     is(arb_write_resp){
