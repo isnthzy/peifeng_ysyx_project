@@ -46,7 +46,7 @@ class ICache extends Module with CacheConfig {
        s_miss   ::
        s_refill  ::
        s_respond ::
-       Nil) = Enum(7)
+       Nil) = Enum(5)
   val cacheState = RegInit(s_idle)
   val reqIndex = WireDefault(0.U(log2Ceil(INDEX_WIDTH).W))
   val cacheReqValid = cacheState === s_idle && io.valid
