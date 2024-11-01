@@ -48,14 +48,15 @@ class Axi4FullSram extends Module {
     val readAddrReg=RegInit(0.U(32.W))
     val readLenReg=RegInit(0.U(8.W))
     val burstReq=readState===r_respond&&readLenReg>0.U
+    val readReq=io.ar.fire || burstReq
 
     val dpi_sram=Module(new dpi_sram())
     dpi_sram.io.clock:=clock
     dpi_sram.io.raddr:=Mux(io.ar.fire,io.ar.bits.addr,readAddrReg)
-    dpi_sram.io.ren:=io.ar.fire || burstReq
+    dpi_sram.io.ren:=readReq
     io.ar.ready:=true.B
     // io.ar.ready:=RandomDelay(true.B,15.U)
-    io.r.valid:=RegNext(dpi_sram.io.ren)
+    io.r.valid:=RegNext(readReq)
     io.r.bits.last:=readLenReg===0.U
     io.r.bits.data:=dpi_sram.io.rdata
     io.r.bits.resp:=0.U
