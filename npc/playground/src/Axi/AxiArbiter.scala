@@ -33,8 +33,6 @@ class AxiArbiter(inNum: Int) extends Module {
   readArb.io.out.ready := io.out.rd.ready && ArbReadState === arb_read_idle
   io.out.rd.valid := readArb.io.out.valid && ArbReadState === arb_read_idle
   io.out.rd.bits  := readArb.io.out.bits
-  dontTouch(io.out.rd.ready)
-  dontTouch(io.in(0).rd.ready)
   switch(ArbReadState){
     is(arb_read_idle){
       when(readArb.io.out.fire){
@@ -63,8 +61,15 @@ class AxiArbiter(inNum: Int) extends Module {
   val writeArb = Module(new Arbiter(new AxiCacheWriteIO(),inNum))
   val writeChosenIdx = RegInit(0.U(log2Ceil(inNum).W))
   (writeArb.io.in zip io.in.map(_.wr)).foreach{case (writeArb,in) => writeArb <> in}
-  io.in.map(_.wret.bits := 0.U.asTypeOf(io.in(0).wret.bits))
-  io.in.map(_.wr.ready := false.B)
+  for(i <- 0 until inNum){
+    io.in(i).wret.bits := io.out.wret.bits
+    when(i.U === writeArb.io.chosen && writeArb.io.out.fire 
+      && ArbWriteState === arb_write_idle){
+        io.in(i).wr.ready := true.B
+      }.otherwise{
+        io.in(i).wr.ready := false.B
+      }
+  }
   writeArb.io.out.ready := io.out.wr.ready && ArbWriteState === arb_write_idle
   io.out.wr.valid := writeArb.io.out.valid && ArbWriteState === arb_write_idle
   io.out.wr.bits  := writeArb.io.out.bits
@@ -72,7 +77,6 @@ class AxiArbiter(inNum: Int) extends Module {
     is(arb_write_idle){
       when(writeArb.io.out.fire){
         writeChosenIdx := writeArb.io.chosen
-        io.in(writeArb.io.chosen).wr.ready := true.B
         ArbReadState := arb_write_resp
       }
     }
