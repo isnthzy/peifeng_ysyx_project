@@ -24,30 +24,18 @@ typedef MUXDEF(CONFIG_RV64,uint64_t, uint32_t) data_t;
     do { \
         printf("\033[1;32m"); \
         printf(__VA_ARGS__); \
-        printf("\033[0m\n"); \
+        printf("\033[0m"); \
+        fflush(NULL); \
     } while (0)
 #define printf_red(...) \
     do { \
         printf("\033[1;31m"); \
         printf(__VA_ARGS__); \
         printf("\033[0m"); \
+        fflush(NULL); \
     } while (0)
 
 word_t expr(char *e, bool *success);
-// typedef struct {
-//   word_t gpr[MUXDEF(CONFIG_RVE, 16, 32)];
-//   vaddr_t pc;
-//   word_t mstatus;
-//   word_t mepc;
-//   word_t mtvec;
-//   word_t mcause;
-// }CPU_state;
-
-// typedef struct {
-//   vaddr_t nextpc;
-//   word_t inst;
-//   bool valid;
-// }CPU_info;
 
 // ----------- state -----------
 
