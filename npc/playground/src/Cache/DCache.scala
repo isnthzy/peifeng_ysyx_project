@@ -28,6 +28,7 @@ class DCache extends Module{
   io.out.wr.bits.addr:=io.in.s.waddr
   io.out.wr.bits.data:=io.in.s.wdata
   io.out.wr.bits.strb:=io.in.s.wstrb
+  dontTouch(io.out.wr.ready)
   io.in.s.waddr_ok:=io.out.wr.fire
-  io.in.s.wdata_ok:=io.out.rret.fire
+  io.in.s.wdata_ok:=io.out.wret.fire
 }
