@@ -36,7 +36,7 @@ class ICache extends Module with CacheConfig {
   val readDataLineIdx  = RegInit(0.U(log2Ceil(LINE_WORD_NUM).W))
   
   for(i <- 0 until WAY_NUM_I){
-    readTagv(i).v   := tagValid(RegNext(requestIdxBuff))(i)
+    readTagv(i).v   := RegNext(tagValid(requestIdxBuff)(i))
     readTagv(i).tag := TagvBank(i).douta
     readData(i) := DataBank(i).doutb
   }
@@ -89,7 +89,7 @@ class ICache extends Module with CacheConfig {
     is(s_lookup){
       cacheState := s_miss
       for(i <- 0 until WAY_NUM_I){
-        when(readTagv(i).v && readTagv(i).tag === io.tag){
+        when(readTagv(i).v && readTagv(i).tag === requestTagBuff){
           hitWayBuff := i.U
           cacheState := s_respond
           readDataLineBuff := readData(i).asTypeOf(readDataLineBuff)
