@@ -6,7 +6,7 @@ import CoreConfig.CacheConfig
 import Util.RandomNum
 
 class ICache extends Module with CacheConfig {
-  val BANK_SIZE = 1 << LINE_WIDTH
+  val BANK_SIZE = 1 << INDEX_WIDTH
   val io = IO(new Bundle {
     val valid  = Input(Bool())
     val tag    = Input(UInt(TAG_WIDTH.W)) //tag下一周期输入
@@ -36,7 +36,7 @@ class ICache extends Module with CacheConfig {
   val readDataLineIdx  = RegInit(0.U(log2Ceil(LINE_WORD_NUM).W))
   
   for(i <- 0 until WAY_NUM_I){
-    readTagv(i).v   := tagValid(requestIdxBuff)(i)
+    readTagv(i).v   := tagValid(RegNext(requestIdxBuff))(i)
     readTagv(i).tag := TagvBank(i).douta
     readData(i) := DataBank(i).doutb
   }
