@@ -49,7 +49,7 @@ class AxiArbiter(inNum: Int) extends Module {
   for(i <- 0 until inNum){
     io.in(i).rret.valid := io.out.rret.valid & (i.U === readChosenIdx)
     io.in(i).rret.bits := (io.out.rret.bits.asUInt 
-                        & Fill(io.out.rret.bits.asUInt.getWidth,(i.U === readChosenIdx)))
+                        & Fill(io.out.rret.bits.asUInt.getWidth,(i.U === readChosenIdx))).asTypeOf(io.in(0).rret.bits)
   }
 
 
