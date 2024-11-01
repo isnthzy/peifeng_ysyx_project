@@ -34,7 +34,7 @@ class Axi4Bridge extends Module with CacheConfig {
   val ReadRequstState=RegInit(ar_idle)
   val readCacheLine=io.in.rd.bits.stype==="b100".U
   val lastReadRespFire=io.r.fire&&io.r.bits.last.asBool
-  // WaitReadIdle:=(ReadRequstState=/=ar_idle)
+  WaitReadIdle:=(ReadRequstState=/=ar_idle)
   io.ar.valid:=arvalidReg
   io.ar.bits.addr:=araddrReg
   io.ar.bits.id  :=0.U
