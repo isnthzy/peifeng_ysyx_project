@@ -35,8 +35,8 @@ class ICache extends Module with CacheConfig {
   val readDataLineBuff = RegInit(VecInit(Seq.fill(LINE_WORD_NUM)(0.U(32.W))))
   val readDataLineIdx  = RegInit(0.U(log2Ceil(LINE_WORD_NUM).W))
 
-  val dataReqIdx = Mux(cacheReqValid,io.index,requestIdxBuff)
-  val idxConflit = requestIdxBuff === dataReqIdx && (cacheState === s_respond)
+  val dataReqIdx = Wire(Bool())
+  val idxConflit = Wire(Bool())
 
   
   for(i <- 0 until WAY_NUM_I){
@@ -55,7 +55,8 @@ class ICache extends Module with CacheConfig {
   val reqIndex = WireDefault(0.U(log2Ceil(INDEX_WIDTH).W))
   val cacheReqValid = (cacheState === s_idle || cacheState === s_respond) && io.valid
   val randomWay = RandomNum("b10111011".U)(log2Ceil(WAY_NUM_I) - 1,0)
-
+  dataReqIdx := Mux(cacheReqValid,io.index,requestIdxBuff)
+  idxConflit := requestIdxBuff === dataReqIdx && (cacheState === s_respond)
 
   for(i <- 0 until WAY_NUM_I){
     DataBank(i).clka := clock    
