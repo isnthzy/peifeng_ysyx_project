@@ -55,12 +55,12 @@ class ICache extends Module with CacheConfig {
   val isRespond = cacheState === s_respond
 
   val cacheLookupHit = WireDefault(false.B)
-  val cacheHitWay    = WireDefault(0.U(WAY_NUM_I.W))
+  val cacheHitWay    = WireDefault(0.U(log2Ceil(WAY_NUM_I).W))
   val dataReqIdx = Wire(UInt(INDEX_WIDTH.W))
   val cacheReqValid = (isIdle  || isRespond
                     ||(cacheLookupHit && isLookup)) && io.valid
   val randomWay = RandomNum("b10111011".U)(log2Ceil(WAY_NUM_I) - 1,0)
-  val replaceWayBuff = RegInit(0.U(WAY_NUM_I.W))
+  val replaceWayBuff = RegInit(0.U(log2Ceil(WAY_NUM_I).W))
   dataReqIdx := Mux(cacheReqValid,io.index,requestIdxBuff)
   idxConflit := requestIdxBuff === dataReqIdx
 
