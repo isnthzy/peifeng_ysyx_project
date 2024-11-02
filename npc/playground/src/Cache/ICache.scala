@@ -31,7 +31,6 @@ class ICache extends Module with CacheConfig {
   val requestIdxBuff = RegInit(0.U(INDEX_WIDTH.W))
   val requestTagBuff = RegInit(0.U(TAG_WIDTH.W))
   val requestOffsetBuff = RegInit(0.U(OFFSET_WIDTH.W))
-  val hitWayBuff = RegInit(0.U(log2Ceil(WAY_NUM_I).W))
   val readDataLineBuff = RegInit(VecInit(Seq.fill(LINE_WORD_NUM)(0.U(32.W))))
   val readDataLineIdx  = RegInit(0.U(log2Ceil(LINE_WORD_NUM).W))
 
@@ -49,11 +48,17 @@ class ICache extends Module with CacheConfig {
        s_respond ::
        Nil) = Enum(5)
   val cacheState = RegInit(s_idle)
-  val cacheLookupHit = WireDefault(false.B)
-  val dataReqIdx = Wire(UInt(INDEX_WIDTH.W))
+  val isIdle    = cacheState === s_idle
+  val isLookup  = cacheState === s_lookup
+  val isMiss    = cacheState === s_miss
+  val isRefill  = cacheState === s_refill
+  val isRespond = cacheState === s_respond
 
-  val cacheReqValid = (cacheState === s_idle || cacheState === s_respond 
-                    ||(cacheLookupHit && cacheState === s_lookup)) && io.valid
+  val cacheLookupHit = WireDefault(false.B)
+  val cacheHitWay    = WireDefault(0.U(WAY_NUM_I.W))
+  val dataReqIdx = Wire(UInt(INDEX_WIDTH.W))
+  val cacheReqValid = (isIdle  || isRespond
+                    ||(cacheLookupHit && isLookup)) && io.valid
   val randomWay = RandomNum("b10111011".U)(log2Ceil(WAY_NUM_I) - 1,0)
   val replaceWayBuff = RegInit(0.U(WAY_NUM_I.W))
   dataReqIdx := Mux(cacheReqValid,io.index,requestIdxBuff)
@@ -61,7 +66,7 @@ class ICache extends Module with CacheConfig {
 
   for(i <- 0 until WAY_NUM_I){
     DataBank(i).clka := clock    
-    DataBank(i).wea  := (cacheState === s_respond) && (replaceWayBuff === i.U)
+    DataBank(i).wea  := (isRespond) && (replaceWayBuff === i.U)
     DataBank(i).addra := requestIdxBuff
     DataBank(i).dina  := readDataLineBuff.asUInt
     DataBank(i).clkb  := clock
@@ -69,22 +74,23 @@ class ICache extends Module with CacheConfig {
     //NOTE:addra与addrb不能是同一地址,因此这里设计
   
     TagvBank(i).clka := clock
-    TagvBank(i).wea  := cacheState === s_miss && io.out.rd.fire && randomWay === i.U
+    TagvBank(i).wea  := isMiss && io.out.rd.fire && randomWay === i.U
     TagvBank(i).addra := Mux(cacheReqValid,io.index,requestIdxBuff)
     TagvBank(i).dina  := requestTagBuff
-    when(cacheState === s_miss && io.out.rd.fire && randomWay === i.U){
+    when(isMiss && io.out.rd.fire && randomWay === i.U){
       tagValid(requestIdxBuff)(i) := 1.U
     }
     
   } //NOTE:设置默认值，后续通过覆写实现读
 
-  val cacheUnBusy = cacheState === s_idle || cacheState === s_respond || cacheLookupHit
-  
+  val cacheUnBusy = isIdle || isRespond || cacheLookupHit
+  val targetWordAddr = requestOffsetBuff(OFFSET_WIDTH - 1,2)
+  val dataBankOutLine = DataBank(0).doutb.asTypeOf(readDataLineBuff)
   
   io.addrRp := cacheUnBusy
-  io.dataRp := cacheState === s_respond || cacheLookupHit
-  io.rdata  := readData(requestOffsetBuff(OFFSET_WIDTH - 1,2))
-  io.out.rd.valid := cacheState === s_miss
+  io.dataRp := isRespond || cacheLookupHit
+  io.rdata  := Mux(isLookup,dataBankOutLine(cacheHitWay),readDataLineBuff(targetWordAddr))
+  io.out.rd.valid := isMiss
   io.out.rd.bits.stype := "b100".U
   io.out.rd.bits.addr := Cat(requestTagBuff,requestIdxBuff,0.U(OFFSET_WIDTH.W))
   io.out.rret.ready := true.B
@@ -103,7 +109,7 @@ class ICache extends Module with CacheConfig {
       for(i <- 0 until WAY_NUM_I){
         when(readTagv(i).v && readTagv(i).tag === requestTagBuff){
           cacheLookupHit := true.B
-          hitWayBuff := i.U
+          cacheHitWay := i.U
           readDataLineBuff := readData(i).asTypeOf(readDataLineBuff)
         }
       }
