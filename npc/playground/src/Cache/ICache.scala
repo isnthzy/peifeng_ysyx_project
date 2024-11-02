@@ -89,7 +89,7 @@ class ICache extends Module with CacheConfig {
   
   io.addrRp := cacheUnBusy
   io.dataRp := isRespond || cacheLookupHit
-  io.rdata  := Mux(isLookup,dataBankOutLine(cacheHitWay),readDataLineBuff(targetWordAddr))
+  io.rdata  := Mux(isLookup,dataBankOutLine(targetWordAddr),readDataLineBuff(targetWordAddr))
   io.out.rd.valid := isMiss
   io.out.rd.bits.stype := "b100".U
   io.out.rd.bits.addr := Cat(requestTagBuff,requestIdxBuff,0.U(OFFSET_WIDTH.W))
