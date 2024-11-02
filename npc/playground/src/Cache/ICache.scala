@@ -37,12 +37,11 @@ class ICache extends Module with CacheConfig {
 
   val dataReqIdx = Wire(Bool())
   val idxConflit = Wire(Bool())
-
   
   for(i <- 0 until WAY_NUM_I){
     readTagv(i).v   := RegNext(tagValid(requestIdxBuff)(i))
     readTagv(i).tag := TagvBank(i).douta
-    readData(i) := Mux(RegNext(idxConflit),readDataLineBuff,DataBank(i).doutb)
+    readData(i) := Mux(RegNext(idxConflit),readDataLineBuff.asUInt,DataBank(i).doutb)
   }
 
   val (s_idle   ::
