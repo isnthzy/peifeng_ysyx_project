@@ -63,7 +63,7 @@ class ICache extends Module with CacheConfig {
     DataBank(i).addra := requestIdxBuff
     DataBank(i).dina  := readDataLineBuff.asUInt
     DataBank(i).clkb  := clock
-    DataBank(i).addrb := Mux(idxConflit,dataReqIdx + 1.U,dataReqIdx)
+    DataBank(i).addrb := Mux(idxConflit,(dataReqIdx + 1.U)(INDEX_WIDTH - 1,0),dataReqIdx)
     //NOTE:addra与addrb不能是同一地址,因此这里设计
   
     TagvBank(i).clka := clock
