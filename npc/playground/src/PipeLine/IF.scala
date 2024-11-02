@@ -52,6 +52,7 @@ class IfStage extends Module {
   when(fs.to_id.fire){
     fsUseInstBuff:=false.B
     inst_discard:=false.B
+    holdValid:=false.B
   }.elsewhen(fs.dl.dataOk){
     fsInstBuff:=fs.dl.data
     fsUseInstBuff:=true.B
