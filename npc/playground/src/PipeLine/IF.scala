@@ -56,7 +56,7 @@ class IfStage extends Module {
   }.elsewhen(fs.dl.dataOk){
     fsInstBuff:=fs.dl.data
     fsUseInstBuff:=true.B
-    holdValid:=true.B
+    holdValid:= ~fs.to_id.ready
   }
 
 //NOTE:Excp
