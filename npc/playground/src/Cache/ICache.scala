@@ -53,17 +53,18 @@ class ICache extends Module with CacheConfig {
   val randomWay = RandomNum("b10111011".U)(log2Ceil(WAY_NUM_I) - 1,0)
   for(i <- 0 until WAY_NUM_I){
     DataBank(i).clka := clock    
-    DataBank(i).wea  := (cacheState === s_respond) && (hitWayBuff === i.U)
+    DataBank(i).wea  := (cacheState === s_respond) && (randomWay === i.U)
     DataBank(i).addra := requestIdxBuff
     DataBank(i).dina  := readDataLineBuff.asUInt
     DataBank(i).clkb  := clock
     DataBank(i).addrb := Mux(cacheReqValid,io.index,requestIdxBuff)
+    //FIXME:addra与addrb不能是同一地址
   
     TagvBank(i).clka := clock
-    TagvBank(i).wea  := (cacheState === s_miss) && (randomWay === i.U)
+    TagvBank(i).wea  := (cacheState === s_respond) && (randomWay === i.U)
     TagvBank(i).addra := Mux(cacheReqValid,io.index,requestIdxBuff)
     TagvBank(i).dina  := requestTagBuff
-    when((cacheState === s_miss) && (randomWay === i.U)){
+    when((cacheState === s_respond) && (randomWay === i.U)){
       tagValid(requestIdxBuff)(i) := 1.U
     }
     
