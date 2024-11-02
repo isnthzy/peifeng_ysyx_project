@@ -47,7 +47,7 @@ class PfStage extends Module {
 
   nextpc:=Mux(pfFlush,dnpc,snpc)
 
-  when(pfFlush){
+  when((pfReadyGo&&pf.to_if.ready)||pfFlush){
     regPC:=nextpc
   }
 
