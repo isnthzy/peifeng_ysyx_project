@@ -105,7 +105,7 @@ class ICache extends Module with CacheConfig {
           requestOffsetBuff := io.offset
           cacheState := s_lookup
         }.otherwise{
-          cacheState := s_respond
+          cacheState := s_idle
         }
       }.otherwise{
         cacheState := s_miss
