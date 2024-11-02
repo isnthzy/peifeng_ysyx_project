@@ -28,6 +28,8 @@ class IfStage extends Module {
   val fsValid=dontTouch(Wire(Bool()))
   val fsValidR=RegInit(false.B)
   val fsReadyGo=dontTouch(Wire(Bool()))
+  val fsInstBuff=RegInit(0.U(DATA_WIDTH.W))
+  val fsUseInstBuff=RegInit(false.B)
   fs.in.ready:= ~fsValidR || fsReadyGo && fs.to_id.ready
   when(fsFlush){
     fsValidR:=false.B
@@ -36,15 +38,14 @@ class IfStage extends Module {
   }
   fsValid:=fsValidR&& ~fsFlush
   fsReadyGo:= ~fsStall || fsExcpEn
-  fs.to_id.valid:= fsValid&&fsReadyGo //fsValid===fsValidR&& ~fsFlush
+  fs.to_id.valid:= fsValid&&fsReadyGo||fsUseInstBuff //fsValid===fsValidR&& ~fsFlush
   val inst_discard=RegInit(false.B)
   // when(fsFlush&& ~fs.in.ready&& ~fsReadyGo){
   //   inst_discard:=true.B
   // }
   fsStall:= ~fs.dl.dataOk || inst_discard
 
-  val fsInstBuff=RegInit(0.U(DATA_WIDTH.W))
-  val fsUseInstBuff=RegInit(false.B)
+
   val fsInst=Mux(fsExcpEn,INST_NOP,
               Mux(fsUseInstBuff&& ~fs.dl.dataOk,fsInstBuff,fs.dl.data))
   when(fs.to_id.fire){
