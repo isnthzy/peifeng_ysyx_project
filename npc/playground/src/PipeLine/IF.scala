@@ -42,6 +42,8 @@ class IfStage extends Module {
   val inst_discard=RegInit(false.B)
   when(fsFlush&& ~fs.in.ready&& ~fsReadyGo){
     inst_discard:=true.B
+  }.elsewhen(fs.dl.dataOk){
+    inst_discard:=false.B
   }
   fsStall:= ~(fs.dl.dataOk||holdValid) || inst_discard
 
@@ -51,7 +53,6 @@ class IfStage extends Module {
               Mux(fsUseInstBuff&& ~fs.dl.dataOk,fsInstBuff,fs.dl.data))
   when(fs.to_id.fire){
     fsUseInstBuff:=false.B
-    inst_discard:=false.B
     holdValid:=false.B
   }.elsewhen(fs.dl.dataOk){
     fsInstBuff:=fs.dl.data
