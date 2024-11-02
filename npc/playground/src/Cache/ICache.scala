@@ -35,9 +35,7 @@ class ICache extends Module with CacheConfig {
   val readDataLineBuff = RegInit(VecInit(Seq.fill(LINE_WORD_NUM)(0.U(32.W))))
   val readDataLineIdx  = RegInit(0.U(log2Ceil(LINE_WORD_NUM).W))
 
-  val dataReqIdx = Wire(UInt(INDEX_WIDTH.W))
-  val idxConflit = Wire(Bool())
-  
+  val idxConflit = Wire(Bool())  
   for(i <- 0 until WAY_NUM_I){
     readTagv(i).v   := RegNext(tagValid(requestIdxBuff)(i))
     readTagv(i).tag := TagvBank(i).douta
@@ -51,8 +49,11 @@ class ICache extends Module with CacheConfig {
        s_respond ::
        Nil) = Enum(5)
   val cacheState = RegInit(s_idle)
-  val reqIndex = WireDefault(0.U(log2Ceil(INDEX_WIDTH).W))
-  val cacheReqValid = (cacheState === s_idle || cacheState === s_respond || cacheLookupHit) && io.valid
+  val cacheLookupHit = WireDefault(false.B)
+  val dataReqIdx = Wire(UInt(INDEX_WIDTH.W))
+
+  val cacheReqValid = (cacheState === s_idle || cacheState === s_respond 
+                    ||(cacheLookupHit && cacheState === s_lookup)) && io.valid
   val randomWay = RandomNum("b10111011".U)(log2Ceil(WAY_NUM_I) - 1,0)
   dataReqIdx := Mux(cacheReqValid,io.index,requestIdxBuff)
   idxConflit := requestIdxBuff === dataReqIdx && (cacheState === s_respond)
@@ -75,7 +76,7 @@ class ICache extends Module with CacheConfig {
     }
     
   } //NOTE:设置默认值，后续通过覆写实现读
-  val cacheLookupHit = WireDefault(false.B)
+
   val cacheUnBusy = cacheState === s_idle || cacheState === s_respond || cacheLookupHit
   
   
