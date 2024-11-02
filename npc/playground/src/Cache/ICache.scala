@@ -35,8 +35,9 @@ class ICache extends Module with CacheConfig {
   val readDataLineBuff = RegInit(VecInit(Seq.fill(LINE_WORD_NUM)(0.U(32.W))))
   val readDataLineIdx  = RegInit(0.U(log2Ceil(LINE_WORD_NUM).W))
 
-  val idxConflit = requestIdxBuff===dataReqIdx && (cacheState === s_respond)
   val dataReqIdx = Mux(cacheReqValid,io.index,requestIdxBuff)
+  val idxConflit = requestIdxBuff === dataReqIdx && (cacheState === s_respond)
+
   
   for(i <- 0 until WAY_NUM_I){
     readTagv(i).v   := RegNext(tagValid(requestIdxBuff)(i))
@@ -63,7 +64,7 @@ class ICache extends Module with CacheConfig {
     DataBank(i).dina  := readDataLineBuff.asUInt
     DataBank(i).clkb  := clock
     DataBank(i).addrb := Mux(idxConflit,dataReqIdx + 1.U,dataReqIdx)
-    //FIXME:addra与addrb不能是同一地址
+    //NOTE:addra与addrb不能是同一地址,因此这里设计
   
     TagvBank(i).clka := clock
     TagvBank(i).wea  := (cacheState === s_respond) && (randomWay === i.U)
