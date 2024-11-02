@@ -34,11 +34,14 @@ class ICache extends Module with CacheConfig {
   val hitWayBuff = RegInit(0.U(log2Ceil(WAY_NUM_I).W))
   val readDataLineBuff = RegInit(VecInit(Seq.fill(LINE_WORD_NUM)(0.U(32.W))))
   val readDataLineIdx  = RegInit(0.U(log2Ceil(LINE_WORD_NUM).W))
+
+  val idxConflit = requestIdxBuff===dataReqIdx && (cacheState === s_respond)
+  val dataReqIdx = Mux(cacheReqValid,io.index,requestIdxBuff)
   
   for(i <- 0 until WAY_NUM_I){
     readTagv(i).v   := RegNext(tagValid(requestIdxBuff)(i))
     readTagv(i).tag := TagvBank(i).douta
-    readData(i) := DataBank(i).doutb
+    readData(i) := Mux(RegNext(idxConflit),readDataLineBuff,DataBank(i).doutb)
   }
 
   val (s_idle   ::
@@ -51,13 +54,15 @@ class ICache extends Module with CacheConfig {
   val reqIndex = WireDefault(0.U(log2Ceil(INDEX_WIDTH).W))
   val cacheReqValid = (cacheState === s_idle || cacheState === s_respond) && io.valid
   val randomWay = RandomNum("b10111011".U)(log2Ceil(WAY_NUM_I) - 1,0)
+
+
   for(i <- 0 until WAY_NUM_I){
     DataBank(i).clka := clock    
     DataBank(i).wea  := (cacheState === s_respond) && (randomWay === i.U)
     DataBank(i).addra := requestIdxBuff
     DataBank(i).dina  := readDataLineBuff.asUInt
     DataBank(i).clkb  := clock
-    DataBank(i).addrb := Mux(cacheReqValid,io.index,requestIdxBuff)
+    DataBank(i).addrb := Mux(idxConflit,dataReqIdx + 1.U,dataReqIdx)
     //FIXME:addra与addrb不能是同一地址
   
     TagvBank(i).clka := clock
