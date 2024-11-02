@@ -55,12 +55,13 @@ class ICache extends Module with CacheConfig {
   val cacheReqValid = (cacheState === s_idle || cacheState === s_respond 
                     ||(cacheLookupHit && cacheState === s_lookup)) && io.valid
   val randomWay = RandomNum("b10111011".U)(log2Ceil(WAY_NUM_I) - 1,0)
+  val replaceWayBuff = RegInit(0.U(WAY_NUM_I.W))
   dataReqIdx := Mux(cacheReqValid,io.index,requestIdxBuff)
-  idxConflit := requestIdxBuff === dataReqIdx && (cacheState === s_respond)
+  idxConflit := requestIdxBuff === dataReqIdx
 
   for(i <- 0 until WAY_NUM_I){
     DataBank(i).clka := clock    
-    DataBank(i).wea  := (cacheState === s_respond) && (randomWay === i.U)
+    DataBank(i).wea  := (cacheState === s_respond) && (replaceWayBuff === i.U)
     DataBank(i).addra := requestIdxBuff
     DataBank(i).dina  := readDataLineBuff.asUInt
     DataBank(i).clkb  := clock
@@ -68,10 +69,10 @@ class ICache extends Module with CacheConfig {
     //NOTE:addra与addrb不能是同一地址,因此这里设计
   
     TagvBank(i).clka := clock
-    TagvBank(i).wea  := (cacheState === s_respond) && (randomWay === i.U)
+    TagvBank(i).wea  := cacheState === s_miss && io.out.rd.fire && randomWay === i.U
     TagvBank(i).addra := Mux(cacheReqValid,io.index,requestIdxBuff)
     TagvBank(i).dina  := requestTagBuff
-    when((cacheState === s_respond) && (randomWay === i.U)){
+    when(cacheState === s_miss && io.out.rd.fire && randomWay === i.U){
       tagValid(requestIdxBuff)(i) := 1.U
     }
     
@@ -123,6 +124,7 @@ class ICache extends Module with CacheConfig {
       readDataLineIdx  := 0.U
       readDataLineBuff := 0.U.asTypeOf(readDataLineBuff)
       when(io.out.rd.fire){
+        replaceWayBuff := randomWay
         cacheState := s_refill
       }
     }
