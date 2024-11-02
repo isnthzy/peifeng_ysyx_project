@@ -27,8 +27,7 @@ class PfStage extends Module {
           ||pf.from_ls.flush.asUInt.orR)
   val pfReadyGo=dontTouch(Wire(Bool()))
   val fetchReq=dontTouch(Wire(Bool()))
-  val discard=RegInit(false.B)
-  pfReadyGo:=(pf.al.addrOk&& ~discard && fetchReq)|| pfExcpEn
+  pfReadyGo:=(pf.al.addrOk && fetchReq)|| pfExcpEn
   pf.to_if.valid:=pfReadyGo
   fetchReq:= ~reset.asBool&& ~pfFlush && pf.to_if.ready && ~pfExcpEn
 
@@ -48,16 +47,8 @@ class PfStage extends Module {
 
   nextpc:=Mux(pfFlush,dnpc,snpc)
 
-  val nextpc_buff=RegInit(0.U(ADDR_WIDTH.W))
-
-  when(pfFlush&& ~pfReadyGo){
-    discard:=true.B
-    nextpc_buff:=nextpc
-  }
-
-  when((pf.al.addrOk&&pf.to_if.ready&&pf.to_if.ready)){
-    regPC:=Mux(discard,nextpc_buff,nextpc)
-    discard:=false.B
+  when(pfFlush){
+    regPC:=nextpc
   }
 
   pf.al.req :=fetchReq
