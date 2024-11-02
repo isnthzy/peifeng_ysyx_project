@@ -85,7 +85,7 @@ class ICache extends Module with CacheConfig {
 
   val cacheUnBusy = isIdle || isRespond || cacheLookupHit
   val targetWordAddr = requestOffsetBuff(OFFSET_WIDTH - 1,2)
-  val dataBankOutLine = DataBank(0).doutb.asTypeOf(readDataLineBuff)
+  val dataBankOutLine = readData(cacheHitWay).asTypeOf(readDataLineBuff)
   
   io.addrRp := cacheUnBusy
   io.dataRp := isRespond || cacheLookupHit
