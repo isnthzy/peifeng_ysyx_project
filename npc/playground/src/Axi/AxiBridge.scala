@@ -112,7 +112,7 @@ class Axi4Bridge extends Module with CacheConfig {
   val wdataReg=RegInit(0.U(DATA_WIDTH.W))
   val wstrbReg=RegInit(0.U(4.W))
   val breadyReg=RegInit(false.B)
-  val writeCacheLine=awtypeReg=="b100".U
+  val writeCacheLine=awtypeReg==="b100".U
 
   WaitWriteIdle:=(WriteRequstState=/=wr_idle)
   BrespFire:=io.b.fire
