@@ -62,7 +62,7 @@ class ICache extends Module with CacheConfig {
   val randomWay = RandomNum("b10111011".U)(log2Ceil(WAY_NUM_I) - 1,0)
   val replaceWayBuff = RegInit(0.U(log2Ceil(WAY_NUM_I).W))
   dataReqIdx := Mux(cacheReqValid,io.index,requestIdxBuff)
-  idxConflit := requestIdxBuff === dataReqIdx
+  idxConflit := requestIdxBuff === dataReqIdx && isRespond
 
   for(i <- 0 until WAY_NUM_I){
     DataBank(i).clka := clock    
