@@ -42,8 +42,8 @@ class PfStage extends Module {
                     Mux(pf.from_ls.flush.refetch,pf.from_ls.refetchPC,0.U)))
   snpc:=regPC + 4.U
   dnpc:=Mux(flush_sign,flushed_pc,
-          Mux(pf.from_id.brJump.taken,pf.from_id.brJump.target,
-            Mux(pf.from_ex.brCond.taken,pf.from_ex.brCond.target,0.U)))
+          Mux(pf.from_ex.brCond.taken,pf.from_ex.brCond.target,
+            Mux(pf.from_id.brJump.taken,pf.from_id.brJump.target,0.U)))
 
   nextpc:=Mux(pfFlush,dnpc,snpc)
 
