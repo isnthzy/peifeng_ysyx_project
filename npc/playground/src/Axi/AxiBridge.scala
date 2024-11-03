@@ -66,6 +66,7 @@ class Axi4Bridge extends Module with CacheConfig {
           }.otherwise{
             ReadRequstState:=ar_req_ready
             araddrReg:=io.in.rd.bits.addr
+            artypeReg:=io.in.rd.bits.stype
             arvalidReg:=true.B
           }
         // }z
@@ -106,11 +107,12 @@ class Axi4Bridge extends Module with CacheConfig {
   val WriteRequstState=RegInit(wr_idle)
   val awvalidReg=RegInit(false.B)
   val awaddrReg=RegInit(0.U(ADDR_WIDTH.W))
+  val awtypeReg=RegInit(0.U(2.W))
   val wvalidReg=RegInit(false.B)
   val wdataReg=RegInit(0.U(DATA_WIDTH.W))
   val wstrbReg=RegInit(0.U(4.W))
   val breadyReg=RegInit(false.B)
-  val writeCacheLine=io.in.wr.bits.stype==="b100".U
+  val writeCacheLine=awtypeReg=="b100".U
 
   WaitWriteIdle:=(WriteRequstState=/=wr_idle)
   BrespFire:=io.b.fire
@@ -119,7 +121,7 @@ class Axi4Bridge extends Module with CacheConfig {
   io.aw.bits.id  :=0.U
   io.aw.bits.burst:=1.U
   io.aw.bits.len :=Mux(writeCacheLine,(LINE_WORD_NUM-1).U,0.U)
-  io.aw.bits.size:=Mux(writeCacheLine,"b10".U,io.in.wr.bits.stype)
+  io.aw.bits.size:=Mux(writeCacheLine,"b10".U,awtypeReg)
   io.w.valid:=wvalidReg
   io.w.bits.data:=wdataReg
   io.w.bits.strb:=wstrbReg
@@ -141,6 +143,7 @@ class Axi4Bridge extends Module with CacheConfig {
             WriteRequstState:=wr_wait_ready
             awvalidReg:=true.B
             awaddrReg:=io.in.wr.bits.addr
+            awtypeReg:=io.in.wr.bits.stype
             
             wvalidReg:=true.B
             wdataReg:=io.in.wr.bits.data
