@@ -64,7 +64,8 @@ class ICache extends Module with CacheConfig {
   dataReqIdx := Mux(cacheReqValid,io.index,requestIdxBuff)
 
   for(i <- 0 until WAY_NUM_I){
-    idxConflit := requestIdxBuff === dataReqIdx && isRespond && (replaceWayBuff === i.U)
+    idxConflit(i) :=(requestIdxBuff === dataReqIdx 
+                  && isRespond && (replaceWayBuff === i.U))
 
     DataBank(i).clka := clock    
     DataBank(i).wea  := (isRespond) && (replaceWayBuff === i.U)
