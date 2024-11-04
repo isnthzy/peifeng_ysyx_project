@@ -4,8 +4,8 @@ import chisel3.util._
 import Axi._
 import Bundles._
 import CoreConfig.Configs._
-import CoreConfig.GenCtrl
-import CoreConfig.ISAConfig
+import CoreConfig.{GenCtrl,ISAConfig}
+import Cache.Core2AxiReadIO
 
 class PfStage extends Module {
   val pf=IO(new Bundle {
@@ -16,8 +16,7 @@ class PfStage extends Module {
     val from_ls=Input(new Pf4LsBusBundle())
 
     val csrEntries=Input(new CsrEntriesBundle)
-    val al=new AxiBridgeAddrLoad()
-    val s =new AxiBridgeStore()
+    val al=new Core2AxiReadIO()
 
     val perfMode=Input(Bool()) //飞线...
     val programExit=Input(Bool())
@@ -28,8 +27,7 @@ class PfStage extends Module {
           ||pf.from_ls.flush.asUInt.orR)
   val pfReadyGo=dontTouch(Wire(Bool()))
   val fetchReq=dontTouch(Wire(Bool()))
-  val discard=RegInit(false.B)
-  pfReadyGo:=(pf.al.raddr_ok&& ~discard && fetchReq)|| pfExcpEn
+  pfReadyGo:=(pf.al.addrOk && fetchReq)|| pfExcpEn
   pf.to_if.valid:=pfReadyGo
   fetchReq:= ~reset.asBool&& ~pfFlush && pf.to_if.ready && ~pfExcpEn
 
@@ -44,31 +42,18 @@ class PfStage extends Module {
                     Mux(pf.from_ls.flush.refetch,pf.from_ls.refetchPC,0.U)))
   snpc:=regPC + 4.U
   dnpc:=Mux(flush_sign,flushed_pc,
-          Mux(pf.from_id.brJump.taken,pf.from_id.brJump.target,
-            Mux(pf.from_ex.brCond.taken,pf.from_ex.brCond.target,0.U)))
+          Mux(pf.from_ex.brCond.taken,pf.from_ex.brCond.target,
+            Mux(pf.from_id.brJump.taken,pf.from_id.brJump.target,0.U)))
 
   nextpc:=Mux(pfFlush,dnpc,snpc)
 
-  val nextpc_buff=RegInit(0.U(ADDR_WIDTH.W))
-
-  when(pfFlush&& ~pfReadyGo){
-    discard:=true.B
-    nextpc_buff:=nextpc
+  when((pfReadyGo&&pf.to_if.ready)||pfFlush){
+    regPC:=nextpc
   }
 
-  when((pf.al.raddr_ok&&pf.to_if.ready&&pf.to_if.ready)){
-    regPC:=Mux(discard,nextpc_buff,nextpc)
-    discard:=false.B
-  }
-
-  pf.al.ren  :=fetchReq
-  pf.al.raddr:=regPC
-  pf.al.rsize:=2.U
-  pf.s.wen:=DontCare
-  pf.s.waddr:=DontCare
-  pf.s.wstrb:=DontCare
-  pf.s.wdata:=DontCare
-  pf.s.wsize:=2.U
+  pf.al.req :=fetchReq
+  pf.al.addr:=regPC
+  pf.al.size:=2.U
 //NOTE:excp
   val pfExcpType=Wire(new PfExcpTypeBundle())
   pfExcpType.iam:=(regPC(0)|regPC(1))
