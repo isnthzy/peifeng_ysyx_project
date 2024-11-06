@@ -14,7 +14,6 @@ class DCache extends Module{
     val out=new AxiCacheIO()
   })
   io.out.rret.ready:=true.B
-  io.out.wret.ready:=true.B
 
   io.out.rd.valid:=io.in.al.ren
   io.out.rd.bits.stype:=io.in.al.rsize
@@ -30,5 +29,5 @@ class DCache extends Module{
   io.out.wr.bits.strb:=io.in.s.wstrb
   dontTouch(io.out.wr.ready)
   io.in.s.waddr_ok:=io.out.wr.fire
-  io.in.s.wdata_ok:=io.out.wret.fire
+  io.in.s.wdata_ok:=io.out.wr.fire
 }

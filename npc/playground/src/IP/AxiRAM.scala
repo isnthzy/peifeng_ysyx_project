@@ -87,8 +87,9 @@ class Axi4FullSram extends Module {
     val writeState=RegInit(w_idle)
     val writeAddrReg=RegInit(0.U(32.W))
     val writeLenReg=RegInit(0.U(8.W))
+    val writeLenLast=writeLenReg===0.U
     dpi_sram.io.waddr:=Mux(io.aw.fire,io.aw.bits.addr,writeAddrReg)
-    dpi_sram.io.wen:=(io.aw.fire || io.w.fire)
+    dpi_sram.io.wen:=io.w.fire
     dpi_sram.io.wdata:=io.w.bits.data
     dpi_sram.io.wmask:=io.w.bits.strb
     io.aw.ready:=true.B
@@ -103,19 +104,19 @@ class Axi4FullSram extends Module {
           when(io.aw.bits.len===0.U){
             writeState:=w_respond
           }.otherwise{
-            writeAddrReg:=writeAddrReg
+            writeAddrReg:=io.aw.bits.addr
             writeLenReg:=io.aw.bits.len
             writeState:=w_write
           }
         }.elsewhen(io.aw.fire){
-          writeAddrReg:=writeAddrReg
+          writeAddrReg:=io.aw.bits.addr
           writeLenReg:=io.aw.bits.len
           writeState:=w_write
         }
       }
       is(w_write){
         when(io.w.fire){
-          when(io.w.bits.last.asBool){
+          when(io.w.bits.last.asBool||writeLenLast){
             writeState:=w_respond
           }.otherwise{
             writeLenReg:=writeLenReg-1.U
