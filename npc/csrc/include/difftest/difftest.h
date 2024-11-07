@@ -13,7 +13,7 @@ extern bool g_print_step;
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 void wp_trace(char *decodelog);
 
-typedef struct {
+typedef struct excp_event{
   uint8_t  excp_valid = 0;
   uint8_t  is_mret    = 0;
   uint32_t interrupt = 0;
@@ -27,7 +27,7 @@ typedef struct {
   uint32_t inst;
 } base_state_t; //不参与dpi提交，在diff_step时保留关键信息
 
-typedef struct {
+typedef struct instr_commit{
   uint8_t  valid = 0;
   vaddr_t  pc;
   uint32_t inst;
@@ -46,7 +46,7 @@ typedef struct __attribute__((packed)) {
   data_t  mcause;
 } csr_state_t;
 
-typedef struct {
+typedef struct store_event{
   uint8_t  valid = 0;
   paddr_t  paddr;
   vaddr_t  vaddr;
@@ -54,7 +54,7 @@ typedef struct {
   uint8_t  len;
 } store_event_t;
 
-typedef struct {
+typedef struct load_event{
   uint8_t valid = 0;
   paddr_t paddr;
   vaddr_t vaddr;

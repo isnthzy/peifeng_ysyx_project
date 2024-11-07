@@ -122,19 +122,10 @@ class Axi4Bridge extends Module with CacheConfig {
 
   switch(WriteRequstState){
     is(wr_idle){
-      when(io.in.wr.valid){
-        when(WaitReadIdle){
-          when(lastReadRespFire){
-            io.aw.valid:=true.B
-            when(io.aw.fire){
-              WriteRequstState:=wr_wait_ready
-            }
-          }
-        }.otherwise{
-          io.aw.valid:=true.B
-          when(io.aw.fire){
-            WriteRequstState:=wr_wait_ready
-          }
+      when(io.in.wr.valid&& ~WaitReadIdle){
+        io.aw.valid:=true.B
+        when(io.aw.fire){
+          WriteRequstState:=wr_wait_ready
         }
       }
     }

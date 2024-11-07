@@ -7,7 +7,7 @@ import CoreConfig.Configs._
 import FuncUnit.Control._
 import Axi.Axi4Slave
 import CoreConfig.GenCtrl
-import os.read
+import Util.RandomDelay
 class Axi4FullSram extends Module {
   val io=IO(new Axi4Slave())
   dontTouch(io);
@@ -55,7 +55,7 @@ class Axi4FullSram extends Module {
     dpi_sram.io.raddr:=Mux(io.ar.fire,io.ar.bits.addr,readAddrReg)
     dpi_sram.io.ren:=readReq
     io.ar.ready:=true.B
-    // io.ar.ready:=RandomDelay(true.B,15.U)
+    io.ar.ready:=RandomDelay(true.B,15.U)
     io.r.valid:=RegNext(readReq)
     io.r.bits.last:=readLenReg===0.U
     io.r.bits.data:=dpi_sram.io.rdata
@@ -93,7 +93,7 @@ class Axi4FullSram extends Module {
     dpi_sram.io.wdata:=io.w.bits.data
     dpi_sram.io.wmask:=io.w.bits.strb
     io.aw.ready:=true.B
-    // io.aw.ready:=RandomDelay(true.B,15.U)
+    io.aw.ready:=RandomDelay(true.B,15.U)
     io.w.ready:=true.B
     io.b.valid:=writeState===w_respond
     io.b.bits.resp:=0.U
