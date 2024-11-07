@@ -21,7 +21,7 @@
 #define CONFIG_MEMDIFF 1
 // difftest最多支持提交几个指令
 
-#define DEADLOCK_TIME 10000
+#define DEADLOCK_TIME 100000
 // 死锁检测最大时间，为0时不检测
 
 /*---------------------------------------------------------------------------------*/
@@ -66,6 +66,7 @@
 /*---------------------------------------------------------------------------------*/
 #define SOC_START_ADDR 0x30000000
 #define NPC_START_ADDR 0x80000000
+
 #ifdef CONFIG_YSYXSOC
 #define START_ADDR   SOC_START_ADDR
 #else
