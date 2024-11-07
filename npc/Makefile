@@ -23,25 +23,27 @@ VERILATOR_CFLAGS += --prof-cfuncs
 VERILATOR_CFLAGS += -O3 --x-assign fast --x-initial fast --noassert 
 #优化加速
 
-YSYXSOC_HOME?=/home/wangxin/ysyx-workbench/ysyxSoC
+YSYXSOC_HOME?=
 ifeq ($(wildcard $(YSYXSOC_HOME)),)
   $(error YSYXSOC_HOME=$(YSYXSOC_HOME) is not a YSYXSOC repo)
 endif
 
-INC_PATH ?= 
-INC_VERILOG_PATH?=
+INC_PATH?= 
+CXXFLAGS?=
+INC_VERILOG_PATH=
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.sv" -or -name "*.v")
 VSRCS += ./csrc/difftest/difftest.v
 
 ifeq ($(ARCH),soc)
 	include $(NVBOARD_HOME)/scripts/nvboard.mk
 	SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
-	$(SRC_AUTO_BIND): $(NXDC_FILES)
-		python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
-
-	INC_VERILOG_PATH?=$(YSYXSOC_HOME)/perip/uart16550/rtl $(YSYXSOC_HOME)/perip/spi/rtl
+	INC_VERILOG_PATH += $(YSYXSOC_HOME)/perip/uart16550/rtl $(YSYXSOC_HOME)/perip/spi/rtl
 	VSRCS += $(shell find $(abspath $(YSYXSOC_HOME)/perip) -name "*.v")
 	VSRCS += $(YSYXSOC_HOME)/build/ysyxSoCFull.v
+	CXXFLAGS += -DCONFIG_YSYXSOC 
+
+$(SRC_AUTO_BIND): $(NXDC_FILES)
+	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 endif
 
 OBJ_DIR = $(BUILD_DIR)/obj_dirtop
@@ -76,7 +78,7 @@ gtk:
 
 com: $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 	@rm -rf ./build/$(TOPNAME)
-	@$(VERILATOR) $(VERILATOR_CFLAGS) \
+	$(VERILATOR) $(VERILATOR_CFLAGS) \
 		--top-module $(TOPNAME) $^ \
 		$(addprefix -CFLAGS , $(CXXFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN)) 

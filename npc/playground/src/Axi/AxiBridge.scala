@@ -105,73 +105,39 @@ class Axi4Bridge extends Module with CacheConfig {
 //-------------------AXI4Lite  W WR B  Channel-------------------
   val wr_idle :: wr_wait_ready :: wr_wait_bresp :: Nil = Enum(3)
   val WriteRequstState=RegInit(wr_idle)
-  val awvalidReg=RegInit(false.B)
-  val awaddrReg=RegInit(0.U(ADDR_WIDTH.W))
-  val awtypeReg=RegInit(0.U(2.W))
-  val wvalidReg=RegInit(false.B)
-  val wdataReg=RegInit(0.U(DATA_WIDTH.W))
-  val wstrbReg=RegInit(0.U(4.W))
-  val breadyReg=RegInit(false.B)
-  val writeCacheLine=awtypeReg==="b100".U
-
   WaitWriteIdle:=(WriteRequstState=/=wr_idle)
   BrespFire:=io.b.fire
-  io.aw.valid:=awvalidReg
-  io.aw.bits.addr:=awaddrReg
+  io.aw.valid:=false.B
+  io.aw.bits.addr:=io.in.wr.bits.addr
   io.aw.bits.id  :=0.U
   io.aw.bits.burst:=1.U
-  io.aw.bits.len :=Mux(writeCacheLine,(LINE_WORD_NUM-1).U,0.U)
-  io.aw.bits.size:=Mux(writeCacheLine,"b10".U,awtypeReg)
-  io.w.valid:=wvalidReg
-  io.w.bits.data:=wdataReg
-  io.w.bits.strb:=wstrbReg
-  io.w.bits.last:=wvalidReg
-  io.b.ready:=breadyReg
-
-  io.in.wr.ready:= io.aw.fire&&io.w.fire
-  io.in.wret.valid:= WaitWriteIdle&&BrespFire
-  io.in.wret.bits.resp:=io.b.bits.resp
-  io.in.wret.bits.last:=true.B
+  io.aw.bits.len :=0.U
+  io.aw.bits.size:=io.in.wr.bits.stype
+  io.w.valid:=false.B
+  io.w.bits.data:=io.in.wr.bits.data
+  io.w.bits.strb:=io.in.wr.bits.strb
+  io.w.bits.last:=1.U
+  io.b.ready:=true.B
+  io.in.wr.ready:=io.b.fire
 
   switch(WriteRequstState){
     is(wr_idle){
-      //当ls级为lw等待rready时,ex级为sw，此时r,aw,w都在等ready，在此处进行一个小仲裁，先让lw握手，
-      //等待下一个节点给aw和w握手
-      when(io.in.wr.valid){
-        // when(WaitReadIdle){
-        //   when(lastReadRespFire){
-            WriteRequstState:=wr_wait_ready
-            awvalidReg:=true.B
-            awaddrReg:=io.in.wr.bits.addr
-            awtypeReg:=io.in.wr.bits.stype
-            
-            wvalidReg:=true.B
-            wdataReg:=io.in.wr.bits.data
-            wstrbReg:=io.in.wr.bits.strb
-        //   }
-        // }.otherwise{
-        //   WriteRequstState:=wr_wait_ready
-        //   awvalidReg:=true.B
-        //   awaddrReg:=io.in.wr.bits.addr
-          
-        //   wvalidReg:=true.B
-        //   wdataReg:=io.in.wr.bits.data
-        //   wstrbReg:=io.in.wr.bits.strb
-        // }
+      when(io.in.wr.valid&& ~WaitReadIdle){
+        io.aw.valid:=true.B
+        when(io.aw.fire){
+          WriteRequstState:=wr_wait_ready
+        }
       }
     }
     is(wr_wait_ready){
-      when(io.aw.fire&&io.w.fire){
+      io.w.valid:=true.B
+      when(io.w.fire){
         WriteRequstState:=wr_wait_bresp
-        awvalidReg:=false.B
-        wvalidReg:=false.B
-        breadyReg:=true.B
       }
     }
     is(wr_wait_bresp){
       when(io.b.fire){
         WriteRequstState:=wr_idle
-        breadyReg:=false.B
       }
     }
   }

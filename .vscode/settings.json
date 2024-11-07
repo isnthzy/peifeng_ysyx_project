@@ -128,11 +128,11 @@
         "utils.h": "c",
         "mmio.h": "c",
         "ifetch.h": "c",
-        "host.h": "c",
-        "device_addr.h": "c"
+        "host.h": "c"
     },
     "C_Cpp.intelliSenseEngine": "default",
     "digital-ide.dont-show-again.propose.issue": true,
     "digital-ide.welcome.show": false,
     "C_Cpp.default.compilerPath": "/usr/lib/ccache/gcc-11", //  需要添加的
+
 }

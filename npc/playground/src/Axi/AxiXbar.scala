@@ -54,7 +54,7 @@ class AxiXbarA2X(addressSpace: List[(Long, Long, Boolean)]) extends Module{
       }
     }
     is(state_wait_fire){
-      when(XreadResp.r.fire){
+      when(XreadResp.r.fire&&XreadResp.r.bits.last.asBool){
         ReadRequstState:=state_idle
         XreadRespIdx:=0.U
       }

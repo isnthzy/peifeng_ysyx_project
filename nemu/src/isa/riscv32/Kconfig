@@ -6,5 +6,5 @@ config RV64
 
 config RVE
   bool "Use E extension"
-  default n
+  default y
 endmenu

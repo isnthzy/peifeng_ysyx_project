@@ -96,7 +96,6 @@ class ICache extends Module with CacheConfig {
   io.out.rd.bits.stype := "b100".U
   io.out.rd.bits.addr := Cat(requestTagBuff,requestIdxBuff,0.U(OFFSET_WIDTH.W))
   io.out.rret.ready := true.B
-  io.out.wret.ready := true.B
 
   switch(cacheState){
     is(s_idle){
@@ -192,7 +191,6 @@ class AxiCacheIO extends Bundle{
   val rd  = DecoupledIO(new AxiCacheReadIO())
   val wr  = DecoupledIO(new AxiCacheWriteIO())
   val rret = Flipped(DecoupledIO(new AxiCacheReadReturnIO()))
-  val wret = Flipped(DecoupledIO(new AxiCacheWriteReturnIO()))
 }
 
 class Core2AxiReadIO extends Bundle{

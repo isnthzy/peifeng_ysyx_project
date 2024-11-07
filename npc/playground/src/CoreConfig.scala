@@ -62,7 +62,7 @@ trait DeviceConfig{
 
 object ISAConfig{
   def RV32E = true
-  def SOC_MODE = false //NOTE:true时生成soc电路，false生成npc电路
+  def SOC_MODE = true //NOTE:true时生成soc电路，false生成npc电路
 }
 
 object GenCtrl{

@@ -52,7 +52,7 @@ class AxiArbiter(inNum: Int) extends Module {
                         & Fill(io.out.rret.bits.asUInt.getWidth,(i.U === readChosenIdx))).asTypeOf(io.in(0).rret.bits)
   }
 
-
+  //NOTE:写事务优化掉回复
   val (arb_write_idle ::
       arb_write_resp ::
       Nil) = Enum(2)
@@ -62,35 +62,27 @@ class AxiArbiter(inNum: Int) extends Module {
   (writeArb.io.in zip io.in.map(_.wr)).foreach{case (writeArb,in) => writeArb <> in}
   dontTouch(io.in(0).wr.ready)
   for(i <- 0 until inNum){
-    when(i.U === writeArb.io.chosen && writeArb.io.out.fire 
-      && ArbWriteState === arb_write_idle){
+    when(i.U === writeArb.io.chosen && writeArb.io.out.fire){
         io.in(i).wr.ready := true.B
       }.otherwise{
         io.in(i).wr.ready := false.B
       }
   }
   
-  writeArb.io.out.ready := io.out.wr.ready && ArbWriteState === arb_write_idle
-  io.out.wr.valid := writeArb.io.out.valid && ArbWriteState === arb_write_idle
+  writeArb.io.out.ready := io.out.wr.ready 
+  io.out.wr.valid := writeArb.io.out.valid 
   io.out.wr.bits  := writeArb.io.out.bits
   switch(ArbWriteState){
     is(arb_write_idle){
-      when(writeArb.io.out.fire){
+      when(writeArb.io.out.valid){
         writeChosenIdx := writeArb.io.chosen
         ArbWriteState := arb_write_resp
       }
     }
     is(arb_write_resp){
-      when(io.out.wret.fire && io.out.wret.bits.last){
+      when(io.out.wr.fire){
         ArbWriteState := arb_write_idle
       }
     }
   }
-  io.out.wret.ready := io.in(writeChosenIdx).wret.ready
-  for(i <- 0 until inNum){
-    io.in(i).wret.valid := io.out.wret.valid & (i.U === writeChosenIdx)
-    io.in(i).wret.bits := (io.out.wret.bits.asUInt 
-                        & (i.U === writeChosenIdx)).asTypeOf(io.in(0).wret.bits)
-  }
-
 }
