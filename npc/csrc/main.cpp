@@ -22,9 +22,7 @@ uint64_t total_wave_dump = 0;
 uint64_t wavebegin=0;
 NPCState npc_state = { .state = NPC_STOP };
 
-void sim_init(){
-  contextp = new VerilatedContext;
-  top = new TOP_MODULE_NAME;
+void init_waveform(){
 #ifdef CONFIG_WAVEFORM
   #ifdef TRACE_FST
   tfp = new VerilatedFstC;
@@ -41,12 +39,16 @@ void sim_init(){
   //使用make sim生成的dump.vcd在npc/
   //SimTop+*.bin生成的dump.vcd在npc/build
 }
+
+void sim_init(){
+  contextp = new VerilatedContext;
+  top = new TOP_MODULE_NAME;
+}
 void sim_exit(){
   delete top;
   difftest->exit_difftest(); //NOTE:退出difftest收回内存
   delete difftest;
   #ifdef CONFIG_WAVEFORM
-  tfp->close();
   if(wavebegin==0){
     long int suggest_savewave=1;
     if(total_wave_dump>=10000){
@@ -62,6 +64,7 @@ void sim_exit(){
     printf_red("No Dump file because waveform is close\n");
     printf_red("Use \"make xxx WAVE={$time}\" to open waveform at $time\n");
   }else{
+    tfp->close();
     printf_green("The Dump file has been saved at npc/dump.{fst,vcd}\n");
   }
   #else

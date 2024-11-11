@@ -60,7 +60,7 @@ bool log_enable() {
 void init_elf(const char *elf_file);
 void init_sdb();
 void init_disasm(const char *triple);
-
+void init_waveform();
 
 static void welcome() {
   Log("Trace: %s", MUXDEF(CONFIG_TRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
@@ -166,6 +166,11 @@ void init_monitor(int argc, char *argv[]) {
 
   /* Parse arguments. */
   parse_args(argc, argv);
+
+  /* init waveform*/
+  if(wavebegin!=0){
+    init_waveform();
+  }
 
   /* Open the log file. */
   init_log(log_file);
