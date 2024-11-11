@@ -1,12 +1,13 @@
-#include "include/npc_common.h"
+
 #include "include/npc_verilator.h"
 #include "include/difftest/difftest.h"
 #include "include/npc/npc_memory.h"
 #include "include/npc/npc_sdb.h"
 #include "include/npc/npc_exe.h"
-#include "include/npc/npc_device.h"
 #include "include/util/utils.h"
-
+#ifdef  CONFIG_DEVICE
+#include "include/npc/npc_device.h"
+#endif
 Difftest* difftest;
 IRingBuffer mtrace_buffer;
 IRingBuffer iring_buffer;
