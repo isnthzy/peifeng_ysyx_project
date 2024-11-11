@@ -28,8 +28,8 @@ void step_and_dump_wave(){
   total_wave_dump++; //NOTE:g_clock_cnt用于记录ipc，total_wave_dump用于计算dump了几次
   contextp->timeInc(1); //时间+1
 #ifdef CONFIG_WAVEFORM
-  if(total_wave_dump>=wavebegin){
-    tfp->dump(contextp->time()); //使用时间
+  if(total_wave_dump>=wavebegin&&wavebegin!=0){
+    tfp->dump(contextp->time()); //使用时间进行dump
   }
 #endif 
 }
