@@ -6,6 +6,7 @@
 #include "include/npc/npc_sdb.h"
 #include "include/npc/npc_exe.h"
 #include "include/npc/npc_device.h"
+#include "include/util/utils.h"
 
 Difftest* difftest;
 IRingBuffer mtrace_buffer;
@@ -65,6 +66,11 @@ static void welcome() {
         "to record the trace. This may lead to a large log file. "
         "If it is not necessary, you can disable it in menuconfig"));
   Log("Build time: %s, %s", __TIME__, __DATE__);
+  if(wavebegin==0){
+    printf_red("Waveform is closed\n");
+  }else{
+    printf_green("Waveform is open at %ld\n",wavebegin);
+  }
   printf("Welcome to %s-NPC!\n", ANSI_FMT(str(riscv32e), ANSI_FG_YELLOW ANSI_BG_RED));
   printf("For help, type \"help\"\n");
 }
