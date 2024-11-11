@@ -2,7 +2,6 @@
 #include "include/npc_verilator.h"
 #include "include/difftest/difftest.h"
 #include "include/npc/npc_memory.h"
-#include "include/npc/npc_monitor.h"
 #include "include/npc/npc_sdb.h"
 #include "include/npc/npc_exe.h"
 #include "include/npc/npc_device.h"
@@ -11,7 +10,9 @@
 Difftest* difftest;
 IRingBuffer mtrace_buffer;
 IRingBuffer iring_buffer;
-
+extern uint64_t wavebegin;
+extern bool difftest_flag;
+extern uint64_t g_nr_guest_inst;
 bool ftrace_flag=false;
 
 
@@ -66,11 +67,15 @@ static void welcome() {
         "to record the trace. This may lead to a large log file. "
         "If it is not necessary, you can disable it in menuconfig"));
   Log("Build time: %s, %s", __TIME__, __DATE__);
+  #ifdef CONFIG_WAVEFORM
   if(wavebegin==0){
     printf_red("Waveform is closed\n");
   }else{
     printf_green("Waveform is open at %ld\n",wavebegin);
   }
+  #else
+  printf_red("Waveform is closed\n");
+  #endif
   printf("Welcome to %s-NPC!\n", ANSI_FMT(str(riscv32e), ANSI_FG_YELLOW ANSI_BG_RED));
   printf("For help, type \"help\"\n");
 }

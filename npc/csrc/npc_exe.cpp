@@ -15,6 +15,7 @@
 extern bool ftrace_flag;
 extern bool difftest_flag;
 extern uint64_t total_wave_dump;
+extern uint64_t wavebegin;
 bool g_print_step = false;
 
 static uint64_t g_timer = 0; // unit: us

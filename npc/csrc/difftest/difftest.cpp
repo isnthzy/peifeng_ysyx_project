@@ -2,8 +2,9 @@
 #include "../include/util/debug.h"
 #include "../include/npc/npc_memory.h"
 #include "../include/npc/npc_device.h"
-#include "../include/npc/npc_monitor.h"
 
+extern bool difftest_flag;
+extern uint64_t g_nr_guest_inst;
 
 #define DIFF_CHECK(addr1, addr2, return,name) if(addr1!=addr2){\
   wLog("The %s is different\nref:0x%08x dut:0x%08x",name,addr1,addr2); \
