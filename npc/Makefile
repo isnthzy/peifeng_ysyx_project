@@ -127,7 +127,7 @@ count:
 
 sim:com
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	$(BIN) $(ARGS) $(IMG)
+	$(BIN) $(ARGS) $(NPCARGS) $(IMG)
 
 gdb:com
 	$(call git_commit, "gdb RTL") # DO NOT REMOVE THIS LINE!!!
