@@ -16,12 +16,12 @@
 #define NPCLOG_NUM 10000 //trace最多记录多少个log
 //TRACE开关
 
-// #define CONFIG_DIFFTEST 1 
+#define CONFIG_DIFFTEST 1 
 #define DIFFTEST_COMMIT_WIDTH 6
 #define CONFIG_MEMDIFF 1
 // difftest最多支持提交几个指令
 
-#define DEADLOCK_TIME 100000
+#define DEADLOCK_TIME 30000
 // 死锁检测最大时间，为0时不检测
 
 /*---------------------------------------------------------------------------------*/
