@@ -71,7 +71,7 @@ static void welcome() {
   if(wavebegin==0){
     printf_red("Waveform is closed\n");
   }else{
-    printf_green("Waveform is open at %ld\n",wavebegin);
+    printf_green("Waveform is open at %ld dump time\n",wavebegin);
   }
   #else
   printf_red("Waveform is closed\n");

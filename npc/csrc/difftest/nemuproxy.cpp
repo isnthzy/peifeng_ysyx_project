@@ -1,6 +1,5 @@
 #include <dlfcn.h>
 #include <assert.h>
-#include "../include/difftest/difftest.h"
 #include "../include/difftest/nemuproxy.h"
 extern bool difftest_flag;
 template<typename... Args>
