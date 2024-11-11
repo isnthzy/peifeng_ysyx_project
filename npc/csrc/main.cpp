@@ -58,8 +58,9 @@ void sim_exit(){
         }
       }
     }
-    printf_red("No Dump file because waveform is close\n");
     Log("Suggest to open waveform at %ld",suggest_savewave);
+    printf_red("No Dump file because waveform is close\n");
+    printf_red("Use \"make xxx WAVE={$time}\" to open waveform at $time\n");
   }else{
     printf_green("The Dump file has been saved at npc/dump.{fst,vcd}\n");
   }
