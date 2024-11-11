@@ -10,9 +10,11 @@ endif
 
 export PATH := $(PATH):$(abspath ./utils)
 $(shell mkdir -p $(BUILD_DIR))
+WAVE?=0
 IMG?=
 ARCH?=
 ARGS?= --log=$(BUILD_DIR)/npc-log.txt
+ARGS+= --wavebegin=$(WAVE)
 # ARGS+= --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so 
 
 VERILATOR = verilator
