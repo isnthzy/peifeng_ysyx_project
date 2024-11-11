@@ -95,6 +95,7 @@ class Difftest{
     uint32_t idx_commit = 0;
     long img_size=0;
     bool sim_over=false;
+    bool is_first_commit=true;
     // bool skip_commit=false;
 
     uint64_t total_inst=0;

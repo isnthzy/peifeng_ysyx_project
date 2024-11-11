@@ -3,6 +3,7 @@
 #include "include/npc_common.h"
 #include "include/npc_verilator.h"
 #include "include/difftest/difftest.h"
+#include "include/util/debug.h"
 void init_monitor(int, char *[]);
 void sdb_mainloop();
 VerilatedContext* contextp = NULL;
@@ -17,6 +18,8 @@ VerilatedVcdC* tfp = NULL;
 void nvboard_bind_all_pins(TOP_MODULE_NAME* top);
 #endif
 bool difftest_flag = false;
+uint64_t total_wave_dump = 0;
+uint64_t wavebegin=0;
 NPCState npc_state = { .state = NPC_STOP };
 
 void sim_init(){
@@ -44,7 +47,22 @@ void sim_exit(){
   delete difftest;
   #ifdef CONFIG_WAVEFORM
   tfp->close();
-  printf_green("The Dump file has been saved at npc/dump.{fst,vcd}\n");
+  if(wavebegin==0){
+    long int suggest_savewave=1;
+    if(total_wave_dump>=10000){
+      if(DEADLOCK_TIME==0){
+        suggest_savewave=(total_wave_dump-10000)/10000*10000;
+      }else{
+        if(total_wave_dump>=DEADLOCK_TIME*3){
+          suggest_savewave=(total_wave_dump-DEADLOCK_TIME*3)/DEADLOCK_TIME*DEADLOCK_TIME;
+        }
+      }
+    }
+    printf_red("No Dump file because waveform is close\n");
+    Log("Suggest to open waveform at %ld",suggest_savewave);
+  }else{
+    printf_green("The Dump file has been saved at npc/dump.{fst,vcd}\n");
+  }
   #else
   printf_red("No Dump file because waveform is close\n");
   #endif

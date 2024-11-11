@@ -8,11 +8,12 @@ else
 	TOPNAME=ysyx_23060115
 endif
 
-export PATH := $(PATH):$(abspath ./utils)
 $(shell mkdir -p $(BUILD_DIR))
+WAVE?=0
 IMG?=
 ARCH?=
 ARGS?= --log=$(BUILD_DIR)/npc-log.txt
+NPCARGS+= --wavebegin=$(WAVE)
 # ARGS+= --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so 
 
 VERILATOR = verilator
@@ -71,6 +72,7 @@ LDFLAGS += $(shell llvm-config --libs)
 $(info #building riscv32e-npc)
 $(info #IMG=$(IMG))
 $(info #ARGS=$(ARGS))
+$(info #NPCARGS=$(NPCARGS))
 
 #gtkwave自动保存信号和打开信号
 gtk:
@@ -78,7 +80,7 @@ gtk:
 
 com: $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 	@rm -rf ./build/$(TOPNAME)
-	$(VERILATOR) $(VERILATOR_CFLAGS) \
+	@$(VERILATOR) $(VERILATOR_CFLAGS) \
 		--top-module $(TOPNAME) $^ \
 		$(addprefix -CFLAGS , $(CXXFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN)) 
@@ -125,7 +127,7 @@ count:
 
 sim:com
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	$(BIN) $(ARGS) $(IMG)
+	$(BIN) $(ARGS) $(NPCARGS) $(IMG)
 
 gdb:com
 	$(call git_commit, "gdb RTL") # DO NOT REMOVE THIS LINE!!!

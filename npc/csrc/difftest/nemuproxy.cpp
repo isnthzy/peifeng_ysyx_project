@@ -2,7 +2,7 @@
 #include <assert.h>
 #include "../include/difftest/difftest.h"
 #include "../include/difftest/nemuproxy.h"
-#include "../include/npc/npc_monitor.h"
+extern bool difftest_flag;
 template<typename... Args>
 void null_function(Args... args) {}
 template<typename... Args>

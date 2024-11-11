@@ -2,8 +2,9 @@
 #include "../include/util/debug.h"
 #include "../include/npc/npc_memory.h"
 #include "../include/npc/npc_device.h"
-#include "../include/npc/npc_monitor.h"
 
+extern bool difftest_flag;
+extern uint64_t g_nr_guest_inst;
 
 #define DIFF_CHECK(addr1, addr2, return,name) if(addr1!=addr2){\
   wLog("The %s is different\nref:0x%08x dut:0x%08x",name,addr1,addr2); \
@@ -12,6 +13,7 @@
 
 
 void Difftest::init_difftest(char *ref_so_file, int port){
+  is_first_commit=true;
   nemu_proxy = new NemuProxy;
   nemu_proxy -> init_nemu_proxy(ref_so_file, port);
 }
@@ -22,7 +24,6 @@ void Difftest::exit_difftest(){
 }
 
 void Difftest::first_commit(){
-  static bool is_first_commit = true;
   if(dut_commit.commit[0].valid&&is_first_commit){
     nemu_proxy->ref_difftest_memcpy(START_ADDR, guest_to_host(START_ADDR), img_size, DIFFTEST_TO_REF);
     // nemu_proxy->ref_difftest_memcpy(CONFIG_SOC_FLASH_BASE,guest_to_host(CONFIG_SOC_FLASH_BASE), 
