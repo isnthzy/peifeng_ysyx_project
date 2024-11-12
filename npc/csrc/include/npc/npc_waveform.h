@@ -17,8 +17,10 @@ class Waveform{
 };
 
 #ifdef TRACE_FST
+#include <verilated_fst_c.h>
 extern VerilatedFstC* tfp;
 #else
+#include <verilated_vcd_c.h>
 extern VerilatedVcdC* tfp;
 #endif
 

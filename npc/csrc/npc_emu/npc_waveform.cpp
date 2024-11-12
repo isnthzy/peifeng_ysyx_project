@@ -39,7 +39,7 @@ void Waveform::save_suggest_dump_time(){
   std::time_t now = std::time(nullptr); //获取当前时间
   std::tm *local = std::localtime(&now);
   char str[80];
-  sprintf(str,"Suggest-WaveForm %02d-%02d-%02d",local->tm_mday,local->tm_hour,local->tm_min);
+  sprintf(str,"build/Suggest-WaveForm %02d-%02d-%02d",local->tm_mday,local->tm_hour,local->tm_min);
   FILE *fp;
   fp = fopen(str,"w+");
   fprintf(fp,"Suggest Use \"make xxx WAVE=%ld\" to open waveform\n",suggest_savewave);
@@ -59,7 +59,7 @@ void Waveform::exit_waveform(){
     }
     Log("Suggest to open waveform at %ld",suggest_savewave);
     save_suggest_dump_time();
-    //NOTE:另外创建一个最后波形的备份文件，包含时间，和停止位置（并且用时间命名防止覆盖）
+    //NOTE:另外创建一个最后波形的备份文件在build目录下，包含时间，和停止位置（并且用时间命名防止覆盖）
     printf_red("No Dump file because waveform is close\n");
     printf_red("Use \"make xxx WAVE={$time}\" to open waveform at $time\n");
   }else{
