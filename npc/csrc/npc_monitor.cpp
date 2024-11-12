@@ -1,13 +1,16 @@
-#include "include/npc_common.h"
+
+#include "include/npc/npc_waveform.h"
 #include "include/npc_verilator.h"
 #include "include/difftest/difftest.h"
 #include "include/npc/npc_memory.h"
 #include "include/npc/npc_sdb.h"
 #include "include/npc/npc_exe.h"
-#include "include/npc/npc_device.h"
 #include "include/util/utils.h"
-
+#ifdef  CONFIG_DEVICE
+#include "include/npc/npc_device.h"
+#endif
 Difftest* difftest;
+Waveform* waveform;
 IRingBuffer mtrace_buffer;
 IRingBuffer iring_buffer;
 extern uint64_t wavebegin;
@@ -59,7 +62,7 @@ bool log_enable() {
 void init_elf(const char *elf_file);
 void init_sdb();
 void init_disasm(const char *triple);
-
+void init_waveform();
 
 static void welcome() {
   Log("Trace: %s", MUXDEF(CONFIG_TRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
@@ -165,6 +168,14 @@ void init_monitor(int argc, char *argv[]) {
 
   /* Parse arguments. */
   parse_args(argc, argv);
+
+  /* init waveform*/
+#ifdef CONFIG_WAVEFORM
+  waveform = new Waveform();
+  if(wavebegin!=0){
+    waveform->init_waveform();
+  }
+#endif
 
   /* Open the log file. */
   init_log(log_file);
