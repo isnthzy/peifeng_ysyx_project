@@ -1,6 +1,5 @@
 #ifndef NPC_WAVEFORM_H
 #define NPC_WAVEFORM_H
-#include "../npc_verilator.h"
 #include <cstdint>
 class Waveform{
   private:
