@@ -13,10 +13,6 @@
 
 extern VerilatedContext* contextp;
 extern TOP_MODULE_NAME* top;
-#ifdef TRACE_FST
-extern VerilatedFstC* tfp;
-#else
-extern VerilatedVcdC* tfp;
-#endif
+
 
 #endif

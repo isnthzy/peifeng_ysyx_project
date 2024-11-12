@@ -5,8 +5,9 @@
 #include "include/difftest/difftest.h"
 #include "include/npc/npc_reg.h"
 #include "include/npc/npc_device.h"
-#include <cstdint>
 #include "include/npc/npc_exe.h"
+#include "include/npc/npc_waveform.h"
+#include <cstdint>
 #ifdef CONFIG_NVBOARD
 #include <nvboard.h>
 #endif
@@ -14,7 +15,6 @@
 
 extern bool ftrace_flag;
 extern bool difftest_flag;
-extern uint64_t total_wave_dump;
 extern uint64_t wavebegin;
 bool g_print_step = false;
 
@@ -25,12 +25,9 @@ uint64_t g_nr_guest_inst; //可以复用作为指令计数器，记录指令总�
 
 void step_and_dump_wave(){
   top->eval();
-  total_wave_dump++; //NOTE:g_clock_cnt用于记录ipc，total_wave_dump用于计算dump了几次
   contextp->timeInc(1); //时间+1
 #ifdef CONFIG_WAVEFORM
-  if(total_wave_dump>=wavebegin&&wavebegin!=0){
-    tfp->dump(contextp->time()); //使用时间进行dump
-  }
+  waveform->dump_waveform();
 #endif 
 }
 

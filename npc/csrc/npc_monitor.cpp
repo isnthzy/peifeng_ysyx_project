@@ -1,4 +1,5 @@
 
+#include "include/npc/npc_waveform.h"
 #include "include/npc_verilator.h"
 #include "include/difftest/difftest.h"
 #include "include/npc/npc_memory.h"
@@ -9,6 +10,7 @@
 #include "include/npc/npc_device.h"
 #endif
 Difftest* difftest;
+Waveform* waveform;
 IRingBuffer mtrace_buffer;
 IRingBuffer iring_buffer;
 extern uint64_t wavebegin;
@@ -168,9 +170,12 @@ void init_monitor(int argc, char *argv[]) {
   parse_args(argc, argv);
 
   /* init waveform*/
+#ifdef CONFIG_WAVEFORM
+  waveform = new Waveform();
   if(wavebegin!=0){
-    init_waveform();
+    waveform->init_waveform();
   }
+#endif
 
   /* Open the log file. */
   init_log(log_file);
