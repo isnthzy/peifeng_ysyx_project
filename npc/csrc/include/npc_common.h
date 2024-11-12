@@ -1,13 +1,14 @@
 #ifndef __NPCCOMMON_H__
 #define __NPCCOMMON_H__
-
+#include <stdbool.h>
+#include <inttypes.h>
+#include <assert.h>
+#include <cstdio>
 #include "util/macro.h"
 #include "util/debug.h"
 #include "util/utils.h"
 #include "npc_conf.h"
-#include <stdbool.h>
-#include <inttypes.h>
-#include <assert.h>
+
 
 enum { NPC_RUNNING, NPC_STOP, NPC_SUCCESS_END, NPC_ERROR_END, NPC_ABORT, NPC_NOCOMMIT,NPC_QUIT };
 typedef uint32_t word_t;

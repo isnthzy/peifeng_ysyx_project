@@ -206,7 +206,7 @@ class ExStage extends Module {
       when(exExcpType.num.bkp.asBool && ex.to_ls.fire){
         printf("lsu total cnt: %d\n",LSUInstCnt);
         var CyclePerLSUAddrResp=(LSUAddrRespClockCnt.asSInt * 100.asSInt) / LSUInstCnt.asSInt
-        printf("Cycle per lsu(addr resp)(%%): %d%%\n",CyclePerLSUAddrResp);
+        printf("Cycle per lsu  (addr resp)(%%): %d%%\n",CyclePerLSUAddrResp);
       }
     }
   }
