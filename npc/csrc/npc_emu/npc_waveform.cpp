@@ -39,10 +39,11 @@ void Waveform::save_suggest_dump_time(){
   std::time_t now = std::time(nullptr); //获取当前时间
   std::tm *local = std::localtime(&now);
   char str[80];
-  sprintf(str,"build/Suggest-WaveForm %02d-%02d-%02d",local->tm_mday,local->tm_hour,local->tm_min);
+  sprintf(str,"build/Suggest-WaveForm %02d:%02d:%02d",local->tm_mday,local->tm_hour,local->tm_min);
   FILE *fp;
   fp = fopen(str,"w+");
-  fprintf(fp,"Suggest Use \"make xxx WAVE=%ld\" to open waveform\n",suggest_savewave);
+  fprintf(fp,"Original stop position:total_wave_dump\n\
+  Suggest use \"make xxx WAVE=%ld\" to open waveform\n",suggest_savewave);
 }
 
 void Waveform::exit_waveform(){
