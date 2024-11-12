@@ -16,7 +16,6 @@ class SimTimer extends Module with DeviceConfig{
   val addrResp=RegInit(0.U(ADDR_WIDTH.W))
   io.ar.ready:=true.B
   io.r.valid :=false.B
-  
   io.r.bits:=0.U.asTypeOf(io.r.bits)
 
   switch(timerState){
@@ -28,6 +27,7 @@ class SimTimer extends Module with DeviceConfig{
     }
     is(state_resp){
       io.r.valid:=true.B
+      io.r.bits.last:=true.B
       when(io.r.fire){
         when(addrResp===RTC_ADDR){
           io.r.bits.data:=timer(31,0)
