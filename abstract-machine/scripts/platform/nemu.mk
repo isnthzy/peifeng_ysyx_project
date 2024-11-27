@@ -18,6 +18,7 @@ NEMUFLAGS += -f $(IMAGE).elf
 # -l -b /home/wangxin/ysyx-workbench/am-kernels/tests/cpu-tests/build/nemu-log.txt
 # /home/wangxin/ysyx-workbench/am-kernels/tests/cpu-tests/build/bit-riscv32-nemu.bin
 NEMUFLAGS += -l $(shell dirname $(IMAGE).elf)/nemu-log.txt
+NEMUFLAGS += --path=$(shell dirname $(IMAGE).elf)
 
 CFLAGS += -DMAINARGS=\"$(mainargs)\"
 CFLAGS += -I$(AM_HOME)/am/src/platform/nemu/include
