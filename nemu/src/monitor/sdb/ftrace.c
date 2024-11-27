@@ -25,7 +25,8 @@ void init_guest_elf(){
     else{ 
         Log("load guest elf");
         have_guest_program=true;
-    }fclose(guest_elf);
+    }
+    fclose(guest_elf);
 }
 
 

@@ -124,7 +124,7 @@ void init_monitor(int argc, char *argv[]) {
   init_trace(build_path);
 
   /* Open the ${IMAGE}.elf file */
-  init_guest_elf(); //用于ftrace判断是否要加载客户程序
+  // init_guest_elf(); //用于ftrace判断是否要加载客户程序
   init_elf(elf_file,"default");
 
   /* Initialize memory. */
