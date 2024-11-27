@@ -18,6 +18,7 @@
 
 void init_rand();
 void init_log(const char *log_file);
+void init_trace(const char *build_path);
 void init_elf(const char *elf_file,const char *elf_name);
 void init_guest_elf();
 void init_mem();
@@ -47,6 +48,7 @@ static char *diff_so_file = NULL;
 static char *img_file = NULL;
 static char *elf_file = NULL;
 static int difftest_port = 1234;
+static char *build_path;
 
 static long load_img() {
   if (img_file == NULL) {
@@ -78,6 +80,7 @@ static int parse_args(int argc, char *argv[]) {
     {"port"     , required_argument, NULL, 'p'},
     {"help"     , no_argument      , NULL, 'h'},
     {"ftrace"   , required_argument, NULL, 'f'},
+    {"path"     , required_argument, NULL, 't'},
     {0          , 0                , NULL,  0 },
   };
   int o;
@@ -88,6 +91,7 @@ static int parse_args(int argc, char *argv[]) {
       case 'l': log_file = optarg; break;
       case 'd': diff_so_file = optarg; break;
       case 'f': elf_file = optarg; ftrace_flag=true;  break;
+      case 't': build_path = optarg; break;
       case 1: img_file = optarg; return 0;
       default:
         printf("Usage: %s [OPTION...] IMAGE [args]\n\n", argv[0]);
@@ -96,6 +100,8 @@ static int parse_args(int argc, char *argv[]) {
         printf("\t-d,--diff=REF_SO        run DiffTest with reference REF_SO\n");
         printf("\t-p,--port=PORT          run DiffTest with port PORT\n");
         printf("\t-f,--ftrace=ELF         use ${IMAGE}.elf to ftrance\n");
+        printf("\t-h,--help               display this message and exit\n");
+        printf("\t-t,--path=PATH          set the build path\n");
         printf("\n");
         exit(0);
     }
@@ -114,6 +120,8 @@ void init_monitor(int argc, char *argv[]) {
 
   /* Open the log file. */
   init_log(log_file);
+
+  init_trace(build_path);
 
   /* Open the ${IMAGE}.elf file */
   init_guest_elf(); //用于ftrace判断是否要加载客户程序
