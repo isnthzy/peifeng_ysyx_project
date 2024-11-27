@@ -1,3 +1,5 @@
+*.*
+*
 !*/
 !Makefile
 !*.mk
@@ -6,7 +8,5 @@
 !.gitignore
 !README.md
 !Kconfig
-*.*
-*
 include/config
 include/generated
