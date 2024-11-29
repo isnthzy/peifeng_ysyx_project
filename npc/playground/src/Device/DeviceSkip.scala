@@ -15,7 +15,7 @@ class DeviceSkip extends Module with DeviceConfig{
   val writeSkip = Wire(Bool()) 
   io.skip := (readSkip || writeSkip) && io.isLoadStore
 
-  if(ISAConfig.SOC_MODE){
+  if(GenerateParams.getParam("SOC_MODE").asInstanceOf[Boolean]){
     readSkip:=(
       (io.addr >= UART_BASE && io.addr < UART_BASE+ UART_SIZE)
     ||(io.addr >= SPI_BASE  && io.addr < SPI_BASE + SPI_SIZE)

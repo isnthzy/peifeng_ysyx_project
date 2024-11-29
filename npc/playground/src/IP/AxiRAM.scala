@@ -6,12 +6,12 @@ import chisel3.util._
 import CoreConfig.Configs._
 import FuncUnit.Control._
 import Axi.Axi4Slave
-import CoreConfig.GenCtrl
+import CoreConfig.GenerateParams
 import Util.RandomDelay
 class Axi4FullSram extends Module {
   val io=IO(new Axi4Slave())
   dontTouch(io);
-  if(GenCtrl.YOSYS_MODE){
+  if(GenerateParams.getParam("YOSYS_MODE").asInstanceOf[Boolean]){
     val dpi_sram=Module(new reg_sram())
     // io.ar.ready:=RandomDelay(true.B,15.U)
     io.ar.ready:=true.B

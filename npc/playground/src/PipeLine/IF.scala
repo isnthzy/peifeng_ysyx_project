@@ -4,7 +4,7 @@ import chisel3.util._
 import Axi._
 import Bundles._
 import CoreConfig.Configs._
-import CoreConfig.GenCtrl
+import CoreConfig.GenerateParams
 import Cache.Core2AxiRespondIO
 
 class IfStage extends Module {
@@ -75,7 +75,7 @@ class IfStage extends Module {
   fs.to_id.bits.perfMode:=perfMode
 
   fs.perfMode:=perfMode
-  if(GenCtrl.PERF){
+  if(GenerateParams.getParam("PERF").asInstanceOf[Boolean]){
     val OpenCalculateIPC=Module(new OpenCalculateIPC())
     
     OpenCalculateIPC.io.clock:=clock
@@ -87,7 +87,7 @@ class IfStage extends Module {
       OpenCalculateIPC.io.valid:=true.B
     }
   }
-  if(GenCtrl.PERF){
+  if(GenerateParams.getParam("PERF").asInstanceOf[Boolean]){
     val FetchDataClockCnt=RegInit(0.U(64.W))
     val InstCnt=RegInit(0.U(64.W))
     when(perfMode){

@@ -7,7 +7,7 @@ import Bundles._
 import Axi.AxiBridgeDataLoad
 import Util.{Mux1hMap,Mux1hDefMap,Sext,Zext}
 import FuncUnit.Control._
-import CoreConfig.GenCtrl
+import CoreConfig.GenerateParams
 
 class LsStage extends Module {
   val ls=IO(new Bundle {
@@ -147,7 +147,7 @@ class LsStage extends Module {
   ls.to_wb.bits.rfWen:=ls.in.bits.rfWen
 
   ls.to_wb.bits.perfMode:=ls.in.bits.perfMode
-  if(GenCtrl.PERF){
+  if(GenerateParams.getParam("PERF").asInstanceOf[Boolean]){
     val LSUDataRespClockCnt=RegInit(0.U(64.W))
     val LSUInstCnt=RegInit(0.U(64.W))
     when(ls.in.bits.perfMode){

@@ -52,7 +52,7 @@ object SDEF{ //将string定义的宏转换为uint类型便于使用
 
 object LYDebugLog{ //将string定义的宏转换为uint类型便于使用
   def apply(s: String) = {
-    if(CoreConfig.GenCtrl.VERILATOR_SIM){
+    if(CoreConfig.GenerateParams.getParam("VERILATOR_SIM").asInstanceOf[Boolean]){
       println(s)
     }
   }

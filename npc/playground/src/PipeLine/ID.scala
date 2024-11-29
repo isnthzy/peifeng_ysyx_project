@@ -6,7 +6,7 @@ import Bundles._
 import FuncUnit.Control._
 import FuncUnit.{Decode,ImmGen,RegFile}
 import Util.{Mux1hDefMap,SDEF}
-import CoreConfig.GenCtrl
+import CoreConfig.GenerateParams
 
 class IdStage extends Module {
   val id=IO(new Bundle {
@@ -181,7 +181,7 @@ class IdStage extends Module {
   id.to_ex.bits.rfWen:=Decode.io.rfWen
 
   id.to_ex.bits.perfMode:=id.in.bits.perfMode
-  if(GenCtrl.PERF){
+  if(GenerateParams.getParam("PERF").asInstanceOf[Boolean]){
     val totalCnt=RegInit(0.U(32.W))
     val aluCnt=RegInit(0.U(32.W))
     val brCnt=RegInit(0.U(32.W))

@@ -60,6 +60,41 @@ trait DeviceConfig{
   def KBD_SIZE = 8.U
 }
 
+object GenerateParams {
+  private var mode = "soc"
+  private var params: Map[String, Any] = Map(
+    "RV32E"         -> true,
+    "VERILATOR_SIM" -> true,
+    "PERF"          -> true,
+    "YOSYS_MODE"    -> false,
+    "SOC_MODE"      -> true
+  )
+  def setMode(set: String): Unit = {
+    mode = set
+    updateParams()
+  }
+  private def updateParams(): Unit = {
+    params = mode match {
+      case "npc" =>
+        params ++ Map(
+          "SOC_MODE" -> false, 
+          "PERF" -> false
+        ) //NOTE:scala中 + 更新键值对
+      case "yosys" =>
+        params ++ Map(
+          "SOC_MODE" -> false,
+          "PERF" -> false,
+          "VERILATOR_SIM" -> false,
+          "YOSYS_MODE" -> true
+        )
+      case _ =>
+        params
+    }
+  }
+  def getParam(key: String): Option[Any] = params.get(key)
+}
+
+
 object ISAConfig{
   def RV32E = true
   def SOC_MODE = true //NOTE:true时生成soc电路，false生成npc电路
