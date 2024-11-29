@@ -90,7 +90,6 @@ test:
 
 verilog:
 	$(call git_commit, "generate verilog")
-	mkdir -p ./vsrc
 	mill -i __.test.runMain TopMain --target-dir ./vsrc $(MILL_ARGS)
 
 help:
