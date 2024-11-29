@@ -79,7 +79,7 @@ object GenerateParams {
         params ++ Map(
           "SOC_MODE" -> false, 
           "PERF" -> false
-        ) //NOTE:scala中 + 更新键值对
+        ) //NOTE:scala中 ++ 添加/更新键值对
       case "yosys" =>
         params ++ Map(
           "SOC_MODE" -> false,
