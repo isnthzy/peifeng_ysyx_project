@@ -17,8 +17,7 @@ abstract class GenParamsApp extends App {
     }
     nextOption(default, args.toList)
   }
-  val newArgs = DifftestModule.parseArgs(args)
-  val param = parseArgs(newArgs)
+  val param = parseArgs(args)
   val gen = if (param.profile.isDefined) { () =>
     new SimTop(param.profile.get)
   } else { () =>
