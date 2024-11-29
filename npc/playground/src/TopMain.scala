@@ -1,9 +1,35 @@
 import circt.stage._
 
-object TopMain extends App {
-  def top = new SimTop()
+abstract class GenParamsApp extends App {
+  case class GenParams(
+    mode: Option[String] = None,
+  )
+  def parseArgs(args: Array[String]): (GenParams, Array[String]) = {
+    val default = new GenParams()
+    @tailrec
+    def nextOption(param: GenParams, list: List[String]): GenParams = {
+      list match {
+        case Nil                            => param
+        case "--mode" :: str :: tail        => nextOption(param.copy(mode = Some(str)), tail)
+        case option :: tail =>
+          nextOption(param, tail)
+      }
+    }
+    nextOption(default, args.toList)
+  }
+  val newArgs = DifftestModule.parseArgs(args)
+  val param = parseArgs(newArgs)
+  val gen = if (param.profile.isDefined) { () =>
+    new SimTop(param.profile.get)
+  } else { () =>
+    new SimTop("soc")
+  }
+} 
+
+
+object TopMain extends GenParamsApp {
   val ChiselStageOptions=Seq(
-    chisel3.stage.ChiselGeneratorAnnotation(() => top),
+    chisel3.stage.ChiselGeneratorAnnotation(gen),
     CIRCTTargetAnnotation(CIRCTTarget.SystemVerilog)
   )
   // (new ChiselStage).execute(args, generator :+ CIRCTTargetAnnotation(CIRCTTarget.Verilog))

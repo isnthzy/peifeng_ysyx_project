@@ -15,8 +15,9 @@ import DiffTest.dpic._
 import Device.{SimTimer}
 import CoreConfig.ISAConfig
 
-class SimTop extends Module with DeviceConfig with CacheConfig{
+class SimTop(mode:string) extends Module with DeviceConfig with CacheConfig{
   override val desiredName = "ysyx_23060115"
+  println("mode:"+mode)
   val io = IO(new Bundle {
     val interrupt=if(ISAConfig.SOC_MODE) Some(Input(Bool())) else None
     val master=if(ISAConfig.SOC_MODE) Some(new AxiTopBundle()) else None
