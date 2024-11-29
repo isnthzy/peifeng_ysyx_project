@@ -91,7 +91,7 @@ object GenerateParams {
         params
     }
   }
-  def getParam(key: String): Option[Any] = params.get(key)
+  def getParam(key: String) = params.get(key)
 }
 
 
