@@ -1,4 +1,5 @@
 import circt.stage._
+import scala.annotation.tailrec
 
 abstract class GenParamsApp extends App {
   case class GenParams(
