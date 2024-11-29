@@ -2,10 +2,10 @@ import circt.stage._
 import scala.annotation.tailrec
 
 abstract class GenParamsApp extends App {
-  case class GenParams(
+  case class GenParams( //NOTE:搬运来源：https://github.com/OpenXiangShan/difftest
     mode: Option[String] = None,
   )
-  def parseArgs(args: Array[String]): (GenParams, Array[String]) = {
+  def parseArgs(args: Array[String]): (GenParams) = {
     val default = new GenParams()
     @tailrec
     def nextOption(param: GenParams, list: List[String]): GenParams = {
