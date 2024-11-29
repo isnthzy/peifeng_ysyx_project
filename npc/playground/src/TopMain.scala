@@ -19,8 +19,8 @@ abstract class GenParamsApp extends App {
     nextOption(default, args.toList)
   }
   val param = parseArgs(args)
-  val gen = if (param.profile.isDefined) { () =>
-    new SimTop(param.profile.get)
+  val gen = if (param.mode.isDefined) { () =>
+    new SimTop(param.mode.get)
   } else { () =>
     new SimTop("soc")
   }
