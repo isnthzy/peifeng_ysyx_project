@@ -74,6 +74,7 @@ object GenerateParams {
   def setParams(mode: String, perf: Boolean): Unit = {
     coreMode = mode
     usePerf  = perf
+    println(s"set mode: $coreMode perf: $usePerf")
     updateParams()
   }
   private def updateParams(): Unit = {
