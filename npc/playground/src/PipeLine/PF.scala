@@ -4,7 +4,7 @@ import chisel3.util._
 import Axi._
 import Bundles._
 import CoreConfig.Configs._
-import CoreConfig.{GenCtrl,ISAConfig}
+import CoreConfig.{GenerateParams}
 import Cache.Core2AxiReadIO
 
 class PfStage extends Module {
@@ -31,7 +31,7 @@ class PfStage extends Module {
   pf.to_if.valid:=pfReadyGo
   fetchReq:= ~reset.asBool&& ~pfFlush && pf.to_if.ready && ~pfExcpEn
 
-  val regPC  = RegInit(if(ISAConfig.SOC_MODE) SOC_START_ADDR else NPC_START_ADDR)
+  val regPC  = RegInit(if(GenerateParams.getParam("SOC_MODE").asInstanceOf[Boolean]) SOC_START_ADDR else NPC_START_ADDR)
   val snpc   = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
   val dnpc   = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
   val nextpc = dontTouch(Wire(UInt(ADDR_WIDTH.W)))
@@ -63,7 +63,7 @@ class PfStage extends Module {
 
   pf.to_if.bits.pc:=regPC
 
-  if(GenCtrl.PERF){
+  if(GenerateParams.getParam("PERF").asInstanceOf[Boolean]){
     val FetchAddrClockCnt=RegInit(0.U(64.W))
     val InstCnt=RegInit(0.U(64.W))
     when(pf.perfMode){

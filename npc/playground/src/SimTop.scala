@@ -4,23 +4,26 @@ import CoreConfig.Configs._
 import CoreConfig.{DeviceConfig,CacheConfig}
 import PipeLine.{PfStage,IfStage,IdStage,ExStage,LsStage,WbStage}
 import Cache.{ICache,DCache}
-import Axi.{AxiXbarA2X,Axi4Master,AxiTopBundle,AxiCoreOut}
-import Axi.AxiArbiter
-import Axi.Axi4Bridge
+import Axi.{AxiXbarA2X,Axi4Master,AxiTopBundle,AxiCoreOut,AxiArbiter,Axi4Bridge}
 import DiffTest.DiffCommit
 import FuncUnit.CsrFile
 import IP.Axi4FullSram
-import CoreConfig.GenCtrl
 import DiffTest.dpic._
 import Device.{SimTimer}
-import CoreConfig.ISAConfig
+import CoreConfig.GenerateParams
 
 class SimTop extends Module with DeviceConfig with CacheConfig{
   override val desiredName = "ysyx_23060115"
   val io = IO(new Bundle {
-    val interrupt=if(ISAConfig.SOC_MODE) Some(Input(Bool())) else None
-    val master=if(ISAConfig.SOC_MODE) Some(new AxiTopBundle()) else None
-    val slave=if(ISAConfig.SOC_MODE) Some(Flipped(new AxiTopBundle())) else None
+    val interrupt=if(GenerateParams.getParam("SOC_MODE").asInstanceOf[Boolean]){
+      Some(Input(Bool()))
+    }else None
+    val master=if(GenerateParams.getParam("SOC_MODE").asInstanceOf[Boolean]){ 
+      Some(new AxiTopBundle()) 
+    }else None
+    val slave=if(GenerateParams.getParam("SOC_MODE").asInstanceOf[Boolean]){
+      Some(Flipped(new AxiTopBundle())) 
+    }else None
   })
   val PreFetch  = Module(new PfStage())
   val InstFetch = Module(new IfStage())
@@ -55,7 +58,7 @@ class SimTop extends Module with DeviceConfig with CacheConfig{
 
   Axi4Bridge.io.in<>AxiArbiter.io.out
 //AxiArbiter
-if(ISAConfig.SOC_MODE){
+if(GenerateParams.getParam("SOC_MODE").asInstanceOf[Boolean]){
   val AxiCoreOut=Module(new AxiCoreOut())
   io.master.get<>AxiCoreOut.io.out
 
@@ -101,7 +104,7 @@ if(ISAConfig.SOC_MODE){
   var programExit=(LoadStore.ls.to_wb.bits.diffExcp.excpValid
                  &&LoadStore.ls.to_wb.bits.diffExcp.cause===0x3.U
                  &&LoadStore.ls.to_wb.fire)
-  if(GenCtrl.PERF){
+  if(GenerateParams.getParam("PERF").asInstanceOf[Boolean]){
     PreFetch.pf.perfMode:=InstFetch.fs.perfMode
     PreFetch.pf.programExit:=RegNext(programExit)
     InstFetch.fs.programExit:=RegNext(programExit)
@@ -141,7 +144,7 @@ if(ISAConfig.SOC_MODE){
 // wb begin
   StageConnect(LoadStore.ls.to_wb,WriteBack.wb.in)
 
-  if(GenCtrl.VERILATOR_SIM){
+  if(GenerateParams.getParam("VERILATOR_SIM").asInstanceOf[Boolean]){
     val DiffCommit= Module(new DiffCommit())
     DiffCommit.diff.instr:=WriteBack.wb.diffInstrCommit
     DiffCommit.diff.load :=WriteBack.wb.diffLoadCommit

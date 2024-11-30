@@ -9,7 +9,7 @@ import FuncUnit.{Alu}
 import FuncUnit.Control._
 import Util.{Mux1hDefMap,SDEF}
 import Axi.{AxiBridgeAddrLoad,AxiBridgeStore}
-import CoreConfig.GenCtrl
+import CoreConfig.GenerateParams
 
 class ExStage extends Module {
   val ex=IO(new Bundle {
@@ -193,7 +193,7 @@ class ExStage extends Module {
   ex.to_ls.bits.rfWen :=ex.in.bits.rfWen
 
   ex.to_ls.bits.perfMode:=ex.in.bits.perfMode
-  if(GenCtrl.PERF){
+  if(GenerateParams.getParam("PERF").asInstanceOf[Boolean]){
     val LSUAddrRespClockCnt=RegInit(0.U(64.W))
     val LSUInstCnt=RegInit(0.U(64.W))
     when(ex.in.bits.perfMode){

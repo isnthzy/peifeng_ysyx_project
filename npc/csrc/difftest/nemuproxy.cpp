@@ -24,7 +24,7 @@ void NemuProxy::init_nemu_proxy(char *ref_so_file, int port){
   assert(ref_so_file != NULL);
   printf_green("Using %s for difftest\n", ref_so_file);
   handle = dlopen(ref_so_file, RTLD_LAZY);
-  assert(handle);
+  Assert(handle,"Cannot open the %s",ref_so_file);
 
   ref_difftest_memcpy = (void (*)(paddr_t, void*, size_t, bool))dlsym(handle, "difftest_memcpy");
   assert(ref_difftest_memcpy);

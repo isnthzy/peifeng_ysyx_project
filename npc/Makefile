@@ -1,4 +1,5 @@
 BUILD_DIR = ./build
+VSRC_DIR = ./vsrc
 TOPNAME?=
 NXDC_FILES?=
 ifeq ($(ARCH),soc)
@@ -59,7 +60,7 @@ CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 CXXFLAGS += -Wall -Werror
 LDFLAGS += -lreadline  -lSDL2 
 
-
+# MILL_ARGS = --mode soc
 # CXXFLAGS += -ggdb -DVL_DEBUG=1 -D_GLIBCXX_DEBUG
 # LDFLAGS  += -ggdb -fsanitize=address,undefined
 #gdb调试段错误相关代码
@@ -89,10 +90,14 @@ test:
 	mill -i __.test
 
 verilog:
+	rm -f $(VSRC_DIR)/*
 	$(call git_commit, "generate verilog")
-	rm -rf ./vsrc/*
-	mkdir -p ./vsrc
-	mill -i __.test.runMain TopMain -td ./vsrc
+	mill -i __.test.runMain TopMain --target-dir $(VSRC_DIR) --mode soc --perf
+
+perf:
+	rm -rf $(VSRC_DIR)/*
+	@echo "\033[31mPlease open nemuconfig -so mode & soc device and make it\033[0m"
+	mill -i __.test.runMain TopMain --target-dir $(VSRC_DIR) --mode soc --perf
 
 help:
 	mill -i __.test.runMain TopMain --help
