@@ -92,6 +92,10 @@ verilog:
 	$(call git_commit, "generate verilog")
 	mill -i __.test.runMain TopMain --target-dir ./vsrc $(MILL_ARGS)
 
+perf:
+	$(echo "Please open nemuconfig -so mode & soc device and make it")
+	mill -i __.test.runMain TopMain --target-dir ./vsrc --mode soc
+
 help:
 	mill -i __.test.runMain TopMain --help
 

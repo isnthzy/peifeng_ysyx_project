@@ -1,9 +1,11 @@
 import circt.stage._
 import scala.annotation.tailrec
+import CoreConfig.GenerateParams
 
 abstract class GenParamsApp extends App {
   case class GenParams( //NOTE:搬运来源：https://github.com/OpenXiangShan/difftest
     mode: Option[String] = None,
+    perf: Boolean = false, //Option有None选项，perf不用option默认false
   )
   def parseArgs(args: Array[String]): (GenParams) = {
     val default = new GenParams()
@@ -12,6 +14,7 @@ abstract class GenParamsApp extends App {
       list match {
         case Nil                            => param
         case "--mode" :: str :: tail        => nextOption(param.copy(mode = Some(str)), tail)
+        case "--perf" :: tail               => nextOption(param.copy(perf = true), tail)
         case option :: tail =>
           nextOption(param, tail)
       }
@@ -19,9 +22,15 @@ abstract class GenParamsApp extends App {
     nextOption(default, args.toList)
   }
   val param = parseArgs(args)
-  val gen = if (param.mode.isDefined) { () =>
-    new SimTop(param.mode.get)
+  // println("set mode:"+mode)
+  // GenerateParams.setMode(mode)
+  val gen = if (param.mode.isDefined) { 
+    GenerateParams.setParams(param.mode.get,param.perf)
+    println("set mode:"+param.mode.get+"perf:"+param.perf)
+    () => new SimTop(param.mode.get)
   } else { () =>
+    GenerateParams.setParams("soc",param.perf)
+    println("set mode: soc"+"perf:"+param.perf)
     new SimTop("soc")
   }
 } 

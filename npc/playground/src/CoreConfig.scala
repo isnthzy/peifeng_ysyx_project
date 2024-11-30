@@ -61,34 +61,39 @@ trait DeviceConfig{
 }
 
 object GenerateParams {
-  private var mode = "soc"
+  private var coreMode = "soc"
+  private var usePerf = false
+
   private var params: Map[String, Any] = Map(
     "RV32E"         -> true,
     "VERILATOR_SIM" -> true,
-    "PERF"          -> true,
+    "PERF"          -> false,
     "YOSYS_MODE"    -> false,
     "SOC_MODE"      -> true
   )
-  def setMode(set: String): Unit = {
-    mode = set
+  def setParams(mode: String, perf: Boolean): Unit = {
+    coreMode = mode
+    usePerf  = perf
     updateParams()
   }
   private def updateParams(): Unit = {
-    params = mode match {
+    params = coreMode match {
       case "npc" =>
         params ++ Map(
           "SOC_MODE" -> false, 
-          "PERF" -> false
+          "PERF" -> usePerf,
         ) //NOTE:scala中 ++ 添加/更新键值对
       case "yosys" =>
         params ++ Map(
           "SOC_MODE" -> false,
           "PERF" -> false,
           "VERILATOR_SIM" -> false,
-          "YOSYS_MODE" -> true
+          "YOSYS_MODE" -> true,
         )
       case _ =>
-        params
+        params ++ Map(
+          "PERF" -> usePerf,
+        )
     }
   }
   def getParam(key: String): Any = params(key)

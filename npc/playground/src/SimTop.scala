@@ -16,8 +16,6 @@ import CoreConfig.GenerateParams
 
 class SimTop(mode: String) extends Module with DeviceConfig with CacheConfig{
   override val desiredName = "ysyx_23060115"
-  println("set mode:"+mode)
-  GenerateParams.setMode(mode)
   val io = IO(new Bundle {
     val interrupt=if(GenerateParams.getParam("SOC_MODE").asInstanceOf[Boolean]){
       Some(Input(Bool()))
