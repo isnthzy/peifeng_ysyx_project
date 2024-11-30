@@ -1,4 +1,5 @@
 BUILD_DIR = ./build
+VSRC_DIR = ./vsrc
 TOPNAME?=
 NXDC_FILES?=
 ifeq ($(ARCH),soc)
@@ -89,12 +90,14 @@ test:
 	mill -i __.test
 
 verilog:
+	rm -rf $(VSRC_DIR)
 	$(call git_commit, "generate verilog")
-	mill -i __.test.runMain TopMain --target-dir ./vsrc $(MILL_ARGS)
+	mill -i __.test.runMain TopMain --target-dir $(VSRC_DIR) $(MILL_ARGS)
 
 perf:
+	rm -rf $(VSRC_DIR)
 	$(echo "Please open nemuconfig -so mode & soc device and make it")
-	mill -i __.test.runMain TopMain --target-dir ./vsrc --mode soc --perf
+	mill -i __.test.runMain TopMain --target-dir $(VSRC_DIR) --mode soc --perf
 
 help:
 	mill -i __.test.runMain TopMain --help
