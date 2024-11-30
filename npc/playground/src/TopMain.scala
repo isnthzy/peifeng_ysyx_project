@@ -26,11 +26,11 @@ abstract class GenParamsApp extends App {
   // GenerateParams.setMode(mode)
   val gen = if (param.mode.isDefined) { 
     GenerateParams.setParams(param.mode.get,param.perf)
-    println("set mode:"+param.mode.get+"perf:"+param.perf)
+    println("set mode:"+param.mode.get+" perf:"+param.perf)
     () => new SimTop(param.mode.get)
   } else { () =>
     GenerateParams.setParams("soc",param.perf)
-    println("set mode: soc"+"perf:"+param.perf)
+    println("set mode: soc"+" perf:"+param.perf)
     new SimTop("soc")
   }
 } 

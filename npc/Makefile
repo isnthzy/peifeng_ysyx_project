@@ -94,7 +94,7 @@ verilog:
 
 perf:
 	$(echo "Please open nemuconfig -so mode & soc device and make it")
-	mill -i __.test.runMain TopMain --target-dir ./vsrc --mode soc
+	mill -i __.test.runMain TopMain --target-dir ./vsrc --mode soc --perf
 
 help:
 	mill -i __.test.runMain TopMain --help
