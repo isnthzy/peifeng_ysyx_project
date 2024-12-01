@@ -174,7 +174,7 @@ class ICache extends Module with CacheConfig {
     }
     when(io.programExit){
       var CachehitRate=(hitCnt.asSInt  * 100.asSInt) / memCnt.asSInt
-      printf("Cycle per fetch(addr resp)(%%): %d%%\n",CachehitRate);
+      printf("ICache hit rate(%%): %d%%\n",CachehitRate);
     }
   }
 }
