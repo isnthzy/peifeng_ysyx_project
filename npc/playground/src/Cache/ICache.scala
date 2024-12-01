@@ -166,15 +166,32 @@ class ICache extends Module with CacheConfig {
   if(GenerateParams.getParam("PERF").asInstanceOf[Boolean]){
     val hitCnt=RegInit(0.U(64.W))
     val memCnt=RegInit(0.U(64.W))
+    val onceRespTime=RegInit(0.U(32.W))
+    val onceRespTimeWait=RegInit(false.B)
+    val totalRespTime=RegInit(0.U(64.W))
     when(cacheState===s_lookup&&cacheLookupHit){
       hitCnt:=hitCnt+1.U
     }
     when(io.dataRp){
       memCnt:=memCnt+1.U
     }
+    when(cacheState===s_lookup&& ~cacheLookupHit){
+      onceRespTime:=onceRespTime+1.U
+      onceRespTimeWait:=true.B
+    }
+    when(cacheState===s_refill&&io.out.rret.valid&&io.out.rret.bits.last){  
+      onceRespTime:=0.U
+      totalRespTime:=totalRespTime+onceRespTime+1.U//状态机转换需要时间
+    }.elsewhen(onceRespTimeWait){
+      onceRespTime:=onceRespTime+1.U
+    }
     when(io.programExit){
       var CachehitRate=(hitCnt.asSInt  * 100.asSInt) / memCnt.asSInt
-      printf("ICache hit rate(%%): %d%%\n",CachehitRate);
+      val missFetchTime=(totalRespTime.asSInt * 100.asSInt) / (memCnt-hitCnt).asSInt
+      printf("ICache hit rate  (%%): %d%%\n",CachehitRate);
+      printf("ICache hit cnt   (%%): %d%%\n",hitCnt);
+      printf("ICache access cnt(%%): %d%%\n",memCnt);
+      printf("Mean Missing Time    : %d%%\n",missFetchTime);
     }
   }
 }
