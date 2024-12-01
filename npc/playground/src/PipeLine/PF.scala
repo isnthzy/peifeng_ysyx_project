@@ -19,7 +19,7 @@ class PfStage extends Module {
     val al=new Core2AxiReadIO()
 
     val perfMode=Input(Bool()) //飞线...
-    val programExit=Input(Bool())
+    val programExit=Input(Bool()) //为了perf的飞线
   })
   val pfFlush=dontTouch(Wire(Bool()))
   val pfExcpEn=dontTouch(Wire(Bool()))
