@@ -109,6 +109,7 @@ if(GenerateParams.getParam("SOC_MODE").asInstanceOf[Boolean]){
     PreFetch.pf.programExit:=RegNext(programExit)
     InstFetch.fs.programExit:=RegNext(programExit)
     ICache.io.programExit:=RegNext(programExit)
+    ICache.io.perfMode  := InstFetch.fs.perfMode
   }else{
     PreFetch.pf.perfMode:=false.B
     PreFetch.pf.programExit:=false.B
