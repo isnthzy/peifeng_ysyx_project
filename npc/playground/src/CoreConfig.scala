@@ -86,7 +86,7 @@ object GenerateParams {
         ) //NOTE:scala中 ++ 添加/更新键值对
       case "yosys" =>
         params ++ Map(
-          "SOC_MODE" -> false,
+          "SOC_MODE" -> true,
           "PERF" -> false,
           "VERILATOR_SIM" -> false,
           "YOSYS_MODE" -> true,

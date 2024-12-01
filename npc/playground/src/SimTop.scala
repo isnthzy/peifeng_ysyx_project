@@ -57,6 +57,7 @@ class SimTop extends Module with DeviceConfig with CacheConfig{
   //NOTE：访存优先，
 
   Axi4Bridge.io.in<>AxiArbiter.io.out
+
 //AxiArbiter
 if(GenerateParams.getParam("SOC_MODE").asInstanceOf[Boolean]){
   val AxiCoreOut=Module(new AxiCoreOut())
@@ -109,11 +110,13 @@ if(GenerateParams.getParam("SOC_MODE").asInstanceOf[Boolean]){
     PreFetch.pf.programExit:=RegNext(programExit)
     InstFetch.fs.programExit:=RegNext(programExit)
     ICache.io.programExit:=RegNext(programExit)
-    ICache.io.perfMode  := InstFetch.fs.perfMode
+    ICache.io.perfMode   :=InstFetch.fs.perfMode
   }else{
     PreFetch.pf.perfMode:=false.B
     PreFetch.pf.programExit:=false.B
     InstFetch.fs.programExit:=false.B
+    ICache.io.programExit:=false.B
+    ICache.io.perfMode   :=false.B
   }
 
 
