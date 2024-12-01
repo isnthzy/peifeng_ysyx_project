@@ -178,28 +178,40 @@ class ICache extends Module with CacheConfig {
 
     when(cacheState===s_lookup&&cacheLookupHit){
       hitCnt:=hitCnt+1.U
-      bl_hitCnt:=bl_hitCnt+1.U
+
+      when(~io.perfMode){
+        bl_hitCnt:=bl_hitCnt+1.U
+      }
     }
     when(io.dataRp){
       memCnt:=memCnt+1.U
-      bl_memCnt:=bl_memCnt+1.U
+      
+      when(~io.perfMode){
+        bl_memCnt:=bl_memCnt+1.U
+      }
     }
     when(cacheState===s_lookup&& ~cacheLookupHit){
       onceRespTime:=onceRespTime+1.U
       onceRespTimeWait:=true.B
 
-      bl_onceRespTime:=bl_onceRespTime+1.U
+      when(~io.perfMode){
+        bl_onceRespTime:=bl_onceRespTime+1.U
+      }
     }
     when(cacheState===s_refill&&io.out.rret.valid&&io.out.rret.bits.last){  
       onceRespTime:=0.U
       totalRespTime:=totalRespTime+onceRespTime+1.U//状态机转换需要时间
 
-      bl_onceRespTime:=0.U
-      bl_totalRespTime:=bl_totalRespTime+bl_onceRespTime+1.U
+      when(~io.perfMode){
+        bl_onceRespTime:=0.U
+        bl_totalRespTime:=bl_totalRespTime+bl_onceRespTime+1.U
+      }
     }.elsewhen(onceRespTimeWait){
       onceRespTime:=onceRespTime+1.U
 
-      bl_onceRespTime:=0.U
+      when(~io.perfMode){
+        bl_onceRespTime:=0.U
+      }
     }
     when(io.programExit){
       var CachehitRate=(hitCnt.asSInt  * 100.asSInt) / memCnt.asSInt
