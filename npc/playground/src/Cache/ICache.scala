@@ -191,8 +191,8 @@ class ICache extends Module with CacheConfig {
       printf("ICache hit rate  (%%): %d%%\n",CachehitRate);
       printf("ICache hit cnt   (%%): %d  \n",hitCnt);
       printf("ICache access cnt(%%): %d  \n",memCnt);
-      printf("Mean Missing Time    : %d  \n",missFetchTime);
-      printf("The ICache includes Bootloader and misfetch")
+      printf("Mean Missing Time   : %d  \n",missFetchTime);
+      printf("The ICache includes Bootloader and misfetch\n")
     }
   }
 }
