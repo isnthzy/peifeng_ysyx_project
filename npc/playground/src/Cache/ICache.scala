@@ -187,11 +187,12 @@ class ICache extends Module with CacheConfig {
     }
     when(io.programExit){
       var CachehitRate=(hitCnt.asSInt  * 100.asSInt) / memCnt.asSInt
-      val missFetchTime=(totalRespTime.asSInt * 100.asSInt) / (memCnt-hitCnt).asSInt
+      var missFetchTime= totalRespTime.asSInt / (memCnt-hitCnt).asSInt
       printf("ICache hit rate  (%%): %d%%\n",CachehitRate);
-      printf("ICache hit cnt   (%%): %d%%\n",hitCnt);
-      printf("ICache access cnt(%%): %d%%\n",memCnt);
-      printf("Mean Missing Time    : %d%%\n",missFetchTime);
+      printf("ICache hit cnt   (%%): %d  \n",hitCnt);
+      printf("ICache access cnt(%%): %d  \n",memCnt);
+      printf("Mean Missing Time    : %d  \n",missFetchTime);
+      printf("The ICache includes Bootloader and misfetch")
     }
   }
 }
