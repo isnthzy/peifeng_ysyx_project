@@ -22,14 +22,12 @@ abstract class GenParamsApp extends App {
     nextOption(default, args.toList)
   }
   val param = parseArgs(args)
-  // println("set mode:"+mode)
-  // GenerateParams.setMode(mode)
   val gen = if (param.mode.isDefined) { 
     GenerateParams.setParams(param.mode.get,param.perf)
-    // println("set mode:"+param.mode.get+" perf:"+param.perf)
-    () => new SimTop(param.mode.get)
-  } else {GenerateParams.setParams("soc",param.perf)
-    () => new SimTop("soc")
+    () => new SimTop()
+  } else {
+    GenerateParams.setParams("soc",param.perf)
+    () => new SimTop()
   }
 } 
 

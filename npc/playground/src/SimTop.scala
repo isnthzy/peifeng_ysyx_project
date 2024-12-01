@@ -4,9 +4,7 @@ import CoreConfig.Configs._
 import CoreConfig.{DeviceConfig,CacheConfig}
 import PipeLine.{PfStage,IfStage,IdStage,ExStage,LsStage,WbStage}
 import Cache.{ICache,DCache}
-import Axi.{AxiXbarA2X,Axi4Master,AxiTopBundle,AxiCoreOut}
-import Axi.AxiArbiter
-import Axi.Axi4Bridge
+import Axi.{AxiXbarA2X,Axi4Master,AxiTopBundle,AxiCoreOut,AxiArbiter,Axi4Bridge}
 import DiffTest.DiffCommit
 import FuncUnit.CsrFile
 import IP.Axi4FullSram
@@ -14,7 +12,7 @@ import DiffTest.dpic._
 import Device.{SimTimer}
 import CoreConfig.GenerateParams
 
-class SimTop(mode: String) extends Module with DeviceConfig with CacheConfig{
+class SimTop extends Module with DeviceConfig with CacheConfig{
   override val desiredName = "ysyx_23060115"
   val io = IO(new Bundle {
     val interrupt=if(GenerateParams.getParam("SOC_MODE").asInstanceOf[Boolean]){
@@ -110,6 +108,7 @@ if(GenerateParams.getParam("SOC_MODE").asInstanceOf[Boolean]){
     PreFetch.pf.perfMode:=InstFetch.fs.perfMode
     PreFetch.pf.programExit:=RegNext(programExit)
     InstFetch.fs.programExit:=RegNext(programExit)
+    ICache.io.programExit:=RegNext(programExit)
   }else{
     PreFetch.pf.perfMode:=false.B
     PreFetch.pf.programExit:=false.B

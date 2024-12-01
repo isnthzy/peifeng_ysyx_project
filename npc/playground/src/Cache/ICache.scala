@@ -1,9 +1,10 @@
 package Cache
 import chisel3._
 import chisel3.util._
-import CoreConfig.CacheConfig
+import CoreConfig.{CacheConfig,GenerateParams}
 // import Axi.AxiBridge
 import Util.RandomNum
+
 
 class ICache extends Module with CacheConfig {
   val BANK_SIZE = 1 << INDEX_WIDTH
@@ -17,6 +18,8 @@ class ICache extends Module with CacheConfig {
     val rdata  = Output(UInt(32.W))
 
     val out = new AxiCacheIO()
+
+    val programExit=Input(Bool()) //为了perf的飞线
   })
   val DataBank = Array.fill(WAY_NUM_I)(Module(new DataRAM(BANK_SIZE, LINE_WIDTH)).io)
   val TagvBank = Array.fill(WAY_NUM_I)(Module(new TagvRAM(BANK_SIZE, TAG_WIDTH)).io)
@@ -158,6 +161,22 @@ class ICache extends Module with CacheConfig {
 
   io.out.wr.bits:=0.U.asTypeOf(io.out.wr.bits)
   io.out.wr.valid:=false.B
+
+
+  if(GenerateParams.getParam("PERF").asInstanceOf[Boolean]){
+    val hitCnt=RegInit(0.U(64.W))
+    val memCnt=RegInit(0.U(64.W))
+    when(cacheState===s_lookup&&cacheLookupHit){
+      hitCnt:=hitCnt+1.U
+    }
+    when(io.dataRp){
+      memCnt:=memCnt+1.U
+    }
+    when(io.programExit){
+      var CachehitRate=(hitCnt.asSInt  * 100.asSInt) / memCnt.asSInt
+      printf("Cycle per fetch(addr resp)(%%): %d%%\n",CachehitRate);
+    }
+  }
 }
 
 

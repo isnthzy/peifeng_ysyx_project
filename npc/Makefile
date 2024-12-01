@@ -60,7 +60,7 @@ CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 CXXFLAGS += -Wall -Werror
 LDFLAGS += -lreadline  -lSDL2 
 
-MILL_ARGS = --mode soc
+# MILL_ARGS = --mode soc
 # CXXFLAGS += -ggdb -DVL_DEBUG=1 -D_GLIBCXX_DEBUG
 # LDFLAGS  += -ggdb -fsanitize=address,undefined
 #gdb调试段错误相关代码
@@ -92,11 +92,11 @@ test:
 verilog:
 	rm -f $(VSRC_DIR)/*
 	$(call git_commit, "generate verilog")
-	mill -i __.test.runMain TopMain --target-dir $(VSRC_DIR) $(MILL_ARGS)
+	mill -i __.test.runMain TopMain --target-dir $(VSRC_DIR) --mode soc --perf
 
 perf:
 	rm -rf $(VSRC_DIR)/*
-	$(echo "Please open nemuconfig -so mode & soc device and make it")
+	@echo "\033[31mPlease open nemuconfig -so mode & soc device and make it\033[0m"
 	mill -i __.test.runMain TopMain --target-dir $(VSRC_DIR) --mode soc --perf
 
 help:
