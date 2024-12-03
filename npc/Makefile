@@ -99,6 +99,10 @@ perf:
 	@echo "\033[31mPlease open nemuconfig -so mode & soc device and make it\033[0m"
 	mill -i __.test.runMain TopMain --target-dir $(VSRC_DIR) --mode soc --perf
 
+yosys:
+	rm -rf $(VSRC_DIR)/*
+	mill -i __.test.runMain TopMain --target-dir $(VSRC_DIR) --mode yosys
+
 help:
 	mill -i __.test.runMain TopMain --help
 
@@ -128,7 +132,7 @@ count:
 	@echo $(cnt_cp)-cpp-lines in npc/vsrc	
 	@echo $(cnt_v)-sverilog-lines in npc/vsrc	  
 	@echo $(cnt_s)--chisel--lines in npc/playground
-.PHONY: test verilog help compile bsp reformat checkformat clean count gdb sim gtk com
+.PHONY: test verilog help compile bsp reformat checkformat clean count gdb sim gtk com perf yosys
 
 sim:com
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
