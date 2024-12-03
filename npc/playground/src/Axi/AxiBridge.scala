@@ -130,6 +130,8 @@ class Axi4Bridge extends Module with CacheConfig {
       }
     }
     is(wr_wait_ready){
+      io.aw.valid:=true.B
+      io.w.valid :=true.B
       when(io.aw.fire&&io.w.fire){
         WriteRequstState:=wr_wait_bresp
       }.elsewhen(io.aw.fire){
