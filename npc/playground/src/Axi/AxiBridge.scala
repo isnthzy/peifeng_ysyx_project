@@ -118,7 +118,7 @@ class Axi4Bridge extends Module with CacheConfig {
   io.w.bits.strb:=io.in.wr.bits.strb
   io.w.bits.last:=1.U
   io.b.ready:=true.B
-  io.in.wr.ready:=io.b.fire
+  io.in.wr.ready:=io.b.fire&&WriteRequstState===wr_wait_bresp
 
   val awFire=RegInit(false.B)
   switch(WriteRequstState){
