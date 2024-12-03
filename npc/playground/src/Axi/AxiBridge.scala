@@ -125,7 +125,7 @@ class Axi4Bridge extends Module with CacheConfig {
     is(wr_idle){
       when(io.in.wr.valid&& ~WaitReadIdle){
         // io.aw.valid:=true.B
-        // io.w.valid :=true.B //未来需要时序的时候再考虑优化
+        // io.w.valid :=true.B //NOTE:未来对比这两个设计的时序
         WriteRequstState:=wr_wait_ready
       }
     }
