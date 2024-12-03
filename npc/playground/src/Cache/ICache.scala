@@ -214,12 +214,14 @@ class ICache extends Module with CacheConfig {
       }
     }
     when(io.programExit){
-      var CachehitRate=(hitCnt.asSInt  * 100.asSInt) / memCnt.asSInt
+      var CachehitRate =(hitCnt.asSInt  * 100.asSInt) / memCnt.asSInt
       var missFetchTime= totalRespTime.asSInt / (memCnt-hitCnt).asSInt
+      var ICacheAMAT   = 1.asSInt + ((100.asSInt - CachehitRate.asSInt) * missFetchTime.asSInt) / 100.asSInt
       printf("ICache hit rate  (%%): %d%%\n",CachehitRate);
       printf("ICache hit cnt   (%%): %d  \n",hitCnt);
       printf("ICache access cnt(%%): %d  \n",memCnt);
       printf("Mean Missing Time   : %d  \n",missFetchTime);
+      printf("ICache AMAT         : %d  \n",ICacheAMAT);
       printf("The ICache includes Bootloader and misfetch\n")
       printf("----no bootloader----\n")
       var bl_CachehitRate=((hitCnt-bl_hitCnt).asSInt  * 100.asSInt) / (memCnt-bl_memCnt).asSInt

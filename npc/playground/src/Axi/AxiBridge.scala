@@ -120,18 +120,24 @@ class Axi4Bridge extends Module with CacheConfig {
   io.b.ready:=true.B
   io.in.wr.ready:=io.b.fire
 
+  val awFire=RegInit(false.B)
   switch(WriteRequstState){
     is(wr_idle){
       when(io.in.wr.valid&& ~WaitReadIdle){
         io.aw.valid:=true.B
-        when(io.aw.fire){
-          WriteRequstState:=wr_wait_ready
-        }
+        io.w.valid :=true.B
+        WriteRequstState:=wr_wait_ready
       }
     }
     is(wr_wait_ready){
-      io.w.valid:=true.B
-      when(io.w.fire){
+      io.aw.valid:=true.B
+      io.w.valid :=true.B
+      when(io.aw.fire&&io.w.fire){
+        WriteRequstState:=wr_wait_bresp
+      }.elsewhen(io.aw.fire){
+        awFire:=true.B
+      }
+      when(awFire&&io.w.fire){
         WriteRequstState:=wr_wait_bresp
       }
     }
@@ -140,6 +146,7 @@ class Axi4Bridge extends Module with CacheConfig {
         WriteRequstState:=wr_idle
       }
     }
+
   }
 
 //---------------------------AXI4 Lite---------------------------
