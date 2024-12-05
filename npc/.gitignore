@@ -16,7 +16,7 @@
 !README.md
 !utils/
 !*.nxdc
-
+yosys_src/
 build/
 vsrc/*
 vsrc/dpic/*

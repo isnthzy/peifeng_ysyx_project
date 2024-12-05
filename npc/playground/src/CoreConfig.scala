@@ -18,7 +18,7 @@ object Configs {
 }
 
 trait CacheConfig{
-  def LINE_WIDTH = 128
+  def LINE_WIDTH = 256
   def LINE_WORD_NUM = (LINE_WIDTH / 32)
 
   def TAG_WIDTH = 26
