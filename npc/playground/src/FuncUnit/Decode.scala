@@ -51,6 +51,9 @@ object Instructions {
   def JAL  = BitPat("b?????????????????????????1101111")
   def JALR = BitPat("b?????????????????000?????1100111")
 
+  // FENCE_I 
+  def FENCE_I = BitPat("b00000000000000000001000000001111")
+
   // Csr
   def CSRRW = BitPat("b?????????????????001?????1110011")
   def CSRRS = BitPat("b?????????????????010?????1110011")
@@ -138,6 +141,7 @@ object Control {
   val CSR_ECAL =  "0011"
   val CSR_MRET =  "0100"
   val CSR_BREK =  "0101"
+  val O_FENCEI =  "0110"
 
   import Instructions._
   // format: off
@@ -186,6 +190,8 @@ object Control {
     SRA   ->  Seq( A_RS1,  B_RS2, IMM_X, ALU_SRA   , BR_XXX, ST_XXX, LD_XXX, WB_ALU, Y, CSR_XXXX, N),
     OR    ->  Seq( A_RS1,  B_RS2, IMM_X, ALU_OR    , BR_XXX, ST_XXX, LD_XXX, WB_ALU, Y, CSR_XXXX, N),
     AND   ->  Seq( A_RS1,  B_RS2, IMM_X, ALU_AND   , BR_XXX, ST_XXX, LD_XXX, WB_ALU, Y, CSR_XXXX, N),
+    //
+    FENCE_I-> Seq( A_RS1,  B_RS2, IMM_X, ALU_ADD   , BR_XXX, ST_XXX, LD_XXX, WB_ALU, N, O_FENCEI, N),
     //
     CSRRW ->  Seq( A_RS1,  B_CSR, IMM_X, ALU_COPY_B, BR_XXX, ST_XXX, LD_XXX, WB_ALU, Y, CSR_RW  , N),
     CSRRS ->  Seq( A_RS1,  B_CSR, IMM_X, ALU_COPY_B, BR_XXX, ST_XXX, LD_XXX, WB_ALU, Y, CSR_RS  , N),

@@ -17,6 +17,7 @@ class PfStage extends Module {
 
     val csrEntries=Input(new CsrEntriesBundle)
     val al=new Core2AxiReadIO()
+    val fenceI=Output(Bool())
 
     val perfMode=Input(Bool()) //飞线...
     val programExit=Input(Bool()) //为了perf的飞线
@@ -27,7 +28,7 @@ class PfStage extends Module {
           ||pf.from_ls.flush.asUInt.orR)
   val pfReadyGo=dontTouch(Wire(Bool()))
   val fetchReq=dontTouch(Wire(Bool()))
-  pfReadyGo:=(pf.al.addrOk && fetchReq)|| pfExcpEn
+  pfReadyGo:=((pf.al.addrOk&& ~fenceICache)&& fetchReq)|| pfExcpEn
   pf.to_if.valid:=pfReadyGo
   fetchReq:= ~reset.asBool&& ~pfFlush && pf.to_if.ready && ~pfExcpEn
 
@@ -49,6 +50,14 @@ class PfStage extends Module {
 
   when((pfReadyGo&&pf.to_if.ready)||pfFlush){
     regPC:=nextpc
+  }
+
+  val fenceICache=RegInit(false.B)
+  pf.fenceI:=fenceICache
+  when(pf.from_ex.fencei){
+    fenceICache:=true.B
+  }.elsewhen(pf.al.addrOk){
+    fenceICache:=false.B
   }
 
   pf.al.req :=fetchReq

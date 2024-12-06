@@ -24,6 +24,7 @@ class ExStage extends Module {
 
     val al=new AxiBridgeAddrLoad()
     val s =new AxiBridgeStore()
+    val fenceI=Output(Bool())
   })
   val exFlush=dontTouch(Wire(Bool()))
   val exExcpEn=dontTouch(Wire(Bool()))
@@ -55,6 +56,7 @@ class ExStage extends Module {
 
   val csrWen=(ex.in.bits.csrOp===SDEF(CSR_RW)
             ||ex.in.bits.csrOp===SDEF(CSR_RS))
+  ex.fw_pf.fencei:=ex.in.bits.csrOp===SDEF(O_FENCEI)&&ex.to_ls.valid
   val isMret=ex.in.bits.csrOp===SDEF(CSR_MRET)
   val storeEn=ex.in.bits.stType=/=SDEF(ST_XXX)&& ~store_skip
   val loadEn =ex.in.bits.ldType=/=SDEF(LD_XXX)
@@ -177,6 +179,7 @@ class ExStage extends Module {
 //NOTE:
   ex.to_ls.bits.isDeviceSkip:=isDeviceSkip
   ex.to_ls.bits.memBadAddr:=memMisalignedAddr
+  ex.to_ls.bits.isFencei:=ex.in.bits.csrOp===SDEF(O_FENCEI)
   ex.to_ls.bits.isMret :=isMret
   ex.to_ls.bits.csrWen :=csrWen
   ex.to_ls.bits.csrWrAddr:=ex.in.bits.csrWrAddr
