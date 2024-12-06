@@ -243,6 +243,7 @@ static int decode_exec(Decode *s) {
                                                                   wLog("\t%s",etrace_logbuf);
                                                                   enqueueIRingBuffer(&etrace_buffer,etrace_logbuf);
                                                                 ));
+  INSTPAT("0000000 00000 00000 001 00000 00011 11", fence.i, N, );
   INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , N, NEMUTRAP(s->pc, Reg(10))); // R(10) is $a0
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
   INSTPAT_END();

@@ -133,6 +133,7 @@
     "C_Cpp.intelliSenseEngine": "default",
     "digital-ide.dont-show-again.propose.issue": true,
     "digital-ide.welcome.show": false,
-    "C_Cpp.default.compilerPath": "/usr/lib/ccache/gcc-11", //  需要添加的
+    "C_Cpp.default.compilerPath": "/usr/lib/ccache/gcc-11",
+    "Codegeex.RepoIndex": true, //  需要添加的
 
 }
