@@ -28,6 +28,7 @@ class PfStage extends Module {
           ||pf.from_ls.flush.asUInt.orR)
   val pfReadyGo=dontTouch(Wire(Bool()))
   val fetchReq=dontTouch(Wire(Bool()))
+  val fenceICache=RegInit(false.B)
   pfReadyGo:=((pf.al.addrOk&& ~fenceICache)&& fetchReq)|| pfExcpEn
   pf.to_if.valid:=pfReadyGo
   fetchReq:= ~reset.asBool&& ~pfFlush && pf.to_if.ready && ~pfExcpEn
@@ -52,7 +53,7 @@ class PfStage extends Module {
     regPC:=nextpc
   }
 
-  val fenceICache=RegInit(false.B)
+
   pf.fenceI:=fenceICache
   when(pf.from_ex.fencei){
     fenceICache:=true.B
