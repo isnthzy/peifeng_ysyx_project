@@ -102,6 +102,7 @@ perf:
 yosys:
 	rm -rf $(VSRC_DIR)/*
 	mill -i __.test.runMain TopMain --target-dir $(VSRC_DIR) --mode yosys
+	mv vsrc yosys_src
 
 help:
 	mill -i __.test.runMain TopMain --help
