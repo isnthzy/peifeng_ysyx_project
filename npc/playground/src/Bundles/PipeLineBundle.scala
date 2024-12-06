@@ -19,6 +19,7 @@ class Pf4IdBusBundle extends Bundle{
 
 class Pf4ExBusBundle extends Bundle{
   val brCond=new BranchTakeBundle()
+  val fencei=Bool()
 }
 
 class Pf4LsBusBundle extends Bundle{
@@ -89,11 +90,12 @@ class Ex2LsBusBundle extends Bundle{
 
   val diffLoad =new DiffLoadBundle()
   val diffStore=new DiffStoreBundle()
-
   val isDeviceSkip=Bool()
+
   val excpEn=Bool()
   val excpType=new ExExcpTypeBundle()
   val memBadAddr=UInt(ADDR_WIDTH.W)
+  val isFencei=Bool()
   val isMret=Bool()
   val csrWen=Bool()
   val csrWrAddr=UInt(12.W)

@@ -117,7 +117,7 @@ class LsStage extends Module {
   ls.to_csr.mretFlush :=ls.in.bits.isMret&&lsValid
   ls.to_csr.excpResult:=excpResult
 
-  val refetchFlush=ls.in.bits.csrWen&&lsValid
+  val refetchFlush=(ls.in.bits.csrWen||ls.in.bits.isFencei)&&lsValid
   val toPipelineFlush=Wire(new PipelineFlushsBundle())
   toPipelineFlush.refetch:=refetchFlush
   toPipelineFlush.excp   :=excpNum.asUInt.orR&&lsValid

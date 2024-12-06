@@ -10,6 +10,7 @@ class ICache extends Module with CacheConfig {
   val BANK_SIZE = 1 << INDEX_WIDTH
   val io = IO(new Bundle {
     val valid  = Input(Bool())
+    val fenceI = Input(Bool()) 
     val tag    = Input(UInt(TAG_WIDTH.W)) //tag下一周期输入
     val index  = Input(UInt(INDEX_WIDTH.W))
     val offset = Input(UInt(OFFSET_WIDTH.W))
@@ -107,7 +108,12 @@ class ICache extends Module with CacheConfig {
         requestTagBuff    := io.tag
         requestIdxBuff    := io.index
         requestOffsetBuff := io.offset
-        cacheState := s_lookup
+        when(io.fenceI){
+          tagValid := 0.U.asTypeOf(tagValid)
+          cacheState := s_idle
+        }.otherwise{
+          cacheState := s_lookup
+        }
       }
     }
     is(s_lookup){
@@ -123,7 +129,12 @@ class ICache extends Module with CacheConfig {
           requestTagBuff    := io.tag
           requestIdxBuff    := io.index
           requestOffsetBuff := io.offset
-          cacheState := s_lookup
+          when(io.fenceI){
+            tagValid := 0.U.asTypeOf(tagValid)
+            cacheState := s_idle
+          }.otherwise{
+            cacheState := s_lookup
+          }
         }.otherwise{
           cacheState := s_idle
         }
@@ -153,7 +164,12 @@ class ICache extends Module with CacheConfig {
         requestTagBuff    := io.tag
         requestIdxBuff    := io.index
         requestOffsetBuff := io.offset
-        cacheState := s_lookup
+        when(io.fenceI){
+          tagValid := 0.U.asTypeOf(tagValid)
+          cacheState := s_idle
+        }.otherwise{
+          cacheState := s_lookup
+        }
       }.otherwise{//优化cache状态机
         cacheState := s_idle
       } 

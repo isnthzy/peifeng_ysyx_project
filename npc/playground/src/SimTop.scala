@@ -40,7 +40,8 @@ class SimTop extends Module with DeviceConfig with CacheConfig{
   val DCache=Module(new DCache())
 //
 //AxiArbiter
-  ICache.io.valid :=PreFetch.pf.al.req
+  ICache.io.valid :=PreFetch.pf.al.req||PreFetch.pf.fenceI
+  ICache.io.fenceI:=PreFetch.pf.fenceI
   ICache.io.tag   :=PreFetch.pf.al.addr(31,31-TAG_WIDTH+1)
   ICache.io.index :=PreFetch.pf.al.addr(31-TAG_WIDTH,OFFSET_WIDTH)
   ICache.io.offset:=PreFetch.pf.al.addr(OFFSET_WIDTH-1,0)
