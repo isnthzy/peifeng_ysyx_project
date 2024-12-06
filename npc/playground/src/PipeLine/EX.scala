@@ -24,7 +24,6 @@ class ExStage extends Module {
 
     val al=new AxiBridgeAddrLoad()
     val s =new AxiBridgeStore()
-    val fenceI=Output(Bool())
   })
   val exFlush=dontTouch(Wire(Bool()))
   val exExcpEn=dontTouch(Wire(Bool()))
