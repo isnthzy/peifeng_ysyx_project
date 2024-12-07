@@ -154,6 +154,10 @@ config ITRACE_COND
   string "Only trace instructions when the condition is true"
   default "true"
 
+config BTRACE
+  depends on TRACE
+  bool "Enable branch tracer"
+  default n
 
 config MTRACE
   depends on TRACE
