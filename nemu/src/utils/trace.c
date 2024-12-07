@@ -10,9 +10,9 @@ void init_trace(const char *build_path){
 #endif
   if (build_path != NULL) {
     sprintf(itrace_build_path, "%s/nemu-itrace.txt", build_path);
-    Assert(itrace_fp, "Can not open '%s'", itrace_build_path);
     itrace_fp = fopen(itrace_build_path, "w");
-
+    Assert(itrace_fp, "Can not open '%s'", itrace_build_path);
+    
 #ifdef CONFIG_BTRACE
     sprintf(btrace_build_path, "%s/nemu-btrace.txt", build_path);
     btrace_fp = fopen(btrace_build_path, "w");
