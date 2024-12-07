@@ -33,6 +33,7 @@ extern IRingBuffer etrace_buffer;
 extern bool ftrace_flag;
 void store_commit_queue_push(paddr_t addr,word_t data,int len);
 void load_commit_queue_push(paddr_t addr,word_t data,int type);
+void btrace_write(char *btrace_str);
 
 enum {
   TYPE_I, TYPE_U, TYPE_S,
@@ -119,6 +120,14 @@ void Bit_ctrl(uint32_t* number, int startBit, int width,uint32_t value) { //位�
   *number|=(value<<startBit); // 将新值设置到指定位段
 }
 
+void btrace_wapper(char* type,word_t pc,word_t dnpc,bool result){
+#ifdef CONFIG_BTRACE
+  char btrace_str[128];
+  sprintf(btrace_str,"type:%s pc:0x%08x dnpc:0x%08x result:%d",type,pc,dnpc,result);
+  btrace_write(btrace_str);
+#endif
+}
+
 static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_t *imm, int type,word_t *csr) {
   uint32_t i = s->isa.inst.val;
   int rs1 = BITS(i, 19, 15);
@@ -152,6 +161,7 @@ static int decode_exec(Decode *s) {
   INSTPAT("??????? ????? ????? 111 ????? 00100 11", andi   , I, Reg(rd) = src1 & imm);
   INSTPAT("??????? ????? ????? 000 ????? 00100 11", addi   , I, Reg(rd) = src1 + imm);
   INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr   , I, Reg(rd) = s->pc+4;s->dnpc=(src1+imm)&~1;
+                                                                btrace_wapper("jalr",s->pc,s->dnpc,1);
                                                                 IFDEF(CONFIG_FTRACE,if(ftrace_flag==true){
                                                                   if(s->isa.inst.val==0x00008067){
                                                                     func_ret(s->pc);
@@ -197,21 +207,28 @@ static int decode_exec(Decode *s) {
   INSTPAT("0000001 ????? ????? 001 ????? 01100 11", mulh   , R, Reg(rd) = ((SEXT(src1, 32) * SEXT(src2, 32)) >> 32));
   INSTPAT("0000001 ????? ????? 011 ????? 01100 11", mulhu  , R, Reg(rd) = ((uint64_t)((uint64_t)src1 * (uint64_t)src2) >> 32));
   INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal    , J, Reg(rd) = s->pc+4;s->dnpc=s->pc+imm;
-  IFDEF(CONFIG_FTRACE,if(ftrace_flag==true&&rd==1){ //jal是跳转,j不是
-    func_call(s->pc,s->dnpc,false);
-  }));
+                                                                  btrace_wapper("jal",s->pc,s->dnpc,1);
+                                                                  IFDEF(CONFIG_FTRACE,if(ftrace_flag==true&&rd==1){ //jal是跳转,j不是
+                                                                    func_call(s->pc,s->dnpc,false);
+                                                                  }));
   INSTPAT("??????? ????? ????? 000 ????? 01000 11", sb     , S, Mw(src1 + imm, 1, src2);
                                                                 IFDEF(CONFIG_TARGET_SHARE,store_commit_queue_push(src1+imm,src2,1)););
   INSTPAT("??????? ????? ????? 001 ????? 01000 11", sh     , S, Mw(src1 + imm, 2, src2);
                                                                 IFDEF(CONFIG_TARGET_SHARE,store_commit_queue_push(src1+imm,src2,2)););
   INSTPAT("??????? ????? ????? 010 ????? 01000 11", sw     , S, Mw(src1 + imm, 4, src2);
                                                                 IFDEF(CONFIG_TARGET_SHARE,store_commit_queue_push(src1+imm,src2,4)););
-  INSTPAT("??????? ????? ????? 000 ????? 11000 11", beq    , B, if(src1==src2) s->dnpc=s->pc+imm);
-  INSTPAT("??????? ????? ????? 001 ????? 11000 11", bne    , B, if(src1!=src2) s->dnpc=s->pc+imm);
-  INSTPAT("??????? ????? ????? 100 ????? 11000 11", blt    , B, if((sword_t)src1< (sword_t)src2) s->dnpc=s->pc+imm);
-  INSTPAT("??????? ????? ????? 110 ????? 11000 11", bltu   , B, if(src1< src2) s->dnpc=s->pc+imm);
-  INSTPAT("??????? ????? ????? 101 ????? 11000 11", bge    , B, if((sword_t)src1>=(sword_t)src2) s->dnpc=s->pc+imm);
-  INSTPAT("??????? ????? ????? 111 ????? 11000 11", bgeu   , B, if(src1>=src2) s->dnpc=s->pc+imm);
+  INSTPAT("??????? ????? ????? 000 ????? 11000 11", beq    , B, if(src1==src2) s->dnpc=s->pc+imm;
+                                                                    btrace_wapper("br",s->pc,s->pc+imm,src1==src2););
+  INSTPAT("??????? ????? ????? 001 ????? 11000 11", bne    , B, if(src1!=src2) s->dnpc=s->pc+imm;
+                                                                    btrace_wapper("br",s->pc,s->pc+imm,src1!=src2););
+  INSTPAT("??????? ????? ????? 100 ????? 11000 11", blt    , B, if((sword_t)src1< (sword_t)src2) s->dnpc=s->pc+imm;
+                                                                    btrace_wapper("br",s->pc,s->pc+imm,(sword_t)src1< (sword_t)src2););
+  INSTPAT("??????? ????? ????? 110 ????? 11000 11", bltu   , B, if(src1< src2) s->dnpc=s->pc+imm;
+                                                                    btrace_wapper("br",s->pc,s->pc+imm,src1< src2););
+  INSTPAT("??????? ????? ????? 101 ????? 11000 11", bge    , B, if((sword_t)src1>=(sword_t)src2) s->dnpc=s->pc+imm;
+                                                                    btrace_wapper("br",s->pc,s->pc+imm,(sword_t)src1>=(sword_t)src2););
+  INSTPAT("??????? ????? ????? 111 ????? 11000 11", bgeu   , B, if(src1>=src2) s->dnpc=s->pc+imm;
+                                                                    btrace_wapper("br",s->pc,s->pc+imm,src1>=src2);); 
 
   INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs  , I, int t=Rcsr(csr); Wcsr(csr,t|src1); Reg(rd)=t;
                                                                 IFDEF(CONFIG_ETRACE,
