@@ -216,6 +216,7 @@ class IdStage extends Module {
         printf("Total inst cnt: %d\n",totalCnt)
         printf("ALU:%d, rate=%d%%\n",aluRealCnt,(aluRealCnt.asSInt*100.asSInt)/totalCnt.asSInt)
         printf("BR :%d, rate=%d%%\n",brCnt,(brCnt.asSInt*100.asSInt)/totalCnt.asSInt)
+        printf("JP :%d, rate=%d%%\n",brCnt,(jpCnt.asSInt*100.asSInt)/totalCnt.asSInt)
         printf("LD :%d, rate=%d%%\n",ldCnt,(ldCnt.asSInt*100.asSInt)/totalCnt.asSInt)
         printf("ST :%d, rate=%d%%\n",stCnt,(stCnt.asSInt*100.asSInt)/totalCnt.asSInt)
      }
