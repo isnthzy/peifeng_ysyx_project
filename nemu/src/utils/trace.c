@@ -14,7 +14,7 @@ void init_trace(const char *build_path){
     itrace_fp = fopen(itrace_build_path, "w");
 
 #ifdef CONFIG_BTRACE
-    sprintf(btrace_build_path, "%s/nemu-mtrace.txt", build_path);
+    sprintf(btrace_build_path, "%s/nemu-btrace.txt", build_path);
     btrace_fp = fopen(btrace_build_path, "w");
     Assert(btrace_fp, "Can not open '%s'", btrace_build_path);
 #endif
