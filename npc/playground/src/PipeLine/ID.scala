@@ -185,6 +185,7 @@ class IdStage extends Module {
     val totalCnt=RegInit(0.U(32.W))
     val aluCnt=RegInit(0.U(32.W))
     val brCnt=RegInit(0.U(32.W))
+    val jpCnt=RegInit(0.U(32.W))
     val ldCnt=RegInit(0.U(32.W))
     val stCnt=RegInit(0.U(32.W))
     when(id.in.bits.perfMode){
@@ -193,8 +194,14 @@ class IdStage extends Module {
         when(Decode.io.aluOp=/=SDEF(ALU_XXX)){
           aluCnt:=aluCnt+1.U
         }
-        when(Decode.io.brType=/=SDEF(BR_XXX)){
+        when(Decode.io.brType===SDEF(BR_JAL)
+           | Decode.io.brType===SDEF(BR_JALR)){
           brCnt:=brCnt+1.U
+        }
+        when(Decode.io.brType=/=SDEF(LD_XXX)
+           & Decode.io.brType=/=SDEF(BR_JAL)
+           & Decode.io.brType=/=SDEF(BR_JALR)){
+          jpCnt:=jpCnt+1.U
         }
         when(Decode.io.ldType=/=SDEF(LD_XXX)){
           ldCnt:=ldCnt+1.U
@@ -209,6 +216,7 @@ class IdStage extends Module {
         printf("Total inst cnt: %d\n",totalCnt)
         printf("ALU:%d, rate=%d%%\n",aluRealCnt,(aluRealCnt.asSInt*100.asSInt)/totalCnt.asSInt)
         printf("BR :%d, rate=%d%%\n",brCnt,(brCnt.asSInt*100.asSInt)/totalCnt.asSInt)
+        printf("JP :%d, rate=%d%%\n",brCnt,(jpCnt.asSInt*100.asSInt)/totalCnt.asSInt)
         printf("LD :%d, rate=%d%%\n",ldCnt,(ldCnt.asSInt*100.asSInt)/totalCnt.asSInt)
         printf("ST :%d, rate=%d%%\n",stCnt,(stCnt.asSInt*100.asSInt)/totalCnt.asSInt)
      }
