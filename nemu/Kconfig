@@ -164,6 +164,11 @@ config MTRACE
   bool "Enable memory tracer"
   default n
 
+config MTRACE_WRITE
+  depends on MTRACE
+  bool "Enable memory trace write log"
+  default n
+
 config DTRACE
   depends on TRACE
   bool "Enable device tracer"

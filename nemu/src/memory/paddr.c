@@ -35,6 +35,8 @@ static uint8_t soc_psram[CONFIG_SOC_PSRAM_SIZE] PG_ALIGN = {};
 static uint8_t soc_sdram[CONFIG_SOC_SDRAM_SIZE] PG_ALIGN = {};
 #endif
 
+void mtrace_write(char *mtrace_str);
+
 uint8_t* guest_to_host(paddr_t paddr) {
 #ifdef CONFIG_SOC_DEVICE
   uint8_t *ret=NULL;
@@ -124,10 +126,15 @@ word_t paddr_read(paddr_t addr, int len,int model) {
   if(model==1){
     if(likely(in_pmem(addr))){
       char mtrace_logbuf[120];
-      sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x,len:%d",cpu.pc,addr,pmem_read(addr, len),len);
+      sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x rdata:0x%08x len:%d",cpu.pc,addr,pmem_read(addr, len),len);
       enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
     }
   }
+  #ifdef CONFIG_MTRACE_WRITE
+  char mtrace_writebuf[120];
+  sprintf(mtrace_writebuf,"pc:0x%08x addr:0x%x len:%d",cpu.pc,addr,len);
+  mtrace_write(mtrace_writebuf);
+  #endif
   #endif
   if (likely(in_pmem(addr))) return pmem_read(addr, len);
   IFDEF(CONFIG_DEVICE, return mmio_read(addr, len););
@@ -144,6 +151,9 @@ void paddr_write(paddr_t addr, int len, word_t data) {
   char mtrace_logbuf[120];
   sprintf(mtrace_logbuf,"pc:0x%08x addr:0x%x wdata:0x%08x len:%d",cpu.pc,addr,data,len);
   enqueueIRingBuffer(&mtrace_buffer,mtrace_logbuf);
+  #ifdef CONFIG_MTRACE_WRITE
+  mtrace_write(mtrace_logbuf);
+  #endif
   #endif
   if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
   IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
