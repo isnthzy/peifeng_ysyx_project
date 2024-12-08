@@ -160,6 +160,7 @@ class LsStage extends Module {
       when(excpType.bkp.asBool && ls.to_wb.fire){
         var CyclePerLSUAddrResp=(LSUDataRespClockCnt.asSInt  * 100.asSInt) / LSUInstCnt.asSInt
         printf("Cycle per lsu  (data resp)(%%): %d%%\n",CyclePerLSUAddrResp);
+        printf("LSU data resp total clock cnt: %d\n",LSUDataRespClockCnt);
       }
     }
   }
