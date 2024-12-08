@@ -1,5 +1,6 @@
 #include "debug.h"
 #include <common.h>
+#include <stdbool.h>
 
 static FILE *itrace_fp = NULL;
 static FILE *btrace_fp = NULL;
@@ -29,7 +30,7 @@ void init_trace(const char *build_path){
 #endif
 
 #ifdef CONFIG_MTRACE_WRITE
-    wLog("MTrace Log is enabled");
+    wLog("MTrace Write is enabled");
     sprintf(mtrace_build_path, "%s/nemu-mtrace.txt", build_path);
     mtrace_fp = fopen(mtrace_build_path, "w");
     Assert(mtrace_fp, "Can not open '%s'", mtrace_build_path);
@@ -38,16 +39,16 @@ void init_trace(const char *build_path){
 }
 
 void itrace_write(char *itrace_str){
-  Assert(need_build_path == true, "Need build path to generate itrace file");
+  Assert(need_build_path == false, "Need build path to generate itrace file");
   fprintf(itrace_fp,"%s\n",itrace_str);
 }
 
 void btrace_write(char *btrace_str){
-  Assert(need_build_path == true, "Need build path to generate btrace file");
+  Assert(need_build_path == false, "Need build path to generate btrace file");
   fprintf(btrace_fp,"%s\n",btrace_str);
 }
 
 void mtrace_write(char *mtrace_str){
-  Assert(need_build_path == true, "Need build path to generate mtrace file");
+  Assert(need_build_path == false, "Need build path to generate mtrace file");
   fprintf(mtrace_fp,"%s\n",mtrace_str);
 }
