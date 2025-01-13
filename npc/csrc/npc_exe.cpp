@@ -57,7 +57,7 @@ static void statistic() {
   Log("(guest)npc ipc = %.4f", ipc);
   Log("host time spent = " NUMBERIC_FMT " us", g_timer);
   Log("total guest instructions = " NUMBERIC_FMT, g_nr_guest_inst);
-  Log("npc speed = %ld",(g_clock_cnt + bootloader_clock_cnt) * 1000000 / g_timer);
+  Log("npc speed = %ld clk/s",(g_clock_cnt + bootloader_clock_cnt) * 1000000 / g_timer);
   if (g_timer > 0) Log("simulation frequency = " NUMBERIC_FMT " inst/s", g_nr_guest_inst * 1000000 / g_timer);
   else Log("Finish running in less than 1 us and can not calculate the simulation frequency");
 }

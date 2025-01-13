@@ -21,7 +21,7 @@ VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  --timescale "1ns/1ns" --no-timing
 # VERILATOR_CFLAGS += --trace 
 VERILATOR_CFLAGS += --trace-fst --autoflush
-VERILATOR_CFLAGS += --prof-cfuncs 
+VERILATOR_CFLAGS += --prof-cfuncs --prof-c
 VERILATOR_CFLAGS += -O3 --x-assign fast --x-initial fast --noassert 
 #优化加速
 
