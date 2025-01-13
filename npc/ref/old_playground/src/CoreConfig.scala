@@ -68,13 +68,9 @@ object GenerateParams {
     "RV32E"         -> true,
     "VERILATOR_SIM" -> true,
     "PERF"          -> false,
-    "YOSYS_MODE"    -> false, 
-    "SOC_MODE"      -> true,   //NOTE:true时生成soc电路，false生成npc电路
+    "YOSYS_MODE"    -> false,
+    "SOC_MODE"      -> true
   )
-/*
-NOTE:如果需要yosys评估，需要关闭VERILATOR_SIM(difftest)和(PERF)性能测试
-      开启YOSYS_MODE后，访存会把DPIC操作会更改成对memory的操作
-     */
   def setParams(mode: String, perf: Boolean): Unit = {
     coreMode = mode
     usePerf  = perf
@@ -103,3 +99,19 @@ NOTE:如果需要yosys评估，需要关闭VERILATOR_SIM(difftest)和(PERF)性�
   }
   def getParam(key: String): Any = params(key)
 }
+
+
+object ISAConfig{
+  def RV32E = true
+  def SOC_MODE = true //NOTE:true时生成soc电路，false生成npc电路
+}
+
+object GenCtrl{
+  def VERILATOR_SIM = true
+  def PERF = true
+  def YOSYS_MODE = false
+} 
+/*
+NOTE:如果需要yosys评估，需要关闭VERILATOR_SIM(difftest)和(PERF)性能测试
+      开启YOSYS_MODE后，访存会把DPIC操作会更改成对memory的操作
+     */
