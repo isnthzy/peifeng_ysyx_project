@@ -57,7 +57,7 @@ CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cpp" -or -name "
 CSRCS += $(SRC_AUTO_BIND)
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\"" 
-CXXFLAGS += -Wall -Werror -pg
+CXXFLAGS += -Wall -Werror
 LDFLAGS += -lreadline  -lSDL2 
 
 # MILL_ARGS = --mode soc
