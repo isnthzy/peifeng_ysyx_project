@@ -209,6 +209,7 @@ class ExStage extends Module {
         printf("lsu total cnt: %d\n",LSUInstCnt);
         var CyclePerLSUAddrResp=(LSUAddrRespClockCnt.asSInt * 100.asSInt) / LSUInstCnt.asSInt
         printf("Cycle per lsu  (addr resp)(%%): %d%%\n",CyclePerLSUAddrResp);
+        printf("LSU addr resp total clock cnt: %d\n",LSUAddrRespClockCnt);
       }
     }
   }

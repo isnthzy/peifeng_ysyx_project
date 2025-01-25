@@ -20,6 +20,7 @@ bool g_print_step = false;
 
 static uint64_t g_timer = 0; // unit: us
 static uint64_t g_clock_cnt = 0;
+static uint64_t bootloader_clock_cnt = 0;
 
 uint64_t g_nr_guest_inst; //可以复用作为指令计数器，记录指令总共走了多少步
 
@@ -41,6 +42,7 @@ static uint64_t open_npc_calculate_inst_total = 0;
 // #ifdef CONFIG_YSYXSOC
 extern "C" void open_npc_calculate_ipc(){
   printf_green("OPEN YSYX-SOC CALCULATE IPC\n");
+  bootloader_clock_cnt = g_clock_cnt;
   g_clock_cnt = 0;
   open_npc_calculate_inst_total = g_nr_guest_inst;
 }
@@ -50,10 +52,12 @@ static void statistic() {
   IFNDEF(CONFIG_TARGET_AM, setlocale(LC_NUMERIC, ""));
 #define NUMBERIC_FMT MUXDEF(CONFIG_TARGET_AM, "%", "%'") PRIu64
   double ipc = (double)(g_nr_guest_inst - open_npc_calculate_inst_total) / g_clock_cnt;
-  Log("total inst = %ld total clock = %ld\n", (g_nr_guest_inst - open_npc_calculate_inst_total),g_clock_cnt);
-  Log("npc ipc = %.4f", ipc);
+  Log("(guest)total inst = %ld total clock = %ld", (g_nr_guest_inst - open_npc_calculate_inst_total),g_clock_cnt);
+  Log("(real) total inst = %ld total clock = %ld", g_nr_guest_inst,g_clock_cnt + bootloader_clock_cnt);
+  Log("(guest)npc ipc = %.4f", ipc);
   Log("host time spent = " NUMBERIC_FMT " us", g_timer);
   Log("total guest instructions = " NUMBERIC_FMT, g_nr_guest_inst);
+  Log("npc speed = %ld clk/s",(g_clock_cnt + bootloader_clock_cnt) * 1000000 / g_timer);
   if (g_timer > 0) Log("simulation frequency = " NUMBERIC_FMT " inst/s", g_nr_guest_inst * 1000000 / g_timer);
   else Log("Finish running in less than 1 us and can not calculate the simulation frequency");
 }
