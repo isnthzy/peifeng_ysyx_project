@@ -10,7 +10,6 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1) extends ErXCoreMod
     val from_dr   = Input(new RSFromRename())
     val from_rob  = Input(new RSFromROB())
     val out = Vec(deqWidth,Decoupled(new RenameIO))
-
   })
 
   val rsBuff = RegInit(VecInit(Seq.fill(rsSize)(0.U.asTypeOf(new RenameIO))))

@@ -48,27 +48,27 @@ class RenameIO extends MicroOpIO{
 }
 
 
-class RenameFromExecuteUpdate(updateSize: Int) extends ErXCoreBundle {
-  val update = Vec(updateSize, new Bundle {
-    val wen = Input(Bool())
-    val prfDst = Input(UInt(log2Up(PrfSize).W))
+class RenameFromExecuteUpdate(updSize: Int) extends ErXCoreBundle {
+  val upd = Vec(updSize, new Bundle {
+    val wen = Bool()
+    val prfDst = UInt(log2Up(PrfSize).W)
   })
 }
 
-class RenameFromCommitUpdate(updateSize: Int) extends ErXCoreBundle {
-  val recover = Input(Bool())
-  val update  = Vec(updateSize, new Bundle {
-    val wen = Input(Bool())
-    val prfDst = Input(UInt(log2Up(PrfSize).W))
-    val freePrfDst = Input(UInt(log2Up(PrfSize).W))
-    val rfDst = Input(UInt(5.W))
+class RenameFromCommitUpdate(updSize: Int) extends ErXCoreBundle {
+  val upd = Vec(updSize, new Bundle {
+    val wen = Bool()
+    val prfDst = UInt(log2Up(PrfSize).W)
+    val freePrfDst = UInt(log2Up(PrfSize).W)
+    val rfDst = UInt(5.W)
   })
+  val recover = Bool()
 }
 
-class ROBFromExecuteUpdate(updateSize: Int) extends ErXCoreBundle {
-  val update = Vec(updateSize, new Bundle {
-    val en = Input(Bool())
-    val robIdx = Input(UInt(log2Up(RobEntries).W))
+class ROBFromExecuteUpdate(updSize: Int) extends ErXCoreBundle {
+  val upd = Vec(updSize, new Bundle {
+    val en = Bool()
+    val robIdx = UInt(log2Up(RobEntries).W)
   })
 }
 
@@ -76,14 +76,14 @@ class RSFromRename (updSize: Int = 1) extends ErXCoreBundle {
   val upd = Vec(updSize, new Bundle {
     
   })
-  val availList = Input(Vec(PrfSize, Bool()))
+  val availList = Vec(PrfSize, Bool())
 }
 
 class RSFromROB (updSize: Int = 1) extends ErXCoreBundle {
   val upd = Vec(updSize, new Bundle {
     
   })
-  val robAge = Input(Vec(RobEntries, UInt(log2Up(RobEntries).W)))
+  val robAge = Vec(RobEntries, UInt(log2Up(RobEntries).W))
 }
 
 class ROBCommitIO extends  ErXCoreBundle {
@@ -92,9 +92,9 @@ class ROBCommitIO extends  ErXCoreBundle {
 
 class PrfReadFromCommit (updSize: Int = 1) extends ErXCoreBundle {
   val upd = Vec(updSize, new Bundle {
-    val rfWen = Input(Bool())
-    val rfDst = Input(UInt(log2Up(PrfSize).W))
-    val rdData = Input(UInt(XLEN.W))
+    val rfWen = Bool()
+    val rfDst = UInt(log2Up(PrfSize).W)
+    val rdData = UInt(XLEN.W)
   })
 }
 

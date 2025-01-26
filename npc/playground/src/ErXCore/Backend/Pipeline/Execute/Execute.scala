@@ -7,7 +7,7 @@ import DecodeSignal._
 class Execute extends ErXCoreModule{
   val io = IO(new Bundle{
     val in = Vec(IssueWidth,Flipped(DecoupledIO(new IssueIO)))
-    val fw_dr = Output(Vec(IssueWidth,new Bundle {}))
+    val fw_dr  = Output(new RenameFromExecuteUpdate(updSize = IssueWidth))
     val fw_rob = Output(new ROBFromExecute(updSize = IssueWidth))
     // val to_cm  = Output(new Bundle {})
     // val out = DecodedIO()

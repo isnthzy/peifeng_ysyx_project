@@ -9,54 +9,51 @@ import DecodeSignal._
 //在Rename级检查，如果源操作数不需要，则重命名一个永远COMMIT的寄存器(0号寄存器)
 class Rename extends ErXCoreModule{
   val io = IO(new Bundle {
-    val in  = Flipped(Vec(DecodeWidth,Decoupled(new MicroOpIO)))
-    val out = Vec(DecodeWidth,Decoupled(new RenameIO))
-    val availList = Output(UInt(PrfSize.W))
-    val from = new Bundle {
-      val execute = new RenameFromExecuteUpdate(updateSize = IssueWidth)
-      val commit  = new RenameFromCommitUpdate(updateSize = CommitWidth)
-    }
+    val in  = Vec(DecodeWidth,new MicroOpIO)
+    val out = Vec(DecodeWidth,new RenameIO)
+    val from_ex = Input(new RenameFromExecuteUpdate(updSize = IssueWidth))
+    val from_cm = Input(new RenameFromCommitUpdate(updSize = CommitWidth))
+    val fw_ex = Output(new RSFromRename)
   })
-
   //Rename
   val notNeedSrc1 = Wire(Vec(DecodeWidth,Bool()))
   val notNeedSrc2 = Wire(Vec(DecodeWidth,Bool())) //TODO: check in.srcType
   val PrfStateTable = Module(new PrfStateTable)
+  io.fw_ex.availList := PrfStateTable.io.availList
   for(i <- 0 until DecodeWidth){
-    notNeedSrc1(i) := io.in(i).bits.cs.src1Type =/= SDEF(A_RS1)
-    notNeedSrc2(i) := io.in(i).bits.cs.src2Type =/= SDEF(B_RS2)
-    PrfStateTable.io.rfWen(i) := io.in(i).bits.cs.rfWen
-    PrfStateTable.io.rfDst(i) := io.in(i).bits.cs.rfDest
+    notNeedSrc1(i) := io.in(i).cs.src1Type =/= SDEF(A_RS1)
+    notNeedSrc2(i) := io.in(i).cs.src2Type =/= SDEF(B_RS2)
+    PrfStateTable.io.rfWen(i) := io.in(i).cs.rfWen
+    PrfStateTable.io.rfDst(i) := io.in(i).cs.rfDest
   }
   
   val RenameTable = Module(new RenameTable)
+
   for(i <- 0 until DecodeWidth){
-    RenameTable.io.in.rfSrc1(i) := Mux(!notNeedSrc1(i),io.in(i).bits.cs.rfSrc1 ,0.U)
-    RenameTable.io.in.rfSrc2(i) := Mux(!notNeedSrc2(i),io.in(i).bits.cs.rfSrc2 ,0.U)
-    RenameTable.io.in.rfDst(i)  := io.in(i).bits.cs.rfDest
+    RenameTable.io.in.rfSrc1(i) := Mux(!notNeedSrc1(i),io.in(i).cs.rfSrc1 ,0.U)
+    RenameTable.io.in.rfSrc2(i) := Mux(!notNeedSrc2(i),io.in(i).cs.rfSrc2 ,0.U)
+    RenameTable.io.in.rfDst(i)  := io.in(i).cs.rfDest
     RenameTable.io.in.prfDst(i) := PrfStateTable.io.prfDst(i)
   }
   
   for(i <- 0 until DecodeWidth){
-    io.out(i).bits.cs := io.in(i).bits.cs
-    io.out(i).bits.cf := io.in(i).bits.cf
-    io.out(i).valid <> io.in(i).valid
-    io.out(i).ready <> io.in(i).ready
-    io.out(i).bits.pf.pprfDst  := RenameTable.io.out.pprfDst(i)
-    io.out(i).bits.pf.prfSrc1  := RenameTable.io.out.prfSrc1(i)
-    io.out(i).bits.pf.prfSrc2  := RenameTable.io.out.prfSrc2(i)
-    io.out(i).bits.pf.prfDst   := RenameTable.io.out.pprfDst(i)
+    io.out(i).cs := io.in(i).cs
+    io.out(i).cf := io.in(i).cf
+    io.out(i).pf.pprfDst  := RenameTable.io.out.pprfDst(i)
+    io.out(i).pf.prfSrc1  := RenameTable.io.out.prfSrc1(i)
+    io.out(i).pf.prfSrc2  := RenameTable.io.out.prfSrc2(i)
+    io.out(i).pf.prfDst   := RenameTable.io.out.pprfDst(i)
   }
   //from execute
   for(i <- 0 until IssueWidth){ 
-    PrfStateTable.io.from.executeUpdate := Mux(io.from.execute.update(i).wen,io.from.execute.update(i).prfDst,0.U)
+    PrfStateTable.io.from.executeUpdate := Mux(io.from_ex.upd(i).wen,io.from_ex.upd(i).prfDst,0.U)
   }
   //from commit
-  RenameTable.io.from.commit := io.from.commit
-  PrfStateTable.io.from.commitRecover := io.from.commit.recover
+  RenameTable.io.from_cm := io.from_cm
+  PrfStateTable.io.from.commitRecover := io.from_cm.recover
   for(i <- 0 until CommitWidth){
-    PrfStateTable.io.from.commitUpdate := Mux(io.from.commit.update(i).wen,io.from.commit.update(i).prfDst,0.U)
-    PrfStateTable.io.from.commitFree   := Mux(io.from.commit.update(i).wen,io.from.commit.update(i).freePrfDst,0.U)
+    PrfStateTable.io.from.commitUpdate := Mux(io.from_cm.upd(i).wen,io.from_cm.upd(i).prfDst,0.U)
+    PrfStateTable.io.from.commitFree   := Mux(io.from_cm.upd(i).wen,io.from_cm.upd(i).freePrfDst,0.U)
   }
 
 }
@@ -75,9 +72,7 @@ class RenameTable extends ErXCoreModule{
       val prfSrc2 = Output(Vec(DecodeWidth,UInt(5.W)))
       val pprfDst = Output(Vec(DecodeWidth,UInt(5.W)))
     }
-    val from = new Bundle { //from commit
-      val commit = Input(new RenameFromCommitUpdate(updateSize = CommitWidth))
-    }
+    val from_cm = Input(new RenameFromCommitUpdate(updSize = CommitWidth))
   })
   val specTable = RegInit(VecInit(Seq.tabulate(32)(i => i.U(log2Up(PrfSize).W))))
   val archTable = RegInit(VecInit(Seq.tabulate(32)(i => i.U(log2Up(PrfSize).W))))
@@ -109,15 +104,15 @@ class RenameTable extends ErXCoreModule{
   }
 
 
-  when(!io.from.commit.recover){
+  when(!io.from_cm.recover){
     (0 until DecodeWidth).map(i => {
       when(io.in.rfWen(i)&&io.in.rfDst(i) =/= 0.U){
         specTable(io.in.rfDst(i)) := io.in.prfDst(i)
       }
     })
     (0 until CommitWidth).map(i => {
-      when(io.from.commit.update(i).wen&&io.from.commit.update(i).prfDst =/= 0.U){
-        archTable(io.from.commit.update(i).rfDst) := io.from.commit.update(i).prfDst
+      when(io.from_cm.upd(i).wen&&io.from_cm.upd(i).prfDst =/= 0.U){
+        archTable(io.from_cm.upd(i).rfDst) := io.from_cm.upd(i).prfDst
       }
     })
   }.otherwise{

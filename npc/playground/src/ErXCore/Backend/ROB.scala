@@ -7,8 +7,8 @@ import ErXCore.UIntUtils.UIntWithGetIdx
 class ROB extends ErXCoreModule{
   val io = IO(new Bundle {
     val in = Vec(RobWidth,Flipped(Decoupled(new RenameIO)))
-    val robAge  = Vec(RobWidth,Output(UInt(RobAgeWidth.W)))
-    val from_ex = Input(new ROBFromExecuteUpdate(updateSize = IssueWidth))
+    val from_ex = Input(new ROBFromExecuteUpdate(updSize = IssueWidth))
+    val fw_dp   = Output(new RSFromROB)
     val to_cm  = Vec(RobWidth,Decoupled(new RenameIO))
   })
   val rob = SyncReadMem(RobEntries, new RenameIO, SyncReadMem.WriteFirst)
@@ -38,17 +38,17 @@ class ROB extends ErXCoreModule{
       when(io.in(i).valid){
         rob.write(headPtr + i.U, io.in(i).bits)
         complete(headPtr + i.U) := false.B
-        io.robAge(i) := headPtr + i.U
+        io.fw_dp.robAge(i) := headPtr + i.U
       }.otherwise{
-        io.robAge(i) := 0.U
+        io.fw_dp.robAge(i) := 0.U
       }
     }
   }
 
   //complete
   for(i <- 0 until IssueWidth){
-    when(io.from_ex.update(i).en){
-      complete(io.from_ex.update(i).robIdx) := true.B
+    when(io.from_ex.upd(i).en){
+      complete(io.from_ex.upd(i).robIdx) := true.B
     }
   }
 
