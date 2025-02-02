@@ -86,6 +86,18 @@ class RSFromROB (updSize: Int = 1) extends ErXCoreBundle {
   val robAge = Vec(RobEntries, UInt(log2Up(RobEntries).W))
 }
 
+class ROBFromExecute (updSize: Int = 1)  extends ErXCoreBundle {
+  val upd = Vec(updSize, new Bundle {
+    val br = new BranchBundle
+  })
+  
+}
+
+class FrontFromBack extends ErXCoreBundle {
+  val flush = Bool()
+  val tk = new BranchBundle
+}
+
 class StoreQueueFromROB (updSize: Int = 1) extends ErXCoreBundle {
   val upd = Vec(updSize, new Bundle {
 
@@ -120,12 +132,6 @@ class BranchBundle extends ErXCoreBundle {
   val target = UInt(XLEN.W)
 }
 
-class ROBFromExecute (updSize: Int = 1)  extends ErXCoreBundle {
-  val upd = Vec(updSize, new Bundle {
-    val br = new BranchBundle
-  })
-  
-}
 
 class CommitIO extends ErXCoreBundle{
   val target = Output(UInt(XLEN.W)) 

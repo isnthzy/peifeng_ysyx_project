@@ -6,73 +6,72 @@ import chisel3.util._
 // import Cache.Core2AxiRespondIO
 
 class IfStage extends ErXCoreModule {
-  val fs=IO(new Bundle {
-    val in=Flipped(Decoupled(new Pf2IfBusBundle()))
-    val to_id=Decoupled(new If2IdBusBundle())
+  val io=IO(new Bundle {
+    val in = Flipped(Decoupled(new Pf2IfBusBundle()))
+    val to_id = Decoupled(new If2IdBusBundle())
+    val from_bck = Input(new Bundle {
+      val flush = Input(Bool())
+    })
 
-    val from_id=Input(new If4IdBusBundle())
-    val from_ex=Input(new If4ExBusBundle())
-    val from_ls=Input(new If4LsBusBundle())
+    val dl = new Core2AxiRespondIO()
 
-    val dl=new Core2AxiRespondIO()
-
-    val perfMode=Output(Bool()) //飞线到if级...
-    val programExit=Input(Bool())
+    val perfMode = Output(Bool()) //飞线到if级...
+    val programExit = Input(Bool())
   })
   val fsFlush=dontTouch(Wire(Bool()))
   val fsStall=dontTouch(Wire(Bool()))
   val fsExcpEn=dontTouch(Wire(Bool()))
-  fsFlush:=fs.from_id.flush||fs.from_ex.flush||fs.from_ls.flush
+  fsFlush:=io.from_bck.flush
   val fsValid=dontTouch(Wire(Bool()))
   val fsValidR=RegInit(false.B)
   val fsReadyGo=dontTouch(Wire(Bool()))
   val holdValid=RegInit(false.B)
 
-  fs.in.ready:= ~fsValidR || fsReadyGo && fs.to_id.ready
+  io.in.ready:= ~fsValidR || fsReadyGo && io.to_id.ready
   when(fsFlush){
     fsValidR:=false.B
-  }.elsewhen(fs.in.ready){
-    fsValidR:=fs.in.valid
+  }.elsewhen(io.in.ready){
+    fsValidR:=io.in.valid
   }
   fsValid:=fsValidR&& ~fsFlush
   fsReadyGo:= ~fsStall || fsExcpEn
-  fs.to_id.valid:=fsValid&&fsReadyGo //fsValid===fsValidR&& ~fsFlush
+  io.to_id.valid:=fsValid&&fsReadyGo //fsValid===fsValidR&& ~fsFlush
   val inst_discard=RegInit(false.B)
-  when(fsFlush&& ~fs.in.ready&& ~fsReadyGo){
+  when(fsFlush&& ~io.in.ready&& ~fsReadyGo){
     inst_discard:=true.B
-  }.elsewhen(fs.dl.dataOk){
+  }.elsewhen(io.dl.dataOk){
     inst_discard:=false.B
   }
-  fsStall:= ~(fs.dl.dataOk||holdValid) || inst_discard
+  fsStall:= ~(io.dl.dataOk||holdValid) || inst_discard
 
   val fsInstBuff=RegInit(0.U(XLEN.W))
   val fsUseInstBuff=RegInit(false.B)
   val fsInst=Mux(fsExcpEn,INST_NOP,
-              Mux(fsUseInstBuff&& ~fs.dl.dataOk,fsInstBuff,fs.dl.data))
-  when(fs.to_id.fire){
+              Mux(fsUseInstBuff&& ~io.dl.dataOk,fsInstBuff,io.dl.data))
+  when(io.to_id.fire){
     fsUseInstBuff:=false.B
     holdValid:=false.B
-  }.elsewhen(fs.dl.dataOk& ~fsFlush){
-    fsInstBuff:=fs.dl.data
-    fsUseInstBuff:= ~fs.to_id.ready
-    holdValid:= ~fs.to_id.ready
+  }.elsewhen(io.dl.dataOk& ~fsFlush){
+    fsInstBuff:=io.dl.data
+    fsUseInstBuff:= ~io.to_id.ready
+    holdValid:= ~io.to_id.ready
   }
 
 //NOTE:Excp
   val fsExcpType=Wire(new IfExcpTypeBundle())
-  fsExcpType.num:=fs.in.bits.excpType
+  fsExcpType.num:=io.in.bits.excpType
   fsExcpType.iaf:=false.B
   fsExcpType.ipf:=false.B
   fsExcpEn:=fsExcpType.asUInt.orR
-  fs.to_id.bits.excpEn:=fsExcpEn
-  fs.to_id.bits.excpType:=fsExcpType
+  io.to_id.bits.excpEn:=fsExcpEn
+  io.to_id.bits.excpType:=fsExcpType
 
   val perfMode=RegInit(false.B)
-  fs.to_id.bits.pc:=fs.in.bits.pc
-  fs.to_id.bits.inst:=fsInst
-  fs.to_id.bits.perfMode:=perfMode
+  io.to_id.bits.pc:=io.in.bits.pc
+  io.to_id.bits.inst:=fsInst
+  io.to_id.bits.perfMode:=perfMode
 
-  fs.perfMode:=perfMode
+  io.perfMode:=perfMode
   // if(GenerateParams.getParam("PERF").asInstanceOf[Boolean]){
   //   val OpenCalculateIPC=Module(new OpenCalculateIPC())
     
@@ -80,7 +79,7 @@ class IfStage extends ErXCoreModule {
   //   OpenCalculateIPC.io.valid:=false.B
   //   //NOTE:这样做的目的是当我们使用soc时略去bootloader阶段，等到进入程序后通知npc开始计算ipc
   //   //使用CSRRS读取学号寄存器作为了判断是否进入程序的条件
-  //   when((fsInst===BitPat("b11110001001000000010?????1110011"))&&fs.to_id.fire){
+  //   when((fsInst===BitPat("b11110001001000000010?????1110011"))&&io.to_id.fire){
   //     perfMode:=true.B
   //     OpenCalculateIPC.io.valid:=true.B
   //   }
@@ -90,10 +89,10 @@ class IfStage extends ErXCoreModule {
   //   val InstCnt=RegInit(0.U(64.W))
   //   when(perfMode){
   //     FetchDataClockCnt:=FetchDataClockCnt+1.U
-  //     when(fs.to_id.fire){
+  //     when(io.to_id.fire){
   //       InstCnt:=InstCnt+1.U
   //     }
-  //     when(fs.programExit){
+  //     when(io.programExit){
   //       var CyclePerFetchDataResp=(FetchDataClockCnt.asSInt  * 100.asSInt) / InstCnt.asSInt
   //       printf("Cycle per fetch(data resp)(%%): %d%%\n",CyclePerFetchDataResp);
   //     }

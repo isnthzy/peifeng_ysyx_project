@@ -1,5 +1,5 @@
 package ErXCore
-
+import ErXCore.Cache._
 import chisel3._
 import chisel3.util._
 
@@ -7,6 +7,8 @@ import chisel3.util._
 class Backend extends ErXCoreModule{
   val io = IO(new Bundle {
     val in = Vec(DecodeWidth,Flipped(Decoupled(new InstIO)))
+    val fw_frt = new FrontFromBack
+    val dmem = new AxiCacheIO()
   })
   
   val flush = false.B
@@ -16,6 +18,11 @@ class Backend extends ErXCoreModule{
   val EXstage   = Module(new Execute)
   val CMstage   = Module(new Commit)
   val ROB       = Module(new ROB)
+  val DCache    = Module(new DCache)
+  val StoreQueue = Module(new StoreQueue)
+
+  StoreQueue.io.from_rob := ROB.io.fw_sq
+  io.dmem := DCache.io.out
 //------Decode and Rename Stage------
   DRstage.io.in <> io.in
   DRstage.io.from_ex := EXstage.io.fw_dr
@@ -31,7 +38,10 @@ class Backend extends ErXCoreModule{
 
 //-----     Execute  stage     ------
   PipeConnect(EXstage.io.in,PRstage.io.to_ex,flush)
-
+  StoreQueue.io.st := EXstage.io.dmemStore
+  StoreQueue.io.ld := EXstage.io.dmemLoad
+  DCache.io.dl := StoreQueue.io.out.ld
+  DCache.io.ds := StoreQueue.io.out.st
 //-----     Commit   stage     ------
 
 
