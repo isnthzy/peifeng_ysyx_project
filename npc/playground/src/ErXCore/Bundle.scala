@@ -86,6 +86,13 @@ class RSFromROB (updSize: Int = 1) extends ErXCoreBundle {
   val robAge = Vec(RobEntries, UInt(log2Up(RobEntries).W))
 }
 
+class StoreQueueFromROB (updSize: Int = 1) extends ErXCoreBundle {
+  val upd = Vec(updSize, new Bundle {
+
+  })
+  val doDeq = Bool()
+}
+
 class ROBCommitIO extends  ErXCoreBundle {
   
 }
@@ -133,4 +140,72 @@ class CommitIO extends ErXCoreBundle{
 
 class PipeExecuteOut extends ErXCoreBundle {
   val result = UInt(XLEN.W)
+}
+
+//NOTE: Frontend
+class CsrEntriesBundle extends ErXCoreBundle{
+  val mepc=UInt(XLEN.W)
+  val mtvec=UInt(XLEN.W)
+}
+
+class PfExcpTypeBundle extends ErXCoreBundle{
+  val iam=UInt(1.W)
+}
+
+class IfExcpTypeBundle extends ErXCoreBundle{
+  val num=new PfExcpTypeBundle()
+  val iaf=UInt(1.W)
+  val ipf=UInt(1.W)
+}
+
+class BranchTakeBundle extends ErXCoreBundle{
+  val taken=Bool()
+  val target=UInt(XLEN.W)
+}
+
+class PipelineFlushsBundle extends ErXCoreBundle{
+  val refetch=Bool()
+  val excp=Bool()
+  val xret=Bool()
+}
+
+class Pf2IfBusBundle extends ErXCoreBundle{
+  val excpEn=Bool()
+  val excpType=new PfExcpTypeBundle()
+  val pc=UInt(XLEN.W)
+}
+
+class Pf4IdBusBundle extends ErXCoreBundle{
+  val brJump=new BranchTakeBundle()
+}
+
+class Pf4ExBusBundle extends ErXCoreBundle{
+  val brCond=new BranchTakeBundle()
+  val fencei=Bool()
+}
+
+class Pf4LsBusBundle extends ErXCoreBundle{
+  val flush=new PipelineFlushsBundle()
+  val refetchPC=UInt(XLEN.W)
+}
+
+class If4IdBusBundle extends ErXCoreBundle{
+  val flush=Bool()
+}
+
+class If4ExBusBundle extends ErXCoreBundle{
+  val flush=Bool()
+}
+
+class If4LsBusBundle extends ErXCoreBundle{
+  val flush=Bool()
+}
+
+class If2IdBusBundle extends ErXCoreBundle{
+  val perfMode=Bool()
+
+  val excpEn=Bool()
+  val excpType=new IfExcpTypeBundle()
+  val pc=UInt(XLEN.W)
+  val inst=UInt(XLEN.W)
 }

@@ -27,8 +27,6 @@ class PrfRead extends ErXCoreModule{
     var rsData1 = prf(io.in(i).bits.pf.prfSrc1)
     var rsData2 = prf(io.in(i).bits.pf.prfSrc2)
 
-    // io.to_ex(i).bits.data.rs1 := prf(io.in(i).bits.pf.prfSrc1)
-    // io.to_ex(i).bits.data.rs2 := prf(io.in(i).bits.pf.prfSrc2)
     for(j <- 0 until CommitWidth){
       when(io.to_ex(i).bits.pf.prfSrc1 === io.from_cm.upd(j).rfDst && io.from_cm.upd(i).rfWen){
         rsData1 := io.from_cm.upd(j).rdData
@@ -37,8 +35,7 @@ class PrfRead extends ErXCoreModule{
         rsData2 := io.from_cm.upd(j).rdData
       }
     }
-    // io.to_ex(i).bits.data.src1 := rsData1
-    // io.to_ex(i).bits.data.src2 := rsData2
+
     io.to_ex(i).bits.data.src1 := MuxLookup(io.in(i).bits.cs.src1Type,rsData1)(Seq(
       SDEF(A_PC) -> io.in(i).bits.cf.pc,
       SDEF(A_RS1) -> rsData1,

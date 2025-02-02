@@ -9,6 +9,7 @@ class ROB extends ErXCoreModule{
     val in = Vec(RobWidth,Flipped(Decoupled(new RenameIO)))
     val from_ex = Input(new ROBFromExecuteUpdate(updSize = IssueWidth))
     val fw_dp   = Output(new RSFromROB)
+    val fw_sq   = Output(new StoreQueueFromROB)
     val to_cm  = Vec(RobWidth,Decoupled(new RenameIO))
   })
   val rob = SyncReadMem(RobEntries, new RenameIO, SyncReadMem.WriteFirst)

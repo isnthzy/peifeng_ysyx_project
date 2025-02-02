@@ -4,12 +4,12 @@ import chisel3._
 import chisel3.util._
 import DecodeSignal._
 
-class Alu extends Module {
+class Alu extends ErXCoreModule {
   val io = IO(new Bundle {
     val op = Input(UInt(4.W))
-    val src1 = Input(UInt(32.W))
-    val src2 = Input(UInt(32.W))
-    val result = Output(UInt(32.W))
+    val src1 = Input(UInt(XLEN.W))
+    val src2 = Input(UInt(XLEN.W))
+    val result = Output(UInt(XLEN.W))
   })
   
 
@@ -39,8 +39,8 @@ class Alu extends Module {
   val alu_eq  = dontTouch(Cat(0.U(31.W),io.src1===io.src2))
 
   val alu_pc4 = dontTouch(io.src1+4.U)
-
-  val alu_lui = dontTouch(Cat(io.src2(31,12),0.U(12.W)))
+  
+  val alu_lui = dontTouch(Cat(io.src2(XLEN-1,12),0.U(12.W)))
 
   io.result := Mux1hDefMap(io.op,Map(
     ALU_ADD -> alu_add, 

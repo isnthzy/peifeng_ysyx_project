@@ -3,7 +3,7 @@ package ErXCore
 import chisel3._
 import chisel3.util._
 
-class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1) extends ErXCoreModule {
+class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean = false) extends ErXCoreModule {
   //support other rsSize
   val io = IO(new Bundle {
     val in = Vec(enqWidth,Flipped(Decoupled(new RenameIO)))
