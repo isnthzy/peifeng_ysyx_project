@@ -2,6 +2,7 @@ package ErXCore
 
 import chisel3._
 import chisel3.util._
+import DecodeSignal._
 
 class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean = false) extends ErXCoreModule {
   //support other rsSize
@@ -19,6 +20,7 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
   val rsFull    = rsBuffValid.reduce(_&&_)
   val rsAllowin = rsSize.U - enqWidth.U >= rsCount 
   val rsEmpty   = !rsBuffValid.reduce(_||_)
+  val isStore   = RegInit(VecInit(Seq.fill(rsSize)(false.B)))
 
   //RS enqueue
   (0 until enqWidth).foreach{i=> io.in(i).ready := rsAllowin}
@@ -33,88 +35,103 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
       enqSelect(i) := PriorityEncoder(emptySlot(i))
     }
   }
-  // val emptySlot = ~rsBuffValid.asUInt
-  // val enqSelect = PriorityEncoder(emptySlot)
   for(i <- 0 until enqWidth){
     when(io.in(i).fire){
       rsBuff(enqSelect(i)) := io.in(i).bits
       rsBuffValid(enqSelect(i)) := true.B
-      rsROBAge := 0.U
+      rsROBAge(enqSelect(i)) := io.from_rob.robAge(i)
+      isStore(enqSelect(i)) := isStoreInst(io.in(i).bits.cs.lsType)
     }
   }
-
-
 
   //RS dequeue
   //only support one deqWidth
 
-  def OldFirstArb(inputs: Vec[ArbAgeBundle], ArbSize: Int): Vec[UInt] = {
-    if(deqWidth == 1){
-      require(isPow2(rsSize), "rsSize must be power of 2")
-      val n = ArbSize / 2
-      require(ArbSize > 0 && (ArbSize & (ArbSize - 1)) == 0, "ArbSize must be a power of 2!") // 确保 ArbSize 是 2 的幂次
-      def getIdx(x: UInt): UInt = x(RobAgeWidth - 1, 0)
-      def getFlag(x: UInt): Bool = x(RobAgeWidth - 1).asBool
+  def OldFirstArb(inputs: Vec[ArbAgeBundle], ArbSize: Int): Vec[ArbAgeBundle] = {
+    require(isPow2(rsSize), "rsSize must be power of 2")
+    require(isPow2(ArbSize), "ArbSize must be a power of 2!") // 确保 ArbSize 是 2 的幂次
+    require(deqWidth == 1 || deqWidth == 2, "deqWidth must be 1 or 2")
+    def getIdx(x: UInt): UInt = x(RobAgeWidth - 1, 0)
+    def getFlag(x: UInt): Bool = x(RobAgeWidth - 1).asBool
+    def selectIdx(age: UInt, xReady: Bool): UInt = {
+      if(StoreSeq){
+        getIdx(age) & Sext(xReady, RobAgeWidth - 1)
+      }else{
+        getIdx(age) & Sext(xReady, RobAgeWidth - 1)
+      }
+    }
 
+    def SelectAge(A: ArbAgeBundle, B: ArbAgeBundle): ArbAgeBundle = {
+      def compare(older: ArbAgeBundle, younger: ArbAgeBundle): ArbAgeBundle = {
+        if(StoreSeq){
+/*compare power of 
+| >(younger) | young - isStore | young - instRdy | old - isStore | old - instRdy | 判断结果 |
+| ---------- | --------------- | --------------- | ------------- | ------------- | -------- |
+| young>old  | 0               | 0               | 0             | 0             | old      |
+| young>old  | 0               | 0               | 0             | 1             | old      |
+| young>old  | 0               | 0               | 1             | 0             | old      |
+| young>old  | 0               | 0               | 1             | 1             | old      |
+| young>old  | 0               | 1               | 0             | 0             | young    |
+| young>old  | 0               | 1               | 0             | 1             | old      |
+| young>old  | 0               | 1               | 1             | 0             | old      |
+| young>old  | 0               | 1               | 1             | 1             | old      |
+| young>old  | 1               | 0               | 0             | 0             | old      |
+| young>old  | 1               | 0               | 0             | 1             | old      |
+| young>old  | 1               | 0               | 1             | 0             | old      |
+| young>old  | 1               | 0               | 1             | 1             | old      |
+| young>old  | 1               | 1               | 0             | 0             | old      |
+| young>old  | 1               | 1               | 0             | 1             | old      |
+| young>old  | 1               | 1               | 1             | 0             | old      |
+| young>old  | 1               | 1               | 1             | 1             | old      |
+*/ 
+          Mux(!older.srcReady && younger.srcReady && !older.isStore && !younger.isStore, younger, older)
+        }else{
+/*compare power of 
+| >(younger) | young - instRdy | old - instRdy | 判断结果 |
+| ---------- | --------------- | ------------- | -------- |
+| young>old  | 0               | 0             | old      |
+| young>old  | 0               | 1             | old      |
+| young>old  | 1               | 0             | young    |
+| young>old  | 1               | 1             | old      |
+*/
+          Mux(!older.srcReady && younger.srcReady, younger, older)
+        }
+      }
+      val ageCompare = Mux(getFlag(A.age) === getFlag(B.age), getIdx(A.age) < getIdx(B.age),
+                                                              getIdx(A.age) > getIdx(B.age)) 
+      //NOTE:ageCompare is true.B，A older B
+      Mux(ageCompare, 
+        compare(A, B), 
+        compare(B, A)
+      )
+    }
+    
+    if(deqWidth == 1){
       if (ArbSize == 1) {
         // 只有一个输入时，直接返回该项的年龄
-        inputs(0).age.asTypeOf(Vec(deqWidth,UInt(RobAgeWidth.W)))
+        inputs(0).asTypeOf(Vec(deqWidth,new ArbAgeBundle))
       } else if (ArbSize == 2) {
         // 两个输入时直接比较，返回年龄较小者
-        val retAge = Wire(UInt(RobAgeWidth.W))
-        when(getFlag(inputs(0).age) === getFlag(inputs(1).age)){
-          var selectIdx0 = getIdx(inputs(0).age) & Sext(inputs(0).srcReady, RobAgeWidth - 1)
-          var selectIdx1 = getIdx(inputs(1).age) & Sext(inputs(1).srcReady, RobAgeWidth - 1)
-          retAge := Mux(selectIdx0 < selectIdx1, inputs(0).age, inputs(1).age)
-        }.otherwise{
-          var selectIdx0 = getIdx(inputs(0).age) & Sext(inputs(0).srcReady, RobAgeWidth - 1)
-          var selectIdx1 = getIdx(inputs(1).age) & Sext(inputs(1).srcReady, RobAgeWidth - 1)
-          retAge := Mux(selectIdx0 > selectIdx1, inputs(0).age, inputs(1).age)
-        }
-        retAge.asTypeOf(Vec(deqWidth,UInt(RobAgeWidth.W)))
+        val retAge = SelectAge(inputs(0), inputs(1))
+        retAge.asTypeOf(Vec(deqWidth,new ArbAgeBundle))
       } else {
         // 多于两个输入时，递归处理左右两部分
-        val tmp1 = OldFirstArb(VecInit(inputs.take(n)), n)
-        val tmp2 = OldFirstArb(VecInit(inputs.drop(n)), n)
-        val retArg = Vec(deqWidth,UInt(RobAgeWidth.W))
-        when(getFlag(tmp1(0)) === getFlag(tmp2(0))){
-          var tmpIdx0 = getIdx(tmp1(0)) & Sext(inputs(0).srcReady, RobAgeWidth - 1)
-          var tmpIdx1 = getIdx(tmp2(0)) & Sext(inputs(1).srcReady, RobAgeWidth - 1)
-          retArg(0) := Mux(tmpIdx0 < tmpIdx1, tmp1(0), tmp2(0))
-        }.otherwise{
-          var tmpIdx0 = getIdx(tmp1(0)) & Sext(inputs(0).srcReady, RobAgeWidth - 1)
-          var tmpIdx1 = getIdx(tmp2(0)) & Sext(inputs(1).srcReady, RobAgeWidth - 1)
-          retArg(0) := Mux(tmpIdx0 > tmpIdx1, tmp1(0), tmp2(0))
-        }
+        val tmp1 = OldFirstArb(VecInit(inputs.take(ArbSize / 2)), ArbSize / 2)
+        val tmp2 = OldFirstArb(VecInit(inputs.drop(ArbSize / 2)), ArbSize / 2)
+        val retArg = Vec(deqWidth,new ArbAgeBundle)
+        retArg := SelectAge(tmp1(0),tmp2(0))
         retArg
-        // Mux(tmp1(0) < tmp2(0), tmp1(0), tmp2(0)) // 返回左右部分中年龄较小者
       }
     }else{
-      require(isPow2(rsSize), "rsSize must be power of 2")
       require(rsSize >= 2, "rsSize must be greater than 2")
-      val n = ArbSize / 2
-      require(ArbSize > 0 && (ArbSize & (ArbSize - 1)) == 0, "ArbSize must be a power of 2!") // 确保 ArbSize 是 2 的幂次
-      def getIdx(x: UInt): UInt = x(RobAgeWidth - 1, 0)
-      def getFlag(x: UInt): Bool = x(RobAgeWidth - 1).asBool
-
       if (ArbSize == 2) {
-        // 两个输入时直接比较，返回年龄较小者
-        val retAge = Vec(1,UInt(RobAgeWidth.W))
-        when(getFlag(inputs(0).age) === getFlag(inputs(1).age)){
-          var selectIdx0 = getIdx(inputs(0).age) & Sext(inputs(0).srcReady, RobAgeWidth - 1)
-          var selectIdx1 = getIdx(inputs(1).age) & Sext(inputs(1).srcReady, RobAgeWidth - 1)
-          retAge(0) := Mux(selectIdx0 < selectIdx1, inputs(0).age, inputs(1).age)
-        }.otherwise{
-          var selectIdx0 = getIdx(inputs(0).age) & Sext(inputs(0).srcReady, RobAgeWidth - 1)
-          var selectIdx1 = getIdx(inputs(1).age) & Sext(inputs(1).srcReady, RobAgeWidth - 1)
-          retAge(0) := Mux(selectIdx0 > selectIdx1, inputs(0).age, inputs(1).age)
-        }
-        retAge
+        val retAge = SelectAge(inputs(0), inputs(1))
+        retAge.asTypeOf(Vec(deqWidth,new ArbAgeBundle))
       } else {
         // 多于两个输入时，递归处理左右两部分
-        val retAge = Vec(deqWidth,UInt(RobAgeWidth.W))
-        val tmp1 = OldFirstArb(VecInit(inputs.take(n)), n)
-        val tmp2 = OldFirstArb(VecInit(inputs.drop(n)), n)
+        val retAge = Vec(deqWidth,new ArbAgeBundle)
+        val tmp1 = OldFirstArb(VecInit(inputs.take(ArbSize / 2)), ArbSize / 2)
+        val tmp2 = OldFirstArb(VecInit(inputs.drop(ArbSize / 2)), ArbSize / 2)
         retAge(0) := tmp1
         retAge(1) := tmp2
         retAge
@@ -130,19 +147,23 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
     rsReadyList(i) := rs1Ready && rs2Ready && rsBuffValid(i)
     rsArbPacket(i).age := rsROBAge(i)
     rsArbPacket(i).srcReady := rsReadyList(i)
+    rsArbPacket(i).isStore := isStore(i)
   }
-  val deqSelect = OldFirstArb(rsArbPacket, rsSize)
+  def getIdx(x: UInt): UInt = x(RobAgeWidth - 1, 0)
+  val deqSelect = OldFirstArb(rsArbPacket, rsSize).map(bundle => getIdx(bundle.age))
   for(i <- 0 until deqWidth){
     io.out(i).valid := rsReadyList(deqSelect(i))
     io.out(i).bits  := rsBuff(deqSelect(i))
     when(io.out(i).fire){
       rsBuffValid(deqSelect(i)) := false.B
+      isStore(deqSelect(i)) := false.B
     }
   }
-
 }
+
 
 class ArbAgeBundle extends ErXCoreBundle {
   val age = UInt(RobAgeWidth.W)
   val srcReady = Bool()
+  val isStore  = Bool()
 }

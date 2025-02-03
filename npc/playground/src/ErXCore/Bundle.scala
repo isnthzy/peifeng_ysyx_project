@@ -83,7 +83,7 @@ class RSFromROB (updSize: Int = 1) extends ErXCoreBundle {
   val upd = Vec(updSize, new Bundle {
     
   })
-  val robAge = Vec(RobEntries, UInt(log2Up(RobEntries).W))
+  val robAge = Vec(RobWidth, UInt(RobAgeWidth.W))
 }
 
 class ROBFromExecute (updSize: Int = 1)  extends ErXCoreBundle {

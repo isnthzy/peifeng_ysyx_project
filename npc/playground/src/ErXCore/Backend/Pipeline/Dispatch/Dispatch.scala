@@ -34,8 +34,8 @@ class Dispatch extends ErXCoreModule {
       uopMemValid(i) := io.in(i).valid
     }
   }
-  val memRS = Module(new RS(rsSize = 2,deqWidth = DecodeWidth))
-  val intRS = Module(new RS(rsSize = 2,deqWidth = DecodeWidth))
+  val memRS = Module(new RS(rsSize = 2,enqWidth = DecodeWidth,deqWidth = 1,StoreSeq = true))
+  val intRS = Module(new RS(rsSize = 2,enqWidth = DecodeWidth,deqWidth = DecodeWidth))
 
   intRS.io.in.zipWithIndex.foreach{case (in, i) => 
     in.bits  := uopInt(i)
@@ -53,7 +53,7 @@ class Dispatch extends ErXCoreModule {
     if(i < 2){
       io.to_pr(i).bits <> intRS.io.out(i)
     }else{
-      io.to_pr(i).bits <> memRS.io.out(3)
+      io.to_pr(i).bits <> memRS.io.out(0)
     }
   }
 }
