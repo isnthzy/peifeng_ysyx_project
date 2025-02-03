@@ -16,6 +16,7 @@
 !README.md
 !utils/
 !*.nxdc
+!*.md
 yosys_src/
 build/
 vsrc/*

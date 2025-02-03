@@ -1,6 +1,7 @@
 import circt.stage._
 import scala.annotation.tailrec
-import CoreConfig.GenerateParams
+import ErXCore.GenerateParams
+import ErXCore.SimTop
 
 abstract class GenParamsApp extends App {
   case class GenParams( //NOTE:搬运来源：https://github.com/OpenXiangShan/difftest
