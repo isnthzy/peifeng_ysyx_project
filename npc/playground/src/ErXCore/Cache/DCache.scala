@@ -7,9 +7,9 @@ import chisel3.util._
 //NOTE:DCache未实现
 class DCache extends ErXCoreModule{
   val io=IO(new Bundle{
-    val ds = new SimpleMemIO
-    val dl = new SimpleMemIO
-    val out=new AxiCacheIO()
+    val ds = Flipped(new SimpleMemIO)
+    val dl = Flipped(new SimpleMemIO)
+    val out= new AxiCacheIO()
   })
   io.out.rret.ready:=true.B
   io.dl.resp.ready :=true.B
