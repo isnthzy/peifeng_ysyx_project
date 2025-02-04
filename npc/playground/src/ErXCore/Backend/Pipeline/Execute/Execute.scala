@@ -21,8 +21,8 @@ class Execute extends ErXCoreModule{
   for(i <- 0 until pipe.length){
     pipe(i).io.in <> io.in(i)
   } //从发射上限制CSR，当读到第二条指令是csr时，阻塞发射到第一条队列上
-  io.dmemStore := pipeMEM.io.dmemStore.get
-  io.dmemLoad  := pipeMEM.io.dmemLoad.get
+  io.dmemStore <> pipeMEM.io.dmemStore.get
+  io.dmemLoad  <> pipeMEM.io.dmemLoad.get
 
   def checkBranchTaken(brType: UInt, result: Bool): Bool = { 
       ((brType===SDEF(BR_EQ) &&  result(0))
