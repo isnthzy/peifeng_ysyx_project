@@ -131,15 +131,15 @@ class LSU extends ErXCoreModule{
 }
 
 class SimpleReqIO extends ErXCoreBundle{
-  val addr = Input(UInt(XLEN.W))
-  val size = Input(UInt(3.W))
-  val wen   = Input(Bool()) //read:0 write:1
-  val wmask = Input(UInt((XLEN/8).W))
-  val wdata = Input(UInt(XLEN.W))
+  val addr = Output(UInt(XLEN.W))
+  val size = Output(UInt(3.W))
+  val wen   = Output(Bool()) //read:0 write:1
+  val wmask = Output(UInt((XLEN/8).W))
+  val wdata = Output(UInt(XLEN.W))
 }
 
 class SimpleRespIO extends ErXCoreBundle{
-  val data  = Input(UInt(32.W))
+  val data  = Output(UInt(32.W))
 }
 
 
