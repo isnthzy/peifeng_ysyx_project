@@ -38,17 +38,16 @@ class InstBuff extends ErXCoreModule {
 
   // Dequeue logic
   val canDequeue = queueCount >= 2.U
+  val validMask = WireDefault(VecInit(Seq.fill(DecodeWidth)(false.B)))
   when (canDequeue) {
     for (i <- 0 until DecodeWidth) {
-      io.out(i).valid := queue(queueHead + i.U).valid
-      io.out(i).bits := queue(queueHead + i.U).bits
+      validMask(i) := canDequeue
     }
     queueHead := queueHead + 2.U
     queueCount := queueCount - 2.U
-  } otherwise {
-    for (i <- 0 until DecodeWidth) {
-      io.out(i).valid := false.B
-    }
   }
-
+  for (i <- 0 until DecodeWidth) {
+    io.out(i).valid := queue(queueHead + i.U).valid && validMask(i)
+    io.out(i).bits := queue(queueHead + i.U).bits
+  }
 }
