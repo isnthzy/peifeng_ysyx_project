@@ -35,7 +35,7 @@ class ROB extends ErXCoreModule{
   (0 until RobWidth).map(i => io.in(i).ready := ringBuffAllowin)
 
 //
-  val flushAll = false.B
+  val flushAll = WireDefault(false.B)
   io.fw_frt.flush := flushAll
   io.fw_dr.recover:= flushAll
   io.fw_dp.flush  := flushAll
