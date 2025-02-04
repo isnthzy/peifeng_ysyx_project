@@ -77,8 +77,8 @@ class PipeALU extends AbstaceExecutePipe{
 
 class PipeMem(useDmem: Boolean = false) extends AbstaceExecutePipe(useDmem){
   val lsu = Module(new LSU)
-  io.dmemStore.get := lsu.io.DMemStore
-  io.dmemLoad.get  := lsu.io.DMemLoad
+  io.dmemStore.get <> lsu.io.DMemStore
+  io.dmemLoad.get  <> lsu.io.DMemLoad
   io.in.ready := !lsu.io.busy
   lsu.io.valid := io.in.valid
   io.out.valid := false.B
