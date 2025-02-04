@@ -8,7 +8,7 @@ class LSU extends ErXCoreModule{
   val io = IO(new Bundle{
     val valid  = Input(Bool())
     val busy   = Output(Bool())
-    val lsType = Input(UInt(2.W))
+    val lsType = Input(UInt(LS_XXX.length.W))
     val addr   = Input(UInt(XLEN.W))
     val stData = Input(UInt(XLEN.W))
     val ldData = Output(UInt(XLEN.W))
