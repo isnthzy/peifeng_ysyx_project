@@ -51,9 +51,9 @@ class Dispatch extends ErXCoreModule {
 
   for(i <- 0 until IssueWidth){
     if(i < 2){
-      io.to_pr(i).bits <> intRS.io.out(i)
+      io.to_pr(i) <> intRS.io.out(i)
     }else{
-      io.to_pr(i).bits <> memRS.io.out(0)
+      io.to_pr(i) <> memRS.io.out(0)
     }
   }
 }
