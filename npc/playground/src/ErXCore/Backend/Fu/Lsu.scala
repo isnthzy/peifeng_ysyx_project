@@ -66,6 +66,8 @@ class LSU extends ErXCoreModule{
    |Fill(XLEN, !memSize )&memStoreSrc
   )
 
+  io.DMemLoad.resp.ready := true.B
+  io.DMemStore.resp.ready := true.B
   val s_idle :: s_wait_write :: s_wait_read :: Nil = Enum(3)
   val LsuState = RegInit(s_idle)
   switch(LsuState){
