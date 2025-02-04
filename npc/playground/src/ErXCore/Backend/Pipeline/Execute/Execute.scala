@@ -8,6 +8,7 @@ class Execute extends ErXCoreModule{
   val io = IO(new Bundle{
     val in = Vec(IssueWidth,Flipped(DecoupledIO(new IssueIO)))
     val fw_dr  = Output(new RenameFromExecuteUpdate(updSize = IssueWidth))
+    val fw_pr  = Output(new PrfReadFromExecute(updSize = IssueWidth))
     val fw_rob = Output(new ROBFromExecuteUpdate(updSize = IssueWidth))
     val dmemStore = new SimpleMemIO
     val dmemLoad  = new SimpleMemIO
@@ -37,6 +38,11 @@ class Execute extends ErXCoreModule{
     io.fw_rob.upd(i)     := pipe(i).io.out
     io.fw_rob.upd(i).bits.br.taken  := checkBranchTaken(io.in(i).bits.cs.brType,pipe(i).io.out.bits.result(0))
     io.fw_rob.upd(i).bits.br.target := io.in(i).bits.cf.pc + io.in(i).bits.cf.imm
+    io.fw_dr.upd(i).wen    := pipe(i).io.out.bits.rfWen
+    io.fw_dr.upd(i).prfDst := pipe(i).io.out.bits.prfDst
+    io.fw_pr.upd(i).rfWen  := pipe(i).io.out.bits.rfWen
+    io.fw_pr.upd(i).prfDst := pipe(i).io.out.bits.prfDst
+    io.fw_pr.upd(i).rdData := pipe(i).io.out.bits.result
   } 
 }
 
@@ -59,8 +65,10 @@ class PipeALUorCSR extends AbstaceExecutePipe{
   io.out.valid := io.in.valid
   io.out.bits.result := Alu.io.result
   io.out.bits.isBranch := isBranch(io.in.bits.cs.brType)
-  io.out.bits.robIdx   := 0.U
   io.out.bits.isStore  := false.B
+  io.out.bits.robIdx   := io.in.bits.robIdx
+  io.out.bits.rfWen    := io.in.bits.cs.rfWen
+  io.out.bits.prfDst   := io.in.bits.pf.prfDst
 }
 
 class PipeALU extends AbstaceExecutePipe{
@@ -73,6 +81,9 @@ class PipeALU extends AbstaceExecutePipe{
   io.out.bits.result := Alu.io.result
   io.out.bits.isBranch := isBranch(io.in.bits.cs.brType)
   io.out.bits.isStore  := false.B
+  io.out.bits.robIdx   := io.in.bits.robIdx
+  io.out.bits.rfWen    := io.in.bits.cs.rfWen
+  io.out.bits.prfDst   := io.in.bits.pf.prfDst
 }
 
 class PipeMem(useDmem: Boolean = false) extends AbstaceExecutePipe(useDmem){
@@ -81,10 +92,17 @@ class PipeMem(useDmem: Boolean = false) extends AbstaceExecutePipe(useDmem){
   io.dmemLoad.get  <> lsu.io.DMemLoad
   io.in.ready := !lsu.io.busy
   lsu.io.valid := io.in.valid
+  lsu.io.stData:= io.in.bits.data.src2
+  lsu.io.addr  := io.in.bits.cf.pc + io.in.bits.cf.imm
+  lsu.io.lsType:= io.in.bits.cs.lsType
+
   io.out.valid := false.B
   io.out.bits.result := lsu.io.ldData
   io.out.bits.isBranch := false.B
   io.out.bits.isStore  := false.B
+  io.out.bits.robIdx   := io.in.bits.robIdx
+  io.out.bits.rfWen    := io.in.bits.cs.rfWen
+  io.out.bits.prfDst   := io.in.bits.pf.prfDst
 }
 
 // class PipeMem

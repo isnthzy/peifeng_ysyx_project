@@ -17,9 +17,6 @@ class ICache extends ErXCoreModule {
     val rdata  = Output(UInt(32.W))
 
     val out = new AxiCacheIO()
-
-    val perfMode   =Input(Bool())
-    val programExit=Input(Bool()) //为了perf的飞线
   })
   val DataBank = Array.fill(WAY_NUM_I)(Module(new DataRAM(BANK_SIZE, LINE_WIDTH)).io)
   val TagvBank = Array.fill(WAY_NUM_I)(Module(new TagvRAM(BANK_SIZE, TAG_WIDTH)).io)
@@ -177,76 +174,6 @@ class ICache extends ErXCoreModule {
   io.out.wr.bits:=0.U.asTypeOf(io.out.wr.bits)
   io.out.wr.valid:=false.B
 
-
-  // if(GenerateParams.getParam("PERF").asInstanceOf[Boolean]){
-  //   val hitCnt=RegInit(0.U(64.W))
-  //   val memCnt=RegInit(0.U(64.W))
-  //   val onceRespTime=RegInit(0.U(32.W))
-  //   val onceRespTimeWait=RegInit(false.B)
-  //   val totalRespTime=RegInit(0.U(64.W))
-
-  //   val bl_hitCnt=RegInit(0.U(64.W))
-  //   val bl_memCnt=RegInit(0.U(64.W))
-  //   val bl_onceRespTime=RegInit(0.U(32.W))
-  //   val bl_totalRespTime=RegInit(0.U(64.W))
-
-  //   when(cacheState===s_lookup&&cacheLookupHit){
-  //     hitCnt:=hitCnt+1.U
-
-  //     when(~io.perfMode){
-  //       bl_hitCnt:=bl_hitCnt+1.U
-  //     }
-  //   }
-  //   when(io.dataRp){
-  //     memCnt:=memCnt+1.U
-      
-  //     when(~io.perfMode){
-  //       bl_memCnt:=bl_memCnt+1.U
-  //     }
-  //   }
-  //   when(cacheState===s_lookup&& ~cacheLookupHit){
-  //     onceRespTime:=onceRespTime+1.U
-  //     onceRespTimeWait:=true.B
-
-  //     when(~io.perfMode){
-  //       bl_onceRespTime:=bl_onceRespTime+1.U
-  //     }
-  //   }
-  //   when(cacheState===s_refill&&io.out.rret.valid&&io.out.rret.bits.last){  
-  //     onceRespTime:=0.U
-  //     totalRespTime:=totalRespTime+onceRespTime+1.U//状态机转换需要时间
-
-  //     when(~io.perfMode){
-  //       bl_onceRespTime:=0.U
-  //       bl_totalRespTime:=bl_totalRespTime+bl_onceRespTime+1.U
-  //     }
-  //   }.elsewhen(onceRespTimeWait){
-  //     onceRespTime:=onceRespTime+1.U
-
-  //     when(~io.perfMode){
-  //       bl_onceRespTime:=0.U
-  //     }
-  //   }
-  //   when(io.programExit){
-  //     var CachehitRate =(hitCnt.asSInt  * 100.asSInt) / memCnt.asSInt
-  //     var missFetchTime= totalRespTime.asSInt / (memCnt-hitCnt).asSInt
-  //     var ICacheAMAT   = 1.asSInt + ((100.asSInt - CachehitRate.asSInt) * missFetchTime.asSInt) / 100.asSInt
-  //     printf("ICache hit rate  (%%): %d%%\n",CachehitRate);
-  //     printf("ICache hit cnt   (%%): %d  \n",hitCnt);
-  //     printf("ICache access cnt(%%): %d  \n",memCnt);
-  //     printf("Mean Missing Time   : %d  \n",missFetchTime);
-  //     printf("ICache AMAT         : %d  \n",ICacheAMAT);
-  //     printf("The ICache includes Bootloader and misfetch\n")
-  //     printf("----no bootloader----\n")
-  //     var bl_CachehitRate=((hitCnt-bl_hitCnt).asSInt  * 100.asSInt) / (memCnt-bl_memCnt).asSInt
-  //     var bl_missFetchTime= (totalRespTime-bl_totalRespTime).asSInt / ((memCnt-bl_memCnt)-(hitCnt-bl_hitCnt)).asSInt
-  //     printf("ICache hit rate  (%%): %d%%\n",bl_CachehitRate);
-  //     printf("ICache hit cnt   (%%): %d  \n",(hitCnt-bl_hitCnt));
-  //     printf("ICache access cnt(%%): %d  \n",(memCnt-bl_memCnt));
-  //     printf("Mean Missing Time   : %d  \n",bl_missFetchTime);
-  //     printf("---------------------\n")
-  //   }
-  // }
 }
 
 

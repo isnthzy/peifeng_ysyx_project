@@ -15,8 +15,6 @@ class PfStage extends ErXCoreModule {
     val al=new Core2AxiReadIO()
     val fenceI=Output(Bool())
 
-    val perfMode=Input(Bool()) //飞线...
-    val programExit=Input(Bool()) //为了perf的飞线
   })
   val pfFlush=dontTouch(Wire(Bool()))
   val pfExcpEn=dontTouch(Wire(Bool()))
@@ -68,21 +66,4 @@ class PfStage extends ErXCoreModule {
   io.to_if.bits.excpType:=pfExcpType
 
   io.to_if.bits.pc:=regPC
-
-  // if(GenerateParams.getParam("PERF").asInstanceOf[Boolean]){
-  //   val FetchAddrClockCnt=RegInit(0.U(64.W))
-  //   val InstCnt=RegInit(0.U(64.W))
-  //   when(io.perfMode){
-  //     when(fetchReq){
-  //       FetchAddrClockCnt:=FetchAddrClockCnt+1.U
-  //       when(io.to_if.fire){
-  //         InstCnt:=InstCnt+1.U
-  //       }
-  //     }
-  //     when(io.programExit){
-  //       var CyclePerFetchAddrResp=(FetchAddrClockCnt.asSInt  * 100.asSInt) / InstCnt.asSInt
-  //       printf("Cycle per fetch(addr resp)(%%): %d%%\n",CyclePerFetchAddrResp);
-  //     }
-  //   }
-  // }
 }

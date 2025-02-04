@@ -154,6 +154,7 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
   for(i <- 0 until deqWidth){
     io.out(i).valid := rsReadyList(deqSelect(i))
     io.out(i).bits  := rsBuff(deqSelect(i))
+    io.out(i).bits.robIdx := rsROBAge(deqSelect(i))
     when(io.out(i).fire){
       rsBuffValid(deqSelect(i)) := false.B
       isStore(deqSelect(i)) := false.B
