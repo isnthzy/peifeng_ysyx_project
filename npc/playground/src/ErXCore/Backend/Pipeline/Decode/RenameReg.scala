@@ -9,7 +9,7 @@ import DecodeSignal._
 //在Rename级检查，如果源操作数不需要，则重命名一个永远COMMIT的寄存器(0号寄存器)
 class Rename extends ErXCoreModule{
   val io = IO(new Bundle {
-    val in  = Vec(DecodeWidth,new MicroOpIO)
+    val in  = Vec(DecodeWidth,Flipped(new MicroOpIO))
     val out = Vec(DecodeWidth,new RenameIO)
     val from_ex = Input(new RenameFromExecuteUpdate(updSize = IssueWidth))
     val from_rob = Input(new RenameFromCommitUpdate(updSize = CommitWidth))
