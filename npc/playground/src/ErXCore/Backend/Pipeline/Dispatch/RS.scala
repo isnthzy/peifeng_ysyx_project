@@ -163,10 +163,10 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
   //flush 
   when(io.from_rob.flush){
     io.in.map(_.ready := false.B)
+    io.out.map(_.valid := false.B)
     for(i <- 0 until rsSize){
       rsBuffValid(i) := false.B
       isStore(i) := false.B
-      io.out(i).valid := false.B
     }
   }
 }
