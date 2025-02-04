@@ -34,9 +34,9 @@ class Execute extends ErXCoreModule{
   }
 
   for(i <- 0 until IssueWidth){
-    io.fw_rob.upd(i).valid     := pipe(i).io.out.valid
-    io.fw_rob.upd(i).br.taken  := checkBranchTaken(io.in(i).bits.cs.brType,pipe(i).io.out.bits.result(0))
-    io.fw_rob.upd(i).br.target := io.in(i).bits.cf.pc + io.in(i).bits.cf.imm
+    io.fw_rob.upd(i)     := pipe(i).io.out
+    io.fw_rob.upd(i).bits.br.taken  := checkBranchTaken(io.in(i).bits.cs.brType,pipe(i).io.out.bits.result(0))
+    io.fw_rob.upd(i).bits.br.target := io.in(i).bits.cf.pc + io.in(i).bits.cf.imm
   } 
 }
 
@@ -47,6 +47,7 @@ abstract class AbstaceExecutePipe(useDmem: Boolean = false) extends ErXCoreModul
     val dmemStore = if(useDmem) Some(new SimpleMemIO) else None
     val dmemLoad  = if(useDmem) Some(new SimpleMemIO) else None
   })
+  io.out.bits.br := DontCare
 } 
 
 class PipeALUorCSR extends AbstaceExecutePipe{
@@ -57,6 +58,9 @@ class PipeALUorCSR extends AbstaceExecutePipe{
   Alu.io.src2 := io.in.bits.data.src2
   io.out.valid := io.in.valid
   io.out.bits.result := Alu.io.result
+  io.out.bits.isBranch := isBranch(io.in.bits.cs.brType)
+  io.out.bits.robIdx   := 0.U
+  io.out.bits.isStore  := false.B
 }
 
 class PipeALU extends AbstaceExecutePipe{
@@ -67,6 +71,8 @@ class PipeALU extends AbstaceExecutePipe{
   Alu.io.src2 := io.in.bits.data.src2
   io.out.valid := io.in.valid
   io.out.bits.result := Alu.io.result
+  io.out.bits.isBranch := isBranch(io.in.bits.cs.brType)
+  io.out.bits.isStore  := false.B
 }
 
 class PipeMem(useDmem: Boolean = false) extends AbstaceExecutePipe(useDmem){
@@ -76,6 +82,9 @@ class PipeMem(useDmem: Boolean = false) extends AbstaceExecutePipe(useDmem){
   io.in.ready := !lsu.io.busy
   lsu.io.valid := io.in.valid
   io.out.valid := false.B
+  io.out.bits.result := lsu.io.ldData
+  io.out.bits.isBranch := false.B
+  io.out.bits.isStore  := false.B
 }
 
 // class PipeMem

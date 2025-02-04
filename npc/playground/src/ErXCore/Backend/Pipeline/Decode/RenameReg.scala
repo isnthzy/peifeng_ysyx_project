@@ -12,7 +12,7 @@ class Rename extends ErXCoreModule{
     val in  = Vec(DecodeWidth,new MicroOpIO)
     val out = Vec(DecodeWidth,new RenameIO)
     val from_ex = Input(new RenameFromExecuteUpdate(updSize = IssueWidth))
-    val from_cm = Input(new RenameFromCommitUpdate(updSize = CommitWidth))
+    val from_rob = Input(new RenameFromCommitUpdate(updSize = CommitWidth))
     val fw_ex = Output(new RSFromRename)
   })
   //Rename
@@ -49,11 +49,11 @@ class Rename extends ErXCoreModule{
     PrfStateTable.io.from.executeUpdate := Mux(io.from_ex.upd(i).wen,io.from_ex.upd(i).prfDst,0.U)
   }
   //from commit
-  RenameTable.io.from_cm := io.from_cm
-  PrfStateTable.io.from.commitRecover := io.from_cm.recover
+  RenameTable.io.from_rob := io.from_rob
+  PrfStateTable.io.from.commitRecover := io.from_rob.recover
   for(i <- 0 until CommitWidth){
-    PrfStateTable.io.from.commitUpdate := Mux(io.from_cm.upd(i).wen,io.from_cm.upd(i).prfDst,0.U)
-    PrfStateTable.io.from.commitFree   := Mux(io.from_cm.upd(i).wen,io.from_cm.upd(i).freePrfDst,0.U)
+    PrfStateTable.io.from.commitUpdate := Mux(io.from_rob.upd(i).wen,io.from_rob.upd(i).prfDst,0.U)
+    PrfStateTable.io.from.commitFree   := Mux(io.from_rob.upd(i).wen,io.from_rob.upd(i).freePrfDst,0.U)
   }
 
 }
@@ -72,7 +72,7 @@ class RenameTable extends ErXCoreModule{
       val prfSrc2 = Output(Vec(DecodeWidth,UInt(5.W)))
       val pprfDst = Output(Vec(DecodeWidth,UInt(5.W)))
     }
-    val from_cm = Input(new RenameFromCommitUpdate(updSize = CommitWidth))
+    val from_rob = Input(new RenameFromCommitUpdate(updSize = CommitWidth))
   })
   val specTable = RegInit(VecInit(Seq.tabulate(32)(i => i.U(log2Up(PrfSize).W))))
   val archTable = RegInit(VecInit(Seq.tabulate(32)(i => i.U(log2Up(PrfSize).W))))
@@ -104,15 +104,15 @@ class RenameTable extends ErXCoreModule{
   }
 
 
-  when(!io.from_cm.recover){
+  when(!io.from_rob.recover){
     (0 until DecodeWidth).map(i => {
       when(io.in.rfWen(i)&&io.in.rfDst(i) =/= 0.U){
         specTable(io.in.rfDst(i)) := io.in.prfDst(i)
       }
     })
     (0 until CommitWidth).map(i => {
-      when(io.from_cm.upd(i).wen&&io.from_cm.upd(i).prfDst =/= 0.U){
-        archTable(io.from_cm.upd(i).rfDst) := io.from_cm.upd(i).prfDst
+      when(io.from_rob.upd(i).wen&&io.from_rob.upd(i).prfDst =/= 0.U){
+        archTable(io.from_rob.upd(i).rfDst) := io.from_rob.upd(i).prfDst
       }
     })
   }.otherwise{

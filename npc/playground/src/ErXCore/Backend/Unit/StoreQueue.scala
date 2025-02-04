@@ -16,7 +16,6 @@ class StoreQueue extends ErXCoreModule {
       val ld = new SimpleMemIO
     }
   })
-  val flush = false.B
   //NOTE:ref from Chisel Decoupled.scala
   val queue = RegInit(VecInit(Seq.fill(storeQueueSize)(0.U.asTypeOf(Valid(new SimpleReqIO)))))
   val enqPtr = Counter(storeQueueSize)
@@ -65,13 +64,7 @@ class StoreQueue extends ErXCoreModule {
   when(doEnqFire =/= doDeqFire) {
     maybeFull := doEnqFire
   }
-  when(flush) {
-    enqPtr.reset()
-    deqPtr.reset()
-    maybeFull := false.B
-    waitDeqResp := false.B
-    queue.foreach(_.valid := false.B)
-  }
+
 
   //load
   val s_idle :: s_queue_hit :: s_cache_hit :: Nil = Enum(3)
@@ -119,6 +112,14 @@ class StoreQueue extends ErXCoreModule {
         loadState := s_idle
       }
     }
+  }
+  
+  when(io.from_rob.flush) {
+    enqPtr.reset()
+    deqPtr.reset()
+    maybeFull := false.B
+    waitDeqResp := false.B
+    queue.foreach(_.valid := false.B)
   }
 }
 

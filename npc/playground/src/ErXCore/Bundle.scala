@@ -49,6 +49,7 @@ class RenameIO extends MicroOpIO{
 
 class RobPacket extends ErXCoreBundle{
   val br = new BranchBundle
+  val isBranch = Bool()
   val isStore = Bool() 
 }
 
@@ -70,12 +71,7 @@ class RenameFromCommitUpdate(updSize: Int) extends ErXCoreBundle {
 }
 
 class ROBFromExecuteUpdate(updSize: Int) extends ErXCoreBundle {
-  val upd = Vec(updSize, new Bundle {
-    val valid = Bool()
-    val robIdx = UInt(log2Up(RobEntries).W)
-    val br = new BranchBundle
-    val isStore = Bool() 
-  })
+  val upd = Vec(updSize, Valid(new PipeExecuteOut))
 }
 
 class RSFromRename (updSize: Int = 1) extends ErXCoreBundle {
@@ -90,12 +86,13 @@ class RSFromROB (updSize: Int = 1) extends ErXCoreBundle {
     
   })
   val robAge = Vec(RobWidth, UInt(RobAgeWidth.W))
+  val flush = Bool()
 }
 
 
 class FrontFromBack extends ErXCoreBundle {
-  val flush = Bool()
   val tk = new BranchBundle
+  val flush = Bool()
 }
 
 class StoreQueueFromROB (updSize: Int = 1) extends ErXCoreBundle {
@@ -103,11 +100,12 @@ class StoreQueueFromROB (updSize: Int = 1) extends ErXCoreBundle {
 
   })
   val doDeq = Bool()
+  val flush = Bool()
 }
 
-class ROBCommitIO extends  ErXCoreBundle {
+// class ROBCommitIO extends  ErXCoreBundle {
   
-}
+// }
 
 class PrfReadFromCommit (updSize: Int = 1) extends ErXCoreBundle {
   val upd = Vec(updSize, new Bundle {
@@ -146,6 +144,10 @@ class CommitIO extends ErXCoreBundle{
 
 class PipeExecuteOut extends ErXCoreBundle {
   val result = UInt(XLEN.W)
+  val robIdx = UInt(log2Up(RobEntries).W)
+  val isBranch = Bool()
+  val isStore  = Bool()
+  val br = new BranchBundle
 }
 
 //NOTE: Frontend
