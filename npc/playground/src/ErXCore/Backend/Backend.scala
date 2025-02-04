@@ -41,10 +41,10 @@ class Backend extends ErXCoreModule{
 
 //-----     Execute  stage     ------
   PipeConnect(EXstage.io.in,PRstage.io.to_ex,flush)
-  StoreQueue.io.st := EXstage.io.dmemStore
-  StoreQueue.io.ld := EXstage.io.dmemLoad
-  DCache.io.dl := StoreQueue.io.out.ld
-  DCache.io.ds := StoreQueue.io.out.st
+  StoreQueue.io.st <> EXstage.io.dmemStore
+  StoreQueue.io.ld <> EXstage.io.dmemLoad
+  DCache.io.dl <> StoreQueue.io.out.ld
+  DCache.io.ds <> StoreQueue.io.out.st
 //-----     Commit   stage     ------
 
 
