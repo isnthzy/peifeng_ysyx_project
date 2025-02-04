@@ -19,7 +19,7 @@ class Rename extends ErXCoreModule{
   val notNeedSrc1 = Wire(Vec(DecodeWidth,Bool()))
   val notNeedSrc2 = Wire(Vec(DecodeWidth,Bool())) //TODO: check in.srcType
   val PrfStateTable = Module(new PrfStateTable)
-  io.fw_ex.availList := PrfStateTable.io.availList
+  io.fw_ex.availList := PrfStateTable.io.availList.asTypeOf(io.fw_ex.availList)
   for(i <- 0 until DecodeWidth){
     notNeedSrc1(i) := io.in(i).cs.src1Type =/= SDEF(A_RS1)
     notNeedSrc2(i) := io.in(i).cs.src2Type =/= SDEF(B_RS2)
