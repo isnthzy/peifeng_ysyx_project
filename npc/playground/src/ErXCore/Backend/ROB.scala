@@ -21,7 +21,6 @@ class ROB extends ErXCoreModule{
 
   val enqNum = PopCount(Cat(io.in.map(_.valid)))
   val deqNum = PopCount(Cat(commitValid))
-  (0 until RobWidth).map(i => io.in(i).ready := ringBuffAllowin)
   //如果用reg rob的大小怕不是要爆炸，同步mem要考虑读写的时候数目的变动
   val ringBuffHead = RegInit(0.U(RobAgeWidth.W))
   val ringBuffTail = RegInit(0.U(RobAgeWidth.W))
@@ -33,7 +32,8 @@ class ROB extends ErXCoreModule{
   ringBuffCount := Mux(headFlag === tailFlag, headPtr - tailPtr, RobEntries.U + headPtr - tailPtr)
   val ringBuffEmpty   = (headFlag === tailFlag) && (headPtr === tailPtr)
   val ringBuffAllowin = (ringBuffCount +& enqNum - deqNum) <= RobEntries.U
-
+  (0 until RobWidth).map(i => io.in(i).ready := ringBuffAllowin)
+  
 //
   val flushAll = false.B
   io.fw_frt.flush := flushAll
