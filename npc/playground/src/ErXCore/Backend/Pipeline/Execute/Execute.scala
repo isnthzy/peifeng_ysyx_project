@@ -9,8 +9,8 @@ class Execute extends ErXCoreModule{
     val in = Vec(IssueWidth,Flipped(DecoupledIO(new IssueIO)))
     val fw_dr  = Output(new RenameFromExecuteUpdate(updSize = IssueWidth))
     val fw_rob = Output(new ROBFromExecuteUpdate(updSize = IssueWidth))
-    val dmemStore = Output(new SimpleMemIO)
-    val dmemLoad  = Output(new SimpleMemIO)
+    val dmemStore = new SimpleMemIO
+    val dmemLoad  = new SimpleMemIO
   })
   
   //在设计时就考虑到，csr等指令只能第一个弹出队列，所以issue送来的东西直接分配即可
