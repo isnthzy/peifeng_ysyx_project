@@ -38,6 +38,8 @@ class Execute extends ErXCoreModule{
     io.fw_rob.upd(i)     := pipe(i).io.out
     io.fw_rob.upd(i).bits.br.taken  := checkBranchTaken(io.in(i).bits.cs.brType,pipe(i).io.out.bits.result(0))
     io.fw_rob.upd(i).bits.br.target := io.in(i).bits.cf.pc + io.in(i).bits.cf.imm
+    io.fw_dr.upd(i).wen    := pipe(i).io.out.bits.rfWen
+    io.fw_dr.upd(i).prfDst := pipe(i).io.out.bits.prfDst
     io.fw_pr.upd(i).rfWen  := pipe(i).io.out.bits.rfWen
     io.fw_pr.upd(i).prfDst := pipe(i).io.out.bits.prfDst
     io.fw_pr.upd(i).rdData := pipe(i).io.out.bits.result
