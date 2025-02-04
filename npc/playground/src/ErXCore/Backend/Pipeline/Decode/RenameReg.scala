@@ -30,6 +30,7 @@ class Rename extends ErXCoreModule{
   val RenameTable = Module(new RenameTable)
 
   for(i <- 0 until DecodeWidth){
+    RenameTable.io.in.rfWen(i) := io.in(i).cs.rfWen
     RenameTable.io.in.rfSrc1(i) := Mux(!notNeedSrc1(i),io.in(i).cs.rfSrc1 ,0.U)
     RenameTable.io.in.rfSrc2(i) := Mux(!notNeedSrc2(i),io.in(i).cs.rfSrc2 ,0.U)
     RenameTable.io.in.rfDst(i)  := io.in(i).cs.rfDest
