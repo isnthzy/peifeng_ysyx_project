@@ -162,7 +162,7 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
 
   //flush 
   when(io.from_rob.flush){
-    rsAllowin  := false.B
+    io.in.map(_.ready := false.B)
     for(i <- 0 until rsSize){
       rsBuffValid(i) := false.B
       isStore(i) := false.B
