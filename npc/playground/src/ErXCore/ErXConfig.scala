@@ -95,11 +95,7 @@ trait HasErXCoreConst extends HasErXCoreParameter {
   def NPC_START_ADDR = "h80000000".U(XLEN.W)
 }
 
-trait HasErXCoreLog { 
-  // this: RawModule =>
-  // implicit val moduleName: String = this.name
-}
 
-abstract class ErXCoreModule extends Module with HasErXCoreParameter with HasErXCoreConst with HasErXCoreLog with HasErXCacheConfig
+abstract class ErXCoreModule extends Module with HasErXCoreParameter with HasErXCoreConst with HasErXCacheConfig
 abstract class ErXCoreBundle extends Bundle with HasErXCoreParameter with HasErXCoreConst with HasErXCacheConfig
 abstract class ErXCoreBlackBox extends BlackBox with HasErXCoreParameter with HasErXCoreConst with HasErXCacheConfig
