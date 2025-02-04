@@ -70,7 +70,7 @@ class StoreQueue extends ErXCoreModule {
   val s_idle :: s_queue_hit :: s_cache_hit :: Nil = Enum(3)
   val loadState = RegInit(s_idle)
   val loadBuff = RegInit(0.U.asTypeOf(new SimpleReqIO))
-  val loadStoreQueueHit = false.B
+  val loadStoreQueueHit = WireDefault(false.B)
   val loadStoreQueueHitIdx = WireDefault(0.U(log2Up(storeQueueSize).W))
   for(i <- 0 until storeQueueSize){
     when(queue(i).bits.addr === io.ld.req.bits.addr && queue(i).valid){
