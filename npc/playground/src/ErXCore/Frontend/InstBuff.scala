@@ -6,10 +6,11 @@ import chisel3.util._
 class InstBuff extends ErXCoreModule {
   val io = IO(new Bundle {
     val in = Flipped(Decoupled(new InstIO))
-    val out = Vec(DecodeWidth,Decoupled(new InstIO))
     val from_bck = Input(new Bundle {
       val flush = Input(Bool())
     })
+    
+    val out = Vec(DecodeWidth,Decoupled(new InstIO))
   })
 
   val queue = RegInit(VecInit(Seq.fill(InstBuffSize)(0.U.asTypeOf(Valid(new InstIO)))))
