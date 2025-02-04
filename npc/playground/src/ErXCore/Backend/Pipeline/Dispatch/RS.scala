@@ -139,8 +139,8 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
     }
   }
 
-  val rsArbPacket = Wire(VecInit(Seq.fill(rsSize)(new ArbAgeBundle)))
-  val rsReadyList = Wire(VecInit(Seq.fill(rsSize)(Bool())))
+  val rsArbPacket = Wire(Vec(rsSize, new ArbAgeBundle))
+  val rsReadyList = Wire(Vec(rsSize, Bool()))
   for(i <- 0 until rsSize){
     var rs1Ready = io.from_dr.availList(rsBuff(i).pf.prfSrc1)
     var rs2Ready = io.from_dr.availList(rsBuff(i).pf.prfSrc2)
