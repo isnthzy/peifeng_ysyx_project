@@ -4,7 +4,7 @@ import chisel3._
 import chisel3.util._
 
 class SimTop extends ErXCoreModule {
-  override val desiredName = "ysyx_23060115"
+  
   val io = IO(new Bundle {
     val interrupt=if(GenerateParams.getParam("SOC_MODE").asInstanceOf[Boolean]){
       Some(Input(Bool()))
@@ -16,7 +16,7 @@ class SimTop extends ErXCoreModule {
       Some(Flipped(new AxiTopBundle())) 
     }else None
   })
-
+  override val desiredName = "ysyx_23060115"
   val Frontend  = Module(new Frontend)
   val Backend   = Module(new Backend)
   //Frontend <-> Backend
