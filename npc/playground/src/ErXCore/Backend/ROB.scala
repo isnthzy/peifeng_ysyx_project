@@ -2,7 +2,7 @@ package ErXCore
 
 import chisel3._
 import chisel3.util._
-import ErXCore.UIntUtils.UIntWithGetIdx
+import ErXCore.UIntUtils.{UIntWithGetIdx,UIntWithGetAge}
 
 class ROB extends ErXCoreModule{
   val io = IO(new Bundle {
@@ -27,13 +27,13 @@ class ROB extends ErXCoreModule{
   val ringBuffCount = RegInit(0.U(RobIdxWidth.W))
   val headPtr  = ringBuffHead.getIdx(RobIdxWidth)
   val tailPtr  = ringBuffTail.getIdx(RobIdxWidth)
-  val headFlag = ringBuffHead(RobAgeWidth)
-  val tailFlag = ringBuffTail(RobAgeWidth)
+  val headFlag = ringBuffHead.getFlag(RobAgeWidth)
+  val tailFlag = ringBuffTail.getFlag(RobAgeWidth)
   ringBuffCount := Mux(headFlag === tailFlag, headPtr - tailPtr, RobEntries.U + headPtr - tailPtr)
   val ringBuffEmpty   = (headFlag === tailFlag) && (headPtr === tailPtr)
   val ringBuffAllowin = (ringBuffCount +& enqNum - deqNum) <= RobEntries.U
   (0 until RobWidth).map(i => io.in(i).ready := ringBuffAllowin)
-  
+
 //
   val flushAll = false.B
   io.fw_frt.flush := flushAll
