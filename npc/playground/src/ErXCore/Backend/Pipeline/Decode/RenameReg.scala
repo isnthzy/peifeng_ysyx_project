@@ -140,6 +140,7 @@ class PrfStateTable extends ErXCoreModule{
   val prfStateTable = RegInit(VecInit(Seq.fill(32)(COMMITTED) ++ Seq.fill(PrfSize - 32)(FREE)))
   val freeList = Wire(Vec(DecodeWidth,UInt(PrfSize.W)))
   val freePrfDst = Wire(Vec(DecodeWidth,UInt(log2Up(PrfSize).W)))
+  io.prfDst := freePrfDst
   freeList(0) := Cat(prfStateTable.map(_ === FREE).reverse)  
   for(i <- 0 until DecodeWidth){
     freePrfDst(i) := Mux(io.rfWen(i),PriorityEncoder(freeList(i).asBools),0.U)
