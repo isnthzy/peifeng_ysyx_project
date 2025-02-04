@@ -33,6 +33,7 @@ class Backend extends ErXCoreModule{
 
 //-----     Dispatch Stage     ------
   PipeConnect(DSstage.io.in,DRstage.io.to_dp,flush)
+  DSstage.io.from_dr := DRstage.io.fw_dp
   ROB.io.in <> DSstage.io.fw_rob
   ROB.io.from_ex := EXstage.io.fw_rob
   

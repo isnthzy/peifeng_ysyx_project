@@ -9,7 +9,7 @@ class DecodeRename extends ErXCoreModule{
     val in = Vec(DecodeWidth,Flipped(Decoupled(new InstIO)))
     val from_ex = Input(new RenameFromExecuteUpdate(updSize = IssueWidth))
     val from_rob = Input(new RenameFromCommitUpdate(updSize = CommitWidth))
-    val fw_ex   = Output(new RSFromRename)
+    val fw_dp   = Output(new RSFromRename)
     val to_dp   = Vec(DecodeWidth,Decoupled(new RenameIO))
   })
 
@@ -41,7 +41,7 @@ class DecodeRename extends ErXCoreModule{
   Rename.io.from_ex := io.from_ex
   Rename.io.from_rob := io.from_rob
   (0 until DecodeWidth).foreach(i => {io.to_dp(i).bits := Rename.io.out(i)})
-  io.fw_ex := Rename.io.fw_ex
+  io.fw_dp := Rename.io.fw_dp
 
 }
 

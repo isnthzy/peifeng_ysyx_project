@@ -13,13 +13,13 @@ class Rename extends ErXCoreModule{
     val out = Vec(DecodeWidth,new RenameIO)
     val from_ex = Input(new RenameFromExecuteUpdate(updSize = IssueWidth))
     val from_rob = Input(new RenameFromCommitUpdate(updSize = CommitWidth))
-    val fw_ex = Output(new RSFromRename)
+    val fw_dp = Output(new RSFromRename)
   })
   //Rename
   val notNeedSrc1 = Wire(Vec(DecodeWidth,Bool()))
   val notNeedSrc2 = Wire(Vec(DecodeWidth,Bool())) //TODO: check in.srcType
   val PrfStateTable = Module(new PrfStateTable)
-  io.fw_ex.availList := PrfStateTable.io.availList.asTypeOf(io.fw_ex.availList)
+  io.fw_dp.availList := PrfStateTable.io.availList.asTypeOf(io.fw_dp.availList)
   for(i <- 0 until DecodeWidth){
     notNeedSrc1(i) := io.in(i).cs.src1Type =/= SDEF(A_RS1)
     notNeedSrc2(i) := io.in(i).cs.src2Type =/= SDEF(B_RS2)
