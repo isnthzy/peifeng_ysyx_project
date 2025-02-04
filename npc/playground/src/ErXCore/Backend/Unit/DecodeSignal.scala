@@ -64,12 +64,31 @@ object DecodeInstructions {
 }
 
 object DecodeSignal {
-  def isBranch(x: UInt): Bool = x(2).asBool
-  def isJump(x: UInt): Bool   = x(3).asBool
-  def isLoadInst(x: UInt): Bool  = x(3).asBool 
-  def isStoreInst(x: UInt): Bool = x(4).asBool
-  def isLoadStore(x: UInt): Bool = x(3,4).asUInt.xorR
-  def isJmpBranch(x: UInt): Bool = x(2,3).asUInt.xorR
+  def isBranch(x: UInt): Bool = {
+    require(x.getWidth == BR_XXX.length)
+    x(2).asBool
+  }
+  def isJump(x: UInt): Bool   = {
+    require(x.getWidth == BR_XXX.length)
+    x(3).asBool
+  }
+  def isJmpBranch(x: UInt): Bool  = { 
+    require(x.getWidth == BR_XXX.length)
+    x(3,2).asUInt.xorR
+  }
+  def isLoadInst(x: UInt): Bool = {
+    require(x.getWidth == LS_XXX.length)
+    x(3).asBool 
+  } 
+  def isStoreInst(x: UInt): Bool = {
+    require(x.getWidth == LS_XXX.length)
+    x(4).asBool
+  }
+  def isLoadStore(x: UInt): Bool = {
+    require(x.getWidth == LS_XXX.length)
+    x(4,3).asUInt.xorR
+  }
+
   val Y = "1"
   val N = "0"
 
