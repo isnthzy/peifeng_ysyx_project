@@ -68,8 +68,8 @@ object DecodeSignal {
   def isJump(x: UInt): Bool   = x(3).asBool
   def isLoadInst(x: UInt): Bool  = x(3).asBool 
   def isStoreInst(x: UInt): Bool = x(4).asBool
-  def isLoadStore(x: UInt): Bool = x(3,4).asBools.reduce(_||_)
-  def isJmpBranch(x: UInt): Bool = x(2,3).asBools.reduce(_||_)
+  def isLoadStore(x: UInt): Bool = x(3,4).asUInt.xorR
+  def isJmpBranch(x: UInt): Bool = x(2,3).asUInt.xorR
   val Y = "1"
   val N = "0"
 
