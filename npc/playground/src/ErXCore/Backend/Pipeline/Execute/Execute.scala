@@ -65,8 +65,8 @@ class PipeALUorCSR extends AbstaceExecutePipe{
   io.out.valid := io.in.valid
   io.out.bits.result := Alu.io.result
   io.out.bits.isBranch := isBranch(io.in.bits.cs.brType)
-  io.out.bits.robIdx   := 0.U
   io.out.bits.isStore  := false.B
+  io.out.bits.robIdx   := io.in.bits.robIdx
   io.out.bits.rfWen    := io.in.bits.cs.rfWen
   io.out.bits.prfDst   := io.in.bits.pf.prfDst
 }
@@ -81,6 +81,7 @@ class PipeALU extends AbstaceExecutePipe{
   io.out.bits.result := Alu.io.result
   io.out.bits.isBranch := isBranch(io.in.bits.cs.brType)
   io.out.bits.isStore  := false.B
+  io.out.bits.robIdx   := io.in.bits.robIdx
   io.out.bits.rfWen    := io.in.bits.cs.rfWen
   io.out.bits.prfDst   := io.in.bits.pf.prfDst
 }
@@ -94,10 +95,12 @@ class PipeMem(useDmem: Boolean = false) extends AbstaceExecutePipe(useDmem){
   lsu.io.stData:= io.in.bits.data.src2
   lsu.io.addr  := io.in.bits.cf.pc + io.in.bits.cf.imm
   lsu.io.lsType:= io.in.bits.cs.lsType
+
   io.out.valid := false.B
   io.out.bits.result := lsu.io.ldData
   io.out.bits.isBranch := false.B
   io.out.bits.isStore  := false.B
+  io.out.bits.robIdx   := io.in.bits.robIdx
   io.out.bits.rfWen    := io.in.bits.cs.rfWen
   io.out.bits.prfDst   := io.in.bits.pf.prfDst
 }

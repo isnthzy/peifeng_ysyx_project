@@ -22,7 +22,7 @@ class PrfRead extends ErXCoreModule{
     io.to_ex(i).bits.cs := io.in(i).bits.cs
     io.to_ex(i).bits.pf := io.in(i).bits.pf
     io.to_ex(i).bits.cf := io.in(i).bits.cf
-
+    io.to_ex(i).bits.robIdx := io.in(i).bits.robIdx
     var rsData1 = prf(io.in(i).bits.pf.prfSrc1)
     var rsData2 = prf(io.in(i).bits.pf.prfSrc2)
 

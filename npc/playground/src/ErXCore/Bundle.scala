@@ -124,6 +124,7 @@ class IssueIO extends ErXCoreBundle{
     val src1 = Output(UInt(XLEN.W))
     val src2 = Output(UInt(XLEN.W))
   }
+  val robIdx = UInt(log2Up(RobIdxWidth).W)
 }
 
 class BranchBundle extends ErXCoreBundle {
