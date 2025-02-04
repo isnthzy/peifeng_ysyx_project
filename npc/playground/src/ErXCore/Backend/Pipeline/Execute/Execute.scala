@@ -42,7 +42,7 @@ class Execute extends ErXCoreModule{
 
 abstract class AbstaceExecutePipe(useDmem: Boolean = false) extends ErXCoreModule{
   val io = IO(new Bundle{
-    val in = DecoupledIO(Flipped(new IssueIO))
+    val in = Flipped(DecoupledIO(new IssueIO))
     val out = Output(Valid(new PipeExecuteOut))
     val dmemStore = if(useDmem) Some(new SimpleMemIO) else None
     val dmemLoad  = if(useDmem) Some(new SimpleMemIO) else None
