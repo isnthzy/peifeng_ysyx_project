@@ -78,7 +78,7 @@ class ROB extends ErXCoreModule{
   val brTakenSelect = OHToUInt(Cat((0 until RetireWidth).map(i => retireValid(i) && packet(i).isBranch && packet(i).br.taken)))
   io.fw_frt := 0.U.asTypeOf(io.fw_frt)   //override
   io.fw_sq.doDeq := (0 until RetireWidth).map(i => retireValid(i) && packet(i).isStore).reduce(_||_)
-  io.fw_frt.tk := packet(brTakenSelect).br
+  io.fw_frt.tk := packet(tailPtr + brTakenSelect).br
 
   //
   for(i <- 0 until RetireWidth){
