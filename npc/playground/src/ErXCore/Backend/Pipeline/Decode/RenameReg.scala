@@ -46,14 +46,14 @@ class Rename extends ErXCoreModule{
   }
   //from execute
   for(i <- 0 until IssueWidth){ 
-    PrfStateTable.io.from.executeUpdate := Mux(io.from_ex.upd(i).wen,io.from_ex.upd(i).prfDst,0.U)
+    PrfStateTable.io.from.executeUpdate(i) := Mux(io.from_ex.upd(i).wen,io.from_ex.upd(i).prfDst,0.U)
   }
   //from commit
   RenameTable.io.from_rob := io.from_rob
   PrfStateTable.io.from.commitRecover := io.from_rob.recover
   for(i <- 0 until CommitWidth){
-    PrfStateTable.io.from.commitUpdate := Mux(io.from_rob.upd(i).wen,io.from_rob.upd(i).prfDst,0.U)
-    PrfStateTable.io.from.commitFree   := Mux(io.from_rob.upd(i).wen,io.from_rob.upd(i).freePrfDst,0.U)
+    PrfStateTable.io.from.commitUpdate(i) := Mux(io.from_rob.upd(i).wen,io.from_rob.upd(i).prfDst,0.U)
+    PrfStateTable.io.from.commitFree(i)   := Mux(io.from_rob.upd(i).wen,io.from_rob.upd(i).freePrfDst,0.U)
   }
 
 }
