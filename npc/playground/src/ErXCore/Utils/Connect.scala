@@ -25,7 +25,7 @@ object PipeConnect {
     }
 
     for(i <- 0 until vecWidth) {
-      out(i).bits  := bits
+      out(i).bits  := bits(i)
       out(i).valid := outValid(i)
       in(i).ready := out(i).ready
     }
