@@ -26,7 +26,7 @@ class Backend extends ErXCoreModule{
   DSstage.io.from_rob := ROB.io.fw_dp
   StoreQueue.io.from_rob := ROB.io.fw_sq
 
-  io.dmem := DCache.io.out
+  io.dmem <> DCache.io.out
 //------Decode and Rename Stage------
   DRstage.io.in <> io.in
   DRstage.io.from_ex := EXstage.io.fw_dr
