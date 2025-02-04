@@ -10,8 +10,20 @@ class PrfRead extends ErXCoreModule{
     val from_ex = Input(new PrfReadFromExecute(updSize = IssueWidth))
     val to_ex = Vec(IssueWidth,DecoupledIO(new IssueIO))
   })
-  val prf = RegInit(VecInit(Seq.fill(PrfSize)(0.U(XLEN.W))))
   
+  // val prValid = RegInit(VecInit(Seq.fill(IssueWidth)(false.B)))
+  // for(i <- 0 until IssueWidth){
+  //   when(io.in(i).ready){
+  //     prValid(i) := io.in(i).valid
+  //   }
+  //   io.in(i).ready := ~prValid(i) || io.to_ex(i).ready
+  // }
+  for(i <- 0 until IssueWidth){
+    io.in(i).ready := io.to_ex(i).ready
+  }
+
+  val prf = RegInit(VecInit(Seq.fill(PrfSize)(0.U(XLEN.W))))
+
   for(i <- 0 until IssueWidth){
     when(io.from_ex.upd(i).rfWen && io.from_ex.upd(i).prfDst =/= 0.U){
       prf(io.from_ex.upd(i).prfDst) := io.from_ex.upd(i).rdData

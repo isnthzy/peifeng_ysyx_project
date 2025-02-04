@@ -12,6 +12,18 @@ class DecodeRename extends ErXCoreModule{
     val fw_dp   = Output(new RSFromRename)
     val to_dp   = Vec(DecodeWidth,Decoupled(new RenameIO))
   })
+  val drValid = RegInit(VecInit(Seq.fill(IssueWidth)(false.B)))
+  for(i <- 0 until DecodeWidth){
+    when(io.in(i).ready){
+      drValid(i) := io.in(i).valid
+    }
+    io.in(i).ready := ~drValid(i) || io.to_dp(i).ready
+    io.to_dp(i).valid := drValid(i)
+  }
+  // for(i <- 0 until IssueWidth){
+  //   io.in(i).ready := io.to_dp(i).ready
+  //   io.to_dp(i).valid := io.in(i).valid
+  // }
 
   val DecodeSignal = Array.fill(DecodeWidth)(Module(new DecodeSignals).io)
   val ImmGen = Array.fill(DecodeWidth)(Module(new ImmGen).io)
