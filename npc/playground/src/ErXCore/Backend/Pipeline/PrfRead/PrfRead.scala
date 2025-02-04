@@ -7,15 +7,14 @@ import DecodeSignal._
 class PrfRead extends ErXCoreModule{
   val io = IO(new Bundle{
     val in = Vec(IssueWidth,Flipped(DecoupledIO(new RenameIO)))
-    // val from_ex = Input(Bool()) //forward
-    val from_cm = Input(new PrfReadFromCommit(updSize = CommitWidth))
+    val from_ex = Input(new PrfReadFromExecute(updSize = IssueWidth))
     val to_ex = Vec(IssueWidth,DecoupledIO(new IssueIO))
   })
   val prf = RegInit(VecInit(Seq.fill(PrfSize)(0.U(XLEN.W))))
   
-  for(i <- 0 until CommitWidth){
-    when(io.from_cm.upd(i).rfWen && io.from_cm.upd(i).rfDst =/= 0.U){
-      prf(io.from_cm.upd(i).rfDst) := io.from_cm.upd(i).rdData
+  for(i <- 0 until IssueWidth){
+    when(io.from_ex.upd(i).rfWen && io.from_ex.upd(i).prfDst =/= 0.U){
+      prf(io.from_ex.upd(i).prfDst) := io.from_ex.upd(i).rdData
     }
   } 
 
@@ -27,12 +26,12 @@ class PrfRead extends ErXCoreModule{
     var rsData1 = prf(io.in(i).bits.pf.prfSrc1)
     var rsData2 = prf(io.in(i).bits.pf.prfSrc2)
 
-    for(j <- 0 until CommitWidth){
-      when(io.to_ex(i).bits.pf.prfSrc1 === io.from_cm.upd(j).rfDst && io.from_cm.upd(j).rfWen){
-        rsData1 := io.from_cm.upd(j).rdData
+    for(j <- 0 until IssueWidth){
+      when(io.to_ex(i).bits.pf.prfSrc1 === io.from_ex.upd(j).prfDst && io.from_ex.upd(j).rfWen){
+        rsData1 := io.from_ex.upd(j).rdData
       }
-      when(io.to_ex(i).bits.pf.prfSrc2 === io.from_cm.upd(j).rfDst && io.from_cm.upd(j).rfWen){
-        rsData2 := io.from_cm.upd(j).rdData
+      when(io.to_ex(i).bits.pf.prfSrc2 === io.from_ex.upd(j).prfDst && io.from_ex.upd(j).rfWen){
+        rsData2 := io.from_ex.upd(j).rdData
       }
     }
 

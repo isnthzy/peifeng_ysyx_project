@@ -39,7 +39,7 @@ class Backend extends ErXCoreModule{
   
 //-----     PrfRead  stage     ------
   PipeConnect(PRstage.io.in,DSstage.io.to_pr,flush)
-
+  PRstage.io.from_ex  := EXstage.io.fw_pr
 //-----     Execute  stage     ------
   PipeConnect(EXstage.io.in,PRstage.io.to_ex,flush)
   StoreQueue.io.st <> EXstage.io.dmemStore

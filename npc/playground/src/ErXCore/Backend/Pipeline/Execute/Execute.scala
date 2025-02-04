@@ -8,6 +8,7 @@ class Execute extends ErXCoreModule{
   val io = IO(new Bundle{
     val in = Vec(IssueWidth,Flipped(DecoupledIO(new IssueIO)))
     val fw_dr  = Output(new RenameFromExecuteUpdate(updSize = IssueWidth))
+    val fw_pr  = Output(new PrfReadFromExecute(updSize = IssueWidth))
     val fw_rob = Output(new ROBFromExecuteUpdate(updSize = IssueWidth))
     val dmemStore = new SimpleMemIO
     val dmemLoad  = new SimpleMemIO
@@ -37,6 +38,9 @@ class Execute extends ErXCoreModule{
     io.fw_rob.upd(i)     := pipe(i).io.out
     io.fw_rob.upd(i).bits.br.taken  := checkBranchTaken(io.in(i).bits.cs.brType,pipe(i).io.out.bits.result(0))
     io.fw_rob.upd(i).bits.br.target := io.in(i).bits.cf.pc + io.in(i).bits.cf.imm
+    io.fw_pr.upd(i).rfWen  := pipe(i).io.out.bits.rfWen
+    io.fw_pr.upd(i).prfDst := pipe(i).io.out.bits.prfDst
+    io.fw_pr.upd(i).rdData := pipe(i).io.out.bits.result
   } 
 }
 
@@ -61,6 +65,8 @@ class PipeALUorCSR extends AbstaceExecutePipe{
   io.out.bits.isBranch := isBranch(io.in.bits.cs.brType)
   io.out.bits.robIdx   := 0.U
   io.out.bits.isStore  := false.B
+  io.out.bits.rfWen    := io.in.bits.cs.rfWen
+  io.out.bits.prfDst   := io.in.bits.pf.prfDst
 }
 
 class PipeALU extends AbstaceExecutePipe{
@@ -73,6 +79,8 @@ class PipeALU extends AbstaceExecutePipe{
   io.out.bits.result := Alu.io.result
   io.out.bits.isBranch := isBranch(io.in.bits.cs.brType)
   io.out.bits.isStore  := false.B
+  io.out.bits.rfWen    := io.in.bits.cs.rfWen
+  io.out.bits.prfDst   := io.in.bits.pf.prfDst
 }
 
 class PipeMem(useDmem: Boolean = false) extends AbstaceExecutePipe(useDmem){
@@ -85,6 +93,8 @@ class PipeMem(useDmem: Boolean = false) extends AbstaceExecutePipe(useDmem){
   io.out.bits.result := lsu.io.ldData
   io.out.bits.isBranch := false.B
   io.out.bits.isStore  := false.B
+  io.out.bits.rfWen    := io.in.bits.cs.rfWen
+  io.out.bits.prfDst   := io.in.bits.pf.prfDst
 }
 
 // class PipeMem

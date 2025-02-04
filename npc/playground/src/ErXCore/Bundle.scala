@@ -108,10 +108,10 @@ class StoreQueueFromROB (updSize: Int = 1) extends ErXCoreBundle {
   
 // }
 
-class PrfReadFromCommit (updSize: Int = 1) extends ErXCoreBundle {
+class PrfReadFromExecute (updSize: Int = 1) extends ErXCoreBundle {
   val upd = Vec(updSize, new Bundle {
     val rfWen = Bool()
-    val rfDst = UInt(log2Up(PrfSize).W)
+    val prfDst = UInt(log2Up(PrfSize).W)
     val rdData = UInt(XLEN.W)
   })
 }
@@ -145,6 +145,8 @@ class CommitIO extends ErXCoreBundle{
 
 class PipeExecuteOut extends ErXCoreBundle {
   val result = UInt(XLEN.W)
+  val rfWen  = Bool()
+  val prfDst = UInt(log2Up(PrfSize).W)
   val robIdx = UInt(log2Up(RobEntries).W)
   val isBranch = Bool()
   val isStore  = Bool()
