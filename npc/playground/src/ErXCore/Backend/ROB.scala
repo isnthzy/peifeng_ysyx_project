@@ -41,6 +41,7 @@ class ROB extends ErXCoreModule{
   io.fw_dp.flush  := flushAll
   io.fw_sq.flush  := flushAll
 //enqueue
+  io.fw_dp.robAge := 0.U.asTypeOf(io.fw_dp.robAge) //override
   val enqValid = io.in.map(_.valid).reduce(_||_)
   when(enqValid&&ringBuffAllowin){
     ringBuffHead := ringBuffHead + enqNum
@@ -49,8 +50,6 @@ class ROB extends ErXCoreModule{
         rob.write(headPtr + i.U, io.in(i).bits)
         complete(headPtr + i.U) := false.B
         io.fw_dp.robAge(i) := ringBuffHead + i.U
-      }.otherwise{
-        io.fw_dp.robAge(i) := 0.U
       }
     }
   }

@@ -12,6 +12,7 @@ class DCache extends ErXCoreModule{
     val out= new AxiCacheIO()
   })
   io.out.rret.ready:=true.B
+  io.ds.resp.bits.data:=DontCare
 
   io.out.rd.valid     :=io.dl.req.valid
   io.out.rd.bits.stype:=io.dl.req.bits.size
