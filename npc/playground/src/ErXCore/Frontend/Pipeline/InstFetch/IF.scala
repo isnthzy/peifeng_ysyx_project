@@ -60,8 +60,10 @@ class IfStage extends ErXCoreModule {
   fsExcpType.iaf:=false.B
   fsExcpType.ipf:=false.B
   fsExcpEn:=fsExcpType.asUInt.orR
-  // io.to_id.bits.excpEn:=fsExcpEn
-  // io.to_id.bits.excpType:=fsExcpType
+
+  io.to_id.bits.pc:=io.in.bits.pc
+  io.to_id.bits.inst:=fsInst
+
 }
 
 class OpenCalculateIPC extends BlackBox with HasBlackBoxInline {
