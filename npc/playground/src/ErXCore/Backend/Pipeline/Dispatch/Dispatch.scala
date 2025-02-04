@@ -24,9 +24,9 @@ class Dispatch extends ErXCoreModule {
   }
 
   val uopInt = VecInit(io.in.map(_.bits))
-  val uopIntValid = WireDefault(Vec(DecodeWidth,false.B))
+  val uopIntValid = WireDefault(VecInit(Seq.fill(DecodeWidth)(false.B)))
   val uopMem = VecInit(io.in.map(_.bits))
-  val uopMemValid = WireDefault(Vec(DecodeWidth,false.B))
+  val uopMemValid = WireDefault(VecInit(Seq.fill(DecodeWidth)(false.B)))
 
   for(i <- 0 until DecodeWidth){
     when(uopInt(i).cs.fuType =/= SDEF(FU_MEM)){
