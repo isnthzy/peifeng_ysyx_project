@@ -91,6 +91,9 @@ class PipeMem(useDmem: Boolean = false) extends AbstaceExecutePipe(useDmem){
   io.dmemLoad.get  <> lsu.io.DMemLoad
   io.in.ready := !lsu.io.busy
   lsu.io.valid := io.in.valid
+  lsu.io.stData:= io.in.bits.data.src2
+  lsu.io.addr  := io.in.bits.cf.pc + io.in.bits.cf.imm
+  lsu.io.lsType:= io.in.bits.cs.lsType
   io.out.valid := false.B
   io.out.bits.result := lsu.io.ldData
   io.out.bits.isBranch := false.B

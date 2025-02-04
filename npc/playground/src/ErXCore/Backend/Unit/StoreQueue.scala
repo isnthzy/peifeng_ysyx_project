@@ -35,6 +35,7 @@ class StoreQueue extends ErXCoreModule {
   io.out.st.req.bits := queue(deqPtr.value).bits
   io.out.st.resp.ready := true.B
   io.st.resp.valid := waitDeqResp 
+  io.st.resp.bits.data := DontCare
 
   when(io.from_rob.doDeq&&doDeqFire){
     doDeqCount := doDeqCount
