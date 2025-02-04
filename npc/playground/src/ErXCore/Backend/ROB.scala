@@ -15,7 +15,7 @@ class ROB extends ErXCoreModule{
   })
   val rob = SyncReadMem(RobEntries, new RenameIO, SyncReadMem.WriteFirst)
   val complete = RegInit(VecInit(Seq.fill(RobEntries)(false.B)))
-  val packet = RegInit(VecInit(Seq.fill(RobEntries)(new RobPacket)))
+  val packet = RegInit(VecInit(Seq.fill(RobEntries)(0.U.asTypeOf(new RobPacket))))
   val commitValid = Wire(Vec(RobWidth,Bool()))
   val commitBits  = Wire(Vec(RobWidth,new RenameIO))
 
