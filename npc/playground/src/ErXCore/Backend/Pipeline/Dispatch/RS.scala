@@ -109,16 +109,16 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
     if(deqWidth == 1){
       if (ArbSize == 1) {
         // 只有一个输入时，直接返回该项的年龄
-        inputs(0).asTypeOf(Vec(deqWidth,new ArbAgeBundle))
+        inputs(0).asTypeOf(Vec(deqWidth,new ArbAgeBundle(rsSize)))
       } else if (ArbSize == 2) {
         // 两个输入时直接比较，返回年龄较小者
         val retAge = SelectAge(inputs(0), inputs(1))
-        retAge.asTypeOf(Vec(deqWidth,new ArbAgeBundle))
+        retAge.asTypeOf(Vec(deqWidth,new ArbAgeBundle(rsSize)))
       } else {
         // 多于两个输入时，递归处理左右两部分
         val tmp1 = OldFirstArb(VecInit(inputs.take(ArbSize / 2)), ArbSize / 2)
         val tmp2 = OldFirstArb(VecInit(inputs.drop(ArbSize / 2)), ArbSize / 2)
-        val retArg = Vec(deqWidth,new ArbAgeBundle)
+        val retArg = Vec(deqWidth,new ArbAgeBundle(rsSize))
         retArg := SelectAge(tmp1(0),tmp2(0))
         retArg
       }
@@ -126,10 +126,10 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
       require(rsSize >= 2, "rsSize must be greater than 2")
       if (ArbSize == 2) {
         val retAge = SelectAge(inputs(0), inputs(1))
-        retAge.asTypeOf(Vec(deqWidth,new ArbAgeBundle))
+        retAge.asTypeOf(Vec(deqWidth,new ArbAgeBundle(rsSize)))
       } else {
         // 多于两个输入时，递归处理左右两部分
-        val retAge = Vec(deqWidth,new ArbAgeBundle)
+        val retAge = Vec(deqWidth,new ArbAgeBundle(rsSize))
         val tmp1 = OldFirstArb(VecInit(inputs.take(ArbSize / 2)), ArbSize / 2)
         val tmp2 = OldFirstArb(VecInit(inputs.drop(ArbSize / 2)), ArbSize / 2)
         retAge(0) := tmp1
@@ -139,8 +139,8 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
     }
   }
 
-  val rsArbPacket = VecInit(Seq.fill(rsSize)(new ArbAgeBundle))
-  val rsReadyList = VecInit(Seq.fill(rsSize)(Bool()))
+  val rsArbPacket = Wire(Vec(rsSize, new ArbAgeBundle(rsSize)))
+  val rsReadyList = Wire(Vec(rsSize, Bool()))
   for(i <- 0 until rsSize){
     var rs1Ready = io.from_dr.availList(rsBuff(i).pf.prfSrc1)
     var rs2Ready = io.from_dr.availList(rsBuff(i).pf.prfSrc2)
@@ -148,9 +148,9 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
     rsArbPacket(i).age := rsROBAge(i)
     rsArbPacket(i).srcReady := rsReadyList(i)
     rsArbPacket(i).isStore := isStore(i)
+    rsArbPacket(i).rsIdx := i.U
   }
-  def getIdx(x: UInt): UInt = x(RobAgeWidth - 1, 0)
-  val deqSelect = OldFirstArb(rsArbPacket, rsSize).map(bundle => getIdx(bundle.age))
+  val deqSelect = OldFirstArb(rsArbPacket, rsSize).map(_.rsIdx)
   for(i <- 0 until deqWidth){
     io.out(i).valid := rsReadyList(deqSelect(i))
     io.out(i).bits  := rsBuff(deqSelect(i))
@@ -159,11 +159,22 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
       isStore(deqSelect(i)) := false.B
     }
   }
+
+  //flush 
+  when(io.from_rob.flush){
+    io.in.map(_.ready := false.B)
+    io.out.map(_.valid := false.B)
+    for(i <- 0 until rsSize){
+      rsBuffValid(i) := false.B
+      isStore(i) := false.B
+    }
+  }
 }
 
 
-class ArbAgeBundle extends ErXCoreBundle {
+class ArbAgeBundle(rsSize: Int) extends ErXCoreBundle {
   val age = UInt(RobAgeWidth.W)
   val srcReady = Bool()
   val isStore  = Bool()
+  val rsIdx    = UInt(log2Up(rsSize).W)
 }

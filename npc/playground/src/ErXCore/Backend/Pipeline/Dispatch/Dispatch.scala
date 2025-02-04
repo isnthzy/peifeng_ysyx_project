@@ -13,6 +13,8 @@ class Dispatch extends ErXCoreModule {
     val fw_rob = Vec(DecodeWidth,Decoupled(new RenameIO))
     val to_pr = Vec(IssueWidth,Decoupled(new RenameIO))
   })
+  val memRS = Module(new RS(rsSize = 2,enqWidth = DecodeWidth,deqWidth = 1,StoreSeq = true))
+  val intRS = Module(new RS(rsSize = 2,enqWidth = DecodeWidth,deqWidth = DecodeWidth))
   io.fw_rob.zipWithIndex.foreach{case (rob, i) => 
     rob.bits := io.in(i).bits 
     rob.valid := io.in(i).valid
@@ -22,9 +24,9 @@ class Dispatch extends ErXCoreModule {
   }
 
   val uopInt = VecInit(io.in.map(_.bits))
-  val uopIntValid = WireDefault(Vec(DecodeWidth,false.B))
+  val uopIntValid = WireDefault(VecInit(Seq.fill(DecodeWidth)(false.B)))
   val uopMem = VecInit(io.in.map(_.bits))
-  val uopMemValid = WireDefault(Vec(DecodeWidth,false.B))
+  val uopMemValid = WireDefault(VecInit(Seq.fill(DecodeWidth)(false.B)))
 
   for(i <- 0 until DecodeWidth){
     when(uopInt(i).cs.fuType =/= SDEF(FU_MEM)){
@@ -34,8 +36,6 @@ class Dispatch extends ErXCoreModule {
       uopMemValid(i) := io.in(i).valid
     }
   }
-  val memRS = Module(new RS(rsSize = 2,enqWidth = DecodeWidth,deqWidth = 1,StoreSeq = true))
-  val intRS = Module(new RS(rsSize = 2,enqWidth = DecodeWidth,deqWidth = DecodeWidth))
 
   intRS.io.in.zipWithIndex.foreach{case (in, i) => 
     in.bits  := uopInt(i)
@@ -51,9 +51,9 @@ class Dispatch extends ErXCoreModule {
 
   for(i <- 0 until IssueWidth){
     if(i < 2){
-      io.to_pr(i).bits <> intRS.io.out(i)
+      io.to_pr(i) <> intRS.io.out(i)
     }else{
-      io.to_pr(i).bits <> memRS.io.out(0)
+      io.to_pr(i) <> memRS.io.out(0)
     }
   }
 }

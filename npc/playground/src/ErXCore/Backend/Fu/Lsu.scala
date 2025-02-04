@@ -8,7 +8,7 @@ class LSU extends ErXCoreModule{
   val io = IO(new Bundle{
     val valid  = Input(Bool())
     val busy   = Output(Bool())
-    val lsType = Input(UInt(2.W))
+    val lsType = Input(UInt(LS_XXX.length.W))
     val addr   = Input(UInt(XLEN.W))
     val stData = Input(UInt(XLEN.W))
     val ldData = Output(UInt(XLEN.W))
@@ -131,15 +131,15 @@ class LSU extends ErXCoreModule{
 }
 
 class SimpleReqIO extends ErXCoreBundle{
-  val addr = Input(UInt(XLEN.W))
-  val size = Input(UInt(3.W))
-  val wen   = Input(Bool()) //read:0 write:1
-  val wmask = Input(UInt((XLEN/8).W))
-  val wdata = Input(UInt(XLEN.W))
+  val addr = Output(UInt(XLEN.W))
+  val size = Output(UInt(3.W))
+  val wen   = Output(Bool()) //read:0 write:1
+  val wmask = Output(UInt((XLEN/8).W))
+  val wdata = Output(UInt(XLEN.W))
 }
 
 class SimpleRespIO extends ErXCoreBundle{
-  val data  = Input(UInt(32.W))
+  val data  = Output(UInt(32.W))
 }
 
 
@@ -151,42 +151,42 @@ class SimpleMemIO extends ErXCoreBundle{
   val resp = Flipped(DecoupledIO(new SimpleRespIO()))
 }
 
-class Core2AxiReadIO extends ErXCoreModule{
+class Core2AxiReadIO extends ErXCoreBundle{
   val req  = Output(Bool())
   val addr = Output(UInt(32.W))
   val size = Output(UInt(3.W))
   val addrOk = Input(Bool())
 }
 
-class Core2AxiRespondIO extends ErXCoreModule{
+class Core2AxiRespondIO extends ErXCoreBundle{
   val dataOk= Input(Bool())
   val data  = Input(UInt(32.W))
 }
 
-class AxiCacheReadIO extends Bundle{
+class AxiCacheReadIO extends ErXCoreBundle{
   val stype = UInt(3.W)
-  val addr = UInt(32.W)
+  val addr = UInt(XLEN.W)
 }
 
-class AxiCacheReadReturnIO extends Bundle{
+class AxiCacheReadReturnIO extends ErXCoreBundle{
   val last  = Input(Bool())
   val resp  = Input(UInt(2.W))
-  val data  = Input(UInt(32.W))
+  val data  = Input(UInt(XLEN.W))
 }
 
-class AxiCacheWriteReturnIO extends Bundle{
+class AxiCacheWriteReturnIO extends ErXCoreBundle{
   val last  = Input(Bool())
   val resp  = Input(UInt(2.W))
 }
 
-class AxiCacheWriteIO extends Bundle{
+class AxiCacheWriteIO extends ErXCoreBundle{
   val stype = UInt(3.W)
   val addr = UInt(32.W)
   val strb = UInt(4.W)
   val data = UInt(32.W)
 }
 
-class AxiCacheIO extends Bundle{
+class AxiCacheIO extends ErXCoreBundle{
   val rd  = DecoupledIO(new AxiCacheReadIO())
   val wr  = DecoupledIO(new AxiCacheWriteIO())
   val rret = Flipped(DecoupledIO(new AxiCacheReadReturnIO()))

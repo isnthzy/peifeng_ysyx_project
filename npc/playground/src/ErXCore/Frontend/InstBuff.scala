@@ -6,10 +6,11 @@ import chisel3.util._
 class InstBuff extends ErXCoreModule {
   val io = IO(new Bundle {
     val in = Flipped(Decoupled(new InstIO))
-    val out = Vec(DecodeWidth,Decoupled(new InstIO))
     val from_bck = Input(new Bundle {
       val flush = Input(Bool())
     })
+    
+    val out = Vec(DecodeWidth,Decoupled(new InstIO))
   })
 
   val queue = RegInit(VecInit(Seq.fill(InstBuffSize)(0.U.asTypeOf(Valid(new InstIO)))))
@@ -37,17 +38,16 @@ class InstBuff extends ErXCoreModule {
 
   // Dequeue logic
   val canDequeue = queueCount >= 2.U
+  val validMask = WireDefault(VecInit(Seq.fill(DecodeWidth)(false.B)))
   when (canDequeue) {
     for (i <- 0 until DecodeWidth) {
-      io.out(i).valid := queue(queueHead + i.U).valid
-      io.out(i).bits := queue(queueHead + i.U).bits
+      validMask(i) := canDequeue
     }
     queueHead := queueHead + 2.U
     queueCount := queueCount - 2.U
-  } otherwise {
-    for (i <- 0 until DecodeWidth) {
-      io.out(i).valid := false.B
-    }
   }
-
+  for (i <- 0 until DecodeWidth) {
+    io.out(i).valid := queue(queueHead + i.U).valid && validMask(i)
+    io.out(i).bits := queue(queueHead + i.U).bits
+  }
 }

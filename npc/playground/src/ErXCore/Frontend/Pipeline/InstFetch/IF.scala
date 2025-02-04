@@ -8,7 +8,7 @@ import chisel3.util._
 class IfStage extends ErXCoreModule {
   val io=IO(new Bundle {
     val in = Flipped(Decoupled(new Pf2IfBusBundle()))
-    val to_id = Decoupled(new If2IdBusBundle())
+    val to_id = Decoupled(new InstIO())
     val from_bck = Input(new Bundle {
       val flush = Input(Bool())
     })
@@ -63,13 +63,13 @@ class IfStage extends ErXCoreModule {
   fsExcpType.iaf:=false.B
   fsExcpType.ipf:=false.B
   fsExcpEn:=fsExcpType.asUInt.orR
-  io.to_id.bits.excpEn:=fsExcpEn
-  io.to_id.bits.excpType:=fsExcpType
+  // io.to_id.bits.excpEn:=fsExcpEn
+  // io.to_id.bits.excpType:=fsExcpType
 
   val perfMode=RegInit(false.B)
   io.to_id.bits.pc:=io.in.bits.pc
   io.to_id.bits.inst:=fsInst
-  io.to_id.bits.perfMode:=perfMode
+  // io.to_id.bits.perfMode:=perfMode
 
   io.perfMode:=perfMode
   // if(GenerateParams.getParam("PERF").asInstanceOf[Boolean]){

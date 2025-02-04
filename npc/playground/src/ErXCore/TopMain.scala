@@ -25,10 +25,10 @@ abstract class GenParamsApp extends App {
   val param = parseArgs(args)
   val gen = if (param.mode.isDefined) { 
     GenerateParams.setParams(param.mode.get,param.perf)
-    () => new SimTop()
+    () => new SimTop
   } else {
     GenerateParams.setParams("soc",param.perf)
-    () => new SimTop()
+    () => new SimTop
   }
 } 
 

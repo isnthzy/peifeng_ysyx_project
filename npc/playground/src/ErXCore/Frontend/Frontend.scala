@@ -32,7 +32,7 @@ class Frontend extends ErXCoreModule {
 // inst buff
   // InstBuff.io.in := 
   InstBuff.io.from_bck.flush := io.from_bck.flush
-  io.out := InstBuff.io.out
+  io.out <> InstBuff.io.out
 }
 
 object FrontendConnect {

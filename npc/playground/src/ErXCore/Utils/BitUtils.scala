@@ -39,6 +39,6 @@ object UIntUtils{
     def getIdx(idxWidth: Int): UInt = x(idxWidth - 1, 0)
   }
   implicit class UIntWithGetAge(val x: UInt) extends AnyVal {
-    def getAge(ageIdx: Int): UInt = x(ageIdx - 1)
+    def getFlag(ageIdx: Int): UInt = x(ageIdx - 1)
   }
 }
