@@ -10,7 +10,6 @@ class PrfRead extends ErXCoreModule{
     // val from_ex = Input(Bool()) //forward
     val from_cm = Input(new PrfReadFromCommit(updSize = CommitWidth))
     val to_ex = Vec(IssueWidth,DecoupledIO(new IssueIO))
-    // val out = DecodedIO()
   })
   val prf = RegInit(VecInit(Seq.fill(PrfSize)(0.U(XLEN.W))))
   
@@ -28,10 +27,10 @@ class PrfRead extends ErXCoreModule{
     var rsData2 = prf(io.in(i).bits.pf.prfSrc2)
 
     for(j <- 0 until CommitWidth){
-      when(io.to_ex(i).bits.pf.prfSrc1 === io.from_cm.upd(j).rfDst && io.from_cm.upd(i).rfWen){
+      when(io.to_ex(i).bits.pf.prfSrc1 === io.from_cm.upd(j).rfDst && io.from_cm.upd(j).rfWen){
         rsData1 := io.from_cm.upd(j).rdData
       }
-      when(io.to_ex(i).bits.pf.prfSrc2 === io.from_cm.upd(j).rfDst && io.from_cm.upd(i).rfWen){
+      when(io.to_ex(i).bits.pf.prfSrc2 === io.from_cm.upd(j).rfDst && io.from_cm.upd(j).rfWen){
         rsData2 := io.from_cm.upd(j).rdData
       }
     }
