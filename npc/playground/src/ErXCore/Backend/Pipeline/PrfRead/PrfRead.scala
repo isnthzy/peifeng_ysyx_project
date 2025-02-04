@@ -22,6 +22,7 @@ class PrfRead extends ErXCoreModule{
   for(i <- 0 until IssueWidth){
     io.to_ex(i).bits.cs := io.in(i).bits.cs
     io.to_ex(i).bits.pf := io.in(i).bits.pf
+    io.to_ex(i).bits.cf := io.in(i).bits.cf
 
     var rsData1 = prf(io.in(i).bits.pf.prfSrc1)
     var rsData2 = prf(io.in(i).bits.pf.prfSrc2)
