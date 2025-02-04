@@ -82,7 +82,7 @@ class ROB extends ErXCoreModule{
 
   //
   for(i <- 0 until RetireWidth){
-    commitBits := rob.read(tailPtr + i.U)
+    commitBits(i) := rob.read(tailPtr + i.U)
     if(i == 0){
       retireValid(i) := validMask(i) && complete(tailPtr + i.U)
     }else{
