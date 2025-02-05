@@ -68,15 +68,15 @@ class RenameTable extends ErXCoreModule{
   val io = IO(new Bundle {
     val in = new Bundle {
       val rfWen  = Input(Vec(DecodeWidth,Bool()))
-      val rfSrc1 = Input(Vec(DecodeWidth,UInt(5.W)))
-      val rfSrc2 = Input(Vec(DecodeWidth,UInt(5.W)))
-      val rfDst  = Input(Vec(DecodeWidth,UInt(5.W)))
-      val prfDst = Input(Vec(DecodeWidth,UInt(5.W)))
+      val rfSrc1 = Input(Vec(DecodeWidth,UInt(log2Up(arfSize).W)))
+      val rfSrc2 = Input(Vec(DecodeWidth,UInt(log2Up(arfSize).W)))
+      val rfDst  = Input(Vec(DecodeWidth,UInt(log2Up(arfSize).W)))
+      val prfDst = Input(Vec(DecodeWidth,UInt(log2Up(prfSize).W)))
     }
     val out = new Bundle {
-      val prfSrc1 = Output(Vec(DecodeWidth,UInt(5.W)))
-      val prfSrc2 = Output(Vec(DecodeWidth,UInt(5.W)))
-      val pprfDst = Output(Vec(DecodeWidth,UInt(5.W)))
+      val prfSrc1 = Output(Vec(DecodeWidth,UInt(log2Up(prfSize).W)))
+      val prfSrc2 = Output(Vec(DecodeWidth,UInt(log2Up(prfSize).W)))
+      val pprfDst = Output(Vec(DecodeWidth,UInt(log2Up(prfSize).W)))
     }
     val from_rob = Input(new RenameFromCommitUpdate(updSize = CommitWidth))
 
