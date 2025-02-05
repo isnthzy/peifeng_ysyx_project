@@ -81,9 +81,10 @@ class ROB extends ErXCoreModule{
   io.fw_sq.doDeq := (0 until RetireWidth).map(i => retireValid(i) && packet(i).isStore).reduce(_||_)
   io.fw_frt.tk := packet(tailPtr + brTakenSelect).br
 
-  //
+  val syncReadTailPtr = (ringBuffTail + deqNum).getIdx(RobIdxWidth)
+  //NOTE:commitBits由于是syncReadMem，读慢一拍，因此需要使用要移动的tail指针提前读结果
   for(i <- 0 until RetireWidth){
-    commitBits(i) := rob.read(tailPtr + i.U)
+    commitBits(i) := rob.read(syncReadTailPtr + i.U)
     if(i == 0){
       retireValid(i) := validMask(i) && complete(tailPtr + i.U)
     }else{
