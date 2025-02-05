@@ -11,7 +11,7 @@ object GenerateParams {
     "VERILATOR_SIM" -> true,
     "PERF"          -> false,
     "YOSYS_MODE"    -> false,
-    "SOC_MODE"      -> true
+    "SOC_MODE"      -> true,
   )
   def setParams(mode: String, perf: Boolean): Unit = {
     coreMode = mode

@@ -222,3 +222,11 @@ class If2IdBusBundle extends ErXCoreBundle{
   val pc=UInt(XLEN.W)
   val inst=UInt(XLEN.W)
 }
+
+class Pf4IbBundle extends ErXCoreBundle{
+  val br = new BranchTakeBundle()
+}
+
+class If4IbBundle extends ErXCoreBundle{
+  val br = new BranchTakeBundle()
+}
