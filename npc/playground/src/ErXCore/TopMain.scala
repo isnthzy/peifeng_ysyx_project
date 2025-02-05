@@ -46,7 +46,7 @@ object TopMain extends GenParamsApp {
       "--lowering-options=disallowLocalVariables,locationInfoStyle=wrapInAtSquareBracket"
     ), 
     // FirtoolOption("---lowering-options=disallowPackedArrays"),
-    FirtoolOption("--preserve-aggregate=vec"), 
+    // FirtoolOption("--preserve-aggregate=vec"), 
     //NOTE:前者和后者不能同时开启
     FirtoolOption("--split-verilog"), //分离生成的verilog文件
     FirtoolOption("-o=vsrc"), //设置分离后verilog文件的路径
