@@ -53,7 +53,7 @@ class Backend extends ErXCoreModule{
     val Diff = Module(new DiffCommit)
     val gpr = Wire(Vec(arfSize,UInt(XLEN.W)))
     ExcitingUtils.addSink(gpr,"DiffGPR",ExcitingUtils.Func)
-    Diff.diff.reg := gpr
+    Diff.diff.reg := gpr.asTypeOf(Diff.diff.reg)
     Diff.diff.instr.index := 0.U
     Diff.diff.instr.valid := ROB.io.out_diff(0).valid
     Diff.diff.instr.pc    := ROB.io.out_diff(0).bits.cf.pc
