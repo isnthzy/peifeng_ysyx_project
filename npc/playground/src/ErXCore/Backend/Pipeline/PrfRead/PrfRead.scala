@@ -11,7 +11,7 @@ class PrfRead extends ErXCoreModule{
     val from_ex = Input(new PrfReadFromExecute(updSize = IssueWidth))
     val to_ex = Vec(IssueWidth,DecoupledIO(new IssueIO))
 
-    val boreRNandPRF = Input(VecInit(Seq.fill(32)(0.U(log2Up(PrfSize).W))))
+    // val boreRNandPRF = Input(VecInit(Seq.fill(32)(0.U(log2Up(PrfSize).W))))
   })
   
   // val prValid = RegInit(VecInit(Seq.fill(IssueWidth)(false.B)))
