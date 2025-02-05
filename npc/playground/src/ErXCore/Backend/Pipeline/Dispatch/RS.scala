@@ -133,7 +133,7 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
         retVec
       } else {
         // 多于两个输入时，递归处理左右两部分
-        val retVec = Vec(deqWidth,new ArbAgeBundle(rsSize))
+        val retVec = Wire(Vec(deqWidth,new ArbAgeBundle(rsSize)))
         val tmp1 = OldFirstArb(VecInit(inputs.take(ArbSize / 2)), ArbSize / 2)
         val tmp2 = OldFirstArb(VecInit(inputs.drop(ArbSize / 2)), ArbSize / 2)
         retVec(0) := tmp1(0)
