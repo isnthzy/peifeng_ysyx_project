@@ -15,7 +15,7 @@ IMG?=
 ARCH?=
 ARGS?= --log=$(BUILD_DIR)/npc-log.txt
 NPCARGS+= --wavebegin=$(WAVE)
-# ARGS+= --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so 
+ARGS+= --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so 
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  --timescale "1ns/1ns" --no-timing
@@ -94,6 +94,11 @@ verilog:
 	rm -f $(VSRC_DIR)/*
 	$(call git_commit, "generate verilog")
 	mill -i __.test.runMain TopMain --target-dir $(VSRC_DIR) --mode soc --perf
+
+verilog-npc:
+	rm -f $(VSRC_DIR)/*
+	$(call git_commit, "generate verilog")
+	mill -i __.test.runMain TopMain --target-dir $(VSRC_DIR) --mode npc
 
 perf:
 	rm -rf $(VSRC_DIR)/*
