@@ -51,6 +51,9 @@ class Backend extends ErXCoreModule{
 //-----     Commit   stage     ------
   if(EnableVerlatorSim){
     val Diff = Module(new DiffCommit)
+    val gpr = Wire(Vec(32,UInt(XLEN.W)))
+    ExcitingUtils.addSink(gpr,"DiffGPR",ExcitingUtils.Func)
+    Diff.diff.reg := gpr
     Diff.diff.instr.index := 0.U
     Diff.diff.instr.valid := ROB.io.out_diff(0).valid
     Diff.diff.instr.pc    := ROB.io.out_diff(0).bits.cf.pc
@@ -73,7 +76,7 @@ class Backend extends ErXCoreModule{
     Diff.diff.instr1.csrRstat  := 0.U
     Diff.diff.instr1.csrData   := 0.U
     
-    ExcitingUtils.addSink(Diff.diff.reg,"DiffGPR",ExcitingUtils.Func)
+    
     Diff.diff.load  := 0.U.asTypeOf(Diff.diff.load)
     Diff.diff.load1 := 0.U.asTypeOf(Diff.diff.load)
     Diff.diff.store := 0.U.asTypeOf(Diff.diff.store)

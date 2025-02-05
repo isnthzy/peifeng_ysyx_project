@@ -65,7 +65,7 @@ class PrfRead extends ErXCoreModule{
   if(EnableVerlatorSim){
     val archTable = WireInit(VecInit(Seq.fill(32)(0.U(log2Up(PrfSize).W))))
     ExcitingUtils.addSink(archTable,"archTable",ExcitingUtils.Func)
-    val archReg  = WireInit(VecInit(Seq.fill(32)(0.U(XLEN.W))))
+    val archReg  = Wire(Vec(32,UInt(XLEN.W)))
     for(i <- 0 until 32){
       archReg(i) := prf(archTable(i))
     }
