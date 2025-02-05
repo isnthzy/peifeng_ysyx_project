@@ -82,8 +82,8 @@ class RenameTable extends ErXCoreModule{
 
     // val boreRNandPRF = Output(new boreRNandPRF())
   })
-  val specTable = RegInit(VecInit(Seq.tabulate(32)(i => i.U(log2Up(PrfSize).W))))
-  val archTable = RegInit(VecInit(Seq.tabulate(32)(i => i.U(log2Up(PrfSize).W))))
+  val specTable = RegInit(VecInit(Seq.tabulate(arfSize)(i => i.U(log2Up(PrfSize).W))))
+  val archTable = RegInit(VecInit(Seq.tabulate(arfSize)(i => i.U(log2Up(PrfSize).W))))
   //The physical register addresses 0-31 are assigned by default.
 
   for(i <- 0 until DecodeWidth){
@@ -150,7 +150,7 @@ class PrfStateTable extends ErXCoreModule{
       val commitRecover = Input(Bool())
     })
   })
-  val prfStateTable = RegInit(VecInit(Seq.fill(32)(COMMITTED) ++ Seq.fill(PrfSize - 32)(FREE)))
+  val prfStateTable = RegInit(VecInit(Seq.fill(arfSize)(COMMITTED) ++ Seq.fill(PrfSize - arfSize)(FREE)))
   val freeList = Wire(Vec(DecodeWidth,UInt(PrfSize.W)))
   val freePrfDst = Wire(Vec(DecodeWidth,UInt(log2Up(PrfSize).W)))
   io.prfDst := freePrfDst

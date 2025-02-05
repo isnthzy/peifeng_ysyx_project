@@ -77,6 +77,9 @@ trait HasErXCoreParameter {
   val RetireWidth = 2
 
   val EnableVerlatorSim = GenerateParams.getParam("VERILATOR_SIM").asInstanceOf[Boolean] 
+  val UseRV32E = GenerateParams.getParam("RV32E").asInstanceOf[Boolean]
+  val arfSize = if(UseRV32E) 16 else 32
+  val prfSize = arfSize * 2
 }
 
 trait HasErXCacheConfig{

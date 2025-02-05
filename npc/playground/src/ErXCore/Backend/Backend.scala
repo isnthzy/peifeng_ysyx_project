@@ -51,7 +51,7 @@ class Backend extends ErXCoreModule{
 //-----     Commit   stage     ------
   if(EnableVerlatorSim){
     val Diff = Module(new DiffCommit)
-    val gpr = Wire(Vec(32,UInt(XLEN.W)))
+    val gpr = Wire(Vec(arfSize,UInt(XLEN.W)))
     ExcitingUtils.addSink(gpr,"DiffGPR",ExcitingUtils.Func)
     Diff.diff.reg := gpr
     Diff.diff.instr.index := 0.U

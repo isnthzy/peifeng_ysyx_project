@@ -141,7 +141,7 @@ class dpi_sram extends ErXCoreBlackBox with HasBlackBoxInline {
     val wdata=Input(UInt(XLEN.W))
     val wmask=Input(UInt(8.W))
   })
-  setInline("dpic/DpiSram.v",
+  setInline("DpiSram.v",
     """
       |import "DPI-C" function  int pmem_read (input int raddr);
       |import "DPI-C" function void pmem_write(input int waddr, input  int wdata, input byte wmask);
