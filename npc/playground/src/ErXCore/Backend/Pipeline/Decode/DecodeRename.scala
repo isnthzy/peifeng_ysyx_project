@@ -20,7 +20,7 @@ class DecodeRename extends ErXCoreModule{
   //   io.in(i).ready := ~drValid(i) || io.to_dp(i).ready
   //   io.to_dp(i).valid := drValid(i)
   // }
-  for(i <- 0 until IssueWidth){
+  for(i <- 0 until DecodeWidth){
     io.in(i).ready := io.to_dp(i).ready
     io.to_dp(i).valid := io.in(i).valid
   }
