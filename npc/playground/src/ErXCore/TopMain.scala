@@ -43,7 +43,7 @@ object TopMain extends GenParamsApp {
         "--lowering-options=disallowLocalVariables,disallowPackedArrays,locationInfoStyle=wrapInAtSquareBracket,noAlwaysComb")*/
   val firtoolOptions=Seq(
     FirtoolOption(
-      "--lowering-options=disallowLocalVariables,disallowPackedArrays,locationInfoStyle=wrapInAtSquareBracket"
+      "--lowering-options=disallowLocalVariables,locationInfoStyle=wrapInAtSquareBracket"
     ), 
     // FirtoolOption("---lowering-options=disallowPackedArrays"),
     FirtoolOption("--preserve-aggregate=vec"), 
