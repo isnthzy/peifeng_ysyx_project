@@ -109,32 +109,36 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
     if(deqWidth == 1){
       if (ArbSize == 1) {
         // 只有一个输入时，直接返回该项的年龄
-        inputs(0).asTypeOf(Vec(deqWidth,new ArbAgeBundle(rsSize)))
+        val retVec = Wire(Vec(deqWidth,new ArbAgeBundle(rsSize)))
+        retVec := inputs(0).asTypeOf(Vec(deqWidth,new ArbAgeBundle(rsSize)))
+        retVec
       } else if (ArbSize == 2) {
         // 两个输入时直接比较，返回年龄较小者
-        val retAge = SelectAge(inputs(0), inputs(1))
-        retAge.asTypeOf(Vec(deqWidth,new ArbAgeBundle(rsSize)))
+        val retVec = Wire(Vec(deqWidth,new ArbAgeBundle(rsSize)))
+        retVec := SelectAge(inputs(0), inputs(1)).asTypeOf(Vec(deqWidth,new ArbAgeBundle(rsSize)))
+        retVec
       } else {
         // 多于两个输入时，递归处理左右两部分
         val tmp1 = OldFirstArb(VecInit(inputs.take(ArbSize / 2)), ArbSize / 2)
         val tmp2 = OldFirstArb(VecInit(inputs.drop(ArbSize / 2)), ArbSize / 2)
-        val retArg = Vec(deqWidth,new ArbAgeBundle(rsSize))
-        retArg := SelectAge(tmp1(0),tmp2(0))
-        retArg
+        val retVec = Wire(Vec(deqWidth,new ArbAgeBundle(rsSize)))
+        retVec := SelectAge(tmp1(0),tmp2(0)).asTypeOf(Vec(deqWidth,new ArbAgeBundle(rsSize)))
+        retVec
       }
     }else{
-      require(rsSize >= 2, "rsSize must be greater than 2")
+      require(rsSize >= 4, "rsSize must be greater than 4")
       if (ArbSize == 2) {
-        val retAge = SelectAge(inputs(0), inputs(1))
-        retAge.asTypeOf(Vec(deqWidth,new ArbAgeBundle(rsSize)))
+        val retVec = Wire(Vec(deqWidth,new ArbAgeBundle(rsSize)))
+        retVec := inputs(0).asTypeOf(Vec(deqWidth,new ArbAgeBundle(rsSize)))
+        retVec
       } else {
         // 多于两个输入时，递归处理左右两部分
-        val retAge = Vec(deqWidth,new ArbAgeBundle(rsSize))
+        val retVec = Wire(Vec(deqWidth,new ArbAgeBundle(rsSize)))
         val tmp1 = OldFirstArb(VecInit(inputs.take(ArbSize / 2)), ArbSize / 2)
         val tmp2 = OldFirstArb(VecInit(inputs.drop(ArbSize / 2)), ArbSize / 2)
-        retAge(0) := tmp1
-        retAge(1) := tmp2
-        retAge
+        retVec(0) := tmp1
+        retVec(1) := tmp2
+        retVec
       }
     }
   }
