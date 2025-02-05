@@ -14,8 +14,6 @@ class Rename extends ErXCoreModule{
     val from_ex = Input(new RenameFromExecuteUpdate(updSize = IssueWidth))
     val from_rob = Input(new RenameFromCommitUpdate(updSize = CommitWidth))
     val fw_dp = Output(new RSFromRename)
-
-    // val boreRNandPRF = Output(new boreRNandPRF)
   })
   //Rename
   val notNeedSrc1 = Wire(Vec(DecodeWidth,Bool()))
@@ -79,8 +77,6 @@ class RenameTable extends ErXCoreModule{
       val pprfDst = Output(Vec(DecodeWidth,UInt(log2Up(PrfSize).W)))
     }
     val from_rob = Input(new RenameFromCommitUpdate(updSize = CommitWidth))
-
-    // val boreRNandPRF = Output(new boreRNandPRF())
   })
   val specTable = RegInit(VecInit(Seq.tabulate(ArfSize)(i => i.U(log2Up(PrfSize).W))))
   val archTable = RegInit(VecInit(Seq.tabulate(ArfSize)(i => i.U(log2Up(PrfSize).W))))
