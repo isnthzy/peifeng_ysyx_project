@@ -62,8 +62,8 @@ CXXFLAGS += -Wall -Werror
 LDFLAGS += -lreadline  -lSDL2 
 
 # MILL_ARGS = --mode soc
-CXXFLAGS += -ggdb -DVL_DEBUG=1 -D_GLIBCXX_DEBUG
-# LDFLAGS  += -ggdb -fsanitize=address,undefined
+# CXXFLAGS += -ggdb -DVL_DEBUG=1 -D_GLIBCXX_DEBUG
+LDFLAGS  += -ggdb -fsanitize=address,undefined
 #gdb调试段错误相关代码
 
 ##分隔符 llvm用于反汇编itrace
