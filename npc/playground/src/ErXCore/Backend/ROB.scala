@@ -100,7 +100,7 @@ class ROB extends ErXCoreModule{
 
   //----robCommit----
   for(i <- 0 until RetireWidth){
-    io.out_diff(i).valid  := RegNext(retireValid(i))
+    io.out_diff(i).valid  := retireValid(i)
     io.out_diff(i).bits := commitBits(i)
   }
 
