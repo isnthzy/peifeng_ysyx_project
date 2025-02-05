@@ -126,7 +126,7 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
         retVec
       }
     }else{
-      require(rsSize >= 4, "rsSize must be greater than 4")
+      require(rsSize >= 2, "rsSize must be greater than 4")
       if (ArbSize == 2) {
         val older = SelectAge(inputs(0), inputs(1))
         val younger = Mux(older === inputs(0), inputs(1), inputs(0))
