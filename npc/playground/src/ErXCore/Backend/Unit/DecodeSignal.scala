@@ -139,7 +139,7 @@ object DecodeSignal {
   //def loadEn、StoreEn check the first two positions (2.W)___ ++ (3.W)
 
 
-  // wb_sel
+  // fu_sel
   val FU_ALU = "00"
   val FU_MEM = "01"
   val FU_BRU = "10"
@@ -195,9 +195,9 @@ object DecodeSignal {
     LW    ->  Seq( A_RS1,  B_IMM, IMM_I, ALU_ADD   , BR_XXX, LD_LW , FU_MEM, Y, CSR_XXXX),
     LBU   ->  Seq( A_RS1,  B_IMM, IMM_I, ALU_ADD   , BR_XXX, LD_LBU, FU_MEM, Y, CSR_XXXX),
     LHU   ->  Seq( A_RS1,  B_IMM, IMM_I, ALU_ADD   , BR_XXX, LD_LHU, FU_MEM, Y, CSR_XXXX),
-    SB    ->  Seq( A_RS1,  B_RS2, IMM_S, ALU_ADD   , BR_XXX, ST_SB , FU_ALU, N, CSR_XXXX),
-    SH    ->  Seq( A_RS1,  B_RS2, IMM_S, ALU_ADD   , BR_XXX, ST_SH , FU_ALU, N, CSR_XXXX),
-    SW    ->  Seq( A_RS1,  B_RS2, IMM_S, ALU_ADD   , BR_XXX, ST_SW , FU_ALU, N, CSR_XXXX),
+    SB    ->  Seq( A_RS1,  B_RS2, IMM_S, ALU_ADD   , BR_XXX, ST_SB , FU_MEM, N, CSR_XXXX),
+    SH    ->  Seq( A_RS1,  B_RS2, IMM_S, ALU_ADD   , BR_XXX, ST_SH , FU_MEM, N, CSR_XXXX),
+    SW    ->  Seq( A_RS1,  B_RS2, IMM_S, ALU_ADD   , BR_XXX, ST_SW , FU_MEM, N, CSR_XXXX),
     ADDI  ->  Seq( A_RS1,  B_IMM, IMM_I, ALU_ADD   , BR_XXX, LS_XXX, FU_ALU, Y, CSR_XXXX),
     SLTI  ->  Seq( A_RS1,  B_IMM, IMM_I, ALU_SLT   , BR_XXX, LS_XXX, FU_ALU, Y, CSR_XXXX),
     SLTIU ->  Seq( A_RS1,  B_IMM, IMM_I, ALU_SLTU  , BR_XXX, LS_XXX, FU_ALU, Y, CSR_XXXX),

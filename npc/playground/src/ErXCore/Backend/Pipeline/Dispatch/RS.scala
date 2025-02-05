@@ -4,7 +4,7 @@ import chisel3._
 import chisel3.util._
 import DecodeSignal._
 
-class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean = false) extends ErXCoreModule {
+class RS(rsSize: Int = 4,enqWidth: Int,deqWidth: Int,StoreSeq: Boolean = false) extends ErXCoreModule {
   //support other rsSize
   val io = IO(new Bundle {
     val in = Vec(enqWidth,Flipped(Decoupled(new RenameIO)))
@@ -64,27 +64,26 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
     def SelectAge(A: ArbAgeBundle, B: ArbAgeBundle): ArbAgeBundle = {
       def compare(older: ArbAgeBundle, younger: ArbAgeBundle): ArbAgeBundle = {
         if(StoreSeq){
-/*compare power of 
-| >(younger) | young - isStore | young - instRdy | old - isStore | old - instRdy | 判断结果 |
-| ---------- | --------------- | --------------- | ------------- | ------------- | -------- |
-| young>old  | 0               | 0               | 0             | 0             | old      |
-| young>old  | 0               | 0               | 0             | 1             | old      |
-| young>old  | 0               | 0               | 1             | 0             | old      |
-| young>old  | 0               | 0               | 1             | 1             | old      |
-| young>old  | 0               | 1               | 0             | 0             | young    |
-| young>old  | 0               | 1               | 0             | 1             | old      |
-| young>old  | 0               | 1               | 1             | 0             | old      |
-| young>old  | 0               | 1               | 1             | 1             | old      |
-| young>old  | 1               | 0               | 0             | 0             | old      |
-| young>old  | 1               | 0               | 0             | 1             | old      |
-| young>old  | 1               | 0               | 1             | 0             | old      |
-| young>old  | 1               | 0               | 1             | 1             | old      |
-| young>old  | 1               | 1               | 0             | 0             | old      |
-| young>old  | 1               | 1               | 0             | 1             | old      |
-| young>old  | 1               | 1               | 1             | 0             | old      |
-| young>old  | 1               | 1               | 1             | 1             | old      |
-*/ 
-          Mux(!older.srcReady && younger.srcReady && !older.isStore && !younger.isStore, younger, older)
+/*compare power of deepseek
+| 条件分类            | 关键条件                                                     | 选择结果 |
+| :------------------ | :----------------------------------------------------------- | :------- |
+| **young 无效**      | `y_valid = 0`                                                | old      |
+| **young 有效**      |                                                              |          |
+| 1. old 无效         | `y_valid = 1` 且 `o_valid = 0`                               | young    |
+| 2. old 有效但未就绪 | `y_valid = 1` 且 `o_valid = 1` 且 `o_rdy = 0`                | young    |
+| 3. old 有效且就绪   | `y_valid = 1` 且 `o_valid = 1` 且 `o_rdy = 1` 且 `y_store = 1` | old      |
+| 4. old 有效且就绪   | `y_valid = 1` 且 `o_valid = 1` 且 `o_rdy = 1` 且 `y_store = 0` | young    |
+1. **young 无效时**:
+   - 直接选择 old 条目。
+2. **young 有效时**:
+   - **优先选择 young** 的三种情况：
+     - old 无效（`o_valid = 0`）。
+     - old 有效但未就绪（`o_rdy = 0`）。
+     - old 有效且就绪，但 young 是非存储指令（`y_store = 0`）。
+   - **仅当以下条件时选择 old**：
+     - old 有效且就绪（`o_rdy = 1`），且 young 是存储指令（`y_store = 1`）。
+*/
+          Mux(younger.isValid && (~older.isValid | ~older.srcReady | (~younger.isStore & older.srcReady)), younger, older)
         }else{
 /*compare power of 
 | >(younger) | young - instRdy | old - instRdy | 判断结果 |
@@ -104,7 +103,7 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
         compare(A, B), 
         compare(B, A)
       )
-    }
+    } //return older
     
     if(deqWidth == 1){
       if (ArbSize == 1) {
@@ -160,6 +159,7 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
     var rs1Ready = io.from_dr.availList(rsBuff(i).pf.prfSrc1)
     var rs2Ready = io.from_dr.availList(rsBuff(i).pf.prfSrc2)
     rsReadyList(i) := rs1Ready && rs2Ready && rsBuffValid(i)
+    rsArbPacket(i).isValid := rsBuffValid(i)
     rsArbPacket(i).age := rsROBAge(i)
     rsArbPacket(i).srcReady := rsReadyList(i)
     rsArbPacket(i).isStore := isStore(i)
@@ -193,8 +193,9 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
 
 
 class ArbAgeBundle(rsSize: Int) extends ErXCoreBundle {
+  val isValid  = Bool()
+  val isStore  = Bool()
   val age = UInt(RobAgeWidth.W)
   val srcReady = Bool()
-  val isStore  = Bool()
   val rsIdx    = UInt(log2Up(rsSize).W)
 }

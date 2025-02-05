@@ -43,6 +43,7 @@ class InstBuff extends ErXCoreModule {
 
   // Dequeue logic
   val canDequeue = queueCount >= 2.U
+  //宽松的发射条件，queueCount == 1 时往往第二条指令已经进入队列了
   val validMask = WireDefault(VecInit(Seq.fill(DecodeWidth)(false.B)))
   when (canDequeue) {
     for (i <- 0 until DecodeWidth) {
@@ -62,7 +63,7 @@ class InstBuff extends ErXCoreModule {
   io.fw_pf.br := br
   for(i <- 0 until DecodeWidth) {
     when(io.out(i).bits.inst(6,0) === "b1101111".U) {
-      br.taken := true.B
+      br.taken := io.out(i).fire
       val inst = io.out(i).bits.inst
       val offset = Cat(inst(31), inst(19, 12), inst(20), inst(30, 21), 0.U(1.W))
       br.target := io.out(i).bits.pc + Sext(offset, 32)

@@ -51,6 +51,7 @@ class ROB extends ErXCoreModule{
       when(io.in(i).valid){
         rob.write(headPtr + i.U, io.in(i).bits)
         complete(headPtr + i.U) := false.B
+        packet(headPtr + i.U) := 0.U.asTypeOf(new RobPacket)
         io.fw_dp.robAge(i) := ringBuffHead + i.U
       }
     }
