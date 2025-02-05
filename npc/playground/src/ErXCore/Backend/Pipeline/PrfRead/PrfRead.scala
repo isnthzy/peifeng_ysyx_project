@@ -70,6 +70,6 @@ class PrfRead extends ErXCoreModule{
       archReg(i) := prf(archTable(i))
     }
 
-    ExcitingUtils.addSink(archReg,"DiffGPR",ExcitingUtils.Func)
+    ExcitingUtils.addSource(archReg,"DiffGPR",ExcitingUtils.Func)
   }
 }
