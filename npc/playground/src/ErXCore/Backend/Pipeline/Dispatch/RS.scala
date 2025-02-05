@@ -128,8 +128,11 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
     }else{
       require(rsSize >= 4, "rsSize must be greater than 4")
       if (ArbSize == 2) {
-        val retVec = Wire(Vec(deqWidth,new ArbAgeBundle(rsSize)))
-        retVec := inputs(0).asTypeOf(Vec(deqWidth,new ArbAgeBundle(rsSize)))
+        val older = SelectAge(inputs(0), inputs(1))
+        val younger = Mux(older === inputs(0), inputs(1), inputs(0))
+        val retVec = Wire(Vec(deqWidth, new ArbAgeBundle(rsSize)))
+        retVec(0) := older
+        retVec(1) := younger
         retVec
       } else {
         // 多于两个输入时，递归处理左右两部分
