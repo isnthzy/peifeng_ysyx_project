@@ -14,6 +14,8 @@ class Rename extends ErXCoreModule{
     val from_ex = Input(new RenameFromExecuteUpdate(updSize = IssueWidth))
     val from_rob = Input(new RenameFromCommitUpdate(updSize = CommitWidth))
     val fw_dp = Output(new RSFromRename)
+
+    // val boreRNandPRF = Output(new boreRNandPRF)
   })
   //Rename
   val notNeedSrc1 = Wire(Vec(DecodeWidth,Bool()))
@@ -58,6 +60,8 @@ class Rename extends ErXCoreModule{
     PrfStateTable.io.from.commitFree(i)   := Mux(io.from_rob.upd(i).wen,io.from_rob.upd(i).freePrfDst,0.U)
   }
 
+  //Boring
+  // io.boreRNandPRF := RenameTable.io.boreRNandPRF
 }
 
 class RenameTable extends ErXCoreModule{
@@ -75,6 +79,8 @@ class RenameTable extends ErXCoreModule{
       val pprfDst = Output(Vec(DecodeWidth,UInt(5.W)))
     }
     val from_rob = Input(new RenameFromCommitUpdate(updSize = CommitWidth))
+
+    // val boreRNandPRF = Output(new boreRNandPRF())
   })
   val specTable = RegInit(VecInit(Seq.tabulate(32)(i => i.U(log2Up(PrfSize).W))))
   val archTable = RegInit(VecInit(Seq.tabulate(32)(i => i.U(log2Up(PrfSize).W))))
@@ -119,6 +125,11 @@ class RenameTable extends ErXCoreModule{
     })
   }.otherwise{
     specTable := archTable
+  }
+
+  // io.boreRNandPRF.archTable := 0.U.asTypeOf(io.boreRNandPRF.archTable)
+  if(EnableVerlatorSim){
+    ExcitingUtils.addSource(archTable,"archTable",ExcitingUtils.Func)
   }
 }
 

@@ -47,6 +47,7 @@ class DecodeRename extends ErXCoreModule{
     uop(i).cs.rfDest   := io.in(i).bits.inst(11, 7)
     uop(i).cf.pc       := io.in(i).bits.pc
     uop(i).cf.imm      := ImmGen(i).out
+    uop(i).cf.inst     := io.in(i).bits.inst
   }
   val Rename = Module(new Rename)
   Rename.io.in   := uop

@@ -1,4 +1,5 @@
 package ErXCore
+import ErXCore.Difftest._
 import ErXCore.Cache._
 import chisel3._
 import chisel3.util._
@@ -46,7 +47,45 @@ class Backend extends ErXCoreModule{
   StoreQueue.io.ld <> EXstage.io.dmemLoad
   DCache.io.dl <> StoreQueue.io.out.ld
   DCache.io.ds <> StoreQueue.io.out.st
+
 //-----     Commit   stage     ------
+  if(EnableVerlatorSim){
+    val Diff = Module(new DiffCommit)
+    Diff.diff.instr.index := 0.U
+    Diff.diff.instr.valid := ROB.io.out_diff(0).valid
+    Diff.diff.instr.pc    := ROB.io.out_diff(0).bits.cf.pc
+    Diff.diff.instr.instr := ROB.io.out_diff(1).bits.cf.inst
+    Diff.diff.instr.skip  := 0.U
+    Diff.diff.instr.wen   := ROB.io.out_diff(0).bits.cs.rfWen
+    Diff.diff.instr.wdest := ROB.io.out_diff(0).bits.cs.rfDest
+    Diff.diff.instr.wdata := 0.U //no need
+    Diff.diff.instr.csrRstat  := 0.U
+    Diff.diff.instr.csrData   := 0.U
 
+    Diff.diff.instr1.index := 1.U
+    Diff.diff.instr1.valid := ROB.io.out_diff(1).valid
+    Diff.diff.instr1.pc    := ROB.io.out_diff(1).bits.cf.pc
+    Diff.diff.instr1.instr := ROB.io.out_diff(1).bits.cf.inst
+    Diff.diff.instr1.skip  := 0.U
+    Diff.diff.instr1.wen   := ROB.io.out_diff(1).bits.cs.rfWen
+    Diff.diff.instr1.wdest := ROB.io.out_diff(1).bits.cs.rfWen
+    Diff.diff.instr1.wdata := 0.U
+    Diff.diff.instr1.csrRstat  := 0.U
+    Diff.diff.instr1.csrData   := 0.U
+    
+    ExcitingUtils.addSink(Diff.diff.reg,"DiffGPR",ExcitingUtils.Func)
+    Diff.diff.load  := 0.U.asTypeOf(Diff.diff.load)
+    Diff.diff.load1 := 0.U.asTypeOf(Diff.diff.load)
+    Diff.diff.store := 0.U.asTypeOf(Diff.diff.store)
+    Diff.diff.store1:= 0.U.asTypeOf(Diff.diff.store)
+    Diff.diff.excp := 0.U.asTypeOf(Diff.diff.excp)
+    Diff.diff.csr.mcause  := 0x1800.U
+    Diff.diff.csr.mepc    := 0.U
+    Diff.diff.csr.mtvec   := 0.U
+    Diff.diff.csr.mstatus := 0.U
 
+  }
+
+  
+  
 }

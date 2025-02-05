@@ -15,6 +15,7 @@ class CtrlFlowIO extends ErXCoreBundle {
   val imm    = Output(UInt(XLEN.W))
 
   //useful to debug
+  val inst  = Output(UInt(32.W))
 }
 
 class CtrlSignalIO extends ErXCoreBundle {

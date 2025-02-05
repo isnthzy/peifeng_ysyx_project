@@ -75,6 +75,8 @@ trait HasErXCoreParameter {
   val RobIdxWidth = log2Up(RobEntries)
   val RobAgeWidth = RobIdxWidth + 1 //Age massge use to issue select!!!
   val RetireWidth = 2
+
+  val EnableVerlatorSim = GenerateParams.getParam("VERILATOR_SIM").asInstanceOf[Boolean] 
 }
 
 trait HasErXCacheConfig{
