@@ -39,8 +39,9 @@ class Backend extends ErXCoreModule{
   ROB.io.from_ex := EXstage.io.fw_rob
   
 //-----     PrfRead  stage     ------
-  PipeConnect(PRstage.io.in,DSstage.io.to_pr,flush)
+  PRstage.io.in <> DSstage.io.to_pr
   PRstage.io.from_ex  := EXstage.io.fw_pr
+
 //-----     Execute  stage     ------
   PipeConnect(EXstage.io.in,PRstage.io.to_ex,flush)
   StoreQueue.io.st <> EXstage.io.dmemStore
@@ -57,7 +58,7 @@ class Backend extends ErXCoreModule{
     Diff.diff.instr.index := 0.U
     Diff.diff.instr.valid := ROB.io.out_diff(0).valid
     Diff.diff.instr.pc    := ROB.io.out_diff(0).bits.cf.pc
-    Diff.diff.instr.instr := ROB.io.out_diff(1).bits.cf.inst
+    Diff.diff.instr.instr := ROB.io.out_diff(0).bits.cf.inst
     Diff.diff.instr.skip  := 0.U
     Diff.diff.instr.wen   := ROB.io.out_diff(0).bits.cs.rfWen
     Diff.diff.instr.wdest := ROB.io.out_diff(0).bits.cs.rfDest

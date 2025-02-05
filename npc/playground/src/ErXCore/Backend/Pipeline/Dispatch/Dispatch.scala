@@ -14,7 +14,7 @@ class Dispatch extends ErXCoreModule {
     val to_pr = Vec(IssueWidth,Decoupled(new RenameIO))
   })
   val memRS = Module(new RS(rsSize = 2,enqWidth = DecodeWidth,deqWidth = 1,StoreSeq = true))
-  val intRS = Module(new RS(rsSize = 2,enqWidth = DecodeWidth,deqWidth = DecodeWidth))
+  val intRS = Module(new RS(rsSize = 4,enqWidth = DecodeWidth,deqWidth = DecodeWidth))
   io.fw_rob.zipWithIndex.foreach{case (rob, i) => 
     rob.bits := io.in(i).bits 
     rob.valid := io.in(i).valid

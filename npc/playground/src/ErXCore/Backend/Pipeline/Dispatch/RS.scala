@@ -109,32 +109,47 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
     if(deqWidth == 1){
       if (ArbSize == 1) {
         // 只有一个输入时，直接返回该项的年龄
-        inputs(0).asTypeOf(Vec(deqWidth,new ArbAgeBundle(rsSize)))
+        val retVec = Wire(Vec(deqWidth,new ArbAgeBundle(rsSize)))
+        retVec := inputs(0).asTypeOf(Vec(deqWidth,new ArbAgeBundle(rsSize)))
+        retVec
       } else if (ArbSize == 2) {
         // 两个输入时直接比较，返回年龄较小者
-        val retAge = SelectAge(inputs(0), inputs(1))
-        retAge.asTypeOf(Vec(deqWidth,new ArbAgeBundle(rsSize)))
+        val retVec = Wire(Vec(deqWidth,new ArbAgeBundle(rsSize)))
+        retVec := SelectAge(inputs(0), inputs(1)).asTypeOf(Vec(deqWidth,new ArbAgeBundle(rsSize)))
+        retVec
       } else {
         // 多于两个输入时，递归处理左右两部分
         val tmp1 = OldFirstArb(VecInit(inputs.take(ArbSize / 2)), ArbSize / 2)
         val tmp2 = OldFirstArb(VecInit(inputs.drop(ArbSize / 2)), ArbSize / 2)
-        val retArg = Vec(deqWidth,new ArbAgeBundle(rsSize))
-        retArg := SelectAge(tmp1(0),tmp2(0))
-        retArg
+        val retVec = Wire(Vec(deqWidth,new ArbAgeBundle(rsSize)))
+        retVec := SelectAge(tmp1(0),tmp2(0)).asTypeOf(Vec(deqWidth,new ArbAgeBundle(rsSize)))
+        retVec
       }
     }else{
-      require(rsSize >= 2, "rsSize must be greater than 2")
+      require(rsSize >= 2, "rsSize must be greater than 4")
       if (ArbSize == 2) {
-        val retAge = SelectAge(inputs(0), inputs(1))
-        retAge.asTypeOf(Vec(deqWidth,new ArbAgeBundle(rsSize)))
+        val older = SelectAge(inputs(0), inputs(1))
+        val younger = Mux(older === inputs(0), inputs(1), inputs(0))
+        val retVec = Wire(Vec(deqWidth, new ArbAgeBundle(rsSize)))
+        retVec(0) := older
+        retVec(1) := younger
+        retVec
       } else {
-        // 多于两个输入时，递归处理左右两部分
-        val retAge = Vec(deqWidth,new ArbAgeBundle(rsSize))
-        val tmp1 = OldFirstArb(VecInit(inputs.take(ArbSize / 2)), ArbSize / 2)
-        val tmp2 = OldFirstArb(VecInit(inputs.drop(ArbSize / 2)), ArbSize / 2)
-        retAge(0) := tmp1
-        retAge(1) := tmp2
-        retAge
+      // 对于大于两个输入的情况，先将输入分为左右两部分，每部分递归得到一对候选
+        val leftPair = OldFirstArb(VecInit(inputs.take(ArbSize / 2)), ArbSize / 2)
+        val rightPair = OldFirstArb(VecInit(inputs.drop(ArbSize / 2)), ArbSize / 2)
+        // overallMin 为左右两部分中较小的那个
+        val overallMin = SelectAge(leftPair(0), rightPair(0))
+        // 根据 overallMin 来源决定第二小的候选
+        val overallSecond = Mux(
+          overallMin === leftPair(0),
+          SelectAge(leftPair(1), rightPair(0)),
+          SelectAge(rightPair(1), leftPair(0))
+        )
+        val retVec = Wire(Vec(deqWidth, new ArbAgeBundle(rsSize)))
+        retVec(0) := overallMin
+        retVec(1) := overallSecond
+        retVec
       }
     }
   }
@@ -151,6 +166,10 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
     rsArbPacket(i).rsIdx := i.U
   }
   val deqSelect = OldFirstArb(rsArbPacket, rsSize).map(_.rsIdx)
+  val deqSelectIdx = Wire(Vec(deqWidth, UInt(log2Up(rsSize).W)))
+  deqSelectIdx := deqSelect
+  dontTouchUtil(deqSelectIdx)
+  dontTouchUtil(rsArbPacket)
   for(i <- 0 until deqWidth){
     io.out(i).valid := rsReadyList(deqSelect(i))
     io.out(i).bits  := rsBuff(deqSelect(i))

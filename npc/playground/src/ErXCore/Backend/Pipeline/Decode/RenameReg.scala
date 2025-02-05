@@ -14,8 +14,6 @@ class Rename extends ErXCoreModule{
     val from_ex = Input(new RenameFromExecuteUpdate(updSize = IssueWidth))
     val from_rob = Input(new RenameFromCommitUpdate(updSize = CommitWidth))
     val fw_dp = Output(new RSFromRename)
-
-    // val boreRNandPRF = Output(new boreRNandPRF)
   })
   //Rename
   val notNeedSrc1 = Wire(Vec(DecodeWidth,Bool()))
@@ -45,7 +43,7 @@ class Rename extends ErXCoreModule{
     io.out(i).pf.pprfDst  := RenameTable.io.out.pprfDst(i)
     io.out(i).pf.prfSrc1  := RenameTable.io.out.prfSrc1(i)
     io.out(i).pf.prfSrc2  := RenameTable.io.out.prfSrc2(i)
-    io.out(i).pf.prfDst   := RenameTable.io.out.pprfDst(i)
+    io.out(i).pf.prfDst   := PrfStateTable.io.prfDst(i)
     io.out(i).robIdx      := DontCare
   }
   //from execute
@@ -79,12 +77,17 @@ class RenameTable extends ErXCoreModule{
       val pprfDst = Output(Vec(DecodeWidth,UInt(log2Up(PrfSize).W)))
     }
     val from_rob = Input(new RenameFromCommitUpdate(updSize = CommitWidth))
-
-    // val boreRNandPRF = Output(new boreRNandPRF())
   })
   val specTable = RegInit(VecInit(Seq.tabulate(ArfSize)(i => i.U(log2Up(PrfSize).W))))
   val archTable = RegInit(VecInit(Seq.tabulate(ArfSize)(i => i.U(log2Up(PrfSize).W))))
   //The physical register addresses 0-31 are assigned by default.
+  /*NOTE:使用拓展prf进行寄存器重命名
+  reset后specTable里存储着标记为COMMITED的物理寄存器映射，即为0-15号体系结构寄存器对应0-15号物理寄存器
+  按照超标量处理器定义一个重命名的寄存器被释放即出现了第二条和与先前指令rfDest一样的指令
+  因而，每次先取出先前重命名使用的地址用于释放，再向specTable写入最新重命名的地址。为了做区分，用于释放的地址为pprf，同时更新specTable对体系结构寄存器（rf）和prf物理寄存器的映射
+  为什么不支持同时退休两条地址一样的指令。当两条地址一样时（待补充）
+  */
+  
 
   for(i <- 0 until DecodeWidth){
     io.out.prfSrc1(i) := specTable(io.in.rfSrc1(i))
