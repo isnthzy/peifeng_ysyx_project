@@ -25,10 +25,12 @@ class Frontend extends ErXCoreModule {
   InstFetch.io.dl.data  :=ICache.io.rdata
   io.imem <> ICache.io.out
 // PreIF begin
-  PreFetch.io.from_bck:= io.from_bck
+  PreFetch.io.from_bck := io.from_bck
+  PreFetch.io.from_ib  := InstBuff.io.fw_pf
 // if begin
   FrontendConnect(PreFetch.io.to_if,InstFetch.io.in)
   InstFetch.io.from_bck.flush := io.from_bck.flush
+  InstFetch.io.from_ib  := InstBuff.io.fw_if
 // inst buff
   InstBuff.io.in <> InstFetch.io.to_id
   InstBuff.io.from_bck.flush := io.from_bck.flush
