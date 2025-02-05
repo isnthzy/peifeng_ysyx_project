@@ -43,7 +43,7 @@ class Rename extends ErXCoreModule{
     io.out(i).pf.pprfDst  := RenameTable.io.out.pprfDst(i)
     io.out(i).pf.prfSrc1  := RenameTable.io.out.prfSrc1(i)
     io.out(i).pf.prfSrc2  := RenameTable.io.out.prfSrc2(i)
-    io.out(i).pf.prfDst   := RenameTable.io.out.pprfDst(i)
+    io.out(i).pf.prfDst   := PrfStateTable.io.prfDst(i)
     io.out(i).robIdx      := DontCare
   }
   //from execute
