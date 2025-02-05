@@ -136,8 +136,8 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
         val retVec = Wire(Vec(deqWidth,new ArbAgeBundle(rsSize)))
         val tmp1 = OldFirstArb(VecInit(inputs.take(ArbSize / 2)), ArbSize / 2)
         val tmp2 = OldFirstArb(VecInit(inputs.drop(ArbSize / 2)), ArbSize / 2)
-        retVec(0) := tmp1
-        retVec(1) := tmp2
+        retVec(0) := tmp1(0)
+        retVec(1) := tmp2(0)
         retVec
       }
     }
