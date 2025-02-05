@@ -39,16 +39,22 @@ void init_trace(const char *build_path){
 }
 
 void itrace_write(char *itrace_str){
+  #ifndef CONFIG_TARGET_SHARE
   Assert(need_build_path == false, "Need build path to generate itrace file");
   fprintf(itrace_fp,"%s\n",itrace_str);
+  #endif
 }
 
 void btrace_write(char *btrace_str){
+  #ifndef CONFIG_TARGET_SHARE
   Assert(need_build_path == false, "Need build path to generate btrace file");
   fprintf(btrace_fp,"%s\n",btrace_str);
+  #endif
 }
 
 void mtrace_write(char *mtrace_str){
+  #ifndef CONFIG_TARGET_SHARE
   Assert(need_build_path == false, "Need build path to generate mtrace file");
   fprintf(mtrace_fp,"%s\n",mtrace_str);
+  #endif
 }
