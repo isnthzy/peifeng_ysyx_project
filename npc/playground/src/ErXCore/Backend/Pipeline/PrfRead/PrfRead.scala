@@ -2,6 +2,7 @@ package ErXCore
 
 import chisel3._
 import chisel3.util._
+import chisel3.util.experimental._
 import DecodeSignal._
 
 class PrfRead extends ErXCoreModule{
@@ -9,6 +10,8 @@ class PrfRead extends ErXCoreModule{
     val in = Vec(IssueWidth,Flipped(DecoupledIO(new RenameIO)))
     val from_ex = Input(new PrfReadFromExecute(updSize = IssueWidth))
     val to_ex = Vec(IssueWidth,DecoupledIO(new IssueIO))
+
+    // val boreRNandPRF = Input(VecInit(Seq.fill(32)(0.U(log2Up(PrfSize).W))))
   })
   
   // val prValid = RegInit(VecInit(Seq.fill(IssueWidth)(false.B)))
@@ -59,4 +62,14 @@ class PrfRead extends ErXCoreModule{
     io.to_ex(i).valid := io.in(i).valid
   }
 
+  if(EnableVerlatorSim){
+    val archTable = WireInit(VecInit(Seq.fill(ArfSize)(0.U(log2Up(PrfSize).W))))
+    ExcitingUtils.addSink(archTable,"archTable",ExcitingUtils.Func)
+    val archReg  = Wire(Vec(ArfSize,UInt(XLEN.W)))
+    for(i <- 0 until ArfSize){
+      archReg(i) := prf(archTable(i))
+    }
+
+    ExcitingUtils.addSource(archReg,"DiffGPR",ExcitingUtils.Func)
+  }
 }

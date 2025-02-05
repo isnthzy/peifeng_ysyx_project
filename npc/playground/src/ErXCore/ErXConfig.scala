@@ -64,7 +64,6 @@ trait HasErXCoreParameter {
   val InstBuffSize = 8
   //
   val DecodeWidth = 2
-  val PrfSize = 64
   val IssueWidth  = 3
   val ExecuteWidth = 3
   val CommitWidth  = 2
@@ -75,6 +74,11 @@ trait HasErXCoreParameter {
   val RobIdxWidth = log2Up(RobEntries)
   val RobAgeWidth = RobIdxWidth + 1 //Age massge use to issue select!!!
   val RetireWidth = 2
+
+  val EnableVerlatorSim = GenerateParams.getParam("VERILATOR_SIM").asInstanceOf[Boolean] 
+  val UseRV32E = GenerateParams.getParam("RV32E").asInstanceOf[Boolean]
+  val ArfSize = if(UseRV32E) 16 else 32
+  val PrfSize = ArfSize * 2
 }
 
 trait HasErXCacheConfig{
@@ -95,10 +99,7 @@ trait HasErXCoreConst extends HasErXCoreParameter {
   def NPC_START_ADDR = "h80000000".U(XLEN.W)
 }
 
-trait HasErXCoreLog { this: RawModule =>
-  implicit val moduleName: String = this.name
-}
 
-abstract class ErXCoreModule extends Module with HasErXCoreParameter with HasErXCoreConst with HasErXCoreLog with HasErXCacheConfig
+abstract class ErXCoreModule extends Module with HasErXCoreParameter with HasErXCoreConst with HasErXCacheConfig
 abstract class ErXCoreBundle extends Bundle with HasErXCoreParameter with HasErXCoreConst with HasErXCacheConfig
 abstract class ErXCoreBlackBox extends BlackBox with HasErXCoreParameter with HasErXCoreConst with HasErXCacheConfig

@@ -15,6 +15,7 @@ class CtrlFlowIO extends ErXCoreBundle {
   val imm    = Output(UInt(XLEN.W))
 
   //useful to debug
+  val inst  = Output(UInt(32.W))
 }
 
 class CtrlSignalIO extends ErXCoreBundle {
@@ -26,9 +27,9 @@ class CtrlSignalIO extends ErXCoreBundle {
   val lsType = Output(UInt(LS_XXX.length.W))
   val csrOp  = Output(UInt(CSR_XXXX.length.W))
   val rfWen  = Output(Bool())
-  val rfSrc1 = Output(UInt(5.W))
-  val rfSrc2 = Output(UInt(5.W))
-  val rfDest = Output(UInt(5.W))
+  val rfSrc1 = Output(UInt(log2Up(ArfSize).W))
+  val rfSrc2 = Output(UInt(log2Up(ArfSize).W))
+  val rfDest = Output(UInt(log2Up(ArfSize).W))
 }
 
 class MicroOpIO extends ErXCoreBundle {
@@ -66,7 +67,7 @@ class RenameFromCommitUpdate(updSize: Int) extends ErXCoreBundle {
     val wen = Bool()
     val prfDst = UInt(log2Up(PrfSize).W)
     val freePrfDst = UInt(log2Up(PrfSize).W)
-    val rfDst = UInt(5.W)
+    val rfDst = UInt(log2Up(ArfSize).W)
   })
   val recover = Bool()
 }

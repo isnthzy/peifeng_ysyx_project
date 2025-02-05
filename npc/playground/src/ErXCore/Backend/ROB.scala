@@ -12,6 +12,8 @@ class ROB extends ErXCoreModule{
     val fw_dr   = Output(new RenameFromCommitUpdate(updSize = RetireWidth))
     val fw_dp   = Output(new RSFromROB)
     val fw_sq   = Output(new StoreQueueFromROB)
+
+    val out_diff = Output(Vec(RobWidth,Valid(new RenameIO)))
   })
   val rob = SyncReadMem(RobEntries, new RenameIO, SyncReadMem.WriteFirst)
   val complete = RegInit(VecInit(Seq.fill(RobEntries)(false.B)))
@@ -96,7 +98,10 @@ class ROB extends ErXCoreModule{
   }
 
   //----robCommit----
-
+  for(i <- 0 until RetireWidth){
+    io.out_diff(i).valid  := RegNext(retireValid(i))
+    io.out_diff(i).bits := commitBits(i)
+  }
 
   //flush
   when(flushAll){ 
