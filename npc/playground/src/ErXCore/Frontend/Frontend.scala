@@ -5,7 +5,7 @@ import chisel3.util._
 
 class Frontend extends ErXCoreModule {
   val io = IO(new Bundle {
-    val from_bck = Input(new FrontFromBack)
+    val from_bck = Input(new FrontFromBack())
     val imem = new AxiCacheIO()
     val out = Vec(DecodeWidth,Decoupled(new InstIO))
   })

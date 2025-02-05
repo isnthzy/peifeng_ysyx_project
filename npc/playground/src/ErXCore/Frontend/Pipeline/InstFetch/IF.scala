@@ -9,6 +9,7 @@ class IfStage extends ErXCoreModule {
   val io=IO(new Bundle {
     val in = Flipped(Decoupled(new Pf2IfBusBundle()))
     val to_id = Decoupled(new InstIO())
+    val from_ib = Input(new If4IbBundle())
     val from_bck = Input(new Bundle {
       val flush = Input(Bool())
     })
@@ -18,7 +19,7 @@ class IfStage extends ErXCoreModule {
   val fsFlush=dontTouch(Wire(Bool()))
   val fsStall=dontTouch(Wire(Bool()))
   val fsExcpEn=dontTouch(Wire(Bool()))
-  fsFlush:=io.from_bck.flush
+  fsFlush:=io.from_bck.flush || io.from_ib.br.taken
   val fsValid=dontTouch(Wire(Bool()))
   val fsValidR=RegInit(false.B)
   val fsReadyGo=dontTouch(Wire(Bool()))

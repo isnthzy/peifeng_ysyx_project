@@ -6,6 +6,8 @@ import chisel3.util._
 class InstBuff extends ErXCoreModule {
   val io = IO(new Bundle {
     val in = Flipped(Decoupled(new InstIO))
+    val fw_pf = Output(new Pf4IbBundle())
+    val fw_if = Output(new If4IbBundle())
     val from_bck = Input(new Bundle {
       val flush = Input(Bool())
     })
@@ -50,4 +52,18 @@ class InstBuff extends ErXCoreModule {
     io.out(i).valid := queue(queueHead + i.U).valid && validMask(i)
     io.out(i).bits := queue(queueHead + i.U).bits
   }
+
+  // jal
+  val br = WireDefault(0.U.asTypeOf(new BranchBundle))
+  io.fw_if.br := br
+  io.fw_pf.br := br
+  for(i <- 0 until DecodeWidth) {
+    when(io.out(i).bits.inst(6,0) === "b1101111".U) {
+      br.taken := true.B
+      val inst = io.out(i).bits.inst
+      val offset = Cat(inst(31), inst(19, 12), inst(20), inst(30, 21), 0.U(1.W))
+      br.target := io.out(i).bits.pc + Sext(offset, 32)
+    }
+  }
+  // io.out(i)
 }

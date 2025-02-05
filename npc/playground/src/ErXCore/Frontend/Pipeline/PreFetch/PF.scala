@@ -5,8 +5,8 @@ import chisel3.util._
 class PfStage extends ErXCoreModule {
   val io=IO(new Bundle {
     val to_if=Decoupled(new Pf2IfBusBundle())
-
-    val from_bck = Input(new FrontFromBack)
+    val from_ib = Input(new Pf4IbBundle())
+    val from_bck = Input(new FrontFromBack())
     // val from_id=Input(new Pf4IdBusBundle())
     // val from_ex=Input(new Pf4ExBusBundle())
     // val from_ls=Input(new Pf4LsBusBundle())
@@ -18,7 +18,7 @@ class PfStage extends ErXCoreModule {
   })
   val pfFlush=dontTouch(Wire(Bool()))
   val pfExcpEn=dontTouch(Wire(Bool()))
-  pfFlush := io.from_bck.flush || io.from_bck.tk.taken
+  pfFlush := io.from_bck.flush || io.from_bck.tk.taken || io.from_ib.br.taken
   val pfReadyGo=dontTouch(Wire(Bool()))
   val fetchReq=dontTouch(Wire(Bool()))
   val fenceICache=RegInit(false.B)
@@ -39,7 +39,8 @@ class PfStage extends ErXCoreModule {
   // dnpc:=Mux(flush_sign,flushed_pc,
   //         Mux(io.from_ex.brCond.taken,io.from_ex.brCond.target,
   //           Mux(io.from_id.brJump.taken,io.from_id.brJump.target,0.U)))
-  dnpc:=Mux(io.from_bck.tk.taken,io.from_bck.tk.target,0.U)
+  dnpc:=Mux(io.from_bck.tk.taken,io.from_bck.tk.target,
+          Mux(io.from_ib.br.taken,io.from_ib.br.target,0.U))
 
   nextpc:=Mux(pfFlush,dnpc,snpc)
 
