@@ -30,6 +30,9 @@ class DecodeRename extends ErXCoreModule{
   val uop = Wire(Vec(DecodeWidth, new MicroOpIO))
   for(i <- 0 until DecodeWidth){
     //NOTE:历史遗留，需要优化
+    val rfSrc1 = if(UseRV32E) io.in(i).bits.inst(19 - 1, 15) else io.in(i).bits.inst(19, 15)
+    val rfSrc2 = if(UseRV32E) io.in(i).bits.inst(24 - 1, 20) else io.in(i).bits.inst(24, 20)
+    val rfDest = if(UseRV32E) io.in(i).bits.inst(11 - 1, 7) else io.in(i).bits.inst(11, 7)
     DecodeSignal(i).inst := io.in(i).bits.inst
     ImmGen(i).inst       := io.in(i).bits.inst
     ImmGen(i).sel        := DecodeSignal(i).immType
@@ -42,9 +45,9 @@ class DecodeRename extends ErXCoreModule{
     uop(i).cs.lsType   := DecodeSignal(i).lsType
     uop(i).cs.csrOp    := DecodeSignal(i).csrOp
     uop(i).cs.rfWen    := DecodeSignal(i).rfWen
-    uop(i).cs.rfSrc1   := io.in(i).bits.inst(19, 15)
-    uop(i).cs.rfSrc2   := io.in(i).bits.inst(24, 20)
-    uop(i).cs.rfDest   := io.in(i).bits.inst(11, 7)
+    uop(i).cs.rfSrc1   := rfSrc1
+    uop(i).cs.rfSrc2   := rfSrc2
+    uop(i).cs.rfDest   := rfDest
     uop(i).cf.pc       := io.in(i).bits.pc
     uop(i).cf.imm      := ImmGen(i).out
     uop(i).cf.inst     := io.in(i).bits.inst
