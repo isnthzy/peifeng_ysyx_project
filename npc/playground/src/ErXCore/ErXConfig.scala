@@ -64,7 +64,6 @@ trait HasErXCoreParameter {
   val InstBuffSize = 8
   //
   val DecodeWidth = 2
-  val PrfSize = 64
   val IssueWidth  = 3
   val ExecuteWidth = 3
   val CommitWidth  = 2
@@ -78,8 +77,8 @@ trait HasErXCoreParameter {
 
   val EnableVerlatorSim = GenerateParams.getParam("VERILATOR_SIM").asInstanceOf[Boolean] 
   val UseRV32E = GenerateParams.getParam("RV32E").asInstanceOf[Boolean]
-  val arfSize = if(UseRV32E) 16 else 32
-  val prfSize = arfSize * 2
+  val ArfSize = if(UseRV32E) 16 else 32
+  val PrfSize = ArfSize * 2
 }
 
 trait HasErXCacheConfig{

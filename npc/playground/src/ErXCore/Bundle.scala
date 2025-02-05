@@ -27,9 +27,9 @@ class CtrlSignalIO extends ErXCoreBundle {
   val lsType = Output(UInt(LS_XXX.length.W))
   val csrOp  = Output(UInt(CSR_XXXX.length.W))
   val rfWen  = Output(Bool())
-  val rfSrc1 = Output(UInt(log2Up(arfSize).W))
-  val rfSrc2 = Output(UInt(log2Up(arfSize).W))
-  val rfDest = Output(UInt(log2Up(arfSize).W))
+  val rfSrc1 = Output(UInt(log2Up(ArfSize).W))
+  val rfSrc2 = Output(UInt(log2Up(ArfSize).W))
+  val rfDest = Output(UInt(log2Up(ArfSize).W))
 }
 
 class MicroOpIO extends ErXCoreBundle {
@@ -67,7 +67,7 @@ class RenameFromCommitUpdate(updSize: Int) extends ErXCoreBundle {
     val wen = Bool()
     val prfDst = UInt(log2Up(PrfSize).W)
     val freePrfDst = UInt(log2Up(PrfSize).W)
-    val rfDst = UInt(log2Up(arfSize).W)
+    val rfDst = UInt(log2Up(ArfSize).W)
   })
   val recover = Bool()
 }

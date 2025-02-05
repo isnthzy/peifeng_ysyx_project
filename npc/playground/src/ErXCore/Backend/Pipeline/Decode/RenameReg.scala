@@ -68,22 +68,22 @@ class RenameTable extends ErXCoreModule{
   val io = IO(new Bundle {
     val in = new Bundle {
       val rfWen  = Input(Vec(DecodeWidth,Bool()))
-      val rfSrc1 = Input(Vec(DecodeWidth,UInt(log2Up(arfSize).W)))
-      val rfSrc2 = Input(Vec(DecodeWidth,UInt(log2Up(arfSize).W)))
-      val rfDst  = Input(Vec(DecodeWidth,UInt(log2Up(arfSize).W)))
-      val prfDst = Input(Vec(DecodeWidth,UInt(log2Up(prfSize).W)))
+      val rfSrc1 = Input(Vec(DecodeWidth,UInt(log2Up(ArfSize).W)))
+      val rfSrc2 = Input(Vec(DecodeWidth,UInt(log2Up(ArfSize).W)))
+      val rfDst  = Input(Vec(DecodeWidth,UInt(log2Up(ArfSize).W)))
+      val prfDst = Input(Vec(DecodeWidth,UInt(log2Up(PrfSize).W)))
     }
     val out = new Bundle {
-      val prfSrc1 = Output(Vec(DecodeWidth,UInt(log2Up(prfSize).W)))
-      val prfSrc2 = Output(Vec(DecodeWidth,UInt(log2Up(prfSize).W)))
-      val pprfDst = Output(Vec(DecodeWidth,UInt(log2Up(prfSize).W)))
+      val prfSrc1 = Output(Vec(DecodeWidth,UInt(log2Up(PrfSize).W)))
+      val prfSrc2 = Output(Vec(DecodeWidth,UInt(log2Up(PrfSize).W)))
+      val pprfDst = Output(Vec(DecodeWidth,UInt(log2Up(PrfSize).W)))
     }
     val from_rob = Input(new RenameFromCommitUpdate(updSize = CommitWidth))
 
     // val boreRNandPRF = Output(new boreRNandPRF())
   })
-  val specTable = RegInit(VecInit(Seq.tabulate(arfSize)(i => i.U(log2Up(PrfSize).W))))
-  val archTable = RegInit(VecInit(Seq.tabulate(arfSize)(i => i.U(log2Up(PrfSize).W))))
+  val specTable = RegInit(VecInit(Seq.tabulate(ArfSize)(i => i.U(log2Up(PrfSize).W))))
+  val archTable = RegInit(VecInit(Seq.tabulate(ArfSize)(i => i.U(log2Up(PrfSize).W))))
   //The physical register addresses 0-31 are assigned by default.
 
   for(i <- 0 until DecodeWidth){
@@ -150,7 +150,7 @@ class PrfStateTable extends ErXCoreModule{
       val commitRecover = Input(Bool())
     })
   })
-  val prfStateTable = RegInit(VecInit(Seq.fill(arfSize)(COMMITTED) ++ Seq.fill(PrfSize - arfSize)(FREE)))
+  val prfStateTable = RegInit(VecInit(Seq.fill(ArfSize)(COMMITTED) ++ Seq.fill(PrfSize - ArfSize)(FREE)))
   val freeList = Wire(Vec(DecodeWidth,UInt(PrfSize.W)))
   val freePrfDst = Wire(Vec(DecodeWidth,UInt(log2Up(PrfSize).W)))
   io.prfDst := freePrfDst
