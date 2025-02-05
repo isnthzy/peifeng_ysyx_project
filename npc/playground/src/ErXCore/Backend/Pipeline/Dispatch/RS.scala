@@ -155,6 +155,9 @@ class RS(rsSize: Int = 4,enqWidth: Int = 2,deqWidth: Int = 1,StoreSeq: Boolean =
     rsArbPacket(i).rsIdx := i.U
   }
   val deqSelect = OldFirstArb(rsArbPacket, rsSize).map(_.rsIdx)
+  val deqSelectIdx = Wire(Vec(deqWidth, UInt(log2Up(rsSize).W)))
+  deqSelectIdx := deqSelect
+  dontTouchUtil(deqSelectIdx)
   for(i <- 0 until deqWidth){
     io.out(i).valid := rsReadyList(deqSelect(i))
     io.out(i).bits  := rsBuff(deqSelect(i))
