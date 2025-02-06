@@ -12,7 +12,6 @@ class Backend extends ErXCoreModule{
     val dmem = new AxiCacheIO()
   })
   
-  val flush = false.B
   val DRstage   = Module(new DecodeRename)  // include "Decode&rename"
   val DSstage   = Module(new Dispatch) 
   val PRstage   = Module(new PrfRead)
@@ -22,6 +21,7 @@ class Backend extends ErXCoreModule{
   val DCache    = Module(new DCache)
   val StoreQueue = Module(new StoreQueue)
 
+  val flush = ROB.io.fw_frt.flush
   io.fw_frt := ROB.io.fw_frt
   DRstage.io.from_rob := ROB.io.fw_dr
   DSstage.io.from_rob := ROB.io.fw_dp
