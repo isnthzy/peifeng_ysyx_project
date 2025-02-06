@@ -2,7 +2,7 @@ package ErXCore.Difftest
 
 import chisel3._
 import chisel3.util._
-//重写，or随便糊一个之前的，随便糊一个之前的吧，
+//NOTE:重写，or随便糊一个之前的，随便糊一个之前的吧，太需要重写一个chisel版的diff了
 trait DiffBundleConst{
   def REGSIZE = 32
   def XLEN = 32
@@ -11,7 +11,7 @@ abstract class DiffBundle extends Bundle with DiffBundleConst
 abstract class DiffModule extends Module with DiffBundleConst
 
 class DiffCommit extends DiffModule{
-  val diff=IO(new DiffBundle {
+  val io=IO(new DiffBundle {
     val instr=Input(new DiffInstrBundle())
     val instr1=Input(new DiffInstrBundle())
     val excp =Input(new DiffExcpBundle())
@@ -24,69 +24,69 @@ class DiffCommit extends DiffModule{
   })
   val DiffBridge=Module(new DiffBridge())
   DiffBridge.io.clock:=clock
-  DiffBridge.io.index:=RegNext(diff.instr.index,0.U)
-  DiffBridge.io.instrValid:=RegNext(diff.instr.valid,0.U)
-  DiffBridge.io.the_pc:=RegNext(diff.instr.pc,0.U)
-  DiffBridge.io.instr:=RegNext(diff.instr.instr,0.U)
-  DiffBridge.io.skip:=RegNext(diff.instr.skip,0.U)
-  DiffBridge.io.wen:=RegNext(diff.instr.wen,0.U)
-  DiffBridge.io.wdest:=RegNext(diff.instr.wdest,0.U)
-  DiffBridge.io.wdata:=RegNext(diff.instr.wdata,0.U)
-  DiffBridge.io.csrRstat:=RegNext(diff.instr.csrRstat,0.U)
-  DiffBridge.io.csrData:=RegNext(diff.instr.csrData,0.U)
+  DiffBridge.io.index:=RegNext(io.instr.index,0.U)
+  DiffBridge.io.instrValid:=RegNext(io.instr.valid,0.U)
+  DiffBridge.io.the_pc:=RegNext(io.instr.pc,0.U)
+  DiffBridge.io.instr:=RegNext(io.instr.instr,0.U)
+  DiffBridge.io.skip:=RegNext(io.instr.skip,0.U)
+  DiffBridge.io.wen:=RegNext(io.instr.wen,0.U)
+  DiffBridge.io.wdest:=RegNext(io.instr.wdest,0.U)
+  DiffBridge.io.wdata:=RegNext(io.instr.wdata,0.U)
+  DiffBridge.io.csrRstat:=RegNext(io.instr.csrRstat,0.U)
+  DiffBridge.io.csrData:=RegNext(io.instr.csrData,0.U)
 
-  DiffBridge.io.index1:=RegNext(diff.instr1.index,0.U)
-  DiffBridge.io.instrValid1:=RegNext(diff.instr1.valid,0.U)
-  DiffBridge.io.the_pc1:=RegNext(diff.instr1.pc,0.U)
-  DiffBridge.io.instr1:=RegNext(diff.instr1.instr,0.U)
-  DiffBridge.io.skip1:=RegNext(diff.instr1.skip,0.U)
-  DiffBridge.io.wen1:=RegNext(diff.instr1.wen,0.U)
-  DiffBridge.io.wdest1:=RegNext(diff.instr1.wdest,0.U)
-  DiffBridge.io.wdata1:=RegNext(diff.instr1.wdata,0.U)
-  DiffBridge.io.csrRstat1:=RegNext(diff.instr1.csrRstat,0.U)
-  DiffBridge.io.csrData1:=RegNext(diff.instr1.csrData,0.U)
+  DiffBridge.io.index1:=RegNext(io.instr1.index,0.U)
+  DiffBridge.io.instrValid1:=RegNext(io.instr1.valid,0.U)
+  DiffBridge.io.the_pc1:=RegNext(io.instr1.pc,0.U)
+  DiffBridge.io.instr1:=RegNext(io.instr1.instr,0.U)
+  DiffBridge.io.skip1:=RegNext(io.instr1.skip,0.U)
+  DiffBridge.io.wen1:=RegNext(io.instr1.wen,0.U)
+  DiffBridge.io.wdest1:=RegNext(io.instr1.wdest,0.U)
+  DiffBridge.io.wdata1:=RegNext(io.instr1.wdata,0.U)
+  DiffBridge.io.csrRstat1:=RegNext(io.instr1.csrRstat,0.U)
+  DiffBridge.io.csrData1:=RegNext(io.instr1.csrData,0.U)
 
-  DiffBridge.io.excp_valid:=RegNext(diff.excp.excpValid,0.U)
-  DiffBridge.io.isMret:=RegNext(diff.excp.isMret,0.U)
-  DiffBridge.io.intrptNo:=RegNext(diff.excp.intrptNo,0.U)
-  DiffBridge.io.cause:=RegNext(diff.excp.cause,0.U)
-  DiffBridge.io.exceptionPC:=RegNext(diff.excp.exceptionPC,0.U)
-  DiffBridge.io.exceptionInst:=RegNext(diff.excp.exceptionInst,0.U)
+  DiffBridge.io.excp_valid:=RegNext(io.excp.excpValid,0.U)
+  DiffBridge.io.isMret:=RegNext(io.excp.isMret,0.U)
+  DiffBridge.io.intrptNo:=RegNext(io.excp.intrptNo,0.U)
+  DiffBridge.io.cause:=RegNext(io.excp.cause,0.U)
+  DiffBridge.io.exceptionPC:=RegNext(io.excp.exceptionPC,0.U)
+  DiffBridge.io.exceptionInst:=RegNext(io.excp.exceptionInst,0.U)
 
-  DiffBridge.io.storeIndex:=RegNext(diff.store.index,0.U)
-  DiffBridge.io.storeValid:=RegNext(diff.store.valid,0.U)
-  DiffBridge.io.storePaddr:=RegNext(diff.store.paddr,0.U)
-  DiffBridge.io.storeVaddr:=RegNext(diff.store.vaddr,0.U)
-  DiffBridge.io.storeData:= RegNext(diff.store.data,0.U)
-  DiffBridge.io.storeLen := RegNext(diff.store.len,0.U)
+  DiffBridge.io.storeIndex:=RegNext(io.store.index,0.U)
+  DiffBridge.io.storeValid:=RegNext(io.store.valid,0.U)
+  DiffBridge.io.storePaddr:=RegNext(io.store.paddr,0.U)
+  DiffBridge.io.storeVaddr:=RegNext(io.store.vaddr,0.U)
+  DiffBridge.io.storeData:= RegNext(io.store.data,0.U)
+  DiffBridge.io.storeLen := RegNext(io.store.len,0.U)
 
-  DiffBridge.io.loadIndex:=RegNext(diff.load.index,0.U)
-  DiffBridge.io.loadValid:=RegNext(diff.load.valid,0.U)
-  DiffBridge.io.loadPaddr:=RegNext(diff.load.paddr,0.U)
-  DiffBridge.io.loadVaddr:=RegNext(diff.load.vaddr,0.U)
-  DiffBridge.io.loadData :=RegNext(diff.load.data ,0.U)
-  DiffBridge.io.loadLen  :=RegNext(diff.load.len,0.U)
+  DiffBridge.io.loadIndex:=RegNext(io.load.index,0.U)
+  DiffBridge.io.loadValid:=RegNext(io.load.valid,0.U)
+  DiffBridge.io.loadPaddr:=RegNext(io.load.paddr,0.U)
+  DiffBridge.io.loadVaddr:=RegNext(io.load.vaddr,0.U)
+  DiffBridge.io.loadData :=RegNext(io.load.data ,0.U)
+  DiffBridge.io.loadLen  :=RegNext(io.load.len,0.U)
 
-  DiffBridge.io.storeIndex1:=RegNext(diff.store1.index,0.U)
-  DiffBridge.io.storeValid1:=RegNext(diff.store1.valid,0.U)
-  DiffBridge.io.storePaddr1:=RegNext(diff.store1.paddr,0.U)
-  DiffBridge.io.storeVaddr1:=RegNext(diff.store1.vaddr,0.U)
-  DiffBridge.io.storeData1:= RegNext(diff.store1.data,0.U)
-  DiffBridge.io.storeLen1 := RegNext(diff.store1.len,0.U)
+  DiffBridge.io.storeIndex1:=RegNext(io.store1.index,0.U)
+  DiffBridge.io.storeValid1:=RegNext(io.store1.valid,0.U)
+  DiffBridge.io.storePaddr1:=RegNext(io.store1.paddr,0.U)
+  DiffBridge.io.storeVaddr1:=RegNext(io.store1.vaddr,0.U)
+  DiffBridge.io.storeData1:= RegNext(io.store1.data,0.U)
+  DiffBridge.io.storeLen1 := RegNext(io.store1.len,0.U)
 
-  DiffBridge.io.loadIndex1:=RegNext(diff.load1.index,0.U)
-  DiffBridge.io.loadValid1:=RegNext(diff.load1.valid,0.U)
-  DiffBridge.io.loadPaddr1:=RegNext(diff.load1.paddr,0.U)
-  DiffBridge.io.loadVaddr1:=RegNext(diff.load1.vaddr,0.U)
-  DiffBridge.io.loadData1 :=RegNext(diff.load1.data ,0.U)
-  DiffBridge.io.loadLen1  :=RegNext(diff.load1.len,0.U)
+  DiffBridge.io.loadIndex1:=RegNext(io.load1.index,0.U)
+  DiffBridge.io.loadValid1:=RegNext(io.load1.valid,0.U)
+  DiffBridge.io.loadPaddr1:=RegNext(io.load1.paddr,0.U)
+  DiffBridge.io.loadVaddr1:=RegNext(io.load1.vaddr,0.U)
+  DiffBridge.io.loadData1 :=RegNext(io.load1.data ,0.U)
+  DiffBridge.io.loadLen1  :=RegNext(io.load1.len,0.U)
 
-  DiffBridge.io.mstatus:=RegNext(diff.csr.mstatus,0.U)
-  DiffBridge.io.mepc   :=RegNext(diff.csr.mepc   ,0.U)
-  DiffBridge.io.mcause :=RegNext(diff.csr.mcause ,0.U)
-  DiffBridge.io.mtvec  :=RegNext(diff.csr.mtvec  ,0.U)
+  DiffBridge.io.mstatus:=RegNext(io.csr.mstatus,0.U)
+  DiffBridge.io.mepc   :=RegNext(io.csr.mepc   ,0.U)
+  DiffBridge.io.mcause :=RegNext(io.csr.mcause ,0.U)
+  DiffBridge.io.mtvec  :=RegNext(io.csr.mtvec  ,0.U)
 
-  DiffBridge.io.REG:=diff.reg
+  DiffBridge.io.REG:=io.reg
 }
 
 class DiffBridge extends BlackBox with HasBlackBoxPath{

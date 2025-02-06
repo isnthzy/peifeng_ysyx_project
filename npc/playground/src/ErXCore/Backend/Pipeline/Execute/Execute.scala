@@ -71,6 +71,8 @@ class PipeALUorCSR extends AbstaceExecutePipe{
   io.out.bits.robIdx   := io.in.bits.robIdx
   io.out.bits.rfWen    := io.in.bits.cs.rfWen
   io.out.bits.prfDst   := io.in.bits.pf.prfDst
+  io.out.bits.csr.excpType := 0.U.asTypeOf(io.out.bits.csr.excpType)
+  io.out.bits.csr.excpType.bkp := io.in.bits.cs.csrOp === SDEF(CSR_BREK)
 }
 
 class PipeALU extends AbstaceExecutePipe{
@@ -86,6 +88,7 @@ class PipeALU extends AbstaceExecutePipe{
   io.out.bits.robIdx   := io.in.bits.robIdx
   io.out.bits.rfWen    := io.in.bits.cs.rfWen
   io.out.bits.prfDst   := io.in.bits.pf.prfDst
+  io.out.bits.csr      := DontCare
 }
 
 class PipeMem(useDmem: Boolean = false) extends AbstaceExecutePipe(useDmem){
@@ -116,7 +119,7 @@ class PipeMem(useDmem: Boolean = false) extends AbstaceExecutePipe(useDmem){
   io.out.bits.robIdx   := outBuff.robIdx
   io.out.bits.rfWen    := outBuff.rfWen
   io.out.bits.prfDst   := outBuff.prfDst
-
+  io.out.bits.csr      := DontCare
 }
 
 // class PipeMem

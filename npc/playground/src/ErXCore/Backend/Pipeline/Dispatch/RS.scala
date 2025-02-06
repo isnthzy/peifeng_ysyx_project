@@ -171,7 +171,13 @@ class RS(rsSize: Int = 4,enqWidth: Int,deqWidth: Int,StoreSeq: Boolean = false) 
   dontTouchUtil(deqSelectIdx)
   dontTouchUtil(rsArbPacket)
   for(i <- 0 until deqWidth){
-    io.out(i).valid := rsReadyList(deqSelect(i))
+    if(i == 0){
+      io.out(i).valid := rsReadyList(deqSelect(i))
+    }else{
+      val isPriv = rsBuff(deqSelect(i)).cs.fuType === SDEF(FU_PRIV)
+      io.out(i).valid := rsReadyList(deqSelect(i)) && !isPriv
+      //Priv must to exeute pipe0
+    }
     io.out(i).bits  := rsBuff(deqSelect(i))
     io.out(i).bits.robIdx := rsROBAge(deqSelect(i))
     when(io.out(i).fire){
@@ -195,7 +201,7 @@ class RS(rsSize: Int = 4,enqWidth: Int,deqWidth: Int,StoreSeq: Boolean = false) 
 class ArbAgeBundle(rsSize: Int) extends ErXCoreBundle {
   val isValid  = Bool()
   val isStore  = Bool()
-  val age = UInt(RobAgeWidth.W)
+  val age      = UInt(RobAgeWidth.W)
   val srcReady = Bool()
   val rsIdx    = UInt(log2Up(rsSize).W)
 }

@@ -140,9 +140,9 @@ object DecodeSignal {
 
 
   // fu_sel
-  val FU_ALU = "00"
-  val FU_MEM = "01"
-  val FU_BRU = "10"
+  val FU_ALU  = "00"
+  val FU_MEM  = "01"
+  val FU_PRIV = "10"
 
   val ALU_XXX    = "0000"
   val ALU_ADD    = "0001"
@@ -218,15 +218,15 @@ object DecodeSignal {
     OR    ->  Seq( A_RS1,  B_RS2, IMM_X, ALU_OR    , BR_XXX, LS_XXX, FU_ALU, Y, CSR_XXXX),
     AND   ->  Seq( A_RS1,  B_RS2, IMM_X, ALU_AND   , BR_XXX, LS_XXX, FU_ALU, Y, CSR_XXXX),
     //
-    FENCE_I-> Seq( A_RS1,  B_RS2, IMM_X, ALU_ADD   , BR_XXX, LS_XXX, FU_ALU, N, O_FENCEI),
+    FENCE_I-> Seq( A_RS1,  B_RS2, IMM_X, ALU_ADD   , BR_XXX, LS_XXX,FU_PRIV, N, O_FENCEI),
     //
-    CSRRW ->  Seq( A_RS1,  B_CSR, IMM_X, ALU_COPY_B, BR_XXX, LS_XXX, FU_ALU, Y, CSR_RW  ),
-    CSRRS ->  Seq( A_RS1,  B_CSR, IMM_X, ALU_COPY_B, BR_XXX, LS_XXX, FU_ALU, Y, CSR_RS  ),
+    CSRRW ->  Seq( A_RS1,  B_CSR, IMM_X, ALU_COPY_B, BR_XXX, LS_XXX,FU_PRIV, Y, CSR_RW  ),
+    CSRRS ->  Seq( A_RS1,  B_CSR, IMM_X, ALU_COPY_B, BR_XXX, LS_XXX,FU_PRIV, Y, CSR_RS  ),
     //
-    MRET  ->  Seq( A_XXX,  B_XXX, IMM_X, ALU_XXX   , BR_XXX, LS_XXX, FU_ALU, N, CSR_MRET),
-    ECALL ->  Seq( A_RS1,  B_RS2, IMM_X, ALU_ADD   , BR_XXX, LS_XXX, FU_ALU, N, CSR_ECAL),
+    MRET  ->  Seq( A_XXX,  B_XXX, IMM_X, ALU_XXX   , BR_XXX, LS_XXX,FU_PRIV, N, CSR_MRET),
+    ECALL ->  Seq( A_RS1,  B_RS2, IMM_X, ALU_ADD   , BR_XXX, LS_XXX,FU_PRIV, N, CSR_ECAL),
     //
-    EBREAK->  Seq( A_RS1,  B_RS2, IMM_X, ALU_ADD   , BR_XXX, LS_XXX, FU_ALU, N, CSR_BREK))
+    EBREAK->  Seq( A_RS1,  B_RS2, IMM_X, ALU_ADD   , BR_XXX, LS_XXX,FU_PRIV, N, CSR_BREK))
     .map({ case (k, v) => k -> BitPat(s"b${v.reduce(_ + _)}") }), BitPat(s"b$decode_default"));
   // format: on
 }

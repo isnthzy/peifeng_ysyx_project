@@ -63,7 +63,7 @@ class InstBuff extends ErXCoreModule {
     io.out(i).bits := queue(queueHead + i.U).bits
   }
 
-  // jal
+  //NOTE: PreDecode jal
   val brSelectIdx = WireDefault(0.U(log2Up(DecodeWidth).W))
   io.fw_pf.br := br(brSelectIdx)
   io.fw_if.br := br(brSelectIdx)

@@ -13,7 +13,7 @@ class ROB extends ErXCoreModule{
     val fw_dp   = Output(new RSFromROB)
     val fw_sq   = Output(new StoreQueueFromROB)
 
-    val out_diff = Output(Vec(RobWidth,Valid(new RenameIO)))
+    val out_diff = Output(Vec(RobWidth,Valid(new ROBDiffOut)))
   })
   val rob = SyncReadMem(RobEntries, new RenameIO, SyncReadMem.WriteFirst)
   val complete = RegInit(VecInit(Seq.fill(RobEntries)(false.B)))
@@ -65,22 +65,85 @@ class ROB extends ErXCoreModule{
       packet(robIdx).br := io.from_ex.upd(i).bits.br
       packet(robIdx).isStore := io.from_ex.upd(i).bits.isStore
       packet(robIdx).isBranch:= io.from_ex.upd(i).bits.isBranch
+      packet(robIdx).excpType := io.from_ex.upd(i).bits.csr.excpType
     }
   }
 
-  //dequeue check complete
-  //easy select
+
   val validMask = Mux(ringBuffCount >= RetireWidth.U, ((1 << RetireWidth) - 1).U, 
                                                       UIntToOH(ringBuffCount, RetireWidth) - 1.U)
   val retireValid = Wire(Vec(RetireWidth,Bool()))
+ 
+
+  //NOTE:Branch
+  //NOTE:Mask的作用是当前一条指令是跳转时，后面的指令无效化。mask概念适用于branch excp store
+  val branchMask = Wire(Vec(RetireWidth,Bool()))
+  val branchSelectIdx = WireDefault(0.U(log2Up(RobEntries).W))
+  val branchValid = Wire(Vec(RetireWidth,Bool()))
+  io.fw_frt.tk := packet(branchSelectIdx).br   
+  for(i <- 0 until RetireWidth){
+    val idx = tailPtr + i.U
+    branchValid(i) := packet(idx).isBranch && packet(idx).br.taken
+    when(branchValid(i)){
+      branchSelectIdx := idx
+    }
+    if(i == 0){
+      branchMask(i) := true.B
+    }else{
+      branchMask(i) := branchMask(i - 1) && !branchValid(i - 1)
+    }
+  }
+
+  //NOTE:excp
+  val excpValid = Wire(Vec(RetireWidth,Bool()))
+  val excpMask = Wire(Vec(RetireWidth,Bool()))
+  val excpResult = Wire(Vec(RetireWidth,new ExcpResultBundle()))
+  for(i <- 0 until RetireWidth){
+    excpValid(i) := packet(tailPtr + i.U).excpType.asUInt.xorR
+    val excpNum = packet(tailPtr + i.U).excpType.asUInt
+    // val 
+    excpResult(i) := MuxCase(0.U,Seq(
+      excpNum(0)  -> Cat(ECODE.IAM,1.U(1.W),commitBits(i).cf.pc              ),
+      excpNum(1)  -> Cat(ECODE.IAF,1.U(1.W),commitBits(i).cf.pc              ),
+      excpNum(2)  -> Cat(ECODE.INE,0.U(1.W),0.U(XLEN.W)                      ),
+      excpNum(3)  -> Cat(ECODE.BKP,0.U(1.W),0.U(XLEN.W)                      ),
+      excpNum(4)  -> Cat(ECODE.LAM,1.U(1.W),packet(tailPtr + i.U).memBadAddr ),
+      excpNum(5)  -> Cat(ECODE.LAF,0.U(1.W),0.U(XLEN.W)                      ),
+      excpNum(6)  -> Cat(ECODE.SAM,1.U(1.W),packet(tailPtr + i.U).memBadAddr ),
+      excpNum(7)  -> Cat(ECODE.SAF,0.U(1.W),0.U(XLEN.W)                      ),
+      excpNum(8)  -> Cat(ECODE.ECU,1.U(1.W),commitBits(i).cf.pc              ),
+      excpNum(9)  -> Cat(ECODE.ECS,1.U(1.W),commitBits(i).cf.pc              ),
+      excpNum(10) -> Cat(ECODE.ECM,1.U(1.W),commitBits(i).cf.pc              ),
+      excpNum(11) -> Cat(ECODE.IPF,1.U(1.W),packet(tailPtr + i.U).memBadAddr ),
+      excpNum(12) -> Cat(ECODE.LPF,1.U(1.W),packet(tailPtr + i.U).memBadAddr ),
+      excpNum(13) -> Cat(ECODE.SPF,1.U(1.W),packet(tailPtr + i.U).memBadAddr ),
+    )).asTypeOf(new ExcpResultBundle())
+    if(i == 0){
+      excpMask(i) := true.B
+    }else{
+      excpMask(i) := excpMask(i - 1) && !excpValid(i - 1)
+    }
+  }
+  //NOTE:store:
+  val storeMask = Wire(Vec(RetireWidth,Bool()))
+  val storeValid = Wire(Vec(RetireWidth,Bool()))
+  for(i <- 0 until RetireWidth){
+    storeValid(i) := packet(tailPtr + i.U).isStore
+    if(i == 0){
+      storeMask(i) := true.B
+    }else{
+      storeMask(i) := storeMask(i - 1) && !storeValid(i - 1)
+    }
+  }
+  io.fw_sq.doDeq := (0 until RetireWidth).map(i => retireValid(i) && storeValid(i)).reduce(_||_)
+  //public flush 
+  flushAll := (0 until RetireWidth).map(i => retireValid(i) 
+    && (branchValid(i) || excpValid(i))).reduce(_||_)
+
+  //dequeue check complete
+  //NOTE:easy select
   commitValid := retireValid
-  ringBuffTail := ringBuffTail + deqNum 
-  //
-  flushAll := (0 until RetireWidth).map(i => retireValid(i) && packet(i).isBranch && packet(i).br.taken).reduce(_||_)
-  val brTakenSelect = OHToUInt(Cat((0 until RetireWidth).map(i => retireValid(i) && packet(i).isBranch && packet(i).br.taken)))
-  io.fw_frt := 0.U.asTypeOf(io.fw_frt)   //override
-  io.fw_sq.doDeq := (0 until RetireWidth).map(i => retireValid(i) && packet(i).isStore).reduce(_||_)
-  io.fw_frt.tk := packet(tailPtr + brTakenSelect).br
+  ringBuffTail := ringBuffTail + deqNum
 
   val syncReadTailPtr = (ringBuffTail + deqNum).getIdx(RobIdxWidth)
   //NOTE:commitBits由于是syncReadMem，读慢一拍，因此需要使用要移动的tail指针提前读结果
@@ -90,8 +153,8 @@ class ROB extends ErXCoreModule{
       retireValid(i) := validMask(i) && complete(tailPtr + i.U)
     }else{
       retireValid(i) :=(validMask(i) && complete(tailPtr + i.U) &&
-        retireValid(i - 1) && !packet(tailPtr + (i - 1).U).br.taken && !packet(tailPtr + (i - 1).U).isStore)
-    }
+        retireValid(i - 1) && storeMask(i) && excpMask(i) && branchMask(i))
+    } 
 
     io.fw_dr.upd(i).wen := retireValid(i) && commitBits(i).cs.rfWen
     io.fw_dr.upd(i).prfDst := commitBits(i).pf.prfDst
@@ -99,11 +162,21 @@ class ROB extends ErXCoreModule{
     io.fw_dr.upd(i).rfDst  := commitBits(i).cs.rfDest
   }
 
-  //----robCommit----
+  //----robCommitDiff----
   for(i <- 0 until RetireWidth){
     io.out_diff(i).valid  := retireValid(i)
-    io.out_diff(i).bits := commitBits(i)
+    io.out_diff(i).bits.pf := commitBits(i).pf
+    io.out_diff(i).bits.cf := commitBits(i).cf
+    io.out_diff(i).bits.cs := commitBits(i).cs
+    io.out_diff(i).bits.robIdx := commitBits(i).robIdx
+
+    io.out_diff(i).bits.excp.isMret := false.B
+    io.out_diff(i).bits.excp.intrptNo := false.B
+    io.out_diff(i).bits.excp.en := excpValid(i)
+    io.out_diff(i).bits.excp.cause := excpResult(i).ecode
   }
+
+
 
   //flush
   when(flushAll){ 

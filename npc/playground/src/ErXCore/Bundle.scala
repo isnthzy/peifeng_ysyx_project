@@ -49,11 +49,6 @@ class RenameIO extends MicroOpIO{
   val robIdx = UInt(RobIdxWidth.W)
 }
 
-class RobPacket extends ErXCoreBundle{
-  val br = new BranchBundle
-  val isBranch = Bool()
-  val isStore = Bool() 
-}
 
 class RenameFromExecuteUpdate(updSize: Int) extends ErXCoreBundle {
   val upd = Vec(updSize, new Bundle {
@@ -70,6 +65,23 @@ class RenameFromCommitUpdate(updSize: Int) extends ErXCoreBundle {
     val rfDst = UInt(log2Up(ArfSize).W)
   })
   val recover = Bool()
+}
+
+class RobPacket extends ErXCoreBundle{
+  val br = new BranchBundle
+  val isBranch = Bool()
+  val isStore = Bool() 
+  val excpType = new ExcpTypeBundle
+  val memBadAddr = UInt(XLEN.W)
+}
+
+class ROBDiffOut extends RenameIO {
+  val excp = new Bundle {
+    val en       = Bool()
+    val cause    = UInt(32.W)
+    val isMret   = Bool()
+    val intrptNo = Bool()
+  }
 }
 
 class ROBFromExecuteUpdate(updSize: Int) extends ErXCoreBundle {
@@ -144,6 +156,9 @@ class CommitIO extends ErXCoreBundle{
   // }
 
 }
+class PipeCsrOut extends ErXCoreBundle {
+  val excpType = new ExcpTypeBundle
+}
 
 class PipeExecuteOut extends ErXCoreBundle {
   val result = UInt(XLEN.W)
@@ -153,6 +168,7 @@ class PipeExecuteOut extends ErXCoreBundle {
   val isBranch = Bool()
   val isStore  = Bool()
   val br = new BranchBundle
+  val csr = new PipeCsrOut
 }
 
 //NOTE: Frontend

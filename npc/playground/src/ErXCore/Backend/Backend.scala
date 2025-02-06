@@ -54,39 +54,52 @@ class Backend extends ErXCoreModule{
     val Diff = Module(new DiffCommit)
     val gpr = Wire(Vec(ArfSize,UInt(XLEN.W)))
     ExcitingUtils.addSink(gpr,"DiffGPR",ExcitingUtils.Func)
-    Diff.diff.reg := gpr.asTypeOf(Diff.diff.reg)
-    Diff.diff.instr.index := 0.U
-    Diff.diff.instr.valid := ROB.io.out_diff(0).valid
-    Diff.diff.instr.pc    := ROB.io.out_diff(0).bits.cf.pc
-    Diff.diff.instr.instr := ROB.io.out_diff(0).bits.cf.inst
-    Diff.diff.instr.skip  := 0.U
-    Diff.diff.instr.wen   := ROB.io.out_diff(0).bits.cs.rfWen
-    Diff.diff.instr.wdest := ROB.io.out_diff(0).bits.cs.rfDest
-    Diff.diff.instr.wdata := 0.U //no need
-    Diff.diff.instr.csrRstat  := 0.U
-    Diff.diff.instr.csrData   := 0.U
+    Diff.io.reg := gpr.asTypeOf(Diff.io.reg)
+    Diff.io.instr.index := 0.U
+    Diff.io.instr.valid := ROB.io.out_diff(0).valid
+    Diff.io.instr.pc    := ROB.io.out_diff(0).bits.cf.pc
+    Diff.io.instr.instr := ROB.io.out_diff(0).bits.cf.inst
+    Diff.io.instr.skip  := 0.U
+    Diff.io.instr.wen   := ROB.io.out_diff(0).bits.cs.rfWen
+    Diff.io.instr.wdest := ROB.io.out_diff(0).bits.cs.rfDest
+    Diff.io.instr.wdata := 0.U //no need
+    Diff.io.instr.csrRstat  := 0.U
+    Diff.io.instr.csrData   := 0.U
 
-    Diff.diff.instr1.index := 1.U
-    Diff.diff.instr1.valid := ROB.io.out_diff(1).valid
-    Diff.diff.instr1.pc    := ROB.io.out_diff(1).bits.cf.pc
-    Diff.diff.instr1.instr := ROB.io.out_diff(1).bits.cf.inst
-    Diff.diff.instr1.skip  := 0.U
-    Diff.diff.instr1.wen   := ROB.io.out_diff(1).bits.cs.rfWen
-    Diff.diff.instr1.wdest := ROB.io.out_diff(1).bits.cs.rfWen
-    Diff.diff.instr1.wdata := 0.U
-    Diff.diff.instr1.csrRstat  := 0.U
-    Diff.diff.instr1.csrData   := 0.U
+    Diff.io.instr1.index := 1.U
+    Diff.io.instr1.valid := ROB.io.out_diff(1).valid
+    Diff.io.instr1.pc    := ROB.io.out_diff(1).bits.cf.pc
+    Diff.io.instr1.instr := ROB.io.out_diff(1).bits.cf.inst
+    Diff.io.instr1.skip  := 0.U
+    Diff.io.instr1.wen   := ROB.io.out_diff(1).bits.cs.rfWen
+    Diff.io.instr1.wdest := ROB.io.out_diff(1).bits.cs.rfWen
+    Diff.io.instr1.wdata := 0.U
+    Diff.io.instr1.csrRstat  := 0.U
+    Diff.io.instr1.csrData   := 0.U
     
     
-    Diff.diff.load  := 0.U.asTypeOf(Diff.diff.load)
-    Diff.diff.load1 := 0.U.asTypeOf(Diff.diff.load)
-    Diff.diff.store := 0.U.asTypeOf(Diff.diff.store)
-    Diff.diff.store1:= 0.U.asTypeOf(Diff.diff.store)
-    Diff.diff.excp := 0.U.asTypeOf(Diff.diff.excp)
-    Diff.diff.csr.mcause  := 0x1800.U
-    Diff.diff.csr.mepc    := 0.U
-    Diff.diff.csr.mtvec   := 0.U
-    Diff.diff.csr.mstatus := 0.U
+    Diff.io.load  := 0.U.asTypeOf(Diff.io.load)
+    Diff.io.load1 := 0.U.asTypeOf(Diff.io.load)
+    Diff.io.store := 0.U.asTypeOf(Diff.io.store)
+    Diff.io.store1:= 0.U.asTypeOf(Diff.io.store)
+
+    val excpSelectIdx = WireDefault(0.U(log2Up(RetireWidth).W))
+    for(i <- (0 until RetireWidth).reverse){
+      when(ROB.io.out_diff(i).bits.excp.en){
+        excpSelectIdx := i.U
+      }
+    }
+    Diff.io.excp.excpValid := ROB.io.out_diff(excpSelectIdx).bits.excp.en
+    Diff.io.excp.cause := ROB.io.out_diff(excpSelectIdx).bits.excp.cause
+    Diff.io.excp.isMret := ROB.io.out_diff(excpSelectIdx).bits.excp.isMret
+    Diff.io.excp.intrptNo := false.B
+    Diff.io.excp.exceptionPC := ROB.io.out_diff(excpSelectIdx).bits.cf.pc
+    Diff.io.excp.exceptionInst := ROB.io.out_diff(excpSelectIdx).bits.cf.inst
+
+    Diff.io.csr.mcause  := 0x1800.U
+    Diff.io.csr.mepc    := 0.U
+    Diff.io.csr.mtvec   := 0.U
+    Diff.io.csr.mstatus := 0.U
 
   }
 

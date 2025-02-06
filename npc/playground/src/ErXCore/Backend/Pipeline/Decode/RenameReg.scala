@@ -57,9 +57,6 @@ class Rename extends ErXCoreModule{
     PrfStateTable.io.from.commitUpdate(i) := Mux(io.from_rob.upd(i).wen,io.from_rob.upd(i).prfDst,0.U)
     PrfStateTable.io.from.commitFree(i)   := Mux(io.from_rob.upd(i).wen,io.from_rob.upd(i).freePrfDst,0.U)
   }
-
-  //Boring
-  // io.boreRNandPRF := RenameTable.io.boreRNandPRF
 }
 
 class RenameTable extends ErXCoreModule{
