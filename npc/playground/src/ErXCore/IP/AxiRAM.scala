@@ -85,10 +85,10 @@ class Axi4FullSram extends ErXCoreModule {
     val writeLenReg=RegInit(0.U(8.W))
     val writeLenLast=writeLenReg===0.U
     dpi_sram.io.waddr:=Mux(io.aw.fire,io.aw.bits.addr,writeAddrReg)
-    dpi_sram.io.wen:=io.w.fire
+    dpi_sram.io.wen:=(io.w.fire && writeState === w_write) || (io.aw.fire&&io.w.fire)
     dpi_sram.io.wdata:=io.w.bits.data
     dpi_sram.io.wmask:=io.w.bits.strb
-    io.aw.ready:=true.B
+    // io.aw.ready:=true.B
     io.aw.ready:=RandomDelay(true.B,15.U)
     io.w.ready:=true.B
     io.b.valid:=writeState===w_respond
