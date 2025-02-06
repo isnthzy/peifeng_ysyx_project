@@ -14,11 +14,10 @@ class InstBuff extends ErXCoreModule {
     
     val out = Vec(DecodeWidth,Decoupled(new InstIO))
   })
-
   val queue = RegInit(VecInit(Seq.fill(InstBuffSize)(0.U.asTypeOf(Valid(new InstIO)))))
   val queueHead = RegInit(0.U(log2Up(InstBuffSize).W))
   val queueTail = RegInit(0.U(log2Up(InstBuffSize).W))
-  val queueCount = RegInit(0.U((log2Up(InstBuffSize) + 1).W))
+  val queueCount = PopCount(Cat(queue.map(_.valid)))
   val queueFull = queueCount === InstBuffSize.U
 
   val br = WireDefault(0.U.asTypeOf(new BranchBundle))
@@ -29,7 +28,6 @@ class InstBuff extends ErXCoreModule {
   when (flushAll) {
     queueHead := 0.U
     queueTail := 0.U
-    queueCount := 0.U
     queue.foreach(_.valid := false.B)
   }
 
@@ -38,7 +36,6 @@ class InstBuff extends ErXCoreModule {
     queue(queueTail).valid := true.B
     queue(queueTail).bits := io.in.bits
     queueTail := queueTail + 1.U
-    queueCount := queueCount + 1.U
   }
 
   // Dequeue logic
@@ -48,9 +45,9 @@ class InstBuff extends ErXCoreModule {
   when (canDequeue) {
     for (i <- 0 until DecodeWidth) {
       validMask(i) := canDequeue
+      queue(queueHead + i.U).valid := false.B
     }
     queueHead := queueHead + 2.U
-    queueCount := queueCount - 2.U
   }
   for (i <- 0 until DecodeWidth) {
     io.out(i).valid := queue(queueHead + i.U).valid && validMask(i)
