@@ -30,12 +30,15 @@ class StoreQueue extends ErXCoreModule {
   val doEnqFire = io.st.req.fire
   val doDeqFire = io.out.st.resp.fire
 //store
+  val st_idle :: st_wait_resp :: Nil = Enum(2)
+  val stState = RegInit(false.B)
   io.st.req.ready := !full
+  io.st.resp.valid := DontCare //store resp fire at RegNext(req.fire) (lsu)
+  io.st.resp.bits.data := DontCare
   io.out.st.req.valid := !empty && (doDeqCount > 0.U) && !waitDeqResp
   io.out.st.req.bits := queue(deqPtr.value).bits
   io.out.st.resp.ready := true.B
-  io.st.resp.valid := waitDeqResp 
-  io.st.resp.bits.data := DontCare
+
 
   when(io.from_rob.doDeq&&doDeqFire){
     doDeqCount := doDeqCount

@@ -117,12 +117,12 @@ class RenameTable extends ErXCoreModule{
 
   when(!io.from_rob.recover){
     (0 until DecodeWidth).map(i => {
-      when(io.in.rfWen(i)&&io.in.rfDst(i) =/= 0.U){
+      when(io.in.rfWen(i) && io.in.rfDst(i) =/= 0.U){
         specTable(io.in.rfDst(i)) := io.in.prfDst(i)
       }
     })
     (0 until CommitWidth).map(i => {
-      when(io.from_rob.upd(i).wen&&io.from_rob.upd(i).prfDst =/= 0.U){
+      when(io.from_rob.upd(i).wen && io.from_rob.upd(i).prfDst =/= 0.U){
         archTable(io.from_rob.upd(i).rfDst) := io.from_rob.upd(i).prfDst
       }
     })

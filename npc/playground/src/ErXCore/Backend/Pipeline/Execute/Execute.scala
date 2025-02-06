@@ -92,19 +92,31 @@ class PipeMem(useDmem: Boolean = false) extends AbstaceExecutePipe(useDmem){
   val lsu = Module(new LSU)
   io.dmemStore.get <> lsu.io.DMemStore
   io.dmemLoad.get  <> lsu.io.DMemLoad
-  io.in.ready := !lsu.io.busy
-  lsu.io.valid := io.in.valid
-  lsu.io.stData:= io.in.bits.data.src2
-  lsu.io.addr  := io.in.bits.cf.pc + io.in.bits.cf.imm
-  lsu.io.lsType:= io.in.bits.cs.lsType
 
-  io.out.valid := false.B
-  io.out.bits.result := lsu.io.ldData
+  lsu.io.req.valid := io.in.valid
+  io.in.ready      := lsu.io.req.ready
+  lsu.io.req.bits.lsType := io.in.bits.cs.lsType
+  lsu.io.req.bits.addr   := io.in.bits.cf.pc + io.in.bits.cf.imm
+  lsu.io.req.bits.wdata  := io.in.bits.data.src2
+
+  val outBuff = RegInit(0.U.asTypeOf(io.out.bits))
+  val isStoreBuff = RegInit(false.B)
+  when(io.in.fire){
+    isStoreBuff := isStoreInst(io.in.bits.cs.lsType)
+    outBuff.robIdx   := io.in.bits.robIdx
+    outBuff.rfWen    := io.in.bits.cs.rfWen
+    outBuff.prfDst   := io.in.bits.pf.prfDst
+  }
+
+  io.out.valid       := lsu.io.resp.fire
+  lsu.io.resp.ready  := true.B
+  io.out.bits.result := lsu.io.resp.bits.rdata
   io.out.bits.isBranch := false.B
-  io.out.bits.isStore  := false.B
-  io.out.bits.robIdx   := io.in.bits.robIdx
-  io.out.bits.rfWen    := io.in.bits.cs.rfWen
-  io.out.bits.prfDst   := io.in.bits.pf.prfDst
+  io.out.bits.isStore  := isStoreBuff
+  io.out.bits.robIdx   := outBuff.robIdx
+  io.out.bits.rfWen    := outBuff.rfWen
+  io.out.bits.prfDst   := outBuff.prfDst
+
 }
 
 // class PipeMem

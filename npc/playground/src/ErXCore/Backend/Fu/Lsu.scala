@@ -6,27 +6,23 @@ import DecodeSignal._
 
 class LSU extends ErXCoreModule{
   val io = IO(new Bundle{
-    val valid  = Input(Bool())
-    val busy   = Output(Bool())
-    val lsType = Input(UInt(LS_XXX.length.W))
-    val addr   = Input(UInt(XLEN.W))
-    val stData = Input(UInt(XLEN.W))
-    val ldData = Output(UInt(XLEN.W))
+    val req = Flipped(DecoupledIO(new LsuReqBundle))
+    val resp = DecoupledIO(new LsuRespBundle)
 
     val DMemStore = new SimpleMemIO
     val DMemLoad  = new SimpleMemIO
   })
   
-  val isMem = isLoadStore(io.lsType)
-  val isLoad = isLoadInst(io.lsType)
-  val isStore = isStoreInst(io.lsType)
+  val isMem = isLoadStore(io.req.bits.lsType)
+  val isLoad = isLoadInst(io.req.bits.lsType)
+  val isStore = isStoreInst(io.req.bits.lsType)
 
-  val memMisalignedAddr=io.addr
-  val memStoreSrc=io.stData
-  val memByteSize=(io.lsType===SDEF(LD_LB)||io.lsType===SDEF(LD_LBU)
-                 ||io.lsType===SDEF(ST_SB))
-  val memHalfSize=(io.lsType===SDEF(LD_LH)||io.lsType===SDEF(LD_LHU)
-                 ||io.lsType===SDEF(ST_SH))
+  val memMisalignedAddr=io.req.bits.addr
+  val memStoreSrc=io.req.bits.wdata
+  val memByteSize=(io.req.bits.lsType===SDEF(LD_LB)||io.req.bits.lsType===SDEF(LD_LBU)
+                 ||io.req.bits.lsType===SDEF(ST_SB))
+  val memHalfSize=(io.req.bits.lsType===SDEF(LD_LH)||io.req.bits.lsType===SDEF(LD_LHU)
+                 ||io.req.bits.lsType===SDEF(ST_SH))
   val memSize=Cat(memHalfSize,memByteSize)
   val memSbSel=Cat(
     memMisalignedAddr(1,0)===3.U,
@@ -66,10 +62,13 @@ class LSU extends ErXCoreModule{
    |Fill(XLEN, !memSize )&memStoreSrc
   )
 
-  io.DMemLoad.resp.ready := true.B
-  io.DMemStore.resp.ready := true.B
   val s_idle :: s_wait_write :: s_wait_read :: Nil = Enum(3)
   val LsuState = RegInit(s_idle)
+
+  io.req.ready := LsuState === s_idle
+  io.DMemLoad.resp.ready := true.B
+  io.DMemStore.resp.ready := true.B
+
   switch(LsuState){
     is(s_idle){
       when(io.DMemStore.req.fire){
@@ -96,16 +95,16 @@ class LSU extends ErXCoreModule{
   io.DMemStore.req.bits.wen  := isStore
   io.DMemStore.req.bits.wmask := memWstrb
   io.DMemStore.req.bits.wdata := memWdata
-  io.DMemStore.req.valid := isStore && io.valid && LsuState===s_idle
+  io.DMemStore.req.valid := isStore && io.req.valid && LsuState===s_idle
 
-  io.DMemLoad.req.bits.addr := io.addr
+  io.DMemLoad.req.bits.addr := io.req.bits.addr
   io.DMemLoad.req.bits.size := 2.U
   io.DMemLoad.req.bits.wen  := false.B
   io.DMemLoad.req.bits.wmask := 0.U
   io.DMemLoad.req.bits.wdata := 0.U
-  io.DMemLoad.req.valid := isLoad && io.valid && LsuState===s_idle
+  io.DMemLoad.req.valid := isLoad && io.req.valid && LsuState===s_idle
 
-  val addrLow2Bit = io.addr(1,0)
+  val addrLow2Bit = io.req.bits.addr(1,0)
   val loadByteData=Mux1hMap(addrLow2Bit,Map(
     "b00".U -> io.DMemLoad.resp.bits.data(7 , 0),
     "b01".U -> io.DMemLoad.resp.bits.data(15, 8),
@@ -126,71 +125,16 @@ class LSU extends ErXCoreModule{
     LD_LBU-> Zext(loadByteData,32),
   ))
 
-  io.ldData := loadDataResult
-  io.busy := LsuState =/= s_idle
-
-
+  io.resp.valid := RegNext((io.req.fire && isStore)) || io.DMemLoad.resp.fire
+  io.resp.bits.rdata := loadDataResult
 }
 
-class SimpleReqIO extends ErXCoreBundle{
-  val addr = Output(UInt(XLEN.W))
-  val size = Output(UInt(3.W))
-  val wen   = Output(Bool()) //read:0 write:1
-  val wmask = Output(UInt((XLEN/8).W))
-  val wdata = Output(UInt(XLEN.W))
+class LsuReqBundle extends ErXCoreBundle{
+  val lsType = UInt(LS_XXX.length.W)
+  val addr   = UInt(XLEN.W)
+  val wdata  = UInt(XLEN.W)
 }
 
-class SimpleRespIO extends ErXCoreBundle{
-  val data  = Output(UInt(32.W))
+class LsuRespBundle extends ErXCoreBundle{
+  val rdata = UInt(XLEN.W)
 }
-
-
-class SimpleMemIO extends ErXCoreBundle{
-  //设计思路：
-  //Icache通过SimpleIO接口发送到Axi仲裁器
-  //lsu把信号转换成SimpleIO，不使用仲裁器
-  val req  = DecoupledIO(new SimpleReqIO())
-  val resp = Flipped(DecoupledIO(new SimpleRespIO()))
-}
-
-class Core2AxiReadIO extends ErXCoreBundle{
-  val req  = Output(Bool())
-  val addr = Output(UInt(32.W))
-  val size = Output(UInt(3.W))
-  val addrOk = Input(Bool())
-}
-
-class Core2AxiRespondIO extends ErXCoreBundle{
-  val dataOk= Input(Bool())
-  val data  = Input(UInt(32.W))
-}
-
-class AxiCacheReadIO extends ErXCoreBundle{
-  val stype = UInt(3.W)
-  val addr = UInt(XLEN.W)
-}
-
-class AxiCacheReadReturnIO extends ErXCoreBundle{
-  val last  = Input(Bool())
-  val resp  = Input(UInt(2.W))
-  val data  = Input(UInt(XLEN.W))
-}
-
-class AxiCacheWriteReturnIO extends ErXCoreBundle{
-  val last  = Input(Bool())
-  val resp  = Input(UInt(2.W))
-}
-
-class AxiCacheWriteIO extends ErXCoreBundle{
-  val stype = UInt(3.W)
-  val addr = UInt(32.W)
-  val strb = UInt(4.W)
-  val data = UInt(32.W)
-}
-
-class AxiCacheIO extends ErXCoreBundle{
-  val rd  = DecoupledIO(new AxiCacheReadIO())
-  val wr  = DecoupledIO(new AxiCacheWriteIO())
-  val rret = Flipped(DecoupledIO(new AxiCacheReadReturnIO()))
-}
-
