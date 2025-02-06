@@ -43,7 +43,9 @@ class Backend extends ErXCoreModule{
   PRstage.io.from_ex  := EXstage.io.fw_pr
 
 //-----     Execute  stage     ------
-  PipeConnect(EXstage.io.in,PRstage.io.to_ex,flush)
+  PipeConnect(EXstage.io.in,PRstage.io.to_ex,flush,Width = 2)
+  PipeQueueConnect(EXstage.io.in(2),PRstage.io.to_ex(2),flush)
+  //Int运算使用PipeConnet链接，Mem使用queue链接
   StoreQueue.io.st <> EXstage.io.dmemStore
   StoreQueue.io.ld <> EXstage.io.dmemLoad
   DCache.io.dl <> StoreQueue.io.out.ld

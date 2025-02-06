@@ -7,10 +7,11 @@ object PipeConnect {
   def apply[T <: Data](
     out: Vec[DecoupledIO[T]], 
     in: Vec[DecoupledIO[T]],  
-    flush: Bool,              
+    flush: Bool,
+    Width: Int = 0,              
   ): Unit = {
     require(in.length == out.length)
-    val vecWidth = in.length
+    val vecWidth = if(Width == 0) in.length else Width
     val bits = Reg(Vec(vecWidth, chiselTypeOf(in(0).bits)))
     val outValid = RegInit(VecInit(Seq.fill(vecWidth)(false.B)))
 
@@ -29,5 +30,15 @@ object PipeConnect {
       out(i).valid := outValid(i)
       in(i).ready := out(i).ready
     }
+  }
+}
+
+object PipeQueueConnect {
+  def apply[T <: Data](
+    out: DecoupledIO[T], 
+    in: DecoupledIO[T],  
+    flush: Bool,          
+  ): Unit = {
+    out <> Queue(in, 2 ,flush = Some(flush))
   }
 }
