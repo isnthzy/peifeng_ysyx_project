@@ -125,7 +125,7 @@ class LSU extends ErXCoreModule{
     LD_LBU-> Zext(loadByteData,32),
   ))
 
-  io.resp.valid := RegNext((io.req.fire && isStore)) || io.DMemLoad.resp.fire
+  io.resp.valid := io.DMemStore.resp.fire || io.DMemLoad.resp.fire
   io.resp.bits.rdata := loadDataResult
 }
 
