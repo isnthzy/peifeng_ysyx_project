@@ -26,12 +26,11 @@ class ROB extends ErXCoreModule{
   //如果用reg rob的大小怕不是要爆炸，同步mem要考虑读写的时候数目的变动
   val ringBuffHead = RegInit(0.U(RobAgeWidth.W))
   val ringBuffTail = RegInit(0.U(RobAgeWidth.W))
-  val ringBuffCount = RegInit(0.U(RobIdxWidth.W))
   val headPtr  = ringBuffHead.getIdx(RobIdxWidth)
   val tailPtr  = ringBuffTail.getIdx(RobIdxWidth)
   val headFlag = ringBuffHead.getFlag(RobAgeWidth)
   val tailFlag = ringBuffTail.getFlag(RobAgeWidth)
-  ringBuffCount := Mux(headFlag === tailFlag, headPtr - tailPtr, RobEntries.U + headPtr - tailPtr)
+  val ringBuffCount = Mux(headFlag === tailFlag, headPtr - tailPtr, RobEntries.U + headPtr - tailPtr)
   val ringBuffEmpty   = (headFlag === tailFlag) && (headPtr === tailPtr)
   val ringBuffAllowin = (ringBuffCount +& enqNum - deqNum) <= RobEntries.U
   (0 until RobWidth).map(i => io.in(i).ready := ringBuffAllowin)
