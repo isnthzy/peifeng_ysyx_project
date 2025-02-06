@@ -46,7 +46,7 @@ class PrfFlowIO extends ErXCoreBundle {
 
 class RenameIO extends MicroOpIO{
   val pf = new PrfFlowIO
-  val robIdx = UInt(log2Up(RobIdxWidth).W)
+  val robIdx = UInt(RobIdxWidth.W)
 }
 
 class RobPacket extends ErXCoreBundle{
@@ -125,7 +125,7 @@ class IssueIO extends ErXCoreBundle{
     val src1 = Output(UInt(XLEN.W))
     val src2 = Output(UInt(XLEN.W))
   }
-  val robIdx = UInt(log2Up(RobIdxWidth).W)
+  val robIdx = UInt(RobIdxWidth.W)
 }
 
 class BranchBundle extends ErXCoreBundle {
