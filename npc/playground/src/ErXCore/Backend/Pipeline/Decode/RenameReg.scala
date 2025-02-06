@@ -143,7 +143,7 @@ class PrfStateTable extends ErXCoreModule{
   def COMMITTED = 3.U(2.W)
   val io = IO(new Bundle {
     val rfWen  = Input(Vec(DecodeWidth,Bool()))
-    val rfDst  = Input(Vec(DecodeWidth,Bool()))
+    val rfDst  = Input(Vec(DecodeWidth,UInt(log2Up(ArfSize).W)))
     val prfDst = Output(Vec(DecodeWidth,UInt(log2Up(PrfSize).W)))
     val availList = Output(UInt(PrfSize.W))
     val from = Input(new Bundle {
