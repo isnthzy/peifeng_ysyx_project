@@ -48,7 +48,7 @@ class ROB extends ErXCoreModule{
   when(enqValid&&ringBuffAllowin){
     ringBuffHead := ringBuffHead + enqNum
     for(i <- 0 until RobWidth){
-      when(io.in(i).valid){
+      when(io.in(i).fire){
         rob.write(headPtr + i.U, io.in(i).bits)
         complete(headPtr + i.U) := false.B
         packet(headPtr + i.U) := 0.U.asTypeOf(new RobPacket)
