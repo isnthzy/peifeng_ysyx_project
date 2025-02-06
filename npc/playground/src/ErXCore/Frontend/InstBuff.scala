@@ -20,8 +20,8 @@ class InstBuff extends ErXCoreModule {
   val queueCount = PopCount(Cat(queue.map(_.valid)))
   val queueFull = queueCount === InstBuffSize.U
 
-  val br = WireDefault(0.U.asTypeOf(new BranchBundle))
-  val flushAll = io.from_bck.flush || br.taken
+  val br = Wire(Vec(DecodeWidth,new BranchBundle()))
+  val flushAll = io.from_bck.flush || br.map(_.taken).reduce(_|_)
 
   io.in.ready := !queueFull
   // Flush logic
@@ -42,9 +42,18 @@ class InstBuff extends ErXCoreModule {
   val canDequeue = queueCount >= 2.U
   //宽松的发射条件，queueCount == 1 时往往第二条指令已经进入队列了
   val validMask = WireDefault(VecInit(Seq.fill(DecodeWidth)(false.B)))
+  val jumpMask  = Wire(Vec(DecodeWidth,Bool()))
+  //NOTE: 当我前面有跳转指令发射时，后边的指令均不可发射
+  for(i <- 0 until DecodeWidth) {
+    if(i == 0){
+      jumpMask(i) := true.B
+    }else{
+      jumpMask(i) := jumpMask(i-1) && !br(i-1).taken
+    }
+  }
   when (canDequeue) {
     for (i <- 0 until DecodeWidth) {
-      validMask(i) := canDequeue
+      validMask(i) := canDequeue && jumpMask(i)
       queue(queueHead + i.U).valid := false.B
     }
     queueHead := queueHead + 2.U
@@ -55,16 +64,18 @@ class InstBuff extends ErXCoreModule {
   }
 
   // jal
-
-  io.fw_if.br := br
-  io.fw_pf.br := br
+  val brSelectIdx = WireDefault(0.U(log2Up(DecodeWidth).W))
+  io.fw_pf.br := br(brSelectIdx)
+  io.fw_if.br := br(brSelectIdx)
   for(i <- 0 until DecodeWidth) {
-    when(io.out(i).bits.inst(6,0) === "b1101111".U) {
-      br.taken := io.out(i).fire
-      val inst = io.out(i).bits.inst
-      val offset = Cat(inst(31), inst(19, 12), inst(20), inst(30, 21), 0.U(1.W))
-      br.target := io.out(i).bits.pc + Sext(offset, 32)
+    val inst = io.out(i).bits.inst
+    val taken = inst(6, 0) === "b1101111".U
+    val offset = Cat(inst(31), inst(19, 12), inst(20), inst(30, 21), 0.U(1.W))
+    br(i).taken := io.out(i).fire && taken
+    br(i).target := io.out(i).bits.pc + Sext(offset, 32)
+    when(br(i).taken){
+      brSelectIdx := i.U
     }
   }
-  // io.out(i)
+
 }
