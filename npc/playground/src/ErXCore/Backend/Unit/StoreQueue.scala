@@ -24,7 +24,6 @@ class StoreQueue extends ErXCoreModule {
   val ptrMatch = enqPtr.value === deqPtr.value
   val empty = ptrMatch && !maybeFull
   val full  = ptrMatch && maybeFull
-  val waitDeqResp  = RegInit(false.B)
   val doDeqCount = RegInit(0.U((log2Up(storeQueueSize)+1).W))
 
   val doEnqFire = io.st.req.fire
@@ -35,7 +34,7 @@ class StoreQueue extends ErXCoreModule {
   io.st.req.ready := !full
   io.st.resp.valid := RegNext(doEnqFire) //store resp fire at RegNext(req.fire) (lsu)
   io.st.resp.bits.data := DontCare
-  io.out.st.req.valid := !empty && (doDeqCount > 0.U) && !waitDeqResp
+  io.out.st.req.valid := !empty && (doDeqCount > 0.U)
   io.out.st.req.bits := queue(deqPtr.value).bits
   io.out.st.resp.ready := true.B
 
@@ -49,12 +48,6 @@ class StoreQueue extends ErXCoreModule {
     when(doDeqFire){
       doDeqCount := doDeqCount - 1.U
     }
-  }
-
-  when(io.out.st.req.fire){
-    waitDeqResp := true.B
-  }.elsewhen(io.out.st.resp.fire){
-    waitDeqResp := false.B
   }
 
   when(doEnqFire) {

@@ -65,7 +65,8 @@ class LSU extends ErXCoreModule{
   val s_idle :: s_wait_write :: s_wait_read :: Nil = Enum(3)
   val LsuState = RegInit(s_idle)
 
-  io.req.ready := LsuState === s_idle
+  io.req.ready := ((LsuState === s_idle && io.DMemStore.req.fire)
+                || (LsuState === s_idle && io.DMemLoad.req.fire))
   io.DMemLoad.resp.ready := true.B
   io.DMemStore.resp.ready := true.B
 
