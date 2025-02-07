@@ -66,15 +66,7 @@ object DecodeInstructions {
 object DecodeSignal {
   def isBranch(x: UInt): Bool = {
     require(x.getWidth == BR_XXX.length)
-    x(2).asBool
-  }
-  def isJump(x: UInt): Bool   = {
-    require(x.getWidth == BR_XXX.length)
-    x(3).asBool
-  }
-  def isJmpBranch(x: UInt): Bool  = { 
-    require(x.getWidth == BR_XXX.length)
-    x(3,2).asUInt.xorR
+    x.orR
   }
   def isLoadInst(x: UInt): Bool = {
     require(x.getWidth == LS_XXX.length)
@@ -114,9 +106,9 @@ object DecodeSignal {
 
   // br_type
   val BR_XXX = "0000"
-  val BR_LTU = "0101"
-  val BR_LT  = "0110"
-  val BR_EQ  = "0111"
+  val BR_LTU = "0001"
+  val BR_LT  = "0010"
+  val BR_EQ  = "0011"
   val BR_GEU = "0100"
   val BR_GE  = "0101"
   val BR_NE  = "0110"
