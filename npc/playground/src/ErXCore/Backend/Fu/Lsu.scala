@@ -105,20 +105,25 @@ class LSU extends ErXCoreModule{
   io.DMemLoad.req.bits.wdata := 0.U
   io.DMemLoad.req.valid := isLoad && io.req.valid && LsuState===s_idle
 
-  val addrLow2Bit = io.req.bits.addr(1,0)
-  val loadByteData=Mux1hMap(addrLow2Bit,Map(
+  val addrLow2BitBuff = RegInit(0.U(2.W))
+  val loadTypeBuff = RegInit(0.U(LS_XXX.length.W))
+  when(io.req.fire){
+    addrLow2BitBuff := io.req.bits.addr(1,0)
+    loadTypeBuff := io.req.bits.lsType
+  }
+  val loadByteData=Mux1hMap(addrLow2BitBuff,Map(
     "b00".U -> io.DMemLoad.resp.bits.data(7 , 0),
     "b01".U -> io.DMemLoad.resp.bits.data(15, 8),
     "b10".U -> io.DMemLoad.resp.bits.data(23,16),
     "b11".U -> io.DMemLoad.resp.bits.data(31,24)
   ))
-  val loadHalfData=Mux1hMap(addrLow2Bit,Map(
+  val loadHalfData=Mux1hMap(addrLow2BitBuff,Map(
     "b00".U -> io.DMemLoad.resp.bits.data(15, 0), 
     "b01".U -> io.DMemLoad.resp.bits.data(15, 0),
     "b10".U -> io.DMemLoad.resp.bits.data(31,16), 
     "b11".U -> io.DMemLoad.resp.bits.data(31,16)
   ))
-  val loadDataResult=Mux1hDefMap(addrLow2Bit,Map(
+  val loadDataResult=Mux1hDefMap(loadTypeBuff,Map(
     LD_LW -> io.DMemLoad.resp.bits.data,
     LD_LH -> Sext(loadHalfData,32),
     LD_LB -> Sext(loadByteData,32),
