@@ -37,9 +37,13 @@ class Execute extends ErXCoreModule{
 
   for(i <- 0 until IssueWidth){
     io.fw_rob.upd(i)     := pipe(i).io.out
-    io.fw_rob.upd(i).bits.br.taken  := checkBranchTaken(io.in(i).bits.cs.brType,pipe(i).io.out.bits.result(0))
-    io.fw_rob.upd(i).bits.br.target := Mux(io.in(i).bits.cs.brType =/= SDEF(BR_JALR),io.in(i).bits.cf.pc + io.in(i).bits.cf.imm,
-      Cat((io.in(i).bits.data.src1 + io.in(i).bits.cf.imm).asUInt(31,1),0.U(1.W)))
+    if(i >= 0 && i < 2){
+      io.fw_rob.upd(i).bits.br.taken  := checkBranchTaken(io.in(i).bits.cs.brType,pipe(i).io.out.bits.result(0))
+      io.fw_rob.upd(i).bits.br.target := Mux(io.in(i).bits.cs.brType =/= SDEF(BR_JALR),io.in(i).bits.cf.pc + io.in(i).bits.cf.imm,
+        Cat((io.in(i).bits.data.src1 + io.in(i).bits.cf.imm).asUInt(31,1),0.U(1.W)))
+    }else{
+      io.fw_rob.upd(i).bits.br := DontCare
+    }
     io.fw_dr.upd(i).wen    := pipe(i).io.out.bits.rfWen
     io.fw_dr.upd(i).prfDst := pipe(i).io.out.bits.prfDst
     io.fw_pr.upd(i).rfWen  := pipe(i).io.out.bits.rfWen

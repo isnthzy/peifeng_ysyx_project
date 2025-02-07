@@ -73,9 +73,10 @@ class InstBuff extends ErXCoreModule {
     val offset = Cat(inst(31), inst(19, 12), inst(20), inst(30, 21), 0.U(1.W))
     br(i).taken := io.out(i).fire && taken
     br(i).target := io.out(i).bits.pc + Sext(offset, 32)
+  }
+  for(i <- (0 until DecodeWidth).reverse) {
     when(br(i).taken){
       brSelectIdx := i.U
     }
   }
-
 }

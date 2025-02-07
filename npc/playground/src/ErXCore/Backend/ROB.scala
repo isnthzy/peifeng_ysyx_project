@@ -83,13 +83,16 @@ class ROB extends ErXCoreModule{
   for(i <- 0 until RetireWidth){
     val idx = tailPtr + i.U
     branchValid(i) := packet(idx).isBranch && packet(idx).br.taken
-    when(branchValid(i)){
-      branchSelectIdx := idx
-    }
     if(i == 0){
       branchMask(i) := true.B
     }else{
       branchMask(i) := branchMask(i - 1) && !branchValid(i - 1)
+    }
+  }
+  for(i <- (0 until RetireWidth).reverse){
+    val idx = tailPtr + i.U
+    when(branchValid(i)){
+      branchSelectIdx := idx
     }
   }
 
