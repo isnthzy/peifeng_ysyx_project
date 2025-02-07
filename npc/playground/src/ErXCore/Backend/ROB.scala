@@ -98,7 +98,7 @@ class ROB extends ErXCoreModule{
   val excpMask = Wire(Vec(RetireWidth,Bool()))
   val excpResult = Wire(Vec(RetireWidth,new ExcpResultBundle()))
   for(i <- 0 until RetireWidth){
-    excpValid(i) := packet(tailPtr + i.U).excpType.asUInt.xorR
+    excpValid(i) := packet(tailPtr + i.U).excpType.asUInt.orR
     val excpNum = packet(tailPtr + i.U).excpType.asUInt
     // val 
     excpResult(i) := MuxCase(0.U,Seq(

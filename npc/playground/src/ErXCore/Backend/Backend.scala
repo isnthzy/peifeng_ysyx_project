@@ -55,6 +55,7 @@ class Backend extends ErXCoreModule{
   if(EnableVerlatorSim){
     val Diff = Module(new DiffCommit)
     val gpr = Wire(Vec(ArfSize,UInt(XLEN.W)))
+    dontTouchUtil(VecInit(ROB.io.out_diff.map(_.bits.robIdx)))
     ExcitingUtils.addSink(gpr,"DiffGPR",ExcitingUtils.Func)
     Diff.io.reg := gpr.asTypeOf(Diff.io.reg)
     Diff.io.instr.index := 0.U

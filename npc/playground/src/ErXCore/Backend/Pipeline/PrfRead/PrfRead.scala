@@ -13,13 +13,6 @@ class PrfRead extends ErXCoreModule{
 
   })
   
-  // val prValid = RegInit(VecInit(Seq.fill(IssueWidth)(false.B)))
-  // for(i <- 0 until IssueWidth){
-  //   when(io.in(i).ready){
-  //     prValid(i) := io.in(i).valid
-  //   }
-  //   io.in(i).ready := ~prValid(i) || io.to_ex(i).ready
-  // }
   for(i <- 0 until IssueWidth){
     io.in(i).ready := io.to_ex(i).ready
   }

@@ -115,7 +115,6 @@ class StoreQueue extends ErXCoreModule {
     enqPtr.reset()
     deqPtr.reset()
     maybeFull := false.B
-    waitDeqResp := false.B
     queue.foreach(_.valid := false.B)
   }
 }

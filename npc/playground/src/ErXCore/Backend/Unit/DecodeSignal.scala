@@ -78,7 +78,7 @@ object DecodeSignal {
   }
   def isLoadStore(x: UInt): Bool = {
     require(x.getWidth == LS_XXX.length)
-    x(4,3).asUInt.xorR
+    x(4,3).asUInt.orR
   }
 
   val Y = "1"

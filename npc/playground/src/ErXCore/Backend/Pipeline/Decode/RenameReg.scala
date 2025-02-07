@@ -98,14 +98,14 @@ class RenameTable extends ErXCoreModule{
   } {
     when(io.in.rfWen(i)){
       //RAW
-      when(io.in.rfDst(i) =/= 0.U && io.in.rfDst(i) === io.in.rfSrc1(j)) {
+      when(io.in.rfDst(i).orR && io.in.rfDst(i) === io.in.rfSrc1(j)) {
         io.out.prfSrc1(j) := io.in.prfDst(i)
       }
-      when(io.in.rfDst(i) =/= 0.U && io.in.rfDst(i) === io.in.rfSrc2(j)) {
+      when(io.in.rfDst(i).orR && io.in.rfDst(i) === io.in.rfSrc2(j)) {
         io.out.prfSrc2(j) := io.in.prfDst(i)
       }
       //WAW
-      when(io.in.rfDst(i) =/= 0.U && io.in.rfDst(i) === io.in.rfDst(j)) {
+      when(io.in.rfDst(i).orR && io.in.rfDst(i) === io.in.rfDst(j)) {
         io.out.pprfDst(j) := io.in.prfDst(i)
       }
     }
@@ -114,12 +114,12 @@ class RenameTable extends ErXCoreModule{
 
   when(!io.from_rob.recover){
     (0 until DecodeWidth).map(i => {
-      when(io.in.rfWen(i) && io.in.rfDst(i) =/= 0.U){
+      when(io.in.rfWen(i) && io.in.rfDst(i).orR){
         specTable(io.in.rfDst(i)) := io.in.prfDst(i)
       }
     })
     (0 until CommitWidth).map(i => {
-      when(io.from_rob.upd(i).wen && io.from_rob.upd(i).prfDst =/= 0.U){
+      when(io.from_rob.upd(i).wen && io.from_rob.upd(i).prfDst.orR){
         archTable(io.from_rob.upd(i).rfDst) := io.from_rob.upd(i).prfDst
       }
     })
@@ -164,16 +164,16 @@ class PrfStateTable extends ErXCoreModule{
   io.availList := (Cat(prfStateTable.map(_ === EXECUTED ).reverse) 
                  | Cat(prfStateTable.map(_ === COMMITTED).reverse))
 
-  (0 until DecodeWidth).map(i => { when(io.rfDst(i) =/= 0.U && io.rfWen(i)){
+  (0 until DecodeWidth).map(i => { when(io.rfDst(i).orR && io.rfWen(i)){
     prfStateTable(freePrfDst(i)) := MAPPED
   }})
-  (0 until IssueWidth).map(i => { when(io.from.executeUpdate(i) =/= 0.U){
+  (0 until IssueWidth).map(i => { when(io.from.executeUpdate(i).orR){
     prfStateTable(io.from.executeUpdate(i)) := EXECUTED
   }})
-  (0 until CommitWidth).map(i => { when(io.from.commitUpdate(i) =/= 0.U){
+  (0 until CommitWidth).map(i => { when(io.from.commitUpdate(i).orR){
     prfStateTable(io.from.commitUpdate(i)) := COMMITTED
   }})
-  (0 until CommitWidth).map(i => { when(io.from.commitFree(i) =/= 0.U){
+  (0 until CommitWidth).map(i => { when(io.from.commitFree(i).orR){
     prfStateTable(io.from.commitFree(i)) := FREE
   }})
   prfStateTable(0) := COMMITTED
