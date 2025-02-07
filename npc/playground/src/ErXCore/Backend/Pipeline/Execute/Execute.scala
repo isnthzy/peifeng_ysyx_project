@@ -103,8 +103,23 @@ class PipeMem(useDmem: Boolean = false) extends AbstaceExecutePipe(useDmem){
   lsu.io.req.valid := io.in.valid
   io.in.ready      := lsu.io.req.ready
   lsu.io.req.bits.lsType := io.in.bits.cs.lsType
-  lsu.io.req.bits.addr   := io.in.bits.cf.pc + io.in.bits.cf.imm
+  lsu.io.req.bits.addr   := io.in.bits.data.src1 + io.in.bits.cf.imm
   lsu.io.req.bits.wdata  := io.in.bits.data.src2
+  
+  if(EnableDebug){
+    val loadBuff = RegInit(0.U.asTypeOf(io.in.bits))
+    val isLoadBuff = RegInit(false.B)
+    when(io.in.fire&&isLoadInst(io.in.bits.cs.lsType)){
+      loadBuff := io.in.bits
+      isLoadBuff := true.B
+    }.elsewhen(lsu.io.resp.fire){
+      loadBuff := 0.U.asTypeOf(io.in.bits)
+      isLoadBuff := false.B
+    }
+    Info(lsu.io.req.fire&&isStoreInst(io.in.bits.cs.lsType), p"[st] pc: 0x${Hexadecimal(io.in.bits.cf.pc)} inst: 0x${Hexadecimal(io.in.bits.cf.inst)} addr: 0x${Hexadecimal(lsu.io.req.bits.addr)} wdata: 0x${Hexadecimal(lsu.io.req.bits.wdata)}\n")
+    Info(lsu.io.resp.fire&&isLoadBuff, p"[ld] pc: 0x${Hexadecimal(loadBuff.cf.pc)} inst: 0x${Hexadecimal(loadBuff.cf.inst)} addr: 0x${Hexadecimal(loadBuff.data.src1 + loadBuff.cf.imm)} rdata: 0x${Hexadecimal(lsu.io.resp.bits.rdata)}\n")
+  }
+  
 
   val outBuff = RegInit(0.U.asTypeOf(io.out.bits))
   val isStoreBuff = RegInit(false.B)
@@ -121,7 +136,7 @@ class PipeMem(useDmem: Boolean = false) extends AbstaceExecutePipe(useDmem){
   io.out.bits.isBranch := false.B
   io.out.bits.isStore  := isStoreBuff
   io.out.bits.robIdx   := outBuff.robIdx
-  io.out.bits.rfWen    := outBuff.rfWen
+  io.out.bits.rfWen    := outBuff.rfWen && io.out.valid
   io.out.bits.prfDst   := outBuff.prfDst
   io.out.bits.csr      := DontCare
 }

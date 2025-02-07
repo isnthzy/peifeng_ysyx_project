@@ -12,6 +12,7 @@ object GenerateParams {
     "PERF"          -> false,
     "YOSYS_MODE"    -> false,
     "SOC_MODE"      -> true,
+    "DEBUG"         -> true,
   )
   def setParams(mode: String, perf: Boolean): Unit = {
     coreMode = mode
@@ -32,6 +33,7 @@ object GenerateParams {
           "PERF" -> false,
           "VERILATOR_SIM" -> false,
           "YOSYS_MODE" -> true,
+          "DEBUG" -> false,
         )
       case _ =>
         params ++ Map(
@@ -42,23 +44,11 @@ object GenerateParams {
   def getParam(key: String): Any = params(key)
 }
 
-
-object ISAConfig{
-  def RV32E = true
-  def SOC_MODE = true //NOTE:true时生成soc电路，false生成npc电路
-}
-
-object GenCtrl{
-  def VERILATOR_SIM = true
-  def PERF = true
-  def YOSYS_MODE = false
-} 
-/*
-NOTE:如果需要yosys评估，需要关闭VERILATOR_SIM(difftest)和(PERF)性能测试
-      开启YOSYS_MODE后，访存会把DPIC操作会更改成对memory的操作
-     */
-
 trait HasErXCoreParameter {
+  val EnableVerlatorSim = GenerateParams.getParam("VERILATOR_SIM").asInstanceOf[Boolean] 
+  val UseRV32E = GenerateParams.getParam("RV32E").asInstanceOf[Boolean]
+  val EnableDebug = GenerateParams.getParam("DEBUG").asInstanceOf[Boolean]
+  //
   val XLEN = 32
   //
   val InstBuffSize = 8
@@ -75,8 +65,6 @@ trait HasErXCoreParameter {
   val RobAgeWidth = RobIdxWidth + 1 //Age massge use to issue select!!!
   val RetireWidth = 2
 
-  val EnableVerlatorSim = GenerateParams.getParam("VERILATOR_SIM").asInstanceOf[Boolean] 
-  val UseRV32E = GenerateParams.getParam("RV32E").asInstanceOf[Boolean]
   val ArfSize = if(UseRV32E) 16 else 32
   val PrfSize = ArfSize * 2
 }
@@ -99,7 +87,15 @@ trait HasErXCoreConst extends HasErXCoreParameter {
   def NPC_START_ADDR = "h80000000".U(XLEN.W)
 }
 
+trait HasErXCoreLog { 
+  this: RawModule =>
+  implicit lazy val moduleName: String = this.name
+}
 
-abstract class ErXCoreModule extends Module with HasErXCoreParameter with HasErXCoreConst with HasErXCacheConfig
+abstract class ErXCoreModule extends Module with HasErXCoreParameter with HasErXCoreConst with HasErXCacheConfig with HasErXCoreLog
 abstract class ErXCoreBundle extends Bundle with HasErXCoreParameter with HasErXCoreConst with HasErXCacheConfig
 abstract class ErXCoreBlackBox extends BlackBox with HasErXCoreParameter with HasErXCoreConst with HasErXCacheConfig
+
+case class ErXCoreParameter (
+  EnableDebug: Boolean = GenerateParams.getParam("DEBUG").asInstanceOf[Boolean]
+)
