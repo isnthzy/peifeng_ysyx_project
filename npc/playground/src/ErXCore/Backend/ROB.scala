@@ -37,6 +37,7 @@ class ROB extends ErXCoreModule{
 
 //
   val flushAll = WireDefault(false.B)
+  val flushROB = WireDefault(false.B)
   io.fw_frt.flush := flushAll
   io.fw_dr.recover:= flushAll
   io.fw_dp.flush  := flushAll
@@ -73,13 +74,11 @@ class ROB extends ErXCoreModule{
                                                       UIntToOH(ringBuffCount, RetireWidth) - 1.U)
   val retireValid = Wire(Vec(RetireWidth,Bool()))
  
-
   //NOTE:Branch
   //NOTE:Mask的作用是当前一条指令是跳转时，后面的指令无效化。mask概念适用于branch excp store
   val branchMask = Wire(Vec(RetireWidth,Bool()))
   val branchSelectIdx = WireDefault(0.U(log2Up(RobEntries).W))
-  val branchValid = Wire(Vec(RetireWidth,Bool()))
-  io.fw_frt.tk := packet(branchSelectIdx).br   
+  val branchValid = Wire(Vec(RetireWidth,Bool()))  
   for(i <- 0 until RetireWidth){
     val idx = tailPtr + i.U
     branchValid(i) := packet(idx).isBranch && packet(idx).br.taken
@@ -137,10 +136,21 @@ class ROB extends ErXCoreModule{
       storeMask(i) := storeMask(i - 1) && !storeValid(i - 1)
     }
   }
-  io.fw_sq.doDeq := (0 until RetireWidth).map(i => retireValid(i) && storeValid(i)).reduce(_||_)
+  //flush & taken
+  val frtNext = Reg(new FrontFromBack)
+  io.fw_frt := frtNext
   //public flush 
-  flushAll := (0 until RetireWidth).map(i => retireValid(i) 
+  flushAll := frtNext.flush
+  flushROB := (0 until RetireWidth).map(i => retireValid(i) 
     && (branchValid(i) || excpValid(i))).reduce(_||_)
+  /*NOTE:flush,br,excp使用Reg类型延缓一拍，因为可能有一种情况是第一条指令正常执行，
+  后面几因为种种原因需要冲刷，但是第一条指令还没有写入完成。
+  解决方法1：因此需要flush延缓一拍生效ROB需要立即冲刷（冲刷2次），确保后边几条指令不会因为ROB残留启动第二次
+  解决方法2：维护一个掩码，当退休宽度里有需要对流水线冲刷的指令，把这个指令放在下一次第一个槽位执行。
+  两种方法对性能影响效果等效*/
+  io.fw_sq.doDeq := (0 until RetireWidth).map(i => retireValid(i) && storeValid(i)).reduce(_||_)
+  frtNext.flush := flushROB
+  frtNext.tk := packet(branchSelectIdx).br
 
   //dequeue check complete
   //NOTE:easy select
@@ -181,7 +191,7 @@ class ROB extends ErXCoreModule{
 
 
   //flush
-  when(flushAll){ 
+  when(flushROB || flushAll){ 
     //NOTE:when a branch instruction is taken or mispredict branch instruction. The instruction after "rob" is wrong, and it needs to be cleared.
     complete := 0.U.asTypeOf(complete)
     packet   := 0.U.asTypeOf(packet)
