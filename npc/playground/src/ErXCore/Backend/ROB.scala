@@ -150,7 +150,9 @@ class ROB extends ErXCoreModule{
   两种方法对性能影响效果等效*/
   io.fw_sq.doDeq := (0 until RetireWidth).map(i => retireValid(i) && storeValid(i)).reduce(_||_)
   frtNext.flush := flushROB
-  frtNext.tk := packet(branchSelectIdx).br
+  frtNext.tk.taken := packet(branchSelectIdx).br.taken && flushROB
+  //TODO:excp
+  frtNext.tk.target := packet(branchSelectIdx).br.target
 
   //dequeue check complete
   //NOTE:easy select
