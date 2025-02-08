@@ -19,6 +19,7 @@ class Rename extends ErXCoreModule{
   val notNeedSrc1 = Wire(Vec(DecodeWidth,Bool()))
   val notNeedSrc2 = Wire(Vec(DecodeWidth,Bool())) //TODO: check in.srcType
   val PrfStateTable = Module(new PrfStateTable)
+  PrfStateTable.io.flush := io.from_rob.recover
   io.fw_dp.availList := PrfStateTable.io.availList.asTypeOf(io.fw_dp.availList)
   for(i <- 0 until DecodeWidth){
     notNeedSrc1(i) := io.in(i).cs.src1Type =/= SDEF(A_RS1)
@@ -141,6 +142,7 @@ class PrfStateTable extends ErXCoreModule{
   val io = IO(new Bundle {
     val rfWen  = Input(Vec(DecodeWidth,Bool()))
     val rfDst  = Input(Vec(DecodeWidth,UInt(log2Up(ArfSize).W)))
+    val flush  = Input(Bool())
     val prfDst = Output(Vec(DecodeWidth,UInt(log2Up(PrfSize).W)))
     val availList = Output(UInt(PrfSize.W))
     val from = Input(new Bundle {
@@ -176,5 +178,20 @@ class PrfStateTable extends ErXCoreModule{
   (0 until CommitWidth).map(i => { when(io.from.commitFree(i).orR){
     prfStateTable(io.from.commitFree(i)) := FREE
   }})
+
+  for(i <- 0 until PrfSize){
+    when(io.flush && prfStateTable(i) =/= COMMITTED){
+      prfStateTable(i) := FREE
+    }
+  }
+
   prfStateTable(0) := COMMITTED
+
+  // if (DecodeWidth > 1) {
+  //   for (i <- (1 until DecodeWidth).reverse) {
+  //     when(io.prfDst(i - 1) =/= io.prfDst(i)){
+  //       assert(false.B)
+  //     }
+  //   }
+  // }
 }
