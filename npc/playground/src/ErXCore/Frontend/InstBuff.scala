@@ -17,7 +17,7 @@ class InstBuff extends ErXCoreModule {
   val queue = RegInit(VecInit(Seq.fill(InstBuffSize)(0.U.asTypeOf(Valid(new InstIO)))))
   val queueHead = RegInit(0.U(log2Up(InstBuffSize).W))
   val queueTail = RegInit(0.U(log2Up(InstBuffSize).W))
-  val queueCount = PopCount(Cat(queue.map(_.valid)))
+  val queueCount = Mux(queueTail >= queueHead, queueTail - queueHead, InstBuffSize.U + queueTail - queueHead)
   val queueFull = queueCount === InstBuffSize.U
 
   val br = Wire(Vec(DecodeWidth,new BranchBundle()))
@@ -32,7 +32,7 @@ class InstBuff extends ErXCoreModule {
   }
 
   // Enqueue logic
-  when (io.in.valid && !queueFull) {
+  when (io.in.fire) {
     queue(queueTail).valid := true.B
     queue(queueTail).bits := io.in.bits
     queueTail := queueTail + 1.U
