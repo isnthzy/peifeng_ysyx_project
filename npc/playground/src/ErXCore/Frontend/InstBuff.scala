@@ -24,12 +24,6 @@ class InstBuff extends ErXCoreModule {
   val flushAll = io.from_bck.flush || br.map(_.taken).reduce(_|_)
 
   io.in.ready := !queueFull
-  // Flush logic
-  when (flushAll) {
-    queueHead := 0.U
-    queueTail := 0.U
-    queue.foreach(_.valid := false.B)
-  }
 
   // Enqueue logic
   when (io.in.fire) {
@@ -38,10 +32,7 @@ class InstBuff extends ErXCoreModule {
     queueTail := queueTail + 1.U
   }
 
-  // Dequeue logic
-  val canDequeue = queueCount >= 2.U
-  //宽松的发射条件，queueCount == 1 时往往第二条指令已经进入队列了
-  val validMask = WireDefault(VecInit(Seq.fill(DecodeWidth)(false.B)))
+
   val jumpMask  = Wire(Vec(DecodeWidth,Bool()))
   //NOTE: 当我前面有跳转指令发射时，后边的指令均不可发射
   for(i <- 0 until DecodeWidth) {
@@ -50,17 +41,28 @@ class InstBuff extends ErXCoreModule {
     }else{
       jumpMask(i) := jumpMask(i-1) && !br(i-1).taken
     }
-  }
-  when (canDequeue) {
-    for (i <- 0 until DecodeWidth) {
-      validMask(i) := canDequeue && jumpMask(i)
-      queue(queueHead + i.U).valid := false.B
-    }
-    queueHead := queueHead + 2.U
-  }
+  } 
+
+  // Dequeue logic
+  val canDequeue = queueCount >= 2.U
+  //宽松的发射条件，queueCount == 1 时往往第二条指令已经进入队列了
+  val validMask = WireDefault(VecInit(Seq.fill(DecodeWidth)(false.B)))
+  val deqNum = PopCount(Cat(io.out.map(_.fire)))
+  queueHead := queueHead + deqNum
   for (i <- 0 until DecodeWidth) {
+    validMask(i) := canDequeue && jumpMask(i)
     io.out(i).valid := queue(queueHead + i.U).valid && validMask(i)
     io.out(i).bits := queue(queueHead + i.U).bits
+    when(io.out(i).fire){
+      queue(queueHead + i.U).valid := false.B
+    }
+  }
+
+  // Flush logic
+  when (flushAll) {
+    queueHead := 0.U
+    queueTail := 0.U
+    queue.foreach(_.valid := false.B)
   }
 
   //NOTE: PreDecode jal

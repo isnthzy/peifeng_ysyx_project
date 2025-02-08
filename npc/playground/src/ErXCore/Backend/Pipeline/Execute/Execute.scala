@@ -7,6 +7,7 @@ import DecodeSignal._
 class Execute extends ErXCoreModule{
   val io = IO(new Bundle{
     val in = Vec(IssueWidth,Flipped(DecoupledIO(new IssueIO)))
+    val flush = Input(Bool())
     val fw_dr  = Output(new RenameFromExecuteUpdate(updSize = IssueWidth))
     val fw_pr  = Output(new PrfReadFromExecute(updSize = IssueWidth))
     val fw_rob = Output(new ROBFromExecuteUpdate(updSize = IssueWidth))
@@ -21,6 +22,7 @@ class Execute extends ErXCoreModule{
   val pipe = List(pipeALUorCSR,pipeALU,pipeMEM)
   for(i <- 0 until pipe.length){
     pipe(i).io.in <> io.in(i)
+    pipe(i).io.flush := io.flush
   } //从发射上限制CSR，当读到第二条指令是csr时，阻塞发射到第一条队列上
   io.dmemStore <> pipeMEM.io.dmemStore.get
   io.dmemLoad  <> pipeMEM.io.dmemLoad.get
@@ -56,6 +58,7 @@ abstract class AbstaceExecutePipe(useDmem: Boolean = false) extends ErXCoreModul
   val io = IO(new Bundle{
     val in = Flipped(DecoupledIO(new IssueIO))
     val out = Output(Valid(new PipeExecuteOut))
+    val flush = Input(Bool())
     val dmemStore = if(useDmem) Some(new SimpleMemIO) else None
     val dmemLoad  = if(useDmem) Some(new SimpleMemIO) else None
   })
@@ -123,14 +126,23 @@ class PipeMem(useDmem: Boolean = false) extends AbstaceExecutePipe(useDmem){
 
   val outBuff = RegInit(0.U.asTypeOf(io.out.bits))
   val isStoreBuff = RegInit(false.B)
+  val flushBuff = RegInit(false.B)
+  val pendingResp = RegInit(false.B)
   when(io.in.fire){
     isStoreBuff := isStoreInst(io.in.bits.cs.lsType)
     outBuff.robIdx   := io.in.bits.robIdx
     outBuff.rfWen    := io.in.bits.cs.rfWen
     outBuff.prfDst   := io.in.bits.pf.prfDst
+    pendingResp      := true.B
   }
-
-  io.out.valid       := lsu.io.resp.fire
+  when(lsu.io.resp.fire){
+    pendingResp := false.B
+    flushBuff := false.B
+  }
+  when(pendingResp && io.flush){
+    flushBuff := true.B
+  }
+  io.out.valid       := lsu.io.resp.fire && !flushBuff
   lsu.io.resp.ready  := true.B
   io.out.bits.result := lsu.io.resp.bits.rdata
   io.out.bits.isBranch := false.B
