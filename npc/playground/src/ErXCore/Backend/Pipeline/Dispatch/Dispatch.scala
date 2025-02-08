@@ -17,7 +17,7 @@ class Dispatch extends ErXCoreModule {
   val intRS = Module(new RS(rsSize = 4,enqWidth = DecodeWidth,deqWidth = DecodeWidth))
   io.fw_rob.zipWithIndex.foreach{case (rob, i) => 
     rob.bits := io.in(i).bits 
-    rob.valid := io.in(i).valid
+    rob.valid := intRS.io.in(i).fire || memRS.io.in(i).fire
   }
   io.in.zipWithIndex.foreach{case (in, i) => 
     in.ready := io.fw_rob.map(_.ready).reduce(_&&_) & intRS.io.in.map(_.ready).reduce(_&&_) & memRS.io.in.map(_.ready).reduce(_&&_)
