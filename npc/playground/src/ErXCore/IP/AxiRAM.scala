@@ -90,7 +90,7 @@ class Axi4FullSram extends ErXCoreModule {
     dpi_sram.io.wmask:=io.w.bits.strb
     // io.aw.ready:=true.B
     io.aw.ready:=RandomDelay(true.B,15.U)
-    io.w.ready:=true.B
+    io.w.ready:=io.aw.fire
     io.b.valid:=writeState===w_respond
     io.b.bits.resp:=0.U
     io.b.bits.id:=0.U
