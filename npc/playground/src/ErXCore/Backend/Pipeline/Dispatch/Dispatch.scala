@@ -19,9 +19,14 @@ class Dispatch extends ErXCoreModule {
     rob.bits := io.in(i).bits 
     rob.valid := intRS.io.in(i).fire || memRS.io.in(i).fire
   }
-  io.in.zipWithIndex.foreach{case (in, i) => 
-    in.ready := (io.fw_rob(i).ready 
-  & (intRS.io.in(i).ready & uopIsInt(i)) || (memRS.io.in(i).ready & uopIsMem(i)))
+  for(i <- 0 until DecodeWidth){
+    if(i == 0){
+      io.in(i).ready := (io.fw_rob(i).ready 
+     & (intRS.io.in(i).ready & uopIsInt(i)) || (memRS.io.in(i).ready & uopIsMem(i)))
+    }else{
+      io.in(i).ready := io.in(i - 1).ready & (io.fw_rob(i).ready 
+     & (intRS.io.in(i).ready & uopIsInt(i)) || (memRS.io.in(i).ready & uopIsMem(i)))
+    }
   }
 
   val enqRSValid = Wire(Vec(DecodeWidth,Bool()))
