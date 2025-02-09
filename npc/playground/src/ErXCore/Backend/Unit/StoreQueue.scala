@@ -71,7 +71,8 @@ class StoreQueue extends ErXCoreModule {
   val loadState = RegInit(s_idle)
   val loadBuff = RegInit(0.U.asTypeOf(new SimpleReqIO))
   val loadStoreQueueHit = WireDefault(false.B)
-  val loadStoreQueueHitIdx = WireDefault(0.U(log2Up(storeQueueSize).W))
+  val loadStoreQueueHitIdx = RegInit(0.U(log2Up(storeQueueSize).W))
+  dontTouchUtil(loadStoreQueueHitIdx)
   for(i <- 0 until storeQueueSize){
     when(queue(i).bits.addr === io.ld.req.bits.addr && queue(i).valid){
       loadStoreQueueHit := true.B
@@ -117,6 +118,7 @@ class StoreQueue extends ErXCoreModule {
   def FlushAll() = {
     enqPtr.reset()
     deqPtr.reset()
+    doDeqCount := 0.U
     maybeFull := false.B
     queue.foreach(_.valid := false.B)
   }
