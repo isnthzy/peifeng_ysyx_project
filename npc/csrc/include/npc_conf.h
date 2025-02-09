@@ -10,7 +10,7 @@
 
 #define CONFIG_TRACE 1
 #define CONFIG_ITRACE 1
-// #define CONFIG_MTRACE 1
+#define CONFIG_MTRACE 1
 // #define CONFIG_FTRACE 1
 
 #define NPCLOG_NUM 10000 //trace最多记录多少个log
@@ -50,7 +50,7 @@
 
 /*---------------------------------------------------------------------------------*/
 
-#define MTRACE_LOGBUF_SIZE 100
+#define MTRACE_LOGBUF_SIZE 10
 #define ITRACE_LOGBUF_SIZE 10
 #define DTRACE_LOGBUF_SIZE 10
 #define ETRACE_LOGBUF_SIZE 10

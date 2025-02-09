@@ -114,6 +114,8 @@ int Difftest::diff_step(){
   idx_commit_num=0;
   commit_store_num=0;
   commit_load_num =0;
+  int commit_store_max_idx=0;
+  int commit_load_max_idx=0;
   while(idx_commit_num<DIFFTEST_COMMIT_WIDTH&&dut_commit.commit[idx_commit_num].valid){
     deadlock_timer=0;
     if(dut_commit.commit[idx_commit_num].skip){
@@ -125,8 +127,14 @@ int Difftest::diff_step(){
     vaddr_t  tmp_pc  =dut_commit.commit[idx_commit_num].pc;
     trace_inst_commit(tmp_pc,tmp_inst);
 
-    if(dut_commit.store[idx_commit_num].valid) commit_store_num++;
-    if(dut_commit.load[idx_commit_num].valid)  commit_load_num++;
+    if(dut_commit.store[idx_commit_num].valid){
+      commit_store_max_idx = idx_commit_num;
+      commit_store_num++;
+    }
+    if(dut_commit.load[idx_commit_num].valid){
+      commit_load_max_idx = idx_commit_num;
+      commit_load_num++;
+    }
     total_inst++;
     idx_commit_num++;
     g_nr_guest_inst=total_inst;
@@ -187,19 +195,27 @@ int Difftest::diff_step(){
     }
   }  
 
-  for(int i=0;i<commit_load_num;i++){
-    dut_commit.load[i].valid=false;
-    skip_devices(dut_commit.load[i].paddr); //NOTE:跳过外设
-    mtrace_load(dut.base.pc, dut_commit.load[i].paddr, dut_commit.load[i].data, dut_commit.load[i].len);
-    if(!load_commit_diff(i)) return NPC_ABORT;
+  if(commit_load_num>0){
+    for(int i=0;i<=commit_load_max_idx;i++){
+      if(dut_commit.load[i].valid){
+        dut_commit.load[i].valid=false;
+        skip_devices(dut_commit.load[i].paddr); //NOTE:跳过外设
+        mtrace_load(dut.base.pc, dut_commit.load[i].paddr, dut_commit.load[i].data, dut_commit.load[i].len);
+        if(!load_commit_diff(i)) return NPC_ABORT;
 
-    //NOTE:我好像知道load了为什么不追踪data了，是因为外设！！！,追踪addr和访问类型即可
+        //NOTE:我好像知道load了为什么不追踪data了，是因为外设！！！,追踪addr和访问类型即可
+      }
+    }
   }
-  for(int i=0;i<commit_store_num;i++){
-    dut_commit.store[i].valid=false;
-    mtrace_store(dut.base.pc, dut_commit.store[i].paddr, dut_commit.store[i].data, dut_commit.store[i].len);
-    if(!store_commit_diff(i)) return NPC_ABORT;
 
+  if(commit_store_num>0){
+    for(int i=0;i<commit_store_max_idx;i++){
+      if(dut_commit.store[i].valid){
+        dut_commit.store[i].valid=false;
+        mtrace_store(dut.base.pc, dut_commit.store[i].paddr, dut_commit.store[i].data, dut_commit.store[i].len);
+        if(!store_commit_diff(i)) return NPC_ABORT;
+      }
+    }
   }
 
 
