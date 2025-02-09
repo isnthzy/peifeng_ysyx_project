@@ -127,19 +127,19 @@ class PipeMem(useDmem: Boolean = false) extends AbstaceExecutePipe(useDmem){
   val outBuff = RegInit(0.U.asTypeOf(io.out.bits))
   val isStoreBuff = RegInit(false.B)
   val flushBuff = RegInit(false.B)
-  val pendingResp = RegInit(false.B)
+  val pendingLoadResp = RegInit(false.B)
   when(io.in.fire){
     isStoreBuff := isStoreInst(io.in.bits.cs.lsType)
     outBuff.robIdx   := io.in.bits.robIdx
     outBuff.rfWen    := io.in.bits.cs.rfWen
     outBuff.prfDst   := io.in.bits.pf.prfDst
-    pendingResp      := true.B
+    pendingLoadResp  := isLoadInst(io.in.bits.cs.lsType)
   }
   when(lsu.io.resp.fire){
-    pendingResp := false.B
+    pendingLoadResp := false.B
     flushBuff := false.B
   }
-  when(pendingResp && io.flush){
+  when(pendingLoadResp && io.flush){
     flushBuff := true.B
   }
   io.out.valid       := lsu.io.resp.fire && !flushBuff
