@@ -76,12 +76,15 @@ class RobPacket extends ErXCoreBundle{
 }
 
 class ROBDiffOut extends RenameIO {
+  import ErXCore.Difftest._
   val excp = new Bundle {
     val en       = Bool()
     val cause    = UInt(32.W)
     val isMret   = Bool()
     val intrptNo = Bool()
   }
+  val load = new DiffLoadBundle()
+  val store = new DiffStoreBundle()
 }
 
 class ROBFromExecuteUpdate(updSize: Int) extends ErXCoreBundle {

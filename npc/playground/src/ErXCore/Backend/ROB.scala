@@ -177,19 +177,68 @@ class ROB extends ErXCoreModule{
   }
 
   //----robCommitDiff----
-  for(i <- 0 until RetireWidth){
-    io.out_diff(i).valid  := retireValid(i)
-    io.out_diff(i).bits.pf := commitBits(i).pf
-    io.out_diff(i).bits.cf := commitBits(i).cf
-    io.out_diff(i).bits.cs := commitBits(i).cs
-    io.out_diff(i).bits.robIdx := commitBits(i).robIdx
+  if(EnableVerlatorSim){
+    import ErXCore.Difftest._
+    val diffStoreValid = Wire(Bool())
+    val diffLoadValid  = Wire(Bool())
+    val diffLSAddr = Wire(UInt(XLEN.W))
+    val diffLSData = Wire(UInt(XLEN.W))
+    val diffLSLen  = Wire(UInt(8.W))
+    val robIdx     = Wire(UInt(RobIdxWidth.W))
+    ExcitingUtils.addSink(diffStoreValid,"diffStoreValid",ExcitingUtils.Func)
+    ExcitingUtils.addSink(diffLoadValid ,"iffLoadValid"  ,ExcitingUtils.Func)
+    ExcitingUtils.addSink(diffLSAddr    ,"diffLSAddr"    ,ExcitingUtils.Func)
+    ExcitingUtils.addSink(diffLSData    ,"diffLSData"    ,ExcitingUtils.Func)
+    ExcitingUtils.addSink(diffLSLen     ,"diffLSLen"     ,ExcitingUtils.Func)
+    ExcitingUtils.addSink(robIdx        ,"diffRobIdx"    ,ExcitingUtils.Func)
 
-    io.out_diff(i).bits.excp.isMret := false.B
-    io.out_diff(i).bits.excp.intrptNo := false.B
-    io.out_diff(i).bits.excp.en := excpValid(i)
-    io.out_diff(i).bits.excp.cause := excpResult(i).ecode
+    val outStorePacket = Reg(Vec(RobEntries,new DiffStoreBundle()))
+    val outLoadPacket = Reg(Vec(RobEntries,new DiffLoadBundle()))
+    when(enqValid && ringBuffAllowin){
+      for(i <- 0 until RobWidth){
+        when(io.in(i).fire){
+          outStorePacket(headPtr + i.U).valid := false.B
+          outLoadPacket(headPtr + i.U).valid  := false.B
+        }
+      }
+    }
+    when(diffStoreValid){
+      outStorePacket(robIdx).valid := true.B
+      outStorePacket(robIdx).paddr := diffLSAddr
+      outStorePacket(robIdx).vaddr := diffLSAddr
+      outStorePacket(robIdx).data  := diffLSData
+      outStorePacket(robIdx).len   := diffLSLen
+    }
+    when(diffLoadValid){
+      outLoadPacket(robIdx).valid := true.B
+      outLoadPacket(robIdx).paddr := diffLSAddr
+      outLoadPacket(robIdx).vaddr := diffLSAddr
+      outLoadPacket(robIdx).data  := diffLSData
+      outLoadPacket(robIdx).len   := diffLSLen
+    }
+    for(i <- 0 until RetireWidth){
+      io.out_diff(i).valid  := retireValid(i)
+      io.out_diff(i).bits.pf := commitBits(i).pf
+      io.out_diff(i).bits.cf := commitBits(i).cf
+      io.out_diff(i).bits.cs := commitBits(i).cs
+      io.out_diff(i).bits.robIdx := commitBits(i).robIdx
+
+      io.out_diff(i).bits.excp.isMret := false.B
+      io.out_diff(i).bits.excp.intrptNo := false.B
+      io.out_diff(i).bits.excp.en := excpValid(i)
+      io.out_diff(i).bits.excp.cause := excpResult(i).ecode
+
+      io.out_diff(i).bits.store := outStorePacket(tailPtr + i.U)
+      io.out_diff(i).bits.store.valid  := outStorePacket(tailPtr + i.U).valid(0) & retireValid(i)
+      io.out_diff(i).bits.load  := outLoadPacket(tailPtr + i.U)
+      io.out_diff(i).bits.load.valid  := outLoadPacket(tailPtr + i.U).valid(0) & retireValid(i)
+    }
+
+    when(flushROB || flushAll){ 
+      outStorePacket.foreach(_.valid := false.B)
+      outLoadPacket.foreach(_.valid := false.B)
+    }
   }
-
 
 
   //flush

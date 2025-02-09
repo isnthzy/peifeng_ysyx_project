@@ -82,10 +82,14 @@ class Backend extends ErXCoreModule{
     Diff.io.instr1.csrData   := 0.U
     
     
-    Diff.io.load  := 0.U.asTypeOf(Diff.io.load)
-    Diff.io.load1 := 0.U.asTypeOf(Diff.io.load)
-    Diff.io.store := 0.U.asTypeOf(Diff.io.store)
-    Diff.io.store1:= 0.U.asTypeOf(Diff.io.store)
+    Diff.io.load  := ROB.io.out_diff(0).bits.load
+    Diff.io.load.index := 0.U
+    Diff.io.load1 := ROB.io.out_diff(1).bits.load
+    Diff.io.load1.index := 1.U
+    Diff.io.store := ROB.io.out_diff(0).bits.store
+    Diff.io.store.index := 0.U
+    Diff.io.store1:= ROB.io.out_diff(1).bits.store
+    Diff.io.store1.index := 1.U
 
     val excpSelectIdx = WireDefault(0.U(log2Up(RetireWidth).W))
     for(i <- (0 until RetireWidth).reverse){

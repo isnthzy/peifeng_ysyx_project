@@ -151,6 +151,33 @@ class PipeMem(useDmem: Boolean = false) extends AbstaceExecutePipe(useDmem){
   io.out.bits.rfWen    := outBuff.rfWen && io.out.valid
   io.out.bits.prfDst   := outBuff.prfDst
   io.out.bits.csr      := DontCare
+
+
+  if(EnableVerlatorSim){
+    val diffStoreValid = Wire(Bool())
+    val diffLoadValid  = Wire(Bool())
+    val diffLSAddr = Wire(UInt(XLEN.W))
+    val diffLSData = Wire(UInt(XLEN.W))
+    val diffLSLen  = Wire(UInt(8.W))
+    val isLoad = isLoadInst(io.in.bits.cs.lsType)
+    val isStore = isStoreInst(io.in.bits.cs.lsType)
+    val robIdx = Wire(UInt(RobIdxWidth.W))
+
+    diffStoreValid := io.in.fire && isStore
+    diffLoadValid  := io.in.fire && isLoad
+    diffLSAddr := io.in.bits.data.src1 + io.in.bits.cf.imm
+    diffLSData := io.in.bits.data.src2
+    diffLSLen  := Cat(0.U(5.W),io.in.bits.cs.lsType === SDEF(ST_SW) || io.in.bits.cs.lsType === SDEF(LD_LW),
+                               io.in.bits.cs.lsType === SDEF(ST_SH) || io.in.bits.cs.lsType === SDEF(LD_LH) || io.in.bits.cs.lsType === SDEF(LD_LHU),
+                               io.in.bits.cs.lsType === SDEF(ST_SB) || io.in.bits.cs.lsType === SDEF(LD_LB) || io.in.bits.cs.lsType === SDEF(LD_LBU))
+    robIdx     := io.in.bits.robIdx
+    ExcitingUtils.addSource(diffStoreValid,"diffStoreValid",ExcitingUtils.Func)
+    ExcitingUtils.addSource(diffLoadValid ,"iffLoadValid"  ,ExcitingUtils.Func)
+    ExcitingUtils.addSource(diffLSAddr    ,"diffLSAddr"    ,ExcitingUtils.Func)
+    ExcitingUtils.addSource(diffLSData    ,"diffLSData"    ,ExcitingUtils.Func)
+    ExcitingUtils.addSource(diffLSLen     ,"diffLSLen"     ,ExcitingUtils.Func)
+    ExcitingUtils.addSource(robIdx        ,"diffRobIdx"    ,ExcitingUtils.Func)
+  }
 }
 
 // class PipeMem
