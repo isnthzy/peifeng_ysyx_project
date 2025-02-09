@@ -55,6 +55,29 @@ object PipeConnect {
     module.io.flush := flush
   }
 }
+/*NOTE:
+  为什么这么设计：按照其他核的实现，握手方式是这样的
+               0  1  2
+  masterValid  1  1
+  masterData   d  d
+  slaveReady   0  1
+  slaveValid         1
+  slaveData          d
+  这样，即可以在1的地方发生握手，并在2向slave传入数据
+  这种维护侧重于在master与slave之间维护握手
+  但是ErX对于slave的维护依赖fire，这种维护把握手的维护交给了PipeConnect
+  可以把ErXCore的维护当做一个Queue，但是消除了Queue进入弹出的卡顿
+  因为这样整体都是慢一拍，所以不会出现卡顿，两种方式性能基本一致
+               0  1  2
+  masterValid  1  
+  masterData   d
+  BitsEmpty    1
+  Bits            d
+  slaveReady      1
+  slaveValid      1
+  slaveData       d
+
+*/
 
 // object PipeConnect {
 //   def apply[T <: Data](
