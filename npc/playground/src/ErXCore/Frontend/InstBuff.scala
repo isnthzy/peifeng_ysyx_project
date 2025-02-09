@@ -18,7 +18,7 @@ class InstBuff extends ErXCoreModule {
   val queueHead = RegInit(0.U(log2Up(InstBuffSize).W))
   val queueTail = RegInit(0.U(log2Up(InstBuffSize).W))
   val queueCount = Mux(queueTail >= queueHead, queueTail - queueHead, InstBuffSize.U + queueTail - queueHead)
-  val queueFull = queueCount === InstBuffSize.U
+  val queueFull = queueCount === (InstBuffSize - 1).U
 
   val br = Wire(Vec(DecodeWidth,new BranchBundle()))
   val flushAll = io.from_bck.flush || br.map(_.taken).reduce(_|_)
