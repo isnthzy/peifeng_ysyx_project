@@ -32,7 +32,7 @@ class ROB extends ErXCoreModule{
   val tailFlag = ringBuffTail.getFlag(RobAgeWidth)
   val ringBuffCount = Mux(headFlag === tailFlag, headPtr - tailPtr, RobEntries.U + headPtr - tailPtr)
   val ringBuffEmpty   = (headFlag === tailFlag) && (headPtr === tailPtr)
-  val ringBuffAllowin = (ringBuffCount +& enqNum - deqNum) <= RobEntries.U
+  val ringBuffAllowin = (ringBuffCount +& 2.U - deqNum) <= RobEntries.U
   (0 until RobWidth).map(i => io.in(i).ready := ringBuffAllowin)
 
 //

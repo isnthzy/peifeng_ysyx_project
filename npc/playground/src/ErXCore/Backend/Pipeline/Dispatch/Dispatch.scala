@@ -20,20 +20,29 @@ class Dispatch extends ErXCoreModule {
     rob.valid := intRS.io.in(i).fire || memRS.io.in(i).fire
   }
   io.in.zipWithIndex.foreach{case (in, i) => 
-    in.ready := io.fw_rob.map(_.ready).reduce(_&&_) & intRS.io.in.map(_.ready).reduce(_&&_) & memRS.io.in.map(_.ready).reduce(_&&_)
+    in.ready := (io.fw_rob(i).ready 
+  & (intRS.io.in(i).ready & uopIsInt(i)) || (memRS.io.in(i).ready & uopIsMem(i)))
+  }
+
+  val enqRSValid = Wire(Vec(DecodeWidth,Bool()))
+  enqRSValid.zipWithIndex.foreach{case (valid, i) => 
+    valid := io.in(i).valid & io.fw_rob(i).ready
   }
 
   val uopInt = VecInit(io.in.map(_.bits))
   val uopIntValid = WireDefault(VecInit(Seq.fill(DecodeWidth)(false.B)))
   val uopMem = VecInit(io.in.map(_.bits))
   val uopMemValid = WireDefault(VecInit(Seq.fill(DecodeWidth)(false.B)))
-
+  lazy val uopIsInt = Wire(Vec(DecodeWidth,Bool()))
+  lazy val uopIsMem = Wire(Vec(DecodeWidth,Bool()))
   for(i <- 0 until DecodeWidth){
-    when(uopInt(i).cs.fuType =/= SDEF(FU_MEM)){
-      uopIntValid(i) := io.in(i).valid
+    uopIsInt(i) := uopInt(i).cs.fuType =/= SDEF(FU_MEM)
+    uopIsMem(i) := uopInt(i).cs.fuType === SDEF(FU_MEM)
+    when(uopIsInt(i)){
+      uopIntValid(i) := enqRSValid(i)
     }
-    when(uopMem(i).cs.fuType === SDEF(FU_MEM)){
-      uopMemValid(i) := io.in(i).valid
+    when(uopIsMem(i)){
+      uopMemValid(i) := enqRSValid(i)
     }
   }
 
