@@ -118,7 +118,7 @@ class StoreQueue extends ErXCoreModule {
   def FlushAll() = {
     enqPtr.reset()
     deqPtr.reset()
-    doDeqCount := 0.U
+    // doDeqCount := 0.U
     maybeFull := false.B
     queue.foreach(_.valid := false.B)
   }
@@ -126,15 +126,21 @@ class StoreQueue extends ErXCoreModule {
   switch(flushState){
     is(flush_idle){
       when(io.from_rob.flush){
-        when(io.out.st.req.valid && !io.out.st.req.ready){
-          flushState := flush_wait_resp
-        }.otherwise{
+        when((doDeqCount === 1.U && doDeqFire) || doDeqCount === 0.U){
           FlushAll()
+        }.otherwise{
+          flushState := flush_wait_resp
         }
+        // when(io.out.st.req.valid && !io.out.st.req.ready){
+        //   flushState := flush_wait_resp
+        // }.otherwise{
+        //   FlushAll()
+        // }
       }
     }
     is(flush_wait_resp){
-      when(io.out.st.resp.fire){
+      when(io.out.st.resp.fire && doDeqCount === 1.U){
+        //确保写事务都已完成
         flushState := flush_idle
         FlushAll()
       }
