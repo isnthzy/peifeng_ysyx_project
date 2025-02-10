@@ -29,12 +29,10 @@ class StoreQueue extends ErXCoreModule {
   val doEnqFire = io.st.req.fire
   val doDeqFire = io.out.st.resp.fire
 
-  val flush_idle :: flush_wait_resp :: Nil = Enum(2)
-  val flushState =  RegInit(flush_idle)
 //store
   val st_idle :: st_wait_resp :: Nil = Enum(2)
   val stState = RegInit(false.B)
-  io.st.req.ready := !full
+  io.st.req.ready := !full && flushState === flush_idle
   io.st.resp.valid := RegNext(doEnqFire) //store resp fire at RegNext(req.fire) (lsu)
   io.st.resp.bits.data := DontCare
   io.out.st.req.valid := !empty && (doDeqCount > 0.U)
@@ -122,7 +120,9 @@ class StoreQueue extends ErXCoreModule {
     maybeFull := false.B
     queue.foreach(_.valid := false.B)
   }
-  
+
+  lazy val flush_idle :: flush_wait_resp :: Nil = Enum(2)
+  lazy val flushState =  RegInit(flush_idle)
   switch(flushState){
     is(flush_idle){
       when(io.from_rob.flush){
