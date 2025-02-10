@@ -62,7 +62,7 @@ class RS(rsSize: Int = 4,enqWidth: Int,deqWidth: Int,StoreSeq: Boolean = false) 
     }
 
     def SelectAge(A: ArbAgeBundle, B: ArbAgeBundle): ArbAgeBundle = {
-      def compare(older: ArbAgeBundle, younger: ArbAgeBundle): ArbAgeBundle = {
+      def compare(younger: ArbAgeBundle, older: ArbAgeBundle): ArbAgeBundle = {
         if(StoreSeq){
 /*compare power of deepseek
 | 条件分类            | 关键条件                                                     | 选择结果 |
