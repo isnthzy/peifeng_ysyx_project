@@ -126,7 +126,6 @@ class PipeMem(useDmem: Boolean = false) extends AbstaceExecutePipe(useDmem){
 
   val outBuff = RegInit(0.U.asTypeOf(io.out.bits))
   val isStoreBuff = RegInit(false.B)
-  val flushBuff = RegInit(false.B)
   val pendingLoadResp = RegInit(false.B)
   when(io.in.fire){
     isStoreBuff := isStoreInst(io.in.bits.cs.lsType)
@@ -137,12 +136,24 @@ class PipeMem(useDmem: Boolean = false) extends AbstaceExecutePipe(useDmem){
   }
   when(lsu.io.resp.fire){
     pendingLoadResp := false.B
-    flushBuff := false.B
   }
-  when(pendingLoadResp && io.flush){
-    flushBuff := true.B
+
+  val flush_idle :: flush_wait_resp :: Nil = Enum(2)
+  val flushState =  RegInit(flush_idle)
+  switch(flushState){
+    is(flush_idle){
+      when(io.flush && pendingLoadResp && !lsu.io.resp.fire){
+        flushState := flush_wait_resp
+      }
+    }
+    is(flush_wait_resp){
+      when(lsu.io.resp.fire){
+        flushState := flush_idle
+      }
+    }
   }
-  io.out.valid       := lsu.io.resp.fire && !flushBuff
+
+  io.out.valid       := lsu.io.resp.fire && !(flushState === flush_wait_resp)
   lsu.io.resp.ready  := true.B
   io.out.bits.result := lsu.io.resp.bits.rdata
   io.out.bits.isBranch := false.B
