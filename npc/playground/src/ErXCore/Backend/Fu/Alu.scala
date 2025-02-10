@@ -38,7 +38,7 @@ class Alu extends ErXCoreModule {
 
   val alu_eq  = dontTouch(Cat(0.U(31.W),io.src1===io.src2))
 
-  val alu_pc4 = dontTouch(io.src1+4.U)
+  val alu_pc4 = dontTouch(io.src2+4.U)
   
   val alu_lui = dontTouch(Cat(io.src2(XLEN-1,12),0.U(12.W)))
 

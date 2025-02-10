@@ -49,6 +49,7 @@ class PrfRead extends ErXCoreModule{
     io.to_ex(i).bits.data.src2 := MuxLookup(io.in(i).bits.cs.src2Type,rsData2)(Seq(
       SDEF(B_IMM) -> io.in(i).bits.cf.imm,
       SDEF(B_RS2) -> rsData2,
+      SDEF(B_PC ) -> io.in(i).bits.cf.pc,
       SDEF(B_CSR) -> 0.U,
     ))
     io.to_ex(i).valid := io.in(i).valid

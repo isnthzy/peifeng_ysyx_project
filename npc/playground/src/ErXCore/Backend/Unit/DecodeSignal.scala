@@ -94,6 +94,7 @@ object DecodeSignal {
   val B_IMM = "00"
   val B_RS2 = "01"
   val B_CSR = "10"
+  val B_PC  = "11"
 
   // imm_sel
   val IMM_X = "000"
@@ -174,8 +175,8 @@ object DecodeSignal {
   val decode_table: TruthTable = TruthTable(Map(
     LUI   ->  Seq( A_XXX,  B_IMM, IMM_U, ALU_LUI   , BR_XXX, LS_XXX, FU_ALU, Y, CSR_XXXX),
     AUIPC ->  Seq( A_PC,   B_IMM, IMM_U, ALU_ADD   , BR_XXX, LS_XXX, FU_ALU, Y, CSR_XXXX),
-    JAL   ->  Seq( A_PC,   B_XXX, IMM_J, ALU_PC4   , BR_JAL, LS_XXX, FU_ALU, Y, CSR_XXXX),
-    JALR  ->  Seq( A_RS1,  B_XXX, IMM_I, ALU_PC4   , BR_JALR,LS_XXX, FU_ALU, Y, CSR_XXXX),    
+    JAL   ->  Seq( A_PC,   B_PC , IMM_J, ALU_PC4   , BR_JAL, LS_XXX, FU_ALU, Y, CSR_XXXX),
+    JALR  ->  Seq( A_RS1,  B_PC , IMM_I, ALU_PC4   , BR_JALR,LS_XXX, FU_ALU, Y, CSR_XXXX),    
     BEQ   ->  Seq( A_RS1,  B_RS2, IMM_B, ALU_EQ    , BR_EQ , LS_XXX, FU_ALU, N, CSR_XXXX),
     BNE   ->  Seq( A_RS1,  B_RS2, IMM_B, ALU_EQ    , BR_NE , LS_XXX, FU_ALU, N, CSR_XXXX),
     BLT   ->  Seq( A_RS1,  B_RS2, IMM_B, ALU_SLT   , BR_LT , LS_XXX, FU_ALU, N, CSR_XXXX),
