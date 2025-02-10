@@ -52,6 +52,12 @@ class Execute extends ErXCoreModule{
     io.fw_pr.upd(i).prfDst := pipe(i).io.out.bits.prfDst
     io.fw_pr.upd(i).rdData := pipe(i).io.out.bits.result
   } 
+
+  // if(EnableDebug){
+  //   for(i <- 0 until IssueWidth){
+  //     Debug(p"wen: ${io.fw_dr.upd(i).wen} prfDst: 0x${Hexadecimal(io.fw_dr.upd(i).prfDst)} data: 0x${io.fw_pr.upd(i).rdData} robIdx: ${io.fw_rob.upd(i).bits.robIdx}\n")
+  //   }
+  // }
 }
 
 abstract class AbstaceExecutePipe(useDmem: Boolean = false) extends ErXCoreModule{

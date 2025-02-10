@@ -32,6 +32,10 @@ class PrfRead extends ErXCoreModule{
     io.to_ex(i).bits.robIdx := io.in(i).bits.robIdx
     var rsData1 = prf(io.in(i).bits.pf.prfSrc1)
     var rsData2 = prf(io.in(i).bits.pf.prfSrc2)
+    val rsData1Read = WireDefault(prf(io.in(i).bits.pf.prfSrc1))
+    val rsData2Read = WireDefault(prf(io.in(i).bits.pf.prfSrc2))
+    dontTouchUtil(rsData1Read)
+    dontTouchUtil(rsData2Read)
 
     for(j <- 0 until IssueWidth){
       when(io.to_ex(i).bits.pf.prfSrc1 === io.from_ex.upd(j).prfDst && io.from_ex.upd(j).rfWen){
@@ -41,6 +45,7 @@ class PrfRead extends ErXCoreModule{
         rsData2 := io.from_ex.upd(j).rdData
       }
     }
+
 
     io.to_ex(i).bits.data.src1 := MuxLookup(io.in(i).bits.cs.src1Type,rsData1)(Seq(
       SDEF(A_PC) -> io.in(i).bits.cf.pc,
