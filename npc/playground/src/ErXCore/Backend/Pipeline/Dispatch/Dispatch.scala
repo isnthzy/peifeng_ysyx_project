@@ -31,8 +31,12 @@ class Dispatch extends ErXCoreModule {
 
   val enqRSValid = Wire(Vec(DecodeWidth,Bool()))
   enqRSValid.zipWithIndex.foreach{case (valid, i) => 
-    valid := io.in(i).valid & io.fw_rob(i).ready
-  }
+    if(i == 0){
+      valid := io.in(i).valid & io.fw_rob(i).ready
+    }else{
+      valid := io.in(i).valid & io.in(i - 1).ready & io.fw_rob(i).ready
+    }
+  } //主机要同时和两个从机握手，如果rob不及时握手会导致robage等错误，因此需要重构握手逻辑，可以考虑用queue解决
 
   val uopInt = VecInit(io.in.map(_.bits))
   val uopIntValid = WireDefault(VecInit(Seq.fill(DecodeWidth)(false.B)))
