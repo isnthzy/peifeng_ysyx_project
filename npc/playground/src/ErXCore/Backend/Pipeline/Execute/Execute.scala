@@ -48,7 +48,7 @@ class Execute extends ErXCoreModule{
     }
     io.fw_dr.upd(i).wen    := pipe(i).io.out.bits.rfWen & pipe(i).io.out.valid
     io.fw_dr.upd(i).prfDst := pipe(i).io.out.bits.prfDst
-    io.fw_pr.upd(i).rfWen  := pipe(i).io.out.bits.rfWen
+    io.fw_pr.upd(i).rfWen  := pipe(i).io.out.bits.rfWen & pipe(i).io.out.valid
     io.fw_pr.upd(i).prfDst := pipe(i).io.out.bits.prfDst
     io.fw_pr.upd(i).rdData := pipe(i).io.out.bits.result
   } 
