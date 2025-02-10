@@ -62,9 +62,9 @@ class RS(rsSize: Int = 4,enqWidth: Int,deqWidth: Int,StoreSeq: Boolean = false) 
     }
 
     def SelectAge(A: ArbAgeBundle, B: ArbAgeBundle): ArbAgeBundle = {
-      def compare(younger: ArbAgeBundle, older: ArbAgeBundle): ArbAgeBundle = {
+      def compare(older: ArbAgeBundle,younger: ArbAgeBundle): ArbAgeBundle = {
         if(StoreSeq){
-/*compare power of deepseek
+/*compare power of deepseek , is not true deepseek give me error result!!
 | 条件分类            | 关键条件                                                     | 选择结果 |
 | :------------------ | :----------------------------------------------------------- | :------- |
 | **young 无效**      | `y_valid = 0`                                                | old      |
@@ -83,7 +83,7 @@ class RS(rsSize: Int = 4,enqWidth: Int,deqWidth: Int,StoreSeq: Boolean = false) 
    - **仅当以下条件时选择 old**：
      - old 有效且就绪（`o_rdy = 1`），且 young 是存储指令（`y_store = 1`）。
 */
-          Mux(younger.isValid && (~older.isValid | ~older.srcReady | (~younger.isStore & older.srcReady)), younger, older)
+          Mux(younger.isValid & (~older.isValid | (younger.srcReady & ~older.srcReady & ~older.isStore)), younger, older)
         }else{
 /*compare power of 
 | >(younger) | young - instRdy | old - instRdy | 判断结果 |
@@ -97,8 +97,14 @@ class RS(rsSize: Int = 4,enqWidth: Int,deqWidth: Int,StoreSeq: Boolean = false) 
         }
       }
       val ageCompare = Mux(getFlag(A.age) === getFlag(B.age), getIdx(A.age) < getIdx(B.age),
-                                                              getIdx(A.age) > getIdx(B.age)) 
+                                                              getIdx(A.age) > getIdx(B.age))
+      //年龄越小的越old，优先级越高
       //NOTE:ageCompare is true.B，A older B
+      val compareResult = WireDefault(Mux(ageCompare, 
+        compare(A, B), 
+        compare(B, A)
+      ))
+      dontTouchUtil(compareResult)
       Mux(ageCompare, 
         compare(A, B), 
         compare(B, A)
