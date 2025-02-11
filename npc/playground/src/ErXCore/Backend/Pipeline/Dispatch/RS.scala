@@ -51,7 +51,7 @@ class RS(rsSize: Int = 4,enqWidth: Int,deqWidth: Int,StoreSeq: Boolean = false) 
     require(isPow2(rsSize), "rsSize must be power of 2")
     require(isPow2(ArbSize), "ArbSize must be a power of 2!") // 确保 ArbSize 是 2 的幂次
     require(deqWidth == 1 || deqWidth == 2, "deqWidth must be 1 or 2")
-    def getIdx(x: UInt): UInt = x(RobAgeWidth - 1, 0)
+    def getIdx(x: UInt): UInt = x(RobIdxWidth - 1, 0)
     def getFlag(x: UInt): Bool = x(RobAgeWidth - 1).asBool
     def selectIdx(age: UInt, xReady: Bool): UInt = {
       if(StoreSeq){
