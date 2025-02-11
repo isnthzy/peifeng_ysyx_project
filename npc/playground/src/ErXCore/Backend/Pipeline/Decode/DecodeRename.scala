@@ -15,7 +15,7 @@ class DecodeRename extends ErXCoreModule{
 
   val renameValid = Wire(Vec(DecodeWidth, Bool()))
   for(i <- 0 until DecodeWidth){
-    io.in(i).ready := io.to_dp(i).ready
+    io.in(i).ready := io.to_dp.map(_.ready).reduce(_ & _)
     io.to_dp(i).valid := io.in(i).valid
     renameValid(i) := io.to_dp(i).fire
   }

@@ -33,7 +33,7 @@ class Backend extends ErXCoreModule{
   DRstage.io.from_ex := EXstage.io.fw_dr
 
 //-----     Dispatch Stage     ------
-  PipeConnect(DSstage.io.in,DRstage.io.to_dp,flush)
+  PipeOrderConnect(DSstage.io.in,DRstage.io.to_dp,flush)
   DSstage.io.from_dr := DRstage.io.fw_dp
   ROB.io.in <> DSstage.io.fw_rob
   ROB.io.from_ex := EXstage.io.fw_rob
@@ -43,7 +43,7 @@ class Backend extends ErXCoreModule{
   PRstage.io.from_ex  := EXstage.io.fw_pr
 
 //-----     Execute  stage     ------
-  PipeConnect(EXstage.io.in,PRstage.io.to_ex,flush,Width = 2)
+  PipeOOOConnect(EXstage.io.in,PRstage.io.to_ex,flush,Width = 2)
   PipeQueueConnect(EXstage.io.in(2),PRstage.io.to_ex(2),flush)
   //IntRS运算使用PipeConnet链接，MemRS使用PipeQueue链接
   EXstage.io.flush := ROB.io.fw_frt.flush

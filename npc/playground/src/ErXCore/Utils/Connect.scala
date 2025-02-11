@@ -3,7 +3,7 @@ package ErXCore
 import chisel3._
 import chisel3.util._
 
-class PipeConnectInnerModule[T <: Data](gen: T, vecWidth: Int) extends ErXCoreModule {
+class PipeOOOConnectInnerModule[T <: Data](gen: T, vecWidth: Int) extends ErXCoreModule {
   val io = IO(new Bundle {
     val in = Flipped(Vec(vecWidth, DecoupledIO(gen)))
     val out = Vec(vecWidth, DecoupledIO(gen))
@@ -37,7 +37,7 @@ class PipeConnectInnerModule[T <: Data](gen: T, vecWidth: Int) extends ErXCoreMo
   override def desiredName = s"PipeIO${gen.typeName}"
 }
 
-object PipeConnect {
+object PipeOOOConnect {
   def apply[T <: Data](
     out: Vec[DecoupledIO[T]], 
     in: Vec[DecoupledIO[T]],  
@@ -46,7 +46,7 @@ object PipeConnect {
   ): Unit = {
     require(in.length == out.length)
     val vecWidth = if (Width == 0) in.length else Width
-    val module = Module(new PipeConnectInnerModule(chiselTypeOf(in(0).bits), vecWidth))
+    val module = Module(new PipeOOOConnectInnerModule(chiselTypeOf(in(0).bits), vecWidth))
 
     for(i <- 0 until vecWidth) {
       module.io.in(i) <> in(i)
@@ -84,29 +84,27 @@ object PipeConnect {
   或者可以在顺序条件下使用，前提是维护slave的ready同时拉起和降低
 */
 
-// object PipeConnect {
-//     def apply[T <: Data](
-//     out: Vec[DecoupledIO[T]], 
-//     in: Vec[DecoupledIO[T]],  
-//     flush: Bool,
-//     Width: Int = 0
-//   ) = {
-//     require(in.length == out.length)
-//     val vecWidth = if (Width == 0) in.length else Width
-//     val outValid = RegInit(VecInit(Seq.fill(vecWidth)(false.B)))
-//     for (i <- 0 until vecWidth) {
-//       when(out(i).ready) { outValid(i) := in(i).valid }
-
-//       in(i).ready := ~outValid(i) || out(i).ready
-//       out(i).bits := RegEnable(in(i).bits, in(i).fire) 
-//       out(i).valid:= outValid(i)
-//     }
-//     when (flush) { 
-//       outValid := 0.U.asTypeOf(outValid) 
-//       out.foreach(_.valid := false.B)
-//     }
-//   }
-// }
+object PipeOrderConnect {
+    def apply[T <: Data](
+    out: Vec[DecoupledIO[T]], 
+    in: Vec[DecoupledIO[T]],  
+    flush: Bool,
+    Width: Int = 0
+  ) = {
+    require(in.length == out.length)
+    val vecWidth = if (Width == 0) in.length else Width
+    val outValid = RegInit(VecInit(Seq.fill(vecWidth)(false.B)))
+    for (i <- 0 until vecWidth) {
+      in(i).ready := out(i).ready
+      out(i).bits := RegEnable(in(i).bits, in(i).fire)
+      out(i).valid:= in(i).valid
+    }
+    when (flush) { 
+      outValid := 0.U.asTypeOf(outValid) 
+      out.foreach(_.valid := false.B)
+    }
+  }
+}
 // object PipeConnect {
 //   def apply[T <: Data](
 //     out: Vec[DecoupledIO[T]], 
