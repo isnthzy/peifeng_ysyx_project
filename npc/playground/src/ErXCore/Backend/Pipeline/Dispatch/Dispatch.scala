@@ -18,7 +18,7 @@ class Dispatch extends ErXCoreModule {
   when(io.from_rob.flush){
     dsValid := 0.U.asTypeOf(dsValid)
   }.elsewhen(io.in.map(_.ready).reduce(_ & _)){
-    dsValid.zipWithIndex.foreach{case (valid, i) => valid := io.in(i).valid.asBool}
+    dsValid.zipWithIndex.foreach{case (valid, i) => valid := io.in(i).valid & ~io.from_rob.flush}
   }
   io.in.map(_.ready := (~dsValid.reduce(_ | _)) || dp.map(_.ready).reduce(_ & _))
   for(i <- 0 until DecodeWidth){

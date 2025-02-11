@@ -22,6 +22,7 @@ class Execute extends ErXCoreModule{
   val pipe = List(pipeALUorCSR,pipeALU,pipeMEM)
   for(i <- 0 until pipe.length){
     pipe(i).io.in <> io.in(i)
+    pipe(i).io.in.valid := io.in(i).valid & ~io.flush
     pipe(i).io.flush := io.flush
   } //从发射上限制CSR，当读到第二条指令是csr时，阻塞发射到第一条队列上
   io.dmemStore <> pipeMEM.io.dmemStore.get
