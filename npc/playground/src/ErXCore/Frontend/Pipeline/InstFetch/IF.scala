@@ -54,6 +54,11 @@ class IfStage extends ErXCoreModule {
     fsUseInstBuff:= ~io.to_id.ready
     holdValid:= ~io.to_id.ready
   }
+  when(fsFlush){
+    fsUseInstBuff:=false.B
+    holdValid:=false.B
+  }
+
 
 //NOTE:Excp
   val fsExcpType=Wire(new IfExcpTypeBundle())
