@@ -76,9 +76,37 @@ object PipeConnect {
   slaveReady      1
   slaveValid      1
   slaveData       d
-
+  NOTE:致命问题：当序号大于0的端口没有及时ready可能会导致握手信息阻塞错位
+  因为在顺序条件下需要保证第一条握手后才能维护第二条指令的握手。
+  这个握手模块可能导致第二条指令延迟握手导致第一条在第一个cycle握手第二条在第二个cycle握手
+  进而导致传输错位
+  因而这个模块只适用于乱序的链接，并且可以拓展为队列。
+  或者可以在顺序条件下使用，前提是维护slave的ready同时拉起和降低
 */
 
+// object PipeConnect {
+//     def apply[T <: Data](
+//     out: Vec[DecoupledIO[T]], 
+//     in: Vec[DecoupledIO[T]],  
+//     flush: Bool,
+//     Width: Int = 0
+//   ) = {
+//     require(in.length == out.length)
+//     val vecWidth = if (Width == 0) in.length else Width
+//     val outValid = RegInit(VecInit(Seq.fill(vecWidth)(false.B)))
+//     for (i <- 0 until vecWidth) {
+//       when(out(i).ready) { outValid(i) := in(i).valid }
+
+//       in(i).ready := ~outValid(i) || out(i).ready
+//       out(i).bits := RegEnable(in(i).bits, in(i).fire) 
+//       out(i).valid:= outValid(i)
+//     }
+//     when (flush) { 
+//       outValid := 0.U.asTypeOf(outValid) 
+//       out.foreach(_.valid := false.B)
+//     }
+//   }
+// }
 // object PipeConnect {
 //   def apply[T <: Data](
 //     out: Vec[DecoupledIO[T]], 
