@@ -57,6 +57,7 @@ class StoreQueue extends ErXCoreModule {
     enqPtr.inc()
   }
   when(doDeqFire) {
+    queue(deqPtr.value).valid := false.B
     deqPtr.inc()
   }
   when(doEnqFire =/= doDeqFire) {
