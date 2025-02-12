@@ -244,6 +244,8 @@ class RS(rsSize: Int = 4,enqWidth: Int,deqWidth: Int,StoreSeq: Boolean = false) 
       }
     }
   } //仲裁出来年龄最old的store指令索引，如果结果里没有store指令，则不使用这个仲裁器的结果（通过isStore来判断）
+  //TODO:use ai power merge to one function
+
 
   val rsArbPacket = Wire(Vec(rsSize, new ArbAgeBundle(rsSize)))
   val rsReadyList = Wire(Vec(rsSize, Bool()))
