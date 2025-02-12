@@ -93,7 +93,7 @@ class PipeALUorCSR extends AbstaceExecutePipe{
   io.out.bits.csr.write.addr := io.in.bits.cs.csrAddr
   io.out.bits.csr.write.data := Mux1hDefMap(io.in.bits.cs.csrOp,Map(
     CSR_RW ->  io.in.bits.data.src1,
-    CSR_RS -> (io.in.bits.data.src1 | io.in.bits.data.src1),
+    CSR_RS -> (io.in.bits.data.src1 | io.in.bits.data.src2),
   ))
 
   io.out.bits.csr.isXret       := io.in.bits.cs.csrOp === SDEF(CSR_MRET)
