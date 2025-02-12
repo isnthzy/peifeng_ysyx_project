@@ -26,6 +26,7 @@ class CtrlSignalIO extends ErXCoreBundle {
   val brType = Output(UInt(BR_XXX.length.W))
   val lsType = Output(UInt(LS_XXX.length.W))
   val csrOp  = Output(UInt(CSR_XXXX.length.W))
+  val csrAddr= Output(UInt(12.W))
   val rfWen  = Output(Bool())
   val rfSrc1 = Output(UInt(log2Up(ArfSize).W))
   val rfSrc2 = Output(UInt(log2Up(ArfSize).W))
@@ -71,8 +72,7 @@ class RobPacket extends ErXCoreBundle{
   val br = new BranchBundle
   val isBranch = Bool()
   val isStore = Bool() 
-  val excpType = new ExcpTypeBundle
-  val memBadAddr = UInt(XLEN.W)
+  val csr     = new PipeCsrOut
 }
 
 class ROBDiffOut extends RenameIO {
@@ -161,6 +161,8 @@ class CommitIO extends ErXCoreBundle{
 }
 class PipeCsrOut extends ErXCoreBundle {
   val excpType = new ExcpTypeBundle
+  val isXret   = Bool()
+  val memBadAddr = UInt(XLEN.W)
 }
 
 class PipeExecuteOut extends ErXCoreBundle {
@@ -175,10 +177,6 @@ class PipeExecuteOut extends ErXCoreBundle {
 }
 
 //NOTE: Frontend
-class CsrEntriesBundle extends ErXCoreBundle{
-  val mepc=UInt(XLEN.W)
-  val mtvec=UInt(XLEN.W)
-}
 
 class PfExcpTypeBundle extends ErXCoreBundle{
   val iam=UInt(1.W)

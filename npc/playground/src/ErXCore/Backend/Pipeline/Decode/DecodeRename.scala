@@ -40,6 +40,7 @@ class DecodeRename extends ErXCoreModule{
     uop(i).cs.brType   := DecodeSignal(i).brType
     uop(i).cs.lsType   := DecodeSignal(i).lsType
     uop(i).cs.csrOp    := DecodeSignal(i).csrOp
+    uop(i).cs.csrAddr  := io.in(i).bits.inst(31, 20)
     uop(i).cs.rfWen    :=(DecodeSignal(i).rfWen.asBool && renameValid(i)
                       &&  rfDest.orR)
     uop(i).cs.rfSrc1   := rfSrc1

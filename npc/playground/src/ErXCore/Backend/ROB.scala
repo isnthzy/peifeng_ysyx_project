@@ -12,7 +12,7 @@ class ROB extends ErXCoreModule{
     val fw_dr   = Output(new RenameFromCommitUpdate(updSize = RetireWidth))
     val fw_dp   = Output(new RSFromROB)
     val fw_sq   = Output(new StoreQueueFromROB)
-
+    val csrIO   = Flipped(new CsrRobIO)
     val out_diff = Output(Vec(RobWidth,Valid(new ROBDiffOut)))
   })
   val rob = SyncReadMem(RobEntries, new RenameIO, SyncReadMem.WriteFirst)
@@ -65,7 +65,8 @@ class ROB extends ErXCoreModule{
       packet(robIdx).br := io.from_ex.upd(i).bits.br
       packet(robIdx).isStore := io.from_ex.upd(i).bits.isStore
       packet(robIdx).isBranch:= io.from_ex.upd(i).bits.isBranch
-      packet(robIdx).excpType := io.from_ex.upd(i).bits.csr.excpType
+      packet(robIdx).csr     := io.from_ex.upd(i).bits.csr
+
     }
   }
 
@@ -96,28 +97,31 @@ class ROB extends ErXCoreModule{
   }
 
   //NOTE:excp
-  val excpValid = Wire(Vec(RetireWidth,Bool()))
+  val excpTypeValid = Wire(Vec(RetireWidth,Bool()))
+  val xretValid = Wire(Vec(RetireWidth,Bool()))
+  val excpValid = (0 until RetireWidth).map(i=> excpTypeValid(i) || xretValid(i))
   val excpMask = Wire(Vec(RetireWidth,Bool()))
   val excpResult = Wire(Vec(RetireWidth,new ExcpResultBundle()))
   for(i <- 0 until RetireWidth){
-    excpValid(i) := packet(tailPtr + i.U).excpType.asUInt.orR
-    val excpNum = packet(tailPtr + i.U).excpType.asUInt
+    excpTypeValid(i) := packet(tailPtr + i.U).csr.excpType.asUInt.orR
+    xretValid(i) := packet(tailPtr + i.U).csr.isXret
+    val excpNum = packet(tailPtr + i.U).csr.excpType.asUInt
     // val 
     excpResult(i) := MuxCase(0.U,Seq(
-      excpNum(0)  -> Cat(ECODE.IAM,1.U(1.W),commitBits(i).cf.pc              ),
-      excpNum(1)  -> Cat(ECODE.IAF,1.U(1.W),commitBits(i).cf.pc              ),
-      excpNum(2)  -> Cat(ECODE.INE,0.U(1.W),0.U(XLEN.W)                      ),
-      excpNum(3)  -> Cat(ECODE.BKP,0.U(1.W),0.U(XLEN.W)                      ),
-      excpNum(4)  -> Cat(ECODE.LAM,1.U(1.W),packet(tailPtr + i.U).memBadAddr ),
-      excpNum(5)  -> Cat(ECODE.LAF,0.U(1.W),0.U(XLEN.W)                      ),
-      excpNum(6)  -> Cat(ECODE.SAM,1.U(1.W),packet(tailPtr + i.U).memBadAddr ),
-      excpNum(7)  -> Cat(ECODE.SAF,0.U(1.W),0.U(XLEN.W)                      ),
-      excpNum(8)  -> Cat(ECODE.ECU,1.U(1.W),commitBits(i).cf.pc              ),
-      excpNum(9)  -> Cat(ECODE.ECS,1.U(1.W),commitBits(i).cf.pc              ),
-      excpNum(10) -> Cat(ECODE.ECM,1.U(1.W),commitBits(i).cf.pc              ),
-      excpNum(11) -> Cat(ECODE.IPF,1.U(1.W),packet(tailPtr + i.U).memBadAddr ),
-      excpNum(12) -> Cat(ECODE.LPF,1.U(1.W),packet(tailPtr + i.U).memBadAddr ),
-      excpNum(13) -> Cat(ECODE.SPF,1.U(1.W),packet(tailPtr + i.U).memBadAddr ),
+      excpNum(0)  -> Cat(ECODE.IAM,1.U(1.W),commitBits(i).cf.pc                  ),
+      excpNum(1)  -> Cat(ECODE.IAF,1.U(1.W),commitBits(i).cf.pc                  ),
+      excpNum(2)  -> Cat(ECODE.INE,0.U(1.W),0.U(XLEN.W)                          ),
+      excpNum(3)  -> Cat(ECODE.BKP,0.U(1.W),0.U(XLEN.W)                          ),
+      excpNum(4)  -> Cat(ECODE.LAM,1.U(1.W),packet(tailPtr + i.U).csr.memBadAddr ),
+      excpNum(5)  -> Cat(ECODE.LAF,0.U(1.W),0.U(XLEN.W)                          ),
+      excpNum(6)  -> Cat(ECODE.SAM,1.U(1.W),packet(tailPtr + i.U).csr.memBadAddr ),
+      excpNum(7)  -> Cat(ECODE.SAF,0.U(1.W),0.U(XLEN.W)                          ),
+      excpNum(8)  -> Cat(ECODE.ECU,1.U(1.W),commitBits(i).cf.pc                  ),
+      excpNum(9)  -> Cat(ECODE.ECS,1.U(1.W),commitBits(i).cf.pc                  ),
+      excpNum(10) -> Cat(ECODE.ECM,1.U(1.W),commitBits(i).cf.pc                  ),
+      excpNum(11) -> Cat(ECODE.IPF,1.U(1.W),packet(tailPtr + i.U).csr.memBadAddr ),
+      excpNum(12) -> Cat(ECODE.LPF,1.U(1.W),packet(tailPtr + i.U).csr.memBadAddr ),
+      excpNum(13) -> Cat(ECODE.SPF,1.U(1.W),packet(tailPtr + i.U).csr.memBadAddr ),
     )).asTypeOf(new ExcpResultBundle())
     if(i == 0){
       excpMask(i) := true.B
@@ -125,6 +129,15 @@ class ROB extends ErXCoreModule{
       excpMask(i) := excpMask(i - 1) && !excpValid(i - 1)
     }
   }
+  val excpSelectIdx = WireDefault(0.U(log2Up(RetireWidth).W))
+  for(i <- (0 until RetireWidth).reverse){
+    when(excpTypeValid(i)){
+      excpSelectIdx := i.U
+    }
+  }
+  io.csrIO.update.excpFlush := excpFlush
+  io.csrIO.update.mretFlush := xretFlush
+  io.csrIO.update.excpResult := excpResult(excpSelectIdx)
   //NOTE:store:
   val storeMask = Wire(Vec(RetireWidth,Bool()))
   val storeValid = Wire(Vec(RetireWidth,Bool()))
@@ -148,11 +161,15 @@ class ROB extends ErXCoreModule{
   解决方法1：因此需要flush延缓一拍生效ROB需要立即冲刷（冲刷2次），确保后边几条指令不会因为ROB残留启动第二次
   解决方法2：维护一个掩码，当退休宽度里有需要对流水线冲刷的指令，把这个指令放在下一次第一个槽位执行。
   两种方法对性能影响效果等效*/
+  lazy val excpFlush = excpTypeValid.asUInt.orR
+  lazy val xretFlush = xretValid.asUInt.orR
   io.fw_sq.doDeq := (0 until RetireWidth).map(i => retireValid(i) && storeValid(i)).reduce(_||_)
   frtNext.flush := flushROB
-  frtNext.tk.taken := packet(branchSelectIdx).br.taken && flushROB
+  frtNext.tk.taken := flushROB && (packet(branchSelectIdx).br.taken || excpFlush || xretFlush)
   //TODO:excp
-  frtNext.tk.target := packet(branchSelectIdx).br.target
+  frtNext.tk.target := Mux(packet(branchSelectIdx).br.taken,packet(branchSelectIdx).br.target,
+                        Mux(excpFlush,io.csrIO.entry.mtvec,
+                          Mux(xretFlush,io.csrIO.entry.mepc,0.U)))
 
   //dequeue check complete
   //NOTE:easy select
@@ -223,9 +240,9 @@ class ROB extends ErXCoreModule{
       io.out_diff(i).bits.cs := commitBits(i).cs
       io.out_diff(i).bits.robIdx := commitBits(i).robIdx
 
-      io.out_diff(i).bits.excp.isMret := false.B
+      io.out_diff(i).bits.excp.isMret := xretValid(i) && retireValid(i)
       io.out_diff(i).bits.excp.intrptNo := false.B
-      io.out_diff(i).bits.excp.en := excpValid(i)
+      io.out_diff(i).bits.excp.en := excpTypeValid(i) && retireValid(i)
       io.out_diff(i).bits.excp.cause := excpResult(i).ecode
 
       io.out_diff(i).bits.store := outStorePacket(tailPtr + i.U)

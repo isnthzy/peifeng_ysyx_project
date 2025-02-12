@@ -10,7 +10,7 @@ class PrfRead extends ErXCoreModule{
     val in = Vec(IssueWidth,Flipped(DecoupledIO(new RenameIO)))
     val from_ex = Input(new PrfReadFromExecute(updSize = IssueWidth))
     val to_ex = Vec(IssueWidth,DecoupledIO(new IssueIO))
-
+    val csrReadIO = Flipped(new ReadCsrIO)
   })
   
   for(i <- 0 until IssueWidth){
@@ -37,6 +37,7 @@ class PrfRead extends ErXCoreModule{
     dontTouchUtil(rsData1Read)
     dontTouchUtil(rsData2Read)
 
+    io.csrReadIO.addr := io.in(0).bits.cs.csrAddr
     for(j <- 0 until IssueWidth){
       when(io.to_ex(i).bits.pf.prfSrc1 === io.from_ex.upd(j).prfDst && io.from_ex.upd(j).rfWen){
         rsData1 := io.from_ex.upd(j).rdData
@@ -46,7 +47,7 @@ class PrfRead extends ErXCoreModule{
       }
     }
 
-
+    
     io.to_ex(i).bits.data.src1 := MuxLookup(io.in(i).bits.cs.src1Type,rsData1)(Seq(
       SDEF(A_PC) -> io.in(i).bits.cf.pc,
       SDEF(A_RS1) -> rsData1,
@@ -55,7 +56,7 @@ class PrfRead extends ErXCoreModule{
       SDEF(B_IMM) -> io.in(i).bits.cf.imm,
       SDEF(B_RS2) -> rsData2,
       SDEF(B_PC ) -> io.in(i).bits.cf.pc,
-      SDEF(B_CSR) -> 0.U,
+      SDEF(B_CSR) -> io.csrReadIO.data,
     ))
     io.to_ex(i).valid := io.in(i).valid
   }

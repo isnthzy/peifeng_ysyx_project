@@ -12,7 +12,7 @@ object GenerateParams {
     "PERF"          -> false,
     "YOSYS_MODE"    -> false,
     "SOC_MODE"      -> true,
-    "DEBUG"         -> true,
+    "DEBUG"         -> false,
   )
   def setParams(mode: String, perf: Boolean): Unit = {
     coreMode = mode

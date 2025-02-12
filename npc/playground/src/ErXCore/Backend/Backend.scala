@@ -20,13 +20,14 @@ class Backend extends ErXCoreModule{
   val ROB       = Module(new ROB)
   val DCache    = Module(new DCache)
   val StoreQueue = Module(new StoreQueue)
+  val CSR       = Module(new CsrFile)
 
   val flush = ROB.io.fw_frt.flush
   io.fw_frt := ROB.io.fw_frt
   DRstage.io.from_rob := ROB.io.fw_dr
   DSstage.io.from_rob := ROB.io.fw_dp
   StoreQueue.io.from_rob := ROB.io.fw_sq
-
+  CSR.io.robIO <> ROB.io.csrIO
   io.dmem <> DCache.io.out
 //------Decode and Rename Stage------
   DRstage.io.in <> io.in
@@ -41,12 +42,13 @@ class Backend extends ErXCoreModule{
 //-----     PrfRead  stage     ------
   PRstage.io.in <> DSstage.io.to_pr
   PRstage.io.from_ex  := EXstage.io.fw_pr
-
+  PRstage.io.csrReadIO <> CSR.io.read
 //-----     Execute  stage     ------
   PipeOOOConnect(EXstage.io.in,PRstage.io.to_ex,flush,Width = 2)
   PipeQueueConnect(EXstage.io.in(2),PRstage.io.to_ex(2),flush)
   //IntRS运算使用PipeConnet链接，MemRS使用PipeQueue链接
   EXstage.io.flush := ROB.io.fw_frt.flush
+  CSR.io.write := EXstage.io.writeCsrIO
   StoreQueue.io.st <> EXstage.io.dmemStore
   StoreQueue.io.ld <> EXstage.io.dmemLoad
   DCache.io.dl <> StoreQueue.io.out.ld
@@ -56,8 +58,10 @@ class Backend extends ErXCoreModule{
   if(EnableVerlatorSim){
     val Diff = Module(new DiffCommit)
     val gpr = Wire(Vec(ArfSize,UInt(XLEN.W)))
+    val csr = Wire(new DiffCsrRegBundle)
     dontTouchUtil(VecInit(ROB.io.out_diff.map(_.bits.robIdx)))
     ExcitingUtils.addSink(gpr,"DiffGPR",ExcitingUtils.Func)
+    ExcitingUtils.addSink(csr,"DiffCSR",ExcitingUtils.Func)
     Diff.io.reg := gpr.asTypeOf(Diff.io.reg)
     Diff.io.instr.index := 0.U
     Diff.io.instr.valid := ROB.io.out_diff(0).valid
@@ -104,10 +108,7 @@ class Backend extends ErXCoreModule{
     Diff.io.excp.exceptionPC := ROB.io.out_diff(excpSelectIdx).bits.cf.pc
     Diff.io.excp.exceptionInst := ROB.io.out_diff(excpSelectIdx).bits.cf.inst
 
-    Diff.io.csr.mcause  := 0x1800.U
-    Diff.io.csr.mepc    := 0.U
-    Diff.io.csr.mtvec   := 0.U
-    Diff.io.csr.mstatus := 0.U
+    Diff.io.csr := csr
 
   }
 

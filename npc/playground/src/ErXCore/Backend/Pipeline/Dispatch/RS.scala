@@ -164,10 +164,10 @@ class RS(rsSize: Int = 4,enqWidth: Int,deqWidth: Int,StoreSeq: Boolean = false) 
 | d    | 0       |      |         |          |
 以前的仲裁器可能有这个问题
 思路：因而，要维护部分乱序发射。对于store指令的仲裁，需要仲裁两次。
-第一次是按照正常的store部分乱序发射仲裁
-第二次是仲裁出来年龄最小的store指令（并且有效）
-比较第一次和第二次的结果，如果第一次结果的年龄小于store，使用第一次的结果
-如果第二次结果的年龄大于最小store年龄，使用第二次的store结果
+第一个仲裁是按照正常的store部分乱序发射仲裁
+第二个仲裁是仲裁出来年龄最小的store指令（并且有效）
+比较第一次和第二次的结果，如果第一个仲裁结果的年龄小于store，使用第一次的结果
+如果第一个仲裁结果的年龄大于最小store年龄，使用第二次的store结果
   */
   def OldStoreFirstArb(inputs: Vec[ArbAgeBundle], ArbSize: Int): Vec[ArbAgeBundle] = {
     require(isPow2(rsSize), "rsSize must be power of 2")
