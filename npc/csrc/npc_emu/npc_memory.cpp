@@ -258,7 +258,7 @@ word_t paddr_read(paddr_t addr, int len) {
     return device_read(addr,len);
   }
 #endif
-  out_of_bound(addr);
+  // out_of_bound(addr);
   return 0;
 }
 
