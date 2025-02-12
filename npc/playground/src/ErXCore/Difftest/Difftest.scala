@@ -81,10 +81,10 @@ class DiffCommit extends DiffModule{
   DiffBridge.io.loadData1 :=RegNext(io.load1.data ,0.U)
   DiffBridge.io.loadLen1  :=RegNext(io.load1.len,0.U)
 
-  DiffBridge.io.mstatus:=RegNext(io.csr.mstatus,0.U)
-  DiffBridge.io.mepc   :=RegNext(io.csr.mepc   ,0.U)
-  DiffBridge.io.mcause :=RegNext(io.csr.mcause ,0.U)
-  DiffBridge.io.mtvec  :=RegNext(io.csr.mtvec  ,0.U)
+  DiffBridge.io.mstatus := io.csr.mstatus
+  DiffBridge.io.mepc    := io.csr.mepc
+  DiffBridge.io.mcause  := io.csr.mcause
+  DiffBridge.io.mtvec   := io.csr.mtvec
 
   DiffBridge.io.REG:=io.reg
 }

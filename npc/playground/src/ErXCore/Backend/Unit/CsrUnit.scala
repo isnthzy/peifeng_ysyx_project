@@ -17,7 +17,6 @@ object CSR_CODE {
 class CsrFile extends ErXCoreModule{
   val io=IO(new ErXCoreBundle{
     val read  = new ReadCsrIO
-    val write = new WriteCsrIO
     val robIO = new CsrRobIO
   })
   // csr_addr，csr寄存器的地址
@@ -56,30 +55,30 @@ class CsrFile extends ErXCoreModule{
   io.robIO.entry.mepc   :=mepc
 
 //mstatus
-  val mstatusWrData=io.write.data.asTypeOf(new CsrStatusBundle())
+  val mstatusWrData=io.robIO.write.data.asTypeOf(new CsrStatusBundle())
   when(io.robIO.update.mretFlush){
     // mstatus.mie:=mstatus.mpie
     // mstatus.mpie:=1.U //方便期间，暂时与nemu同步
-  }.elsewhen(io.write.wen&&io.write.addr===CSR_CODE.MSTATUS){
+  }.elsewhen(io.robIO.write.wen&&io.robIO.write.addr===CSR_CODE.MSTATUS){
     mstatus:=mstatusWrData
   }
 //mepc
   when(io.robIO.update.excpFlush){
     mepc:=io.robIO.update.excpResult.vaBadAddr
-  }.elsewhen(io.write.wen&&io.write.addr===CSR_CODE.MEPC){
-    mepc:=io.write.data
+  }.elsewhen(io.robIO.write.wen&&io.robIO.write.addr===CSR_CODE.MEPC){
+    mepc:=io.robIO.write.data
   }
 //mcause
-  val mcauseWrData=io.write.data.asTypeOf(new CsrCauseBundle())
+  val mcauseWrData=io.robIO.write.data.asTypeOf(new CsrCauseBundle())
   when(io.robIO.update.excpFlush){
     mcause.ecode:=io.robIO.update.excpResult.ecode
-  }.elsewhen(io.write.wen&&io.write.addr===CSR_CODE.MCAUSE){
+  }.elsewhen(io.robIO.write.wen&&io.robIO.write.addr===CSR_CODE.MCAUSE){
     mcause.interpt:=mcauseWrData.interpt
     mcause.ecode  :=mcauseWrData.ecode
   }
 //mtvec
-  val mtvecWrData=io.write.data.asTypeOf(new CsrXtvecBundle())
-  when(io.write.wen&&io.write.addr===CSR_CODE.MTVEC){
+  val mtvecWrData=io.robIO.write.data.asTypeOf(new CsrXtvecBundle())
+  when(io.robIO.write.wen&&io.robIO.write.addr===CSR_CODE.MTVEC){
     mtvec.base:=mtvecWrData.base
     mtvec.mode:=mtvecWrData.mode
   }
@@ -93,10 +92,10 @@ class CsrFile extends ErXCoreModule{
   ExcitingUtils.addSource(diffCSR,"DiffCSR",ExcitingUtils.Func)
 }
 
-class WriteCsrIO extends ErXCoreBundle{
-  val wen = Input(Bool())
-  val addr = Input(UInt(12.W))
-  val data = Input(UInt(XLEN.W))
+class WriteCsr extends ErXCoreBundle{
+  val wen = Bool()
+  val addr = UInt(12.W)
+  val data = UInt(XLEN.W)
 }
 
 class ReadCsrIO extends ErXCoreBundle{
@@ -107,6 +106,7 @@ class ReadCsrIO extends ErXCoreBundle{
 class CsrRobIO extends ErXCoreBundle{
   val update = Input(new CsrFlushUpdate())
   val entry  = Output(new CsrEntriesBundle())
+  val write = Input(new WriteCsr)
 }
 class CsrFlushUpdate extends ErXCoreBundle{
   val excpFlush = Bool()

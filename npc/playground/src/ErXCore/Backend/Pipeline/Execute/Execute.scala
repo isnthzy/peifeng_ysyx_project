@@ -12,13 +12,12 @@ class Execute extends ErXCoreModule{
     val fw_dr  = Output(new RenameFromExecuteUpdate(updSize = IssueWidth))
     val fw_pr  = Output(new PrfReadFromExecute(updSize = IssueWidth))
     val fw_rob = Output(new ROBFromExecuteUpdate(updSize = IssueWidth))
-    val writeCsrIO = Output(new WriteCsrIO)
     val dmemStore = new SimpleMemIO
     val dmemLoad  = new SimpleMemIO
   })
   
   //在设计时就考虑到，csr等指令只能第一个弹出队列，所以issue送来的东西直接分配即可
-  val pipeALUorCSR = Module(new PipeALUorCSR(useCsr = true))
+  val pipeALUorCSR = Module(new PipeALUorCSR)
   val pipeALU = Module(new PipeALU)
   val pipeMEM = Module(new PipeMem(useDmem = true))
   val pipe = List(pipeALUorCSR,pipeALU,pipeMEM)
@@ -29,7 +28,6 @@ class Execute extends ErXCoreModule{
   } //从发射上限制CSR，当读到第二条指令是csr时，阻塞发射到第一条队列上
   io.dmemStore  <> pipeMEM.io.dmemStore.get
   io.dmemLoad   <> pipeMEM.io.dmemLoad.get
-  io.writeCsrIO <> pipeALUorCSR.io.csrWriteIO.get
   def checkBranchTaken(brType: UInt, result: Bool): Bool = { 
       ((brType === SDEF(BR_EQ) &&  result(0))
     || (brType === SDEF(BR_NE) && ~result(0))
@@ -63,32 +61,24 @@ class Execute extends ErXCoreModule{
   // }
 }
 
-abstract class AbstaceExecutePipe(useDmem: Boolean = false,useCsr: Boolean = false) extends ErXCoreModule{
+abstract class AbstaceExecutePipe(useDmem: Boolean = false) extends ErXCoreModule{
   val io = IO(new Bundle{
     val in = Flipped(DecoupledIO(new IssueIO))
     val out = Output(Valid(new PipeExecuteOut))
     val flush = Input(Bool())
-    val csrWriteIO= if(useCsr)  Some(Output(new WriteCsrIO)) else None
     val dmemStore = if(useDmem) Some(new SimpleMemIO) else None
     val dmemLoad  = if(useDmem) Some(new SimpleMemIO) else None
   })
   io.out.bits.br := DontCare
 } 
 
-class PipeALUorCSR(useCsr: Boolean = true) extends AbstaceExecutePipe(useCsr = useCsr){
+class PipeALUorCSR extends AbstaceExecutePipe{
   val Alu = Module(new Alu)
   io.in.ready := true.B
   Alu.io.op := io.in.bits.cs.aluOp
   Alu.io.src1 := io.in.bits.data.src1
   Alu.io.src2 := io.in.bits.data.src2
 
-  io.csrWriteIO.get.wen := (io.in.bits.cs.csrOp===SDEF(CSR_RW)
-                          ||io.in.bits.cs.csrOp===SDEF(CSR_RS))
-  io.csrWriteIO.get.addr := io.in.bits.cs.csrAddr
-  io.csrWriteIO.get.data := Mux1hDefMap(io.in.bits.cs.csrOp,Map(
-    CSR_RW ->  io.in.bits.data.src1,
-    CSR_RS -> (io.in.bits.data.src1 | io.in.bits.data.src1),
-  ))
 
   io.out.valid := io.in.valid
   io.out.bits.result := Alu.io.result
@@ -98,6 +88,14 @@ class PipeALUorCSR(useCsr: Boolean = true) extends AbstaceExecutePipe(useCsr = u
   io.out.bits.rfWen    := io.in.bits.cs.rfWen
   io.out.bits.prfDst   := io.in.bits.pf.prfDst
   io.out.bits.csr := 0.U.asTypeOf(io.out.bits.csr)
+  io.out.bits.csr.write.wen := (io.in.bits.cs.csrOp===SDEF(CSR_RW)
+                              ||io.in.bits.cs.csrOp===SDEF(CSR_RS))
+  io.out.bits.csr.write.addr := io.in.bits.cs.csrAddr
+  io.out.bits.csr.write.data := Mux1hDefMap(io.in.bits.cs.csrOp,Map(
+    CSR_RW ->  io.in.bits.data.src1,
+    CSR_RS -> (io.in.bits.data.src1 | io.in.bits.data.src1),
+  ))
+
   io.out.bits.csr.isXret       := io.in.bits.cs.csrOp === SDEF(CSR_MRET)
   io.out.bits.csr.excpType.ecm := io.in.bits.cs.csrOp === SDEF(CSR_ECAL)
   io.out.bits.csr.excpType.ine := io.in.bits.cs.csrOp === SDEF(ILLEGAL)

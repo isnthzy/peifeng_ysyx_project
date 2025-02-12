@@ -161,6 +161,7 @@ class CommitIO extends ErXCoreBundle{
 }
 class PipeCsrOut extends ErXCoreBundle {
   val excpType = new ExcpTypeBundle
+  val write    = new WriteCsr
   val isXret   = Bool()
   val memBadAddr = UInt(XLEN.W)
 }

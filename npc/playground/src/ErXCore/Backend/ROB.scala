@@ -66,7 +66,6 @@ class ROB extends ErXCoreModule{
       packet(robIdx).isStore := io.from_ex.upd(i).bits.isStore
       packet(robIdx).isBranch:= io.from_ex.upd(i).bits.isBranch
       packet(robIdx).csr     := io.from_ex.upd(i).bits.csr
-
     }
   }
 
@@ -74,7 +73,8 @@ class ROB extends ErXCoreModule{
   val validMask = Mux(ringBuffCount >= RetireWidth.U, ((1 << RetireWidth) - 1).U, 
                                                       UIntToOH(ringBuffCount, RetireWidth) - 1.U)
   val retireValid = Wire(Vec(RetireWidth,Bool()))
- 
+  
+  //TODO:写成def函数
   //NOTE:Branch
   //NOTE:Mask的作用是当前一条指令是跳转时，后面的指令无效化。mask概念适用于branch excp store
   val branchMask = Wire(Vec(RetireWidth,Bool()))
@@ -138,6 +138,28 @@ class ROB extends ErXCoreModule{
   io.csrIO.update.excpFlush := excpFlush
   io.csrIO.update.mretFlush := xretFlush
   io.csrIO.update.excpResult := excpResult(excpSelectIdx)
+  //NOTE:csr:
+  val csrWriteMask = Wire(Vec(RetireWidth,Bool()))
+  val csrWriteSelectIdx = WireDefault(0.U(log2Up(RetireWidth).W))
+  val csrWriteValid = Wire(Vec(RetireWidth,Bool()))
+  val csrWriteResult = WireDefault(0.U.asTypeOf(new WriteCsr))
+  for(i <- 0 until RetireWidth){
+    csrWriteValid(i) := packet(tailPtr + i.U).csr.write.wen
+    if(i == 0){
+      csrWriteMask(i) := true.B
+    }else{
+      csrWriteMask(i) := csrWriteMask(i - 1) && !csrWriteValid(i - 1)
+    }
+  }
+  for(i <- (0 until RetireWidth).reverse){
+    when(csrWriteValid(i)){
+      csrWriteResult := packet(tailPtr + i.U).csr.write
+      csrWriteSelectIdx := i.U
+    }
+  }
+  io.csrIO.write := csrWriteResult
+  io.csrIO.write.wen := csrWriteResult.wen && retireValid(csrWriteSelectIdx)
+
   //NOTE:store:
   val storeMask = Wire(Vec(RetireWidth,Bool()))
   val storeValid = Wire(Vec(RetireWidth,Bool()))
@@ -155,7 +177,7 @@ class ROB extends ErXCoreModule{
   //public flush 
   flushAll := frtNext.flush
   flushROB := (0 until RetireWidth).map(i => retireValid(i) 
-    && (branchValid(i) || excpValid(i))).reduce(_||_)
+    && (branchValid(i) || excpValid(i) || csrWriteValid(i))).reduce(_||_)
   /*NOTE:flush,br,excp使用Reg类型延缓一拍，因为可能有一种情况是第一条指令正常执行，
   后面几因为种种原因需要冲刷，但是第一条指令还没有写入完成。
   解决方法1：因此需要flush延缓一拍生效ROB需要立即冲刷（冲刷2次），确保后边几条指令不会因为ROB残留启动第二次
@@ -163,13 +185,15 @@ class ROB extends ErXCoreModule{
   两种方法对性能影响效果等效*/
   lazy val excpFlush = excpTypeValid.asUInt.orR
   lazy val xretFlush = xretValid.asUInt.orR
+  val refetchPC = csrWriteValid.asUInt.orR
   io.fw_sq.doDeq := (0 until RetireWidth).map(i => retireValid(i) && storeValid(i)).reduce(_||_)
   frtNext.flush := flushROB
-  frtNext.tk.taken := flushROB && (packet(branchSelectIdx).br.taken || excpFlush || xretFlush)
+  frtNext.tk.taken := flushROB && (packet(branchSelectIdx).br.taken || excpFlush || xretFlush || refetchPC)
   //TODO:excp
   frtNext.tk.target := Mux(packet(branchSelectIdx).br.taken,packet(branchSelectIdx).br.target,
                         Mux(excpFlush,io.csrIO.entry.mtvec,
-                          Mux(xretFlush,io.csrIO.entry.mepc,0.U)))
+                          Mux(xretFlush,io.csrIO.entry.mepc,
+                            Mux(refetchPC,commitBits(csrWriteSelectIdx).cf.pc + 4.U,0.U))))
 
   //dequeue check complete
   //NOTE:easy select
@@ -184,7 +208,7 @@ class ROB extends ErXCoreModule{
       retireValid(i) := validMask(i) && complete(tailPtr + i.U)
     }else{
       retireValid(i) :=(validMask(i) && complete(tailPtr + i.U) &&
-        retireValid(i - 1) && storeMask(i) && excpMask(i) && branchMask(i))
+        retireValid(i - 1) && storeMask(i) && csrWriteMask(i) && excpMask(i) && branchMask(i))
     } 
 
     io.fw_dr.upd(i).wen := retireValid(i) && commitBits(i).cs.rfWen
