@@ -27,6 +27,8 @@ class Dispatch extends ErXCoreModule {
   }
 
   lazy val dispatchReady = Wire(Vec(DecodeWidth,Bool()))
+  val memRS = Module(new RS(rsSize = 4,enqWidth = DecodeWidth,deqWidth = 1,StoreSeq = true))
+  val intRS = Module(new RS(rsSize = 4,enqWidth = DecodeWidth,deqWidth = DecodeWidth))
   dp.zipWithIndex.foreach{case (in, i) => 
     var rsReady = (0 until DecodeWidth).map(j =>
         (intRS.io.in(j).ready & uopIsInt(j)) || (memRS.io.in(j).ready & uopIsMem(j))
@@ -34,8 +36,7 @@ class Dispatch extends ErXCoreModule {
     in.ready := io.fw_rob.map(_.ready).reduce(_ & _) & rsReady
   } //不允许下标i任意握手，只允许同时握手，防止因为下标握手不同步导致进入rob顺序错误
 
-  lazy val memRS = Module(new RS(rsSize = 4,enqWidth = DecodeWidth,deqWidth = 1,StoreSeq = true))
-  lazy val intRS = Module(new RS(rsSize = 4,enqWidth = DecodeWidth,deqWidth = DecodeWidth))
+
   io.fw_rob.zipWithIndex.foreach{case (rob, i) => 
     rob.bits := dp(i).bits 
     rob.valid := (intRS.io.in(i).fire || memRS.io.in(i).fire) & dp(i).fire
