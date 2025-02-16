@@ -84,8 +84,8 @@ INCFLAGS += $(addprefix -I, $(INC_PATH))
 
 ARCH_H := arch/$(ARCH).h
 
-CFLAGS   += -Og -ggdb3
-# CFLAGS   += -O2
+# CFLAGS   += -Og -ggdb3
+CFLAGS   += -O2
 CFLAGS   += -MMD -Wall -Werror $(INCFLAGS) \
             -D__ISA__=\"$(ISA)\" -D__ISA_$(shell echo $(ISA) | tr a-z A-Z)__ \
             -D__ARCH__=$(ARCH) -D__ARCH_$(shell echo $(ARCH) | tr a-z A-Z | tr - _) \
