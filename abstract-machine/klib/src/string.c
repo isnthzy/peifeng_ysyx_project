@@ -101,14 +101,14 @@ void *memmove(void *dst, const void *src, size_t n) {
   if(dst<=src||(char*)dst>=(char*)src+n){
     for(i=0;i<n;i++){
       *((char *)dst+i)= *((char *)src+i);
-    }
+    }//如果目标地址小于等于源地址，或者目标地址大于等于源地址+n，那么就是正向拷贝，会覆盖src，但是无所谓
   }else{
-    for(i=n-1;i>0;i--){
+    for(i=n-1;i>=0;i--){
       *((char *)dst+i)= *((char *)src+i);
-    }
+    }//如果目标地址大于源地址并小于源地址src+n，后向拷贝，避免覆盖
   }
   return ret;
-}
+} //前向拷贝，后向拷贝策略，避免覆盖
 
 void *memcpy(void *out, const void *in, size_t n) {
   if(out==NULL||in==NULL){
@@ -116,15 +116,11 @@ void *memcpy(void *out, const void *in, size_t n) {
   }
   void *ret=out;
   size_t i=0;
-  if(out<=in||(char*)out>=(char*)in+n){
-    for(i=0;i<n;i++){
-      *((char *)out+i)= *((char *)in+i);
-    }
-  }else{
-    for(i=n-1;i>0;i--){
-      *((char *)out+i)= *((char *)in+i);
-    }
+  // 这里可以直接正向拷贝，不做重叠判断
+  for (i = 0; i < n; i++) {
+    *((char *)out+i)= *((char *)in+i);
   }
+  return ret;
   return ret;
 }
 
